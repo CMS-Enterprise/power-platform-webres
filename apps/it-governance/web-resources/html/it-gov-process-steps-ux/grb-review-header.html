@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Governance Process Steps</title>
+    <style>
+      /* Power Apps / Dynamics 365 Matching Styles */
+
+      /* Base typography and colors */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: #323130;
+        background-color: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+
+      /* Headings */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 600;
+        color: #323130;
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 21px;
+      }
+      h3 {
+        font-size: 16px;
+      }
+      h4 {
+        font-size: 14px;
+      }
+
+      /* Links */
+      a {
+        color: #0078d4;
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: #106ebe;
+        text-decoration: underline;
+      }
+
+      a:focus {
+        outline: 1px solid #0078d4;
+        outline-offset: 2px;
+      }
+
+      /* Buttons */
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background-color: #106ebe;
+        border-color: #106ebe;
+      }
+
+      .btn-primary:focus {
+        outline: 1px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px #0078d4;
+      }
+
+      .btn-secondary {
+        background-color: #ffffff;
+        border: 1px solid #8a8886;
+        color: #323130;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+
+      .btn-secondary:hover {
+        background-color: #f3f2f1;
+        border-color: #323130;
+      }
+
+      /* Form controls */
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="number"],
+      select,
+      textarea {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        padding: 8px 12px;
+        border: 1px solid #8a8886;
+        border-radius: 2px;
+        background-color: #ffffff;
+        color: #323130;
+        min-height: 32px;
+        box-sizing: border-box;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="password"]:focus,
+      input[type="number"]:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #0078d4;
+        outline: none;
+        box-shadow: 0 0 0 1px #0078d4;
+      }
+
+      /* Labels */
+      label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #323130;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      /* Cards/Containers */
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #edebe9;
+        border-radius: 2px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132),
+          0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+      }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        background-color: #ffffff;
+        border: 1px solid #edebe9;
+      }
+
+      th {
+        background-color: #faf9f8;
+        color: #323130;
+        font-weight: 600;
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid #edebe9;
+      }
+
+      td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #edebe9;
+        color: #323130;
+      }
+
+      tr:hover {
+        background-color: #f3f2f1;
+      }
+
+      /* Status indicators */
+      .status-active {
+        color: #107c10;
+        font-weight: 600;
+      }
+
+      .status-inactive {
+        color: #d13438;
+        font-weight: 600;
+      }
+
+      .status-pending {
+        color: #ff8c00;
+        font-weight: 600;
+      }
+
+      /* Notification/Alert styles */
+      .alert {
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border-radius: 2px;
+        border-left: 0.5rem solid #a9aeb1;
+      }
+
+      .alert-info {
+        background-color: #deecf9;
+        border-left-color: #0078d4;
+      }
+
+      .alert-success {
+        background-color: #dff6dd;
+        border-left-color: #107c10;
+      }
+
+      .alert-warning {
+        background-color: #faf3d1;
+        border-left-color: #ffbe2e;
+      }
+
+      .alert-error {
+        background-color: #fde7e9;
+        border-left-color: #d13438;
+      }
+
+      /* Loading spinner */
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #edebe9;
+        border-top: 2px solid #0078d4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Utility classes */
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .text-muted {
+        color: #605e5c;
+      }
+      .font-weight-bold {
+        font-weight: 600;
+      }
+      .font-weight-normal {
+        font-weight: 400;
+      }
+
+      .mb-0 {
+        margin-bottom: 0;
+      }
+      .mb-1 {
+        margin-bottom: 8px;
+      }
+      .mb-2 {
+        margin-bottom: 16px;
+      }
+      .mb-3 {
+        margin-bottom: 24px;
+      }
+
+      .mt-0 {
+        margin-top: 0;
+      }
+      .mt-1 {
+        margin-top: 8px;
+      }
+      .mt-2 {
+        margin-top: 16px;
+      }
+      .mt-3 {
+        margin-top: 24px;
+      }
+
+      .p-1 {
+        padding: 8px;
+      }
+      .p-2 {
+        padding: 16px;
+      }
+      .p-3 {
+        padding: 24px;
+      }
+
+      .get-started-button {
+        margin-top: 25px;
+      }
+
+      /* Hide/show utilities */
+      .hidden {
+        display: none;
+      }
+      .visible {
+        display: block;
+      }
+
+      /* Responsive breakpoints */
+      @media (max-width: 768px) {
+        body {
+          padding: 8px;
+        }
+
+        .card {
+          padding: 12px;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 6px 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main
+      id="main-content"
+      class="easi-main-content grid-container"
+      role="main"
+      tabindex="-1"
+    >
+      <div class="prepare-for-grb">
+        <div>
+          <div class="help-page-intro margin-bottom-4">
+            <h1
+              class="easi-h1 margin-bottom-0 margin-top-3"
+              tabindex="-1"
+              aria-live="polite"
+            >
+              Prepare for the Governance Review Board (GRB) review
+            </h1>
+            <a
+              class="usa-link display-inline-block margin-y-1"
+              href="/help/it-governance"
+              ><span
+                data-testid="tag"
+                class="easi-tag system-profile__tag text-primary-dark bg-primary-lighter padding-bottom-1"
+                >IT Governance</span
+              ></a
+            >
+            <div
+              class="font-body-lg margin-top-1 margin-bottom-0 line-height-body-5"
+            >
+              Learn what you need in order to be successful, including what to
+              expect during and after the review, what to prepare for, and what
+              to bring to the meeting or have on hand during the asynchronous
+              review.
+            </div>
+          </div>
+          <h2
+            class="font-heading-xl line-height-heading-2 margin-top-3 margin-bottom-2"
+          >
+            What is the Governance Review Board?
+          </h2>
+          <p class="line-height-sans-5">
+            The role of the IT Governance Review Board (GRB) is to ensure IT
+            Investments are a good use of CMS resources, meeting business needs
+            at acceptable costs. The GRB consists of CMS Budget Development
+            Group (BDG) Chairs and representatives who make CMS project funding
+            recommendations to the Administrator, as well as the Chief Financial
+            Officer (CFO), Chief Information Officer (CIO), and Head of
+            Contracting Activity.
+          </p>
+          <h3>Who is a part of the GRB?</h3>
+          <p class="line-height-sans-5 text-bold margin-bottom-0">
+            Voting members
+          </p>
+          <p class="line-height-sans-5 margin-top-0">
+            The CMS Budget Development Group (BDG) Chairs and representatives
+            make up the voting members of the GRB. They are responsible for
+            bringing their own subject matter and business knowledge to their
+            review of the project. They will raise any questions or concerns
+            they have with the project, and ultimately record their opinion
+            about whether or not the project should move forward.
+          </p>
+          <p class="line-height-sans-5 text-bold margin-bottom-0">
+            Non-voting members
+          </p>
+          <p class="line-height-sans-5 margin-top-0">
+            CMS’s Chief Financial Officer (CFO), Chief Information Officer
+            (CIO), and Head of Contracting Activity act as non-voting members of
+            the GRB. They participate in GRB reviews by discussing the project
+            with the rest of the GRB and contributing their expertise and
+            experience to the conversation.
+          </p>
+          <p class="line-height-sans-5 text-bold margin-bottom-0">
+            Alternate voting members
+          </p>
+          <p class="line-height-sans-5 margin-top-0">
+            When voting members are unable to attend a meeting or participate in
+            a review, they will designate an alternate who will participate in
+            their stead. Occasionally, alternate voting members will participate
+            as non-voting members alongside their voting counterparts.
+          </p>
+          <h2
+            class="font-heading-xl line-height-heading-2 margin-top-3 margin-bottom-2"
+          >
+            What to expect during the GRB review
+          </h2>
+          <p class="line-height-sans-5">
+            During the GRB meeting or asynchronous review, you will review your
+            Business Case with the board members and show how the approval of
+            your project will help benefit CMS programs. You’ll need to
+            demonstrate how you arrived at the costs in your Business Case and
+            the assumptions you made when calculating them. The GRB will also
+            review your proposed alternatives and their pros and cons.
+          </p>
+          <p class="line-height-sans-5 margin-bottom-0">
+            Important items to bring to the meeting or have on hand during the
+            review:
+          </p>
+          <ul class="usa-list line-height-body-5 padding-y-0 margin-top-0">
+            <li class="maxw-none">a copy of your Business Case</li>
+            <li class="maxw-none">
+              any contracting materials that you might have in place, for
+              example, a Statement of Work (SOW), a Performance Work Statement
+              (PWS), or other contracting document
+            </li>
+            <li class="maxw-none">
+              additional materials that you’d like to talk through, such as a
+              concept diagram
+            </li>
+          </ul>
+          <div class="margin-top-3 padding-2 bg-base-lightest">
+            <h3 class="margin-top-0 margin-bottom-1">Tips for the review</h3>
+            <ul class="usa-list line-height-body-5 padding-y-0">
+              <li class="maxw-none">
+                When sharing your Business Case, highlight how this project
+                would benefit CMS and further their current priorities.
+              </li>
+              <li class="maxw-none">
+                Thoroughly review the costs included in your Business Case and
+                identify the assumptions you made when you calculated them.
+              </li>
+              <li class="maxw-none">
+                If you have been discussing your request with Subject Matter
+                Expert (SME) groups, highlight it during the review. This helps
+                the GRB understand more about the project team’s circumstances
+                and offers them additional reassurances.
+              </li>
+            </ul>
+          </div>
+        </div>
+        <h3>Types of GRB reviews</h3>
+        <p class="line-height-sans-5 text-bold margin-y-0">Standard meeting</p>
+        <p class="line-height-sans-5 margin-y-0">
+          The project team presents their project at one of the
+          regularly-scheduled GRB meetings. The Governance Admin Team will work
+          with the project team to select a preferred meeting date out of the
+          available schedule.
+        </p>
+        <div
+          class="usa-alert usa-alert--info usa-alert--slim"
+          data-testid="alert"
+        >
+          <div class="usa-alert__body">
+            <p class="usa-alert__text">
+              You’ll be discussing sensitive costing information in this
+              meeting. Therefore, please do not bring any contractors to this
+              session unless you need them to help discuss the technical
+              solution.
+            </p>
+          </div>
+        </div>
+        <p class="line-height-sans-5 text-bold margin-bottom-0">
+          Asynchronous review
+        </p>
+        <p class="line-height-sans-5 margin-y-0">
+          The Governance Admin Team will work with the project team to record
+          their presentation and then upload the slide deck and/or recording for
+          asynchronous review by the GRB. This review type is often suitable for
+          projects that cannot fit into the standard schedule of meetings or
+          have other requirements that make an asynchronous review preferable.
+        </p>
+        <h2 class="margin-top-3 margin-bottom-2">Possible outcomes</h2>
+        <p class="line-height-sans-5 margin-y-0">
+          After the review (either meeting or asynchronous), the Governance
+          Review Board will decide whether to approve your request at this time.
+          They will offer one of the following possible outcomes:
+        </p>
+        <ul class="usa-list line-height-body-5 margin-top-1 padding-y-0">
+          <li class="maxw-none">
+            If the GRB approves your request, you will receive a Life Cycle ID
+            (LCID) in EASi. You need this ID to request funding and complete
+            other contract actions. The Life Cycle ID will include an expiration
+            date, next steps, and a documented scope of the work approved under
+            the LCID. The Governance Admin Team may follow up with you at a
+            later date to check in on the status of your project.
+          </li>
+          <li class="maxw-none">
+            If two or more GRB members voice concerns about a project, a Life
+            Cycle ID won’t be issued. The request will not be approved until all
+            concerns are addressed or the concerned GRB members withdraw their
+            concerns. If you need assistance addressing the concerns of the GRB,
+            contact the Governance Admin Team for possible next steps.
+          </li>
+        </ul>
+        <div
+          class="usa-summary-box desktop:grid-col-6 margin-top-5"
+          data-testid="summary-box"
+        >
+          <div class="usa-summary-box__body">
+            <h3 class="usa-summary-box__heading">Need help?</h3>
+            <div class="usa-summary-box__text">
+              <div class="margin-top-2 margin-bottom-05">
+                Contact the Governance team:
+                <a class="usa-link" href="mailto:IT_Governance@cms.hhs.gov"
+                  >IT_Governance@cms.hhs.gov</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

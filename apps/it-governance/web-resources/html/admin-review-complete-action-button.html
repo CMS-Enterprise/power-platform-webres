@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Review Complete Action Button</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        color: #323130;
+        background: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+      .btn-primary {
+        background: #0078d4;
+        border: 1px solid #0078d4;
+        color: #fff;
+        padding: 8px 16px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background: #106ebe;
+      }
+      .hidden {
+        display: none;
+      }
+      .alert {
+        padding: 12px 16px;
+        margin: 12px 0;
+        border-radius: 4px;
+        border-left: 6px solid #107c10;
+        background: #dff6dd;
+        color: #0b5a0b;
+      }
+      .alert.error {
+        border-left-color: #d13438;
+        background: #fde7e9;
+        color: #a4262c;
+      }
+    </style>
+    <script>
+      function getForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, name) {
+        return form ? form.getAttribute(name) : null;
+      }
+
+      function qs() {
+        try {
+          return (
+            Xrm.Utility.getGlobalContext().getQueryStringParameters() || {}
+          );
+        } catch {
+          const out = {};
+          (location.search || "")
+            .replace(/^\?/, "")
+            .split("&")
+            .forEach((p) => {
+              if (!p) return;
+              const [k, v] = p.split("=");
+              out[decodeURIComponent(k)] = decodeURIComponent(v || "");
+            });
+          return out;
+        }
+      }
+
+      function getConfig() {
+        const raw = qs().data || "";
+        if (!raw) return {};
+        try {
+          return JSON.parse(decodeURIComponent(raw));
+        } catch {
+          return { label: raw };
+        }
+      }
+
+      function showAlert(msg, isError) {
+        const a = document.getElementById("completeActionAlert");
+        if (!a) return;
+        a.textContent =
+          msg || (isError ? "Save failed." : "Successfully submitted.");
+        a.classList.toggle("error", !!isError);
+        a.classList.remove("hidden");
+      }
+
+      function hideButton() {
+        const b = document.getElementById("completeActionButton");
+        if (b) b.classList.add("hidden");
+      }
+
+      function onLoad() {
+        const cfg = getConfig();
+        const btn = document.getElementById("completeActionButton");
+        if (btn) btn.textContent = cfg.label || "Submit";
+
+        const form = getForm();
+        if (!form || !cfg.flagField) return;
+
+        const flag = getAttr(form, cfg.flagField);
+        const date = getAttr(form, "cr69a_decisiondate");
+        const done =
+          (flag && flag.getValue && flag.getValue()) ||
+          (date && date.getValue && date.getValue());
+
+        if (done) {
+          showAlert(cfg.successMessage || "Successfully submitted.");
+          if (cfg.hideButtonOnSuccess !== false) hideButton();
+        }
+      }
+
+      function completeAction() {
+        const form = getForm();
+        if (!form) return;
+
+        const cfg = getConfig();
+        const btn = document.getElementById("completeActionButton");
+        if (btn) btn.disabled = true;
+
+        try {
+          const flag = getAttr(form, cfg.flagField);
+          if (flag && flag.setValue) flag.setValue(true);
+
+          const date = getAttr(form, "cr69a_decisiondate");
+          if (date && date.setValue && !date.getValue())
+            date.setValue(new Date());
+
+          form.data.save().then(
+            function () {
+              showAlert(cfg.successMessage || "Successfully submitted.");
+              if (cfg.hideButtonOnSuccess !== false) hideButton();
+              if (btn) btn.disabled = false;
+            },
+            function (err) {
+              console.error("Save failed:", err?.message || err);
+              showAlert("Save failed. " + (err?.message || ""), true);
+              if (btn) btn.disabled = false;
+            }
+          );
+        } catch (e) {
+          console.error("Unexpected error:", e);
+          showAlert("Unexpected error. See console.", true);
+          if (btn) btn.disabled = false;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", onLoad);
+      window.completeAction = completeAction;
+    </script>
+  </head>
+  <body>
+    <div
+      id="completeActionAlert"
+      class="alert hidden"
+      role="status"
+      aria-live="polite"
+    ></div>
+    <div style="text-align: right">
+      <button
+        id="completeActionButton"
+        class="btn-primary"
+        onclick="completeAction()"
+      >
+        Submit
+      </button>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Intake Request Get Started</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: #323130;
+        background-color: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+      .get-started-button {
+        text-align: right;
+        margin-top: 25px;
+      }
+    </style>
+    <script>
+      const BPF_STAGES = {
+        DRAFT: 971270006,
+        REQUEST_TYPE: 971270010,
+        GOVERNANCE_PROCESS_STEPS: 971270011,
+      };
+
+      const FIELD_HIDE_GOV_PROCESS = "cr69a_hidegovernanceprocess";
+      const ADMIN_GOV_TASK_LIST_STEP_FIELD = "cr69a_admingovernancetasklist";
+
+      function showError(message) {
+        if (parent?.Xrm?.Navigation) {
+          parent.Xrm.Navigation.openErrorDialog({ message });
+        } else {
+          alert(message);
+        }
+      }
+
+      function getStarted() {
+        try {
+          const Xrm = parent?.Xrm;
+          const formContext = Xrm?.Page; // legacy form context, but works inside embedded HTML resources
+          if (!Xrm || !formContext)
+            return showError("Could not access the host form.");
+
+          const hideField = formContext.getAttribute(FIELD_HIDE_GOV_PROCESS);
+          const stepField = formContext.getAttribute(
+            ADMIN_GOV_TASK_LIST_STEP_FIELD
+          );
+
+          if (!hideField)
+            return showError(
+              `Field not found on form: ${FIELD_HIDE_GOV_PROCESS}`
+            );
+          if (!stepField)
+            return showError(
+              `Field not found on form: ${ADMIN_GOV_TASK_LIST_STEP_FIELD}`
+            );
+
+          hideField.setValue(true);
+          stepField.setValue(BPF_STAGES.DRAFT);
+          stepField.fireOnChange();
+        } catch (err) {
+          showError(err?.message || String(err));
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="get-started-button">
+      <button class="btn-primary" onclick="getStarted()">Get started</button>
+    </div>
+  </body>
+</html>

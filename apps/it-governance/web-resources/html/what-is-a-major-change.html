@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: "Public Sans Web", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+          "Segoe UI Emoji", "Segoe UI Symbol";
+        margin: 0;
+        padding: 0;
+      }
+      /* Hide/show utilities */
+      .hidden {
+        display: none;
+      }
+      .visible {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="toggle-link" onclick="toggleText()" href="javascript:void(0);">
+      <span id="caret" class="caret">▶</span>
+      <span id="buttonText">What is a major change?</span>
+    </a>
+
+    <div id="hiddenText" class="hidden-text hidden">
+      <p>A major change could be any of the following:</p>
+      <ul>
+        <li>Moving a system from a physical data center to the cloud</li>
+        <li>Software platform changes</li>
+        <li>New system integrations/interconnections</li>
+        <li>
+          Changes in Major Function Alignments or the Data Categories a system
+          supports
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      let isVisible = false;
+
+      function toggleText() {
+        const textElement = document.getElementById("hiddenText");
+        const buttonElement = document.getElementById("buttonText");
+        const caretElement = document.getElementById("caret");
+
+        if (isVisible) {
+          // Hide the text
+          textElement.classList.add("hidden");
+          caretElement.textContent = "▶"; // Right-pointing caret
+          isVisible = false;
+        } else {
+          // Show the text
+          textElement.classList.remove("hidden");
+          caretElement.textContent = "▼"; // Downward-pointing caret
+          isVisible = true;
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Case Header</title>
+
+    <style>
+      /* Base */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: #323130;
+        background-color: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+
+      /* Primary button */
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+      .btn-primary:hover {
+        background-color: #106ebe;
+        border-color: #106ebe;
+      }
+      .btn-primary:focus {
+        outline: 1px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px #0078d4;
+      }
+
+      /* Success alert */
+      .alert {
+        padding: 12px 16px;
+        margin: 12px 0;
+        border-radius: 4px;
+        border-left: 6px solid #107c10;
+        background-color: #dff6dd;
+        color: #0b5a0b;
+      }
+
+      /* Error alert */
+      .alert-error {
+        border-left-color: #a80000;
+        background-color: #fde7e9;
+        color: #a80000;
+      }
+
+      /* Hide/show utility */
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 8px;
+        }
+      }
+    </style>
+
+    <script>
+      const SUBMITTED_BOOL = "cr69a_finalbusinesscasesubmitted";
+      const SUBMITTED_DATE = "cr69a_finalbusinesscasesubmitteddate";
+      const FINAL_BUSINESS_CASE = "cr69a_finalbusinesscase";
+
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, schema) {
+        return form ? form.getAttribute(schema) : null;
+      }
+
+      function showMessage(text, isError) {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+
+        box.textContent = text || "Successfully submitted!";
+        box.classList.remove("hidden");
+
+        if (isError) {
+          box.classList.add("alert-error");
+        } else {
+          box.classList.remove("alert-error");
+        }
+
+        var submitButton = document.getElementById(
+          "submitFinalBusinessCaseButton"
+        );
+        if (submitButton && !isError) {
+          submitButton.classList.add("hidden");
+        }
+      }
+
+      function showSuccess(text) {
+        showMessage(text, false);
+      }
+
+      function showError(text) {
+        showMessage(text, true);
+      }
+
+      function shouldShowSuccessFromFields() {
+        const form = getParentForm();
+        if (!form) return false;
+
+        const submittedAttr = getAttr(form, SUBMITTED_BOOL);
+        const submittedDateAttr = getAttr(form, SUBMITTED_DATE);
+        const finalBusinessCase = getAttr(form, FINAL_BUSINESS_CASE);
+
+        const isSubmitted = submittedAttr && submittedAttr.getValue() === true;
+        const hasDate = submittedDateAttr && !!submittedDateAttr.getValue();
+        const hasFinalBusinessCase =
+          finalBusinessCase && finalBusinessCase.getValue() != null;
+
+        return isSubmitted && hasDate && hasFinalBusinessCase;
+      }
+
+      function initBannerFromFields() {
+        setTimeout(function () {
+          if (shouldShowSuccessFromFields()) {
+            showSuccess("Final Business Case submitted. Waiting for feedback.");
+          }
+        }, 500);
+      }
+
+      function submitFinalBusinessCase() {
+        try {
+          const form = getParentForm();
+          if (!form) {
+            console.error("Could not access parent form context.");
+            showError("Unable to access form. Please refresh and try again.");
+            return;
+          }
+
+          const finalBusinessCase = getAttr(form, FINAL_BUSINESS_CASE);
+          if (!finalBusinessCase || finalBusinessCase.getValue() == null) {
+            showError(
+              "Please fill out the Final Business Case field before submitting."
+            );
+            return;
+          }
+
+          // 1) Mark as submitted
+          const submittedAttr = getAttr(form, SUBMITTED_BOOL);
+          if (submittedAttr) submittedAttr.setValue(true);
+
+          const submittedDateAttr = getAttr(form, SUBMITTED_DATE);
+          if (submittedDateAttr && !submittedDateAttr.getValue()) {
+            submittedDateAttr.setValue(new Date());
+          }
+
+          const rfr = form.getAttribute("cr69a_readyforreview");
+          if (rfr) rfr.setValue(true);
+
+          // 2) Save form
+          form.data.save().then(
+            function () {
+              if (parent.lockAllFields) {
+                parent.lockAllFields(form);
+              } else {
+                console.warn(
+                  "lockAllFields function not found on parent window"
+                );
+              }
+
+              showSuccess(
+                "Final Business Case submitted. Waiting for feedback."
+              );
+            },
+            function (err) {
+              console.error(
+                "Save failed:",
+                err && err.message ? err.message : err
+              );
+              showError(
+                "Failed to submit. Please try again or contact support."
+              );
+            }
+          );
+        } catch (e) {
+          console.error("Unexpected error during submit:", e);
+          showError("An unexpected error occurred. Please contact support.");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", initBannerFromFields);
+    </script>
+  </head>
+
+  <body>
+    <!-- Status banner (hidden until shown) -->
+    <div
+      id="submitStatus"
+      class="alert hidden"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <div style="text-align: right">
+      <button
+        id="submitFinalBusinessCaseButton"
+        class="btn-primary"
+        onclick="submitFinalBusinessCase()"
+      >
+        Submit Final Business Case
+      </button>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+let
+    Source = BusinessCases,
+    RenamedColumns = Table.RenameColumns(
+        Source,
+        {
+            {"cr69a_alternative_a_title", "Title"},
+            {"cr69a_alternative_a_summary", "Summary"},
+            {"cr69a_alternative_a_acquisition_approach", "Acquisition Approach"},
+            {"cr69a_alternative_a_pros", "Pros"},
+            {"cr69a_alternative_a_cons", "Cons"},
+            {"cr69a_alternative_a_cost_savings", "Cost Savings"},
+            {"cr69a_alternative_a_hosting_type", "Hosting Type"},
+            {"cr69a_alternative_a_hosting_location", "Hosting Location"},
+            {"cr69a_alternative_a_hosting_cloud_service_typ", "Hosting Cloud Service Type"},
+            {"cr69a_alternative_a_has_ui", "Has UI"},
+            {"cr69a_alternative_a_security_is_approved", "Security Approved"},
+            {"cr69a_alternative_a_security_is_being_reviewe", "Security Currently Under Review"},
+            {"cr69a_alternative_a_target_contract_award_dat", "Contract Award Date"},
+            {"cr69a_alternative_a_target_completion_date", "Target Completion Date"},
+            {"cr69a_alternative_a_zero_trust_alignment", "Zero Trust Alignment"},
+            {"cr69a_alternative_a_hosting_cloud_strategy", "Hosting Cloud Strategy"},
+            {"cr69a_alternative_a_workforce_training_reqs", "Workforce Training Requirements"}
+        }
+    ),
+    // 🔥 Fill in required / important fields with safe defaults so we can create shell solutions
+    WithDefaults = Table.TransformColumns(
+        RenamedColumns,
+        {
+            // Title: give a clear placeholder if empty/null
+            {"Title", each if _ = null or _ = "" then "Alternative A (placeholder)" else _, type text},
+            // Text fields: default to empty string instead of null
+            {"Summary", each if _ = null then "" else _, type text},
+            {"Acquisition Approach", each if _ = null then "" else _, type text},
+            {"Pros", each if _ = null then "" else _, type text},
+            {"Cons", each if _ = null then "" else _, type text},
+            {"Hosting Type", each if _ = null then "" else _, type text},
+            {"Hosting Location", each if _ = null then "" else _, type text},
+            {"Hosting Cloud Service Type", each if _ = null then "" else _, type text},
+            {"Zero Trust Alignment", each if _ = null then "" else _, type text},
+            {"Hosting Cloud Strategy", each if _ = null then "" else _, type text},
+            {"Workforce Training Requirements", each if _ = null then "" else _, type text},
+            // Numeric field: default cost to 0 instead of null
+            {"Cost Savings", each if _ = null then 0 else _, Int64.Type},
+            // Booleans: default to false if null
+            {"Has UI", each if _ = null then false else _, type logical},
+            {"Security Approved", each if _ = null then false else _, type logical},
+            {"Security Currently Under Review", each if _ = null then false else _, type logical}
+        }
+    ),
+    // Add solution type for Alternative A
+    SolutionTypeAdded = Table.AddColumn(WithDefaults, "SolutionType", each 971270001, Int64.Type)
+in
+    SolutionTypeAdded

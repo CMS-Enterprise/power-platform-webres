@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Start an IT Governance request</title>
+
+    <style>
+      :root {
+        --text: #323130;
+        --muted: #5e5e5e;
+        --border: #e6e6e6;
+        --shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        --shadow2: 0 2px 6px rgba(0, 0, 0, 0.06);
+        --link: #0f6cbd; /* Fluent-ish blue */
+        --btn: #0f6cbd;
+        --btnHover: #115ea3;
+        --bg: #faf9f8;
+        --cardBg: #ffffff;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 28px 40px;
+      }
+      /* Headings */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 600;
+        color: #323130;
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 1.38rem;
+      }
+      h3 {
+        font-size: 22px;
+      }
+      h4 {
+        font-size: 14px;
+      }
+
+      .subtitle {
+        font-size: 18px;
+        color: var(--muted);
+        margin: 0 0 18px;
+      }
+
+      .back {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--link);
+        text-decoration: none;
+        font-size: 14px;
+        margin: 6px 0 26px;
+      }
+      .back:hover {
+        text-decoration: underline;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: start;
+      }
+
+      .card {
+        background: var(--cardBg);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        box-shadow: var(--shadow2);
+        padding: 22px 22px 18px;
+        min-height: 100px;
+      }
+
+      .card h2 {
+        margin: 0 0 10px;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+      }
+
+      .card p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        line-height: 1.45;
+        font-size: 14px;
+      }
+
+      .card .more {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--link);
+        text-decoration: none;
+        font-size: 14px;
+        margin: 6px 0 18px;
+      }
+      .card .more:hover {
+        text-decoration: underline;
+      }
+
+      .btnRow {
+        margin-top: 6px;
+      }
+
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background: var(--btnHover);
+      }
+      .btn-primary.start:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* Bottom-left card spans only left column (like screenshot) */
+      .spanLeft {
+        grid-column: 1 / 2;
+      }
+
+      /* Responsive: stack cards on small widths */
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .spanLeft {
+          grid-column: auto;
+        }
+        h1 {
+          font-size: 28px;
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .alert {
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border-radius: 2px;
+        border-left: 0.5rem solid #a9aeb1;
+        background-color: #f0f0f0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <h1>Start an IT Governance request</h1>
+      <p class="subtitle">What is this request for?</p>
+
+      <a
+        class="back"
+        href="#"
+        id="backLink"
+        aria-label="Go back without starting a request"
+      >
+        &#8592; <span>Go back without starting a request</span>
+      </a>
+
+      <div class="grid" role="list">
+        <!-- Card 1 -->
+        <section class="card" role="listitem">
+          <h2>Add a system, service, or project</h2>
+          <p>
+            Any new project such as an IT system, service, or other business
+            need is required to submit an IT Governance request and go through
+            the IT Governance process in order to obtain a Life Cycle ID. A Life
+            Cycle ID is the record of approval for your planned IT initiatives
+            from a capital investment and planning perspective, and it is a
+            necessary step for all procurement activities at CMS.
+          </p>
+
+          <a
+            class="more"
+            href="#"
+            aria-label="When should I choose this option?"
+            aria-expanded="false"
+            aria-controls="hiddenAddText"
+            onclick="toggleHelp(event, 'hiddenAddText', this)"
+          >
+            <span id="caret" class="caret">&#8250;</span>
+            <span>When should I choose this option?</span>
+          </a>
+
+          <div id="hiddenAddText" class="alert hidden">
+            <ul
+              class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
+            >
+              <li>I am starting a brand new services contract</li>
+              <li>I am planning to build an entirely new IT system</li>
+              <li>
+                I am planning to develop an entirely new IT product such as an
+                API or database
+              </li>
+              <li>I am starting another type of new project at CMS</li>
+            </ul>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn-primary" data-type="ADD">Start</button>
+          </div>
+        </section>
+
+        <!-- Card 2 -->
+        <section class="card" role="listitem">
+          <h2>Re-compete with no changes or minor changes</h2>
+          <p>
+            Projects and/or contracts that wish to continue operating must
+            undergo a re-compete at regular intervals (often every 5 years).
+            These projects must submit a new IT Governance request to obtain a
+            new Life Cycle ID even if there are no significant changes to the
+            scope of the contract. Re-compete requests may often take a faster
+            and simpler route through the IT Governance process.
+          </p>
+
+          <a
+            class="more"
+            href="#"
+            aria-label="When should I choose this option?"
+            aria-expanded="false"
+            aria-controls="hiddenRecompeteText"
+            onclick="toggleHelp(event, 'hiddenRecompeteText', this)"
+          >
+            <span id="caret" class="caret">&#8250;</span>
+            <span>When should I choose this option?</span>
+          </a>
+
+          <div id="hiddenRecompeteText" class="alert hidden">
+            <ul
+              class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
+            >
+              <li>
+                I am completing a standard re-compete with no significant
+                changes to the contract or scope of work
+              </li>
+              <li>
+                I am completing a re-compete with minor changes that will not
+                significantly impact the IT spending or technical architecture
+                of my system, service, or other project.
+              </li>
+            </ul>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn-primary" data-type="RECOMPETE">Start</button>
+          </div>
+        </section>
+
+        <!-- Card 3 -->
+        <section class="card spanLeft" role="listitem">
+          <h2>Major changes to a system, service, or project</h2>
+          <p>
+            Many IT systems at CMS undergo significant changes throughout their
+            life cycle. Teams should complete a new IT Governance request when
+            considering any significant changes to their IT system, service, or
+            other project.
+          </p>
+
+          <a
+            class="more"
+            href="#"
+            aria-label="When should I choose this option?"
+            aria-expanded="false"
+            aria-controls="hiddenMajorText"
+            onclick="toggleHelp(event, 'hiddenMajorText', this)"
+          >
+            <span id="caret" class="caret">&#8250;</span>
+            <span>When should I choose this option?</span>
+          </a>
+
+          <div id="hiddenMajorText" class="alert hidden">
+            <ul
+              class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
+            >
+              <li>I am moving from a physical data center to the cloud</li>
+              <li>
+                I am making significant changes to my system’s platform or
+                software products
+              </li>
+              <li>
+                I am making significant new system integrations or connections
+              </li>
+              <li>
+                My system, service, or project is changing its Major Function
+                Alignment or the Data Categories it supports
+              </li>
+              <li>My system is undergoing a modernization effort</li>
+              <li>I am building an entirely new UI for my system</li>
+            </ul>
+          </div>
+
+          <div class="btnRow">
+            <button class="btn-primary" data-type="MAJOR">Start</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const REQUEST_TYPE_FIELD = "cr69a_requesttype";
+      const ADMIN_GOV_TASK_LIST_FIELD = "cr69a_admingovernancetasklist";
+
+      const REQUEST_TYPES = {
+        ADD: 971270000,
+        MAJOR: 971270001,
+        RECOMPETE: 971270002,
+        // future:
+        SHUTDOWN: 100000001,
+        OTHER: 100000002,
+      };
+
+      const BPF_STAGES = {
+        DRAFT: 971270006,
+        // INTAKE_REQUEST_REVIEW: 971270000,
+        // DRAFT_BUSINESS_CASE: 971270001,
+        // SCHEDULE_GRT_MEETING: 100000001,
+        // GRT_MEETING: 971270002,
+        // FINAL_BUSINESS_CASE: 971270003,
+        // SCHEDULE_GRB_REVIEW: 100000002,
+        // GRB_REVIEW: 971270004,
+        // AWAITING_DECISION: 971270007,
+        // DECISION: 971270005,
+        // ISSUE_LCID: 971270008,
+        // FINISHED: 971270009,
+        REQUEST_TYPE: 971270010,
+        GOVERNANCE_PROCESS_STEPS: 971270011,
+      };
+
+      function setButtonsDisabled(disabled) {
+        document
+          .querySelectorAll("button.start")
+          .forEach((b) => (b.disabled = disabled));
+      }
+
+      function showError(message) {
+        if (parent?.Xrm?.Navigation) {
+          parent.Xrm.Navigation.openErrorDialog({ message });
+        } else {
+          alert(message);
+        }
+      }
+
+      function startRequest(typeKey) {
+        const optionValue = REQUEST_TYPES[typeKey];
+        if (optionValue === undefined)
+          return showError(`Unknown request type: ${typeKey}`);
+
+        const parentForm = parent?.Xrm?.Page;
+        if (!parentForm)
+          return showError("Could not access parent form context.");
+
+        const requestTypeField = parentForm.getAttribute(REQUEST_TYPE_FIELD);
+        if (!requestTypeField)
+          return showError(`Field not found: ${REQUEST_TYPE_FIELD}`);
+
+        requestTypeField.setValue(optionValue);
+
+        const adminGovTaskListField = parentForm.getAttribute(
+          ADMIN_GOV_TASK_LIST_FIELD
+        );
+        if (!adminGovTaskListField)
+          return showError(`Field not found: ${ADMIN_GOV_TASK_LIST_FIELD}`);
+
+        if (optionValue === REQUEST_TYPES.ADD) {
+          adminGovTaskListField.setValue(
+            BPF_STAGES["GOVERNANCE_PROCESS_STEPS"]
+          );
+        } else {
+          adminGovTaskListField.setValue(BPF_STAGES["DRAFT"]);
+        }
+
+        setButtonsDisabled(true);
+
+        parentForm.data.save().then(() => {
+          adminGovTaskListField.fireOnChange();
+        });
+      }
+
+      function toggleHelp(e, contentId, linkEl) {
+        e.preventDefault();
+
+        const contentEl = document.getElementById(contentId);
+        if (!contentEl)
+          return showError(`Help content not found: ${contentId}`);
+
+        const isHidden = contentEl.classList.contains("hidden");
+
+        // Toggle
+        if (isHidden) {
+          contentEl.classList.remove("hidden");
+          linkEl?.setAttribute("aria-expanded", "true");
+        } else {
+          contentEl.classList.add("hidden");
+          linkEl?.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      // Back link
+      document.getElementById("backLink").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (parent?.Xrm?.Navigation) {
+          try {
+            parent.Xrm.Navigation.navigateBack();
+            return;
+          } catch (_) {}
+        }
+        window.history.back();
+      });
+
+      // Start buttons
+      document.querySelectorAll("button.btn-primary").forEach((btn) => {
+        btn.addEventListener("click", () =>
+          startRequest(btn.getAttribute("data-type"))
+        );
+      });
+
+      // Optional: prevent # links from jumping
+      document.querySelectorAll("a.more").forEach((a) => {
+        a.addEventListener("click", (e) => e.preventDefault());
+      });
+    </script>
+  </body>
+</html>

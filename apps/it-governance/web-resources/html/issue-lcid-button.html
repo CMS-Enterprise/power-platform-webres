@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Issue LCID Button</title>
+
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.4286;
+        color: #323130;
+        background: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+      .btn-primary {
+        background: #0078d4;
+        border: 1px solid #0078d4;
+        color: #fff;
+        padding: 8px 16px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .btn-primary:hover {
+        background: #106ebe;
+        border-color: #106ebe;
+      }
+      .btn-primary:focus {
+        outline: 1px solid #fff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px #0078d4;
+      }
+      .alert {
+        padding: 12px 16px;
+        margin: 12px 0;
+        border-radius: 4px;
+        border-left: 6px solid #107c10;
+        background: #dff6dd;
+        color: #0b5a0b;
+      }
+      .alert-error {
+        border-left-color: #a80000;
+        background: #fde7e9;
+        color: #a80000;
+      }
+      .hidden {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        body {
+          padding: 8px;
+        }
+      }
+    </style>
+
+    <script>
+      const COL_LCID_REQUESTED = "cr69a_lcidrequested"; // Two options / Boolean
+      const COL_LCID_REQUESTED_ON = "cr69a_lcidrequestedon"; // DateTime
+      const COL_LCID_REQUESTED_BY = "cr69a_lcidrequestedby"; // Lookup -> systemuser
+      const COL_LCID_LOOKUP = "cr69a_lcid"; // Lookup -> Lifecycle ID (optional, not set here)
+
+      function formCtx() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function attr(name) {
+        const formContext = formCtx();
+        return formContext ? formContext.getAttribute(name) : null;
+      }
+
+      function setStatus(text, isError) {
+        const box = document.getElementById("submitStatus");
+        if (!box) return;
+        box.textContent = text;
+        box.classList.remove("hidden");
+        if (isError) box.classList.add("alert-error");
+        else box.classList.remove("alert-error");
+      }
+
+      function disableBtn(disabled) {
+        const b = document.getElementById("issueLCIDButton");
+        if (b) {
+          b.disabled = disabled;
+          b.style.opacity = disabled ? 0.6 : 1;
+        }
+      }
+
+      async function issueLCID() {
+        try {
+          const formContext = formCtx();
+          if (!formContext) {
+            setStatus(
+              "Unable to access the form. Please refresh and try again.",
+              true
+            );
+            return;
+          }
+
+          // Ensure the columns are on the form (even if hidden)
+          const aRequested = attr(COL_LCID_REQUESTED);
+          const aRequestedOn = attr(COL_LCID_REQUESTED_ON);
+          const aRequestedBy = attr(COL_LCID_REQUESTED_BY);
+
+          if (!aRequested || !aRequestedOn || !aRequestedBy) {
+            setStatus(
+              "Some LCID fields (cr69a_lcidrequested, cr69a_lcidrequestedon,cr69a_lcidrequestedby) are not on the form. Add them (hidden) or use Web API.",
+              true
+            );
+            return;
+          }
+
+          disableBtn(true);
+
+          // Set values
+          aRequested.setValue(true);
+          aRequestedOn.setValue(new Date());
+
+          // Lookup value needs [{ id: '{GUID}', name: 'Display Name', entityType: 'systemuser' }]
+          const user = parent.Xrm.Utility.getGlobalContext().userSettings;
+          const userIdWithBraces = `{${user.userId.replace(/[{}]/g, "")}}`;
+          aRequestedBy.setValue([
+            {
+              id: userIdWithBraces,
+              name: user.userName || user.userId,
+              entityType: "systemuser",
+            },
+          ]);
+
+          // Save the form
+          formContext.data.save().then(
+            function () {
+              setStatus(
+                "LCID request submitted. Processing will continue in the background.",
+                false
+              );
+              const btn = document.getElementById("issueLCIDButton");
+              if (btn) btn.classList.add("hidden");
+            },
+            function (err) {
+              console.error("Save failed:", err);
+              setStatus(
+                "Save failed. Please try again or contact support.",
+                true
+              );
+              disableBtn(false);
+            }
+          );
+        } catch (e) {
+          console.error("Unexpected error:", e);
+          setStatus(
+            "An unexpected error occurred. Please try again or contact support.",
+            true
+          );
+          disableBtn(false);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        try {
+          const f = formCtx();
+          if (!f) return;
+          const requested = attr(COL_LCID_REQUESTED)?.getValue() === true;
+          const hasLcid = !!attr(COL_LCID_LOOKUP)?.getValue();
+          if (hasLcid) {
+            const btn = document.getElementById("issueLCIDButton");
+            if (btn) btn.classList.add("hidden");
+            const alert = document.getElementById("submitStatus");
+            if (alert) alert.classList.add("hidden");
+
+            return;
+          }
+          if (requested) {
+            setStatus(
+              requested
+                ? "LCID request already submitted."
+                : "LCID already issued.",
+              false
+            );
+            const btn = document.getElementById("issueLCIDButton");
+            if (btn) btn.classList.add("hidden");
+          }
+        } catch {}
+      });
+    </script>
+  </head>
+
+  <body>
+    <div
+      id="submitStatus"
+      class="alert hidden"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <div style="text-align: right">
+      <button id="issueLCIDButton" class="btn-primary" onclick="issueLCID()">
+        Issue LCID
+      </button>
+    </div>
+  </body>
+</html>

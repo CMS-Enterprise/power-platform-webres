@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -27,7 +27,8 @@
         font-weight: 400;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.15s ease-in-out,
+        transition:
+          background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
       .btn-primary:hover {
@@ -81,7 +82,7 @@
         container.classList.remove("hidden");
         var submitButton = document.getElementById("closeRequestButton");
         if (!submitButton) return;
-        closeRequestButton.classList.add("hidden");
+        submitButton.classList.add("hidden");
       }
 
       function shouldShowSuccessFromFields() {
@@ -131,9 +132,9 @@
             function (err) {
               console.error(
                 "Save failed:",
-                err && err.message ? err.message : err
+                err && err.message ? err.message : err,
               );
-            }
+            },
           );
         } catch (e) {
           console.error("Unexpected error during close request:", e);

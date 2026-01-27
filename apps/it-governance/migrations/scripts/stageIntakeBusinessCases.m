@@ -1,5 +1,6 @@
 let
-    Source = Csv.Document(
+    // --- CSV SOURCE ---
+    CsvSource = Csv.Document(
         Web.Contents(
             "https://cmsgovonline-my.sharepoint.com/personal/cooper_heinrichs_cms_hhs_gov/Documents/Apps/Power Query Online GCC-L2/Uploaded Files/business_cases.csv"
         ),
@@ -9,7 +10,7 @@ let
             QuoteStyle = QuoteStyle.None
         ]
     ),
-    #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+    #"Promoted headers" = Table.PromoteHeaders(CsvSource, [PromoteAllScalars = true]),
     #"Replace NULLs" = Table.ReplaceValue(
         #"Promoted headers", "NULL", null, Replacer.ReplaceValue, Table.ColumnNames(#"Promoted headers")
     ),
@@ -64,11 +65,11 @@ let
             {"initial_submitted_at", type text},
             {"last_submitted_at", type text},
             {"archived_at", type text},
-            {"preferred_security_is_approved", type text},
+            {"preferred_security_is_approved", type logical},
             {"preferred_security_is_being_reviewed", type text},
-            {"alternative_a_security_is_approved", type text},
+            {"alternative_a_security_is_approved", type logical},
             {"alternative_a_security_is_being_reviewed", type text},
-            {"alternative_b_security_is_approved", type text},
+            {"alternative_b_security_is_approved", type logical},
             {"alternative_b_security_is_being_reviewed", type text},
             {"collaboration_needed", type text},
             {"project_acronym", type text},
@@ -89,6 +90,21 @@ let
             {"alternative_b_hosting_cloud_strategy", type text},
             {"alternative_b_workforce_training_reqs", type text}
         }
-    )
+    ),
+    // --- DATAVERSE LOOKUP FOR CURRENT BATCH ---
+    Dv = CommonDataService.Database("icpg-dev.crm9.dynamics.com"),
+    // Update this table name to your actual MigrationRun logical name
+    MigrationRuns = Dv{[Name = "easi_migrationrun", Kind = "Table"]}[Data],
+    // If cr69a_status is an option set numeric, this filter will need adjusting
+    RunningOnly = Table.SelectRows(MigrationRuns, each [easi_migrationrunstatus] = 100000000),
+    Sorted = Table.Sort(RunningOnly, {{"easi_startedon", Order.Descending}}),
+    Latest = Table.FirstN(Sorted, 1),
+    BatchId =
+        if Table.RowCount(Latest) > 0 then
+            Text.From(Latest{0}[easi_batchid])
+        else
+            error "No Running MigrationRun found – check MigrationRun table.",
+    // --- ADD BATCH ID TO OUTPUT ---
+    #"Added Batch Id" = Table.AddColumn(#"Changed column type", "migrate_batch_id", each BatchId, type text)
 in
-    #"Changed column type"
+    #"Added Batch Id"

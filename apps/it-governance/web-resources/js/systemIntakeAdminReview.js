@@ -1,6 +1,5 @@
 function onLoad(executionContext) {
   onDecisionChange(executionContext);
-  LcidFieldHandler(executionContext);
   onLCIDTypeChange(executionContext);
 }
 
@@ -18,7 +17,7 @@ function onSave(executionContext) {
       if (!formContext) {
         setStatus(
           "Unable to access the form. Please refresh and try again.",
-          true
+          true,
         );
         return;
       }
@@ -29,7 +28,15 @@ function onSave(executionContext) {
       const aRequestedBy = formContext.getAttribute(COL_LCID_REQUESTED_BY);
 
       if (!aRequested || !aRequestedOn || !aRequestedBy) {
-        console.error("Unexpected error:", e);
+        console.error(
+          "Either aRequested, aRequestedOn, aRequestedBy is not defined",
+          "aRequested",
+          aRequested,
+          "aRequestedOn",
+          aRequestedOn,
+          "aRequestedBy",
+          aRequestedBy,
+        );
         return;
       }
 
@@ -62,31 +69,6 @@ function showHideSections(formContext, fields) {
       console.error(`Section not found: ${key}`);
     }
   }
-}
-
-function LcidFieldHandler(executionContext) {
-  const formContext = executionContext.getFormContext();
-  const lcid = formContext.getAttribute("cr69a_lcid").getValue();
-
-  // if (lcid) {
-  //   const fieldsToLock = [
-  //     "cr69a_lifecycleid",
-  //     "cr69a_lcidexpirationdate",
-  //     "cr69a_scopeoflifecycleid",
-  //     "cr69a_lcidnextsteps",
-  //     "cr69a_shouldthisteamconsultwiththetrb",
-  //     "cr69a_lcidprojectcostbaseline",
-  //     "cr69a_lcidadditionalinformation",
-  //     "cr69a_adminnoteoptional",
-  //   ];
-
-  //   fieldsToLock.forEach((fieldName) => {
-  //     const control = formContext.getControl(fieldName);
-  //     if (control) {
-  //       control.setDisabled(true);
-  //     }
-  //   });
-  // }
 }
 
 function onDecisionChange(executionContext) {

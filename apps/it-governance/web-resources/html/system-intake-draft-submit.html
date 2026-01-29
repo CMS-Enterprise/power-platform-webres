@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Intake Request Draft</title>
+    <style>
+      /* Base */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: #323130;
+        background-color: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+
+      /* Primary button */
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+      .btn-primary:hover {
+        background-color: #106ebe;
+        border-color: #106ebe;
+      }
+      .btn-primary:focus {
+        outline: 1px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px #0078d4;
+      }
+
+      /* Success alert */
+      .alert {
+        padding: 12px 16px;
+        margin: 12px 0;
+        border-radius: 4px;
+        border-left: 6px solid #107c10;
+        background-color: #dff6dd;
+        color: #0b5a0b;
+      }
+
+      /* Hide/show utility */
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 8px;
+        }
+      }
+    </style>
+    <script>
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, schema) {
+        return form ? form.getAttribute(schema) : null;
+      }
+
+      function showSuccess(text) {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+        box.textContent =
+          text ||
+          "System Intake Draft successfully submitted. Waiting for feedback.";
+        box.classList.remove("hidden");
+        var submitButton = document.getElementById("submitIntakeRequestButton");
+        if (!submitButton) return;
+        submitButton.classList.add("hidden");
+      }
+
+      const DRAFT_STATE = 971270000;
+      const REQUEST_STATUS = "cr69a_status";
+
+      function shouldShowSuccessOnLoad() {
+        const form = getParentForm();
+        if (!form) return false;
+
+        const submittedAttr = getAttr(form, REQUEST_STATUS);
+
+        const isSubmitted =
+          submittedAttr && submittedAttr.getValue() != DRAFT_STATE;
+
+        return isSubmitted;
+      }
+
+      function initBannerFromFields() {
+        if (shouldShowSuccessOnLoad()) {
+          showSuccess(
+            "System Intake Draft successfully submitted. Waiting for feedback."
+          );
+        }
+      }
+
+      function submitIntakeRequestDraft() {
+        try {
+          const form = getParentForm();
+          if (!form) {
+            console.error("Could not access parent form context.");
+            return;
+          }
+
+          // 1) Mark status as Submitted
+          const statusAttr = getAttr(form, REQUEST_STATUS);
+          if (!statusAttr) {
+            console.error("Could not access Form Status field.");
+            return;
+          }
+          statusAttr.setValue(971270002);
+
+          // 2) Set Ready For Review
+          const rfr = form.getAttribute("cr69a_readyforreview");
+          if (!rfr) {
+            console.error("Could not access ready for review.");
+            return;
+          }
+          rfr.setValue(true);
+
+          // 3) Save form
+          form.data.save().then(
+            function () {
+              if (parent.lockAllFields) {
+                parent.lockAllFields(form);
+              } else {
+                console.warn(
+                  "lockAllFields function not found on parent window"
+                );
+              }
+              // notify("System Intake Form successfully submitted.", "success");
+              showSuccess(
+                "System Intake Draft successfully submitted. Waiting for feedback."
+              );
+            },
+            function (err) {
+              console.error(
+                "Save failed:",
+                err && err.message ? err.message : err
+              );
+            }
+          );
+        } catch (e) {
+          console.error("Unexpected error during submit:", e);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", initBannerFromFields);
+    </script>
+  </head>
+  <body>
+    <div
+      id="submitStatus"
+      class="alert hidden"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <div style="text-align: right">
+      <button
+        id="submitIntakeRequestButton"
+        class="btn-primary"
+        onclick="submitIntakeRequestDraft()"
+      >
+        Submit Intake Request Draft
+      </button>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Governance Process Steps</title>
+    <style>
+      /* Power Apps / Dynamics 365 Matching Styles */
+
+      /* Base typography and colors */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: #323130;
+        background-color: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+
+      /* Headings */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 600;
+        color: #323130;
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 21px;
+      }
+      h3 {
+        font-size: 16px;
+      }
+      h4 {
+        font-size: 14px;
+      }
+
+      /* Links */
+      a {
+        color: #0078d4;
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: #106ebe;
+        text-decoration: underline;
+      }
+
+      a:focus {
+        outline: 1px solid #0078d4;
+        outline-offset: 2px;
+      }
+
+      /* Buttons */
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background-color: #106ebe;
+        border-color: #106ebe;
+      }
+
+      .btn-primary:focus {
+        outline: 1px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px #0078d4;
+      }
+
+      .btn-secondary {
+        background-color: #ffffff;
+        border: 1px solid #8a8886;
+        color: #323130;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+
+      .btn-secondary:hover {
+        background-color: #f3f2f1;
+        border-color: #323130;
+      }
+
+      /* Form controls */
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="number"],
+      select,
+      textarea {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        padding: 8px 12px;
+        border: 1px solid #8a8886;
+        border-radius: 2px;
+        background-color: #ffffff;
+        color: #323130;
+        min-height: 32px;
+        box-sizing: border-box;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="password"]:focus,
+      input[type="number"]:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #0078d4;
+        outline: none;
+        box-shadow: 0 0 0 1px #0078d4;
+      }
+
+      /* Labels */
+      label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #323130;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      /* Cards/Containers */
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #edebe9;
+        border-radius: 2px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132),
+          0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+      }
+
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        background-color: #ffffff;
+        border: 1px solid #edebe9;
+      }
+
+      th {
+        background-color: #faf9f8;
+        color: #323130;
+        font-weight: 600;
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid #edebe9;
+      }
+
+      td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #edebe9;
+        color: #323130;
+      }
+
+      tr:hover {
+        background-color: #f3f2f1;
+      }
+
+      /* Status indicators */
+      .status-active {
+        color: #107c10;
+        font-weight: 600;
+      }
+
+      .status-inactive {
+        color: #d13438;
+        font-weight: 600;
+      }
+
+      .status-pending {
+        color: #ff8c00;
+        font-weight: 600;
+      }
+
+      /* Notification/Alert styles */
+      .alert {
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border-radius: 2px;
+        border-left: 0.5rem solid #a9aeb1;
+      }
+
+      .alert-info {
+        background-color: #deecf9;
+        border-left-color: #0078d4;
+      }
+
+      .alert-success {
+        background-color: #dff6dd;
+        border-left-color: #107c10;
+      }
+
+      .alert-warning {
+        background-color: #faf3d1;
+        border-left-color: #ffbe2e;
+      }
+
+      .alert-error {
+        background-color: #fde7e9;
+        border-left-color: #d13438;
+      }
+
+      /* Loading spinner */
+      .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #edebe9;
+        border-top: 2px solid #0078d4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Utility classes */
+      .text-center {
+        text-align: center;
+      }
+      .text-right {
+        text-align: right;
+      }
+      .text-muted {
+        color: #605e5c;
+      }
+      .font-weight-bold {
+        font-weight: 600;
+      }
+      .font-weight-normal {
+        font-weight: 400;
+      }
+
+      .mb-0 {
+        margin-bottom: 0;
+      }
+      .mb-1 {
+        margin-bottom: 8px;
+      }
+      .mb-2 {
+        margin-bottom: 16px;
+      }
+      .mb-3 {
+        margin-bottom: 24px;
+      }
+
+      .mt-0 {
+        margin-top: 0;
+      }
+      .mt-1 {
+        margin-top: 8px;
+      }
+      .mt-2 {
+        margin-top: 16px;
+      }
+      .mt-3 {
+        margin-top: 24px;
+      }
+
+      .p-1 {
+        padding: 8px;
+      }
+      .p-2 {
+        padding: 16px;
+      }
+      .p-3 {
+        padding: 24px;
+      }
+
+      .get-started-button {
+        margin-top: 25px;
+      }
+
+      /* Hide/show utilities */
+      .hidden {
+        display: none;
+      }
+      .visible {
+        display: block;
+      }
+
+      /* Responsive breakpoints */
+      @media (max-width: 768px) {
+        body {
+          padding: 8px;
+        }
+
+        .card {
+          padding: 12px;
+        }
+
+        table {
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 6px 8px;
+        }
+      }
+
+      .open {
+        rotate: 90deg;
+      }
+      .caret {
+        display: inline-block;
+        transition: transform 0.2s ease;
+      }
+
+      .toggle-link:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #0071bc;
+        border-radius: 3px;
+      }
+    </style>
+    <script>
+      function toggleSection(linkEl) {
+        const container = linkEl.closest(".container");
+        const content = container.querySelector(".hidden-text");
+        const caret = container.querySelector(".caret");
+
+        content.classList.toggle("hidden");
+        caret.classList.toggle("open");
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Prepare for Governance Review Team meeting</h1>
+    <p>
+      Learn what you need in order to be successful, including what to expect
+      during and after the meeting, what to prepare for, and what to bring to
+      the meeting.
+    </p>
+
+    <h2>What to expect</h2>
+    <p>
+      Subject Matter Experts (SMEs) from various components will help you refine
+      your Business Case. Their role is to ensure that you and your project team
+      have considered and documented information about any potential
+      alternatives that the Governance Review Board (GRB) may consider viable,
+      including pros, cons, and estimated costs, as well as the technical
+      feasibility and implementation process requirements for each solution. At
+      the meeting, the Governance Review Team (GRT) SMEs will discuss your draft
+      Business Case and provide feedback both to you and the GRB about the
+      alternative solutions you’re considering to meet your business need.
+    </p>
+
+    <h2>Possible questions</h2>
+    <p>
+      The GRT SMEs may ask you a series of questions after you walk them through
+      your Business Case. The best way to prepare for this conversation is to
+      review and be able to respond to example questions as they pertain to your
+      Business Case. Example questions are included in the sections below.
+    </p>
+
+    <div class="container">
+      <a
+        class="toggle-link"
+        onclick="toggleSection(this)"
+        href="javascript:void(0);"
+      >
+        <span class="caret">▶</span>
+        <span>Capital Planning and Investment Control (CPIC)</span>
+      </a>
+      <div class="hidden-text hidden">
+        <div class="easi-collapsable-link__content">
+          <ul
+            class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
+          >
+            <li>
+              Have you conducted a cost/benefit analysis that includes all
+              elements required by OMB?
+            </li>
+            <li>
+              How long will the current technology likely last before you need
+              to replace it with something else to perform the same function?
+            </li>
+            <li>
+              Have you established performance measures regarding the desired
+              business outcome of your project
+            </li>
+            <li>
+              Is your project aligned to any Agency Strategic Objectives or
+              Agency Priority Goals?
+            </li>
+            <li>
+              Is your project reflected under the appropriate Investment(s) in
+              the CMS Portfolio Management Tool (PMT)?
+            </li>
+            <li>
+              Is your project aligned and reflected under an Acquisition
+              Strategy?
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <a
+        class="toggle-link"
+        onclick="toggleSection(this)"
+        href="javascript:void(0);"
+      >
+        <span class="caret">▶</span>
+        <span>Enterprise Architecture and Data</span>
+      </a>
+      <div class="hidden-text hidden">
+        <div class="easi-collapsable-link__content">
+          <ul
+            class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
+          >
+            <li>
+              Have you checked to see if the project capabilities already exist
+              within CMS and if so, is the current system owner willing to
+              support your needs?
+            </li>
+            <li>Do you have a clearly identified Business Owner?</li>
+            <li>
+              What other CMS business processes/systems/programs will you
+              interact with?
+            </li>
+            <li>How many users would you have and who are they?</li>
+            <li>
+              Do you align with Technical Reference Architecture guidelines?
+            </li>
+            <li>
+              Does your Project/System need access to any CMS Enterprise Data in
+              order to meet program objectives? PHI, PII, etc.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <a
+        class="toggle-link"
+        onclick="toggleSection(this)"
+        href="javascript:void(0);"
+      >
+        <span class="caret">▶</span>
+        <span>Shared Services and Data Hosting IT</span>
+      </a>
+      <div id="hiddenSSDHITText" class="hidden-text hidden">
+        <div class="easi-collapsable-link__content">
+          <ul
+            class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
+          >
+            <li>
+              Have you explored leveraging one or more of CMS’ shared services
+              as part of your IT solution?
+            </li>
+            <li>Where are you hosting or planning to host your systems?</li>
+            <li>
+              What, if any, type of cloud service are you planning to use? IaaS,
+              PaaS, SaaS, etc?
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <a
+        class="toggle-link"
+        onclick="toggleSection(this)"
+        href="javascript:void(0);"
+      >
+        <span class="caret">▶</span>
+        <span>Security/Privacy</span>
+      </a>
+
+      <div class="hidden-text hidden">
+        <div class="easi-collapsable-link__content">
+          <ul
+            class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
+          >
+            <li>
+              Who is your ISSO and CRA? Have you been in contact with them?
+            </li>
+            <li>
+              What safeguard(s) will this solution entail (ie. FedRAMP, FISMA
+              certification)?
+            </li>
+            <li>
+              Is there an existing or new FISMA system ATO that will authorize
+              this project?
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h2>What to bring</h2>
+    The following are important items to have with you at the GRT meeting:
+
+    <ul>
+      <li>a copy of your Business Case</li>
+      <li>
+        any contracting materials that you might have in place, for example, a
+        Statement of Work (SOW), a Performance Work Statement (PWS),or other
+        contracting document
+      </li>
+      <li>
+        additional materials that you’d like to talk through, such as a concept
+        diagram
+      </li>
+    </ul>
+
+    <div class="alert alert-info">
+      <h2>Need help?</h2>
+      <p>
+        Contact the Governance team:
+        <a class="usa-link" href="mailto:IT_Governance@cms.hhs.gov"
+          >IT_Governance@cms.hhs.gov</a
+        >
+      </p>
+    </div>
+  </body>
+</html>

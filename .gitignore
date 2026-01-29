@@ -50,3 +50,45 @@ __debug_bin*
 
 # devlocal cert, keys
 devlocal-https.*
+
+
+# =========================
+# Visual Studio / .NET
+# =========================
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# =========================
+# NuGet
+# =========================
+packages/
+*.nupkg
+
+# =========================
+# Tests
+# =========================
+TestResults/
+*.trx
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Local config / secrets
+# =========================
+appsettings.json
+appsettings.Development.json
+*.local.json
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db`

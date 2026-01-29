@@ -86,6 +86,7 @@ TestResults/
 appsettings.json
 appsettings.Development.json
 *.local.json
+*.snk
 
 # =========================
 # OS

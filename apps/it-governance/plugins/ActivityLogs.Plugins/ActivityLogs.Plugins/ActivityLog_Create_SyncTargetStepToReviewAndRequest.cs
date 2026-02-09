@@ -15,10 +15,12 @@ namespace SystemIntake.Plugins
         // Review fields
         private const string ReviewEntity = "cr69a_systemintakeadmin";
         private const string ReviewStepField = "new_admingovernancetasklist"; // Choice (same global)
+        private const string ReviewReadyForReviewField = "cr69a_readyforreview"; // Two Options (Yes/No)
 
         // Request fields
         private const string RequestEntity = "new_systemintake";
         private const string RequestStepField = "new_admingovernanceprocessstep"; // Choice (same global)
+        private const string RequestReadyForReviewField = "cr69a_readyforreview"; // Two Options (Yes/No)
 
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -37,28 +39,46 @@ namespace SystemIntake.Plugins
             var target = targetObj as Entity;
             if (target == null) return;
 
-            var step = target.GetAttributeValue<OptionSetValue>(TargetStepField);
-            if (step == null) return;
-
             var reviewRef = target.GetAttributeValue<EntityReference>(ReviewLookupField);
             var requestRef = target.GetAttributeValue<EntityReference>(RequestLookupField);
+
+            // Step is optional now (we still want to clear Ready for Review even if step isn't set)
+            var step = target.GetAttributeValue<OptionSetValue>(TargetStepField);
 
             var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
             var service = serviceFactory.CreateOrganizationService(context.UserId);
 
-            // Update Review step (if present)
+            // Update Review (if present)
             if (reviewRef != null)
             {
                 var reviewUpdate = new Entity(ReviewEntity, reviewRef.Id);
-                reviewUpdate[ReviewStepField] = new OptionSetValue(step.Value);
+
+                // Sync step only if provided on the log
+                if (step != null)
+                {
+                    reviewUpdate[ReviewStepField] = new OptionSetValue(step.Value);
+                }
+
+                // Always set Ready for Review = false when an Activity Log is created
+                reviewUpdate[ReviewReadyForReviewField] = false;
+
                 service.Update(reviewUpdate);
             }
 
-            // Update Request step (if present)
+            // Update Request (if present)
             if (requestRef != null)
             {
                 var requestUpdate = new Entity(RequestEntity, requestRef.Id);
-                requestUpdate[RequestStepField] = new OptionSetValue(step.Value);
+
+                // Sync step only if provided on the log
+                if (step != null)
+                {
+                    requestUpdate[RequestStepField] = new OptionSetValue(step.Value);
+                }
+
+                // Always set Ready for Review = false when an Activity Log is created
+                requestUpdate[RequestReadyForReviewField] = false;
+
                 service.Update(requestUpdate);
             }
         }

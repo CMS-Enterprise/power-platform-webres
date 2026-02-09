@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="ActivityLog_Create_SyncTargetStepToReviewAndRequest.cs" />
     <Compile Include="ActivityLog_Update_BlockAll.cs" />
+    <Compile Include="ActivityLog_Create_ValidateTargetStepNotCurrent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

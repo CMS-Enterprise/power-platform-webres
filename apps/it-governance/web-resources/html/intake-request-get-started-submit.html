@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -23,7 +23,8 @@
         font-weight: 400;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.15s ease-in-out,
+        transition:
+          background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
       .get-started-button {
@@ -39,7 +40,7 @@
       };
 
       const FIELD_HIDE_GOV_PROCESS = "cr69a_hidegovernanceprocess";
-      const ADMIN_GOV_TASK_LIST_STEP_FIELD = "cr69a_admingovernancetasklist";
+      const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
 
       function showError(message) {
         if (parent?.Xrm?.Navigation) {
@@ -50,6 +51,7 @@
       }
 
       function getStarted() {
+        console.log("GET STARTED");
         try {
           const Xrm = parent?.Xrm;
           const formContext = Xrm?.Page; // legacy form context, but works inside embedded HTML resources
@@ -58,22 +60,23 @@
 
           const hideField = formContext.getAttribute(FIELD_HIDE_GOV_PROCESS);
           const stepField = formContext.getAttribute(
-            ADMIN_GOV_TASK_LIST_STEP_FIELD
+            ADMIN_GOV_TASK_LIST_STEP_FIELD,
           );
 
           if (!hideField)
             return showError(
-              `Field not found on form: ${FIELD_HIDE_GOV_PROCESS}`
+              `Field not found on form: ${FIELD_HIDE_GOV_PROCESS}`,
             );
           if (!stepField)
             return showError(
-              `Field not found on form: ${ADMIN_GOV_TASK_LIST_STEP_FIELD}`
+              `Field not found on form: ${ADMIN_GOV_TASK_LIST_STEP_FIELD}`,
             );
-
+          console.log("not doing anything?");
           hideField.setValue(true);
           stepField.setValue(BPF_STAGES.DRAFT);
           stepField.fireOnChange();
         } catch (err) {
+          console.log("error?");
           showError(err?.message || String(err));
         }
       }

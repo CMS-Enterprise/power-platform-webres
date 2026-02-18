@@ -27,7 +27,7 @@ let
     ColsPresent = List.Intersect({TwoOptionCols, Table.ColumnNames(Prev)}),
     Transformers = List.Transform(ColsPresent, each {_, each NormalizeTwoOption(_), Int64.Type}),
     FixedBools = Table.TransformColumns(Prev, Transformers),
-    WithAdminTask = Table.AddColumn(FixedBools, "cr69a_admingovernancetasklist", each 971270009, Int64.Type),
+    WithAdminTask = Table.AddColumn(FixedBools, "new_admingovernanceprocessstep", each 971270009, Int64.Type),
     // Normalize Yes/No to logical true/false (nullable)
     NormalizeYesNo = (v as any) as nullable logical =>
         if Value.Is(v, type logical) then

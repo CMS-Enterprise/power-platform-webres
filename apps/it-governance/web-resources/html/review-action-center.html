@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Action Center</title>
+
+    <style>
+      /* === keep your existing CSS (trimmed only for brevity here) === */
+      :root {
+        --text: #323130;
+        --muted: #5e5e5e;
+        --border: #e6e6e6;
+        --shadow2: 0 2px 6px rgba(0, 0, 0, 0.06);
+        --link: #0f6cbd;
+        --btnHover: #115ea3;
+        --bg: #faf9f8;
+        --cardBg: #ffffff;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: var(--text);
+        background: var(--bg);
+      }
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 28px 40px;
+      }
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0 0 8px;
+      }
+      .subtitle {
+        font-size: 18px;
+        color: var(--muted);
+        margin: 0 0 18px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+        align-items: stretch;
+      }
+      .card {
+        background: var(--cardBg);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        box-shadow: var(--shadow2);
+        padding: 22px 22px 18px;
+        min-height: 100px;
+      }
+      .card h2 {
+        margin: 0 0 10px;
+        font-weight: 650;
+      }
+      .card p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        line-height: 1.45;
+        font-size: 14px;
+      }
+      .card .more {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--link);
+        text-decoration: none;
+        font-size: 14px;
+        margin: 6px 0 18px;
+      }
+      .card .more:hover {
+        text-decoration: underline;
+      }
+      .btnRow {
+        margin-top: 6px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background: var(--btnHover);
+      }
+      .btn-secondary {
+        background: #ffffff;
+        border: 1px solid #c8c8c8;
+        color: #323130;
+        padding: 8px 16px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn-secondary:hover {
+        background: #f3f2f1;
+      }
+      .spanLeft {
+        grid-column: 1 / 2;
+      }
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .spanLeft {
+          grid-column: auto;
+        }
+      }
+      .hidden {
+        display: none !important;
+      }
+      .alert {
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        border-radius: 2px;
+        border-left: 0.5rem solid #a9aeb1;
+        background-color: #f0f0f0;
+      }
+      .topRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .linkBtn {
+        background: transparent;
+        border: none;
+        color: var(--link);
+        cursor: pointer;
+        padding: 0;
+        font-size: 14px;
+      }
+      .linkBtn:hover {
+        text-decoration: underline;
+      }
+      .back {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--link);
+        text-decoration: none;
+        font-size: 14px;
+        margin: 6px 0 18px;
+      }
+      .back:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="topRow">
+        <div>
+          <h1>Actions</h1>
+        </div>
+      </div>
+      <a
+        class="back hidden"
+        href="#"
+        id="backLink"
+        aria-label="Back to Action Center"
+      >
+        &#8592; <span>Back</span>
+      </a>
+
+      <div class="grid" role="list" id="actionGrid">
+        <!-- Card 1 -->
+        <section class="card" role="listitem">
+          <h2>Request edits to a form</h2>
+          <p>
+            Ask the requester to revise the Intake Request or Business Case and
+            track open edit requests.
+          </p>
+
+          <a
+            class="more"
+            href="#"
+            aria-expanded="false"
+            aria-controls="helpEdits"
+            onclick="toggleHelp(event, 'helpEdits', this)"
+          >
+            <span class="caret">&#8250;</span>
+            <span>When should I choose this option?</span>
+          </a>
+
+          <div id="helpEdits" class="alert hidden">
+            <ul style="margin: 0; padding-left: 18px">
+              <li>Missing required details</li>
+              <li>Business case needs revision</li>
+              <li>Need clarification before proceeding</li>
+            </ul>
+          </div>
+
+          <div class="btnRow">
+            <button
+              class="btn-primary"
+              onclick="select('section_request_edits')"
+            >
+              Select
+            </button>
+          </div>
+        </section>
+
+        <!-- Card 2 -->
+        <section class="card" role="listitem">
+          <h2>Progress to a new step</h2>
+          <p>
+            Move the request to another step in the process (including skipping
+            steps when appropriate).
+          </p>
+
+          <a
+            class="more"
+            href="#"
+            aria-expanded="false"
+            aria-controls="helpProgress"
+            onclick="toggleHelp(event, 'helpProgress', this)"
+          >
+            <span class="caret">&#8250;</span>
+            <span>When should I choose this option?</span>
+          </a>
+
+          <div id="helpProgress" class="alert hidden">
+            <ul style="margin: 0; padding-left: 18px">
+              <li>Ready to move forward</li>
+              <li>Step can be skipped for this request</li>
+              <li>Want to add guidance for the next phase</li>
+            </ul>
+          </div>
+
+          <div class="btnRow">
+            <button
+              class="btn-primary"
+              data-section="section_progress_to_a_new_step"
+              onclick="select('section_progress_to_a_new_step')"
+            >
+              Select
+            </button>
+          </div>
+        </section>
+
+        <!-- Card 3 -->
+        <section class="card" role="listitem">
+          <h2>Issue a decision or close this request</h2>
+          <p>
+            Issue an LCID or close this request with the appropriate outcome and
+            notes.
+          </p>
+
+          <a
+            class="more"
+            href="#"
+            aria-expanded="false"
+            aria-controls="helpDecision"
+            onclick="toggleHelp(event, 'helpDecision', this)"
+          >
+            <span class="caret">&#8250;</span>
+            <span>When should I choose this option?</span>
+          </a>
+
+          <div id="helpDecision" class="alert hidden">
+            <ul style="margin: 0; padding-left: 18px">
+              <li>Final outcome is ready</li>
+              <li>LCID can be issued</li>
+              <li>Needs closure with justification</li>
+            </ul>
+          </div>
+
+          <div class="btnRow">
+            <button
+              class="btn-primary"
+              onclick="select('section_issue_decision_or_close')"
+            >
+              Select
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const ACTION_TAB = "tab_actions";
+
+      const SECTIONS = {
+        ACTION_CENTER: "section_action_center",
+        REQUEST_EDITS: "section_request_edits",
+        PROGRESS: "section_progress_to_a_new_step",
+        DECISION: "section_issue_decision_or_close",
+      };
+
+      const UI = {
+        grid: null,
+        backLink: null,
+        resetBtn: null,
+      };
+
+      function getFormWindow() {
+        if (parent?.ActionCenter) return parent;
+
+        try {
+          for (let i = 0; i < parent.frames.length; i++) {
+            const w = parent.frames[i];
+            if (w?.ActionCenter) {
+              return w;
+            } else {
+              console.log("couldnt find a parent frame with the window?");
+            }
+          }
+        } catch (e) {
+          console.error("Unable to find parent frame?");
+        }
+
+        return null;
+      }
+
+      function select(sectionName) {
+        const formWindow = getFormWindow();
+        if (!formWindow) {
+          console.log("Could not locate form window (no Xrm.Page found)");
+          return;
+        }
+
+        const formContext = formWindow.Xrm.Page;
+        const ac = formWindow.ActionCenter;
+
+        if (!ac?.selectAction) {
+          console.log("ActionCenter not found on form window", formWindow);
+          console.log("formWindow.ActionCenter =", formWindow.ActionCenter);
+          return;
+        }
+
+        ac.selectAction(formContext, sectionName);
+      }
+
+      function toggleHelp(e, contentId, linkEl) {
+        e.preventDefault();
+        const contentEl = document.getElementById(contentId);
+        if (!contentEl)
+          return showError(`Help content not found: ${contentId}`);
+
+        const isHidden = contentEl.classList.contains("hidden");
+        contentEl.classList.toggle("hidden", !isHidden);
+        linkEl?.setAttribute("aria-expanded", String(isHidden));
+      }
+      window.toggleHelp = toggleHelp;
+    </script>
+  </body>
+</html>

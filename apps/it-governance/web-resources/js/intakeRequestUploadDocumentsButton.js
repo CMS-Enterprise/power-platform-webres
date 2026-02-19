@@ -1,6 +1,5 @@
 async function openIntakeFileUpload(primaryControl) {
   const formContext = primaryControl;
-  console.log("openIntakeFileUpload");
 
   if (!formContext) {
     console.error("No form context provided.");
@@ -9,7 +8,6 @@ async function openIntakeFileUpload(primaryControl) {
 
   const recordId = formContext.data.entity.getId();
   const entityName = formContext.data.entity.getEntityName();
-  console.log("2");
 
   if (!recordId) {
     Xrm.Navigation.openAlertDialog({
@@ -32,11 +30,7 @@ async function openIntakeFileUpload(primaryControl) {
   };
 
   try {
-    console.log("3");
-    // Open modal and wait for close
     await Xrm.Navigation.navigateTo(pageInput, navigationOptions);
-    console.log("4");
-    // Force refresh from server
     await formContext.data.refresh(true);
   } catch (error) {
     console.error("Error opening file upload page:", error);

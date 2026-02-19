@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Documents</title>
+    <style>
+      /* Base */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: #323130;
+        background-color: #faf9f8;
+        margin: 0;
+        padding: 20px;
+      }
+
+      /* Upload container */
+      .upload-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 2px dashed #d2d0ce;
+        border-radius: 8px;
+        transition: border-color 0.2s ease;
+      }
+
+      .upload-container:hover {
+        border-color: #0078d4;
+      }
+
+      /* Upload icon */
+      .upload-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+        opacity: 0.7;
+      }
+
+      /* Upload text */
+      .upload-text {
+        margin-bottom: 20px;
+        color: #605e5c;
+        font-size: 16px;
+      }
+
+      /* Primary button */
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 12px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        min-width: 140px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-primary:hover {
+        background-color: #106ebe;
+        border-color: #106ebe;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 120, 212, 0.2);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 120, 212, 0.2);
+      }
+
+      .btn-primary:focus {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 4px rgba(0, 120, 212, 0.3);
+      }
+
+      /* Button icon */
+      .btn-icon {
+        width: 16px;
+        height: 16px;
+      }
+    </style>
+    <script>
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function uploadFiles() {
+        try {
+          const form = getParentForm();
+          if (!form) {
+            console.error("Could not access parent form context.");
+            return;
+          }
+
+          // TODO: Call your command bar function
+          console.log("Open the Custom Upload app!");
+
+          // Example of calling command bar function:
+          // if (parent.openDocumentUpload) {
+          //   parent.openDocumentUpload(form);
+          // }
+        } catch (e) {
+          console.error("Unexpected error during upload:", e);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="upload-container">
+      <!-- Upload Icon (Cloud Upload SVG) -->
+      <svg
+        class="upload-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 15L12 2M12 2L9 5M12 2L15 5"
+          stroke="#0078d4"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M7 8C4.79086 8 3 9.79086 3 12C3 14.2091 4.79086 16 7 16H8"
+          stroke="#605e5c"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+        <path
+          d="M17 8C19.2091 8 21 9.79086 21 12C21 14.2091 19.2091 16 17 16H16"
+          stroke="#605e5c"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+        <path
+          d="M8 22H16C18.2091 22 20 20.2091 20 18"
+          stroke="#605e5c"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+        <path
+          d="M4 18C4 20.2091 5.79086 22 8 22"
+          stroke="#605e5c"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        />
+      </svg>
+
+      <div class="upload-text">
+        Upload documents to attach them to this record
+      </div>
+
+      <button class="btn-primary" onclick="uploadFiles()">Upload Files</button>
+    </div>
+  </body>
+</html>

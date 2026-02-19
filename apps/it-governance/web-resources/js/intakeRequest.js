@@ -85,8 +85,10 @@ const PAGE_REQUIRED_FIELDS = {
     "cr69a_cmsprojectproductmanager",
     "cr69a_cmsproductmanagercomponent",
     "cr69a_collaborators",
-    "cr69a_business_need",
-    "cr69a_solution",
+    // "cr69a_business_need", Deprecated
+    "cr3ee_business_need_multi",
+    // "cr69a_solution", Deprecated
+    "cr3ee_proposedsolution",
     "cr69a_current_process_status",
     "cr69a_enterprise_architecture_support",
     "cr69a_ai_technologies_used",
@@ -171,21 +173,21 @@ function onLoadDebugToggle(formContext) {
 
   if (debugMode) {
     const adminGovTaskListValue = formContext
-      .getAttribute("cr69a_admingovernancetasklist")
+      .getAttribute("new_admingovernanceprocessstep")
       .getValue();
     const fields = [];
 
     if (adminGovTaskListValue === BPF_STAGES.DRAFT_BUSINESS_CASE) {
       fields.push(
         "cr69a_initialbusinesscasesubmitted",
-        "cr69a_initialbusinesscasesubmitteddate"
+        "cr69a_initialbusinesscasesubmitteddate",
       );
     }
 
     if (adminGovTaskListValue === BPF_STAGES.FINAL_BUSINESS_CASE) {
       fields.push(
         "cr69a_finalbusinesscasesubmitted",
-        "cr69a_finalbusinesscasesubmitteddate"
+        "cr69a_finalbusinesscasesubmitteddate",
       );
     }
 
@@ -208,7 +210,7 @@ function onLoadDebugToggle(formContext) {
 function showHideFields(formContext) {
   const isNew = !formContext.data.entity.getId();
   const stage = formContext
-    .getAttribute("cr69a_admingovernancetasklist")
+    .getAttribute("new_admingovernanceprocessstep")
     ?.getValue();
 
   // new record should start at request type page
@@ -258,11 +260,11 @@ function updateProgressTracker(formContext, attempt = 0) {
   if (!trackerSectionVisible) return;
 
   const statusValue = formContext
-    .getAttribute("cr69a_admingovernancetasklist")
+    .getAttribute("new_admingovernanceprocessstep")
     ?.getValue();
 
   const webResourceControl = formContext.getControl(
-    "WebResource_progress_tracker"
+    "WebResource_progress_tracker",
   );
   if (!webResourceControl || !statusValue) return;
 
@@ -279,7 +281,7 @@ function updateProgressTracker(formContext, attempt = 0) {
       if (attempt < 10) {
         setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
       }
-    }
+    },
   );
 }
 
@@ -295,7 +297,7 @@ function setFieldRequired(formContext, logicalName, isRequired) {
   const attr = formContext.getAttribute(logicalName);
   if (!attr) {
     console.warn(
-      `Required mapping references missing attribute: ${logicalName}`
+      `Required mapping references missing attribute: ${logicalName}`,
     );
     return;
   }
@@ -316,11 +318,11 @@ function applyRequiredFieldsForPage(formContext, pageName) {
 
   // First, clear required for all wizard-managed fields
   allWizardFields.forEach((fieldName) =>
-    setFieldRequired(formContext, fieldName, false)
+    setFieldRequired(formContext, fieldName, false),
   );
 
   // Then, set required only for current page fields
   pageFields.forEach((fieldName) =>
-    setFieldRequired(formContext, fieldName, true)
+    setFieldRequired(formContext, fieldName, true),
   );
 }

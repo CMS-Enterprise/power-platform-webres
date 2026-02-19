@@ -1,6 +1,8 @@
 function onLoad(executionContext) {
   onDecisionChange(executionContext);
   onLCIDTypeChange(executionContext);
+  const formContext = executionContext.getFormContext();
+  updateProgressTracker(formContext);
 }
 
 function onSave(executionContext) {
@@ -60,9 +62,9 @@ function onSave(executionContext) {
   }
 }
 
-function showHideSections(formContext, fields) {
+function showHideSections(formContext, tabName, fields) {
   for (var key in fields) {
-    const section = formContext.ui.tabs.get("General").sections.get(key);
+    const section = formContext.ui.tabs.get(tabName).sections.get(key);
     if (section) {
       section.setVisible(fields[key]);
     } else {
@@ -109,7 +111,7 @@ function onDecisionChange(executionContext) {
   } else {
     console.error("Error: Something went wrong showing Decision sections.");
   }
-  showHideSections(formContext, sections);
+  showHideSections(formContext, "tab_decision", sections);
 }
 
 function onLCIDTypeChange(executionContext) {
@@ -170,4 +172,47 @@ function onLCIDTypeChange(executionContext) {
 
     formContext.getControl("WebResource_issue_lcid_button").setVisible(false);
   }
+}
+
+function updateProgressTracker(formContext, attempt = 0) {
+  console.log("calling update progress tracker");
+  const tab = formContext.ui.tabs.get("tab_request_home");
+  const trackerSectionVisible = tab?.sections
+    .get("section_progress_tracker")
+    ?.getVisible();
+
+  if (!trackerSectionVisible) {
+    console.error("Unable to find the progress tracker.");
+    return;
+  }
+
+  const statusValue = formContext
+    .getAttribute("new_admingovernancetasklist")
+    ?.getValue();
+
+  const webResourceControl = formContext.getControl(
+    "WebResource_progress_tracker",
+  );
+  if (!webResourceControl || !statusValue) {
+    console.error(
+      "Cannot find Web Resource Control or the Admin Governance Task List field.",
+    );
+    return;
+  }
+
+  webResourceControl.getContentWindow().then(
+    (contentWindow) => {
+      if (typeof contentWindow.updateProgress === "function") {
+        contentWindow.updateProgress(statusValue);
+      } else if (attempt < 10) {
+        // web resource loaded but function not ready yet
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      }
+    },
+    () => {
+      if (attempt < 10) {
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      }
+    },
+  );
 }

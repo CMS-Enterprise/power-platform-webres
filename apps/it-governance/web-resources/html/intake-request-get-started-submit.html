@@ -51,7 +51,6 @@
       }
 
       function getStarted() {
-        console.log("GET STARTED");
         try {
           const Xrm = parent?.Xrm;
           const formContext = Xrm?.Page; // legacy form context, but works inside embedded HTML resources
@@ -71,12 +70,11 @@
             return showError(
               `Field not found on form: ${ADMIN_GOV_TASK_LIST_STEP_FIELD}`,
             );
-          console.log("not doing anything?");
           hideField.setValue(true);
           stepField.setValue(BPF_STAGES.DRAFT);
           stepField.fireOnChange();
         } catch (err) {
-          console.log("error?");
+          console.error("Error: ", err);
           showError(err?.message || String(err));
         }
       }

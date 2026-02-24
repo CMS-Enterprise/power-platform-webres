@@ -8,7 +8,7 @@ These plugins ensure that:
 - invalid or no-op step changes are blocked server-side
 - review state flags are kept in sync
 
-All plugins are deployed as part of the same assembly (`SystemIntake.Plugins.dll`) but are registered as separate plugin steps.
+All plugins are deployed as part of the same assembly (`ActivityLogs.Plugins.dll`) but are registered as separate plugin steps.
 
 ---
 
@@ -99,7 +99,7 @@ This ensures Activity Logs remain a reliable audit trail.
 
 ## Deployment Notes
 
-- All plugins are built into a single assembly: `SystemIntake.Plugins.dll`
+- All plugins are built into a single assembly: `ActivityLogs.Plugins.dll`
 - Each class is registered as a separate plugin step in Dataverse
 - Target framework: **.NET Framework 4.7.1**
 - Language level: **C# 7.3**

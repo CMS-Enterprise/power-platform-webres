@@ -1,0 +1,3 @@
+# Order matters in a CODEOWNERS file. The last matching pattern is what will be used for requests.
+# Anything that doesn't hit the below patterns should be sent to the entire team for review.
+* @CMS-Enterprise/easi-power-platform

@@ -32,7 +32,15 @@ function showEnvironmentBanner() {
     level: level, // "INFO" | "WARNING" | "ERROR"
     message: text,
     showCloseButton: false,
-  }).then(function (id) {
-    envNotifId = id;
-  });
+  })
+    .then(function (id) {
+      envNotifId = id;
+    })
+    .catch(function (error) {
+      // Handle unsupported client/app context or other failures gracefully
+      envNotifId = null;
+      if (typeof console !== "undefined" && console && typeof console.error === "function") {
+        console.error("Failed to add environment banner notification:", error);
+      }
+    });
 }

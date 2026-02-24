@@ -20,13 +20,6 @@ function showEnvironmentBanner() {
   ) {
     text = "🧪 UAT ENVIRONMENT";
     level = "INFO";
-  } else if (
-    environment.includes("org23bd7f3b") ||
-    environment.includes("prod.") ||
-    environment === "itgovernance"
-  ) {
-    text = "⚠️ PRODUCTION ENVIRONMENT";
-    level = "ERROR";
   }
 
   if (!text) return;

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -134,7 +134,8 @@
         font-weight: 400;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.15s ease-in-out,
+        transition:
+          background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
 
@@ -333,7 +334,7 @@
 
     <script>
       const REQUEST_TYPE_FIELD = "cr69a_requesttype";
-      const ADMIN_GOV_TASK_LIST_FIELD = "cr69a_admingovernancetasklist";
+      const ADMIN_GOV_TASK_LIST_FIELD = "new_admingovernanceprocessstep";
 
       const REQUEST_TYPES = {
         ADD: 971270000,
@@ -391,14 +392,14 @@
         requestTypeField.setValue(optionValue);
 
         const adminGovTaskListField = parentForm.getAttribute(
-          ADMIN_GOV_TASK_LIST_FIELD
+          ADMIN_GOV_TASK_LIST_FIELD,
         );
         if (!adminGovTaskListField)
           return showError(`Field not found: ${ADMIN_GOV_TASK_LIST_FIELD}`);
 
         if (optionValue === REQUEST_TYPES.ADD) {
           adminGovTaskListField.setValue(
-            BPF_STAGES["GOVERNANCE_PROCESS_STEPS"]
+            BPF_STAGES["GOVERNANCE_PROCESS_STEPS"],
           );
         } else {
           adminGovTaskListField.setValue(BPF_STAGES["DRAFT"]);
@@ -445,7 +446,7 @@
       // Start buttons
       document.querySelectorAll("button.btn-primary").forEach((btn) => {
         btn.addEventListener("click", () =>
-          startRequest(btn.getAttribute("data-type"))
+          startRequest(btn.getAttribute("data-type")),
         );
       });
 

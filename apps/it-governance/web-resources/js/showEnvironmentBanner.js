@@ -1,108 +1,46 @@
-function addEnvironmentBanner() {
-  // Prevent duplicate banners
-  if (document.getElementById("environmentBanner")) {
-    return;
-  }
+let envNotifId = null;
 
-  var environment = Xrm.Utility.getGlobalContext().getClientUrl();
-  var bannerText = "";
-  var bannerColor = "";
-  var textColor = "#ffffff";
+function showEnvironmentBanner() {
+  const environment = Xrm.Utility.getGlobalContext().getClientUrl();
 
-  // Detect environment based on URL
-  if (environment.includes("org389e8766") || environment.includes("dev.")) {
-    bannerText = "🔧 DEVELOPMENT ENVIRONMENT";
-    bannerColor = "#ff9800"; // Orange
+  let text = "";
+  let level = "INFO"; // INFO | WARNING | ERROR
+
+  if (
+    environment.includes("org389e8766") ||
+    environment.includes("dev.") ||
+    environment.includes("itgovernancedev")
+  ) {
+    text = "🔧 DEVELOPMENT ENVIRONMENT";
+    level = "WARNING";
   } else if (
     environment.includes("org1e8d7583") ||
-    environment.includes("test.")
+    environment.includes("test.") ||
+    environment.includes("itgovernanceuat")
   ) {
-    bannerText = "🧪 UAT ENVIRONMENT";
-    bannerColor = "#2196f3"; // Blue
-  } else if (
-    environment.includes("org23bd7f3b") ||
-    environment.includes("prod.")
-  ) {
-    bannerText = "⚠️ PRODUCTION ENVIRONMENT";
-    bannerColor = "#c41431"; // Red
+    text = "🧪 UAT ENVIRONMENT";
+    level = "INFO";
   }
 
-  if (bannerText) {
-    createBanner(bannerText, bannerColor, textColor);
-  }
-}
+  if (!text) return;
 
-function createBanner(text, backgroundColor, textColor) {
-  console.log("create banner called");
+  // avoid duplicates
+  if (envNotifId) return;
 
-  const doc = getTopSameOriginDocument();
-
-  if (doc.getElementById("environmentBanner")) return;
-
-  const banner = doc.createElement("div");
-  banner.id = "environmentBanner";
-  banner.textContent = text;
-
-  banner.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    line-height: 40px;
-    background-color: ${backgroundColor};
-    color: ${textColor || "#fff"};
-    text-align: center;
-    font-weight: 600;
-    font-size: 14px;
-    z-index: 2147483647;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  `;
-
-  // Put it at the top of the visible page
-  doc.body.prepend(banner);
-
-  // Push down the main content in the PARENT doc
-  pushShellDown(doc, 40);
-}
-
-function pushShellDown(doc, offsetPx) {
-  const shell = doc.getElementById("shell-container");
-  if (!shell) return false;
-
-  const offset = `${offsetPx}px`;
-
-  // Ensure positioning allows top offset
-  const computed = doc.defaultView.getComputedStyle(shell);
-  if (computed.position === "static") {
-    shell.style.position = "fixed";
-  }
-
-  // Apply offset once
-  if (shell.style.top !== offset) {
-    shell.style.top = offset;
-  }
-
-  return true;
-}
-
-// Main function to call from form OnLoad
-function showEnvironmentBanner(executionContext) {
-  // Small delay to ensure page is loaded
-  setTimeout(addEnvironmentBanner, 1000);
-}
-
-function getTopSameOriginDocument() {
-  let w = window;
-  while (w.parent && w.parent !== w) {
-    try {
-      // Touching location.href is a quick same-origin test
-      void w.parent.location.href;
-      w = w.parent;
-    } catch (e) {
-      break; // Cross-origin, stop climbing
-    }
-  }
-  return w.document;
+  Xrm.App.addGlobalNotification({
+    type: 2, // 2 = banner
+    level: level, // "INFO" | "WARNING" | "ERROR"
+    message: text,
+    showCloseButton: false,
+  })
+    .then(function (id) {
+      envNotifId = id;
+    })
+    .catch(function (error) {
+      // Handle unsupported client/app context or other failures gracefully
+      envNotifId = null;
+      if (typeof console !== "undefined" && console && typeof console.error === "function") {
+        console.error("Failed to add environment banner notification:", error);
+      }
+    });
 }

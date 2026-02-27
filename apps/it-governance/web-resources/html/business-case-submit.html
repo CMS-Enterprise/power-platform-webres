@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -27,7 +27,8 @@
         font-weight: 400;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.15s ease-in-out,
+        transition:
+          background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
       .btn-primary:hover {
@@ -73,6 +74,7 @@
       const SUBMITTED_BOOL = "cr69a_initialbusinesscasesubmitted";
       const SUBMITTED_DATE = "cr69a_initialbusinesscasesubmitteddate";
       const INITIAL_BUSINESS_CASE = "cr69a_businesscase";
+      const READY_FOR_REVIEW = "cr69a_readyforreview";
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
@@ -95,11 +97,14 @@
         } else {
           box.classList.remove("alert-error");
         }
+      }
 
-        var submitButton = document.getElementById("submitBusinessCaseButton");
-        if (submitButton && !isError) {
-          submitButton.classList.add("hidden");
-        }
+      function hideMessage() {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+        box.classList.add("hidden");
+        box.classList.remove("alert-error");
+        box.textContent = "";
       }
 
       function showSuccess(text) {
@@ -110,28 +115,38 @@
         showMessage(text, true);
       }
 
-      function shouldShowSuccessFromFields() {
-        const form = getParentForm();
-        if (!form) return false;
-
-        const submittedAttr = getAttr(form, SUBMITTED_BOOL);
-        const submittedDateAttr = getAttr(form, SUBMITTED_DATE);
-        const initialBusinessCase = getAttr(form, INITIAL_BUSINESS_CASE);
-
-        const isSubmitted = submittedAttr && submittedAttr.getValue() === true;
-        const hasDate = submittedDateAttr && !!submittedDateAttr.getValue();
-        const hasBusinessCase =
-          initialBusinessCase && initialBusinessCase.getValue() != null;
-
-        return isSubmitted && hasDate && hasBusinessCase;
+      function setSubmitButtonHidden(hidden) {
+        var submitButton = document.getElementById("submitBusinessCaseButton");
+        if (!submitButton) return;
+        submitButton.classList.toggle("hidden", !!hidden);
       }
 
-      function initBannerFromFields() {
-        setTimeout(function () {
-          if (shouldShowSuccessFromFields()) {
-            showSuccess("Draft Business Case submitted. Waiting for feedback.");
-          }
-        }, 500);
+      // ✅ UI depends ONLY on Ready For Review
+      function updateUIFromReadyForReview() {
+        const form = getParentForm();
+        if (!form) return;
+
+        const rfr = getAttr(form, READY_FOR_REVIEW);
+        const ready = !!(rfr && rfr.getValue());
+
+        if (ready) {
+          showSuccess("Draft Business Case submitted. Waiting for feedback.");
+          setSubmitButtonHidden(true);
+        } else {
+          // Back to requester turn (e.g., edit request came in)
+          hideMessage();
+          setSubmitButtonHidden(false);
+        }
+      }
+
+      function hookReadyForReviewOnChange() {
+        const form = getParentForm();
+        if (!form) return;
+
+        const rfr = getAttr(form, READY_FOR_REVIEW);
+        if (rfr && rfr.addOnChange) {
+          rfr.addOnChange(updateUIFromReadyForReview);
+        }
       }
 
       function submitBusinessCase() {
@@ -143,10 +158,11 @@
             return;
           }
 
+          // Validation stays (this is business logic, not UI gating)
           const initialBusinessCase = getAttr(form, INITIAL_BUSINESS_CASE);
           if (!initialBusinessCase || initialBusinessCase.getValue() == null) {
             showError(
-              "Please fill out the Business Case field before submitting."
+              "Please fill out the Business Case field before submitting.",
             );
             return;
           }
@@ -160,33 +176,33 @@
             submittedDateAttr.setValue(new Date());
           }
 
-          const readyForReview = form.getAttribute("cr69a_readyforreview");
+          // 2) Hand off turn to admin
+          const readyForReview = getAttr(form, READY_FOR_REVIEW);
           if (readyForReview) readyForReview.setValue(true);
 
-          // 2) Save form
+          // 3) Save form
           form.data.save().then(
             function () {
               if (parent.lockAllFields) {
                 parent.lockAllFields(form);
               } else {
                 console.warn(
-                  "lockAllFields function not found on parent window"
+                  "lockAllFields function not found on parent window",
                 );
               }
 
-              showSuccess(
-                "Draft Business Case submitted. Waiting for feedback."
-              );
+              // reflect latest RFR state
+              updateUIFromReadyForReview();
             },
             function (err) {
               console.error(
                 "Save failed:",
-                err && err.message ? err.message : err
+                err && err.message ? err.message : err,
               );
               showError(
-                "Failed to submit. Please try again or contact support."
+                "Failed to submit. Please try again or contact support.",
               );
-            }
+            },
           );
         } catch (e) {
           console.error("Unexpected error during submit:", e);
@@ -194,7 +210,10 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", initBannerFromFields);
+      document.addEventListener("DOMContentLoaded", function () {
+        hookReadyForReviewOnChange();
+        updateUIFromReadyForReview();
+      });
     </script>
   </head>
 

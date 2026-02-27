@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turn Indicator</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 12px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: transparent;
+        color: #323130;
+      }
+
+      .card {
+        border-radius: 12px;
+        padding: 16px 18px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .subtitle {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-top: 12px;
+      }
+
+      /* States */
+      .state-review {
+        background: #dff6dd; /* green-ish */
+        border-color: #107c10;
+      }
+      .state-review .pill {
+        background: #107c10;
+        color: #fff;
+      }
+
+      .state-wait {
+        background: #fff4ce; /* yellow-ish */
+        border-color: #f2c811;
+      }
+      .state-wait .pill {
+        background: #8a6a00;
+        color: #fff;
+      }
+
+      .icon {
+        font-size: 22px;
+        line-height: 1;
+      }
+    </style>
+
+    <script>
+      const READY_FOR_REVIEW = "cr69a_readyforreview";
+
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, schema) {
+        return form ? form.getAttribute(schema) : null;
+      }
+
+      function render(ready) {
+        const card = document.getElementById("card");
+        const icon = document.getElementById("icon");
+        const title = document.getElementById("titleText");
+        const subtitle = document.getElementById("subtitleText");
+        const pill = document.getElementById("pill");
+
+        if (!card || !icon || !title || !subtitle || !pill) return;
+
+        if (ready) {
+          card.classList.remove("state-wait");
+          card.classList.add("state-review");
+
+          icon.textContent = "✅";
+          title.textContent = "Your turn: Review this request";
+          subtitle.textContent =
+            "The requester has submitted changes. Please review and either approve or request edits.";
+          pill.textContent = "READY FOR REVIEW";
+        } else {
+          card.classList.remove("state-review");
+          card.classList.add("state-wait");
+
+          icon.textContent = "⏳";
+          title.textContent = "Waiting on requester updates";
+          subtitle.textContent =
+            "An edit request is outstanding. Review is paused until the requester submits updates.";
+          pill.textContent = "NOT READY";
+        }
+      }
+
+      function updateUI() {
+        const form = getParentForm();
+        if (!form) return;
+
+        const rfr = getAttr(form, READY_FOR_REVIEW);
+        const ready = !!(rfr && rfr.getValue());
+        render(ready);
+      }
+
+      function hook() {
+        const form = getParentForm();
+        if (!form) return;
+
+        const rfr = getAttr(form, READY_FOR_REVIEW);
+        if (rfr && rfr.addOnChange) {
+          rfr.addOnChange(updateUI);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        hook();
+        updateUI();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="card" class="card state-wait" role="status" aria-live="polite">
+      <div class="title">
+        <span id="icon" class="icon">⏳</span>
+        <span id="titleText">Loading…</span>
+      </div>
+      <p id="subtitleText" class="subtitle"></p>
+      <div id="pill" class="pill">—</div>
+    </div>
+  </body>
+</html>

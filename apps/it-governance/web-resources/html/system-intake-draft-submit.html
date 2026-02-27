@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -26,7 +26,8 @@
         font-weight: 400;
         border-radius: 5px;
         cursor: pointer;
-        transition: background-color 0.15s ease-in-out,
+        transition:
+          background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
       .btn-primary:hover {
@@ -84,25 +85,48 @@
       const DRAFT_STATE = 971270000;
       const REQUEST_STATUS = "cr69a_status";
 
-      function shouldShowSuccessOnLoad() {
+      const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
+      const INTAKE_REQUEST_REVIEW = 971270000;
+
+      const READY_FOR_REVIEW = "cr69a_readyforreview";
+
+      function updateUIFromReadyForReview() {
         const form = getParentForm();
-        if (!form) return false;
+        if (!form) return;
 
-        const submittedAttr = getAttr(form, REQUEST_STATUS);
+        const rfr = getAttr(form, READY_FOR_REVIEW);
+        const ready = !!(rfr && rfr.getValue());
 
-        const isSubmitted =
-          submittedAttr && submittedAttr.getValue() != DRAFT_STATE;
-
-        return isSubmitted;
-      }
-
-      function initBannerFromFields() {
-        if (shouldShowSuccessOnLoad()) {
+        if (ready) {
           showSuccess(
-            "System Intake Draft successfully submitted. Waiting for feedback."
+            "System Intake Draft successfully submitted. Waiting for feedback.",
           );
+        } else {
+          // Show button, hide success
+          var box = document.getElementById("submitStatus");
+          if (box) box.classList.add("hidden");
+
+          var submitButton = document.getElementById(
+            "submitIntakeRequestButton",
+          );
+          if (submitButton) submitButton.classList.remove("hidden");
         }
       }
+
+      function hookReadyForReviewOnChange() {
+        const form = getParentForm();
+        if (!form) return;
+
+        const rfr = getAttr(form, READY_FOR_REVIEW);
+        if (rfr && rfr.addOnChange) {
+          rfr.addOnChange(updateUIFromReadyForReview);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        hookReadyForReviewOnChange();
+        updateUIFromReadyForReview();
+      });
 
       function submitIntakeRequestDraft() {
         try {
@@ -120,6 +144,13 @@
           }
           statusAttr.setValue(971270002);
 
+          const taskListStep = getAttr(form, ADMIN_GOV_TASK_LIST_STEP_FIELD);
+          if (!taskListStep) {
+            console.error("Could not access Form Status field.");
+            return;
+          }
+          taskListStep.setValue(INTAKE_REQUEST_REVIEW);
+
           // 2) Set Ready For Review
           const rfr = form.getAttribute("cr69a_readyforreview");
           if (!rfr) {
@@ -135,27 +166,26 @@
                 parent.lockAllFields(form);
               } else {
                 console.warn(
-                  "lockAllFields function not found on parent window"
+                  "lockAllFields function not found on parent window",
                 );
               }
+              taskListStep.fireOnChange();
               // notify("System Intake Form successfully submitted.", "success");
               showSuccess(
-                "System Intake Draft successfully submitted. Waiting for feedback."
+                "System Intake Draft successfully submitted. Waiting for feedback.",
               );
             },
             function (err) {
               console.error(
                 "Save failed:",
-                err && err.message ? err.message : err
+                err && err.message ? err.message : err,
               );
-            }
+            },
           );
         } catch (e) {
           console.error("Unexpected error during submit:", e);
         }
       }
-
-      document.addEventListener("DOMContentLoaded", initBannerFromFields);
     </script>
   </head>
   <body>

@@ -1,0 +1,47 @@
+## Basic Governance Process Steps
+
+system_intake_submit_initial_form_requester.gohtml ✅
+system_intake_submit_initial_form_reviewer.gohtml
+
+system_intake_submit_business_case_requester.gohtml
+system_intake_submit_business_case_reviewer.gohtml
+
+system_intake_admin_upload_doc.gohtml
+
+system_intake_progress_to_new_step.gohtml ✅
+
+system_intake_request_edits_on_form.gohtml ✅
+
+system_intake_review.gohtml ❓
+
+## Finishing Process Steps
+
+system_intake_reopen_request.gohtml
+system_intake_not_approved.gohtml
+system_intake_not_it_gov_request.gohtml
+system_intake_close_request.gohtml
+
+## LCIDs
+
+system_intake_unretire_lcid.gohtml
+system_intake_update_lcid.gohtml
+system_intake_expire_lcid.gohtml
+system_intake_change_lcid_retirement_date.gohtml
+system_intake_confirm_lcid.gohtml
+system_intake_issue_lcid.gohtml
+system_intake_lcid_expiration_alert.gohtml
+system_intake_retire_lcid.gohtml
+
+## ASYNC GRB (Deferred indefinitely)
+
+system_intake_grb_review_deadline_extended.gohtml
+system_intake_grb_review_last_day_reminder.gohtml
+system_intake_grb_review_restarted.gohtml
+system_intake_grb_review_restarted_admin.gohtml
+system_intake_grb_review_time_added.gohtml
+system_intake_grb_review_voting_ended.gohtml
+system_intake_grb_review_voting_ended_early.gohtml
+system_intake_grb_reviewer_reminder.gohtml
+
+system_intake_presentation_deck_upload_reminder.gohtml
+system_intake_create_grb_reviewer.gohtml

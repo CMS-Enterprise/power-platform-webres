@@ -1,11 +1,26 @@
 [
-  { "key": "FormName", "value": "1" },
-  { "key": "RequestName", "value": "2" },
-  { "key": "Feedback", "value": "3" },
-  { "key": "RequesterName", "value": "4" },
-  { "key": "SystemIntakeRequestLink", "value": "5" },
-  { "key": "SystemIntakeAdminLink", "value": "6" },
-  { "key": "RequesterName", "value": "7" },
-  { "key": "ITGovernanceInboxAddress", "value": "8" },
-  { "key": "AdditionalInfo", "value": "9" }
+  {
+    "key": "RequestName",
+    "value": "@{triggerOutputs()?['body/new_name']}"
+  },
+  {
+    "key": "BusinessCaseAdminLink",
+    "value": "@{outputs('Review_Link')}"
+  },
+  {
+    "key": "PreparingForGRBLink",
+    "value": "@{outputs('PreparingForGRBLink')}"
+  },
+  {
+    "key": "SystemIntakeRequestLink",
+    "value": "@{outputs('Request_Link')}"
+  },
+  {
+    "key": "RequesterName",
+    "value": "@{outputs('Get_Requester')?['body/fullname']}"
+  },
+  {
+    "key": "ITGovernanceInboxAddress",
+    "value": "@{outputs('ITGovernanceInboxAddress')}"
+  }
 ]

@@ -3,8 +3,8 @@
 system_intake_submit_initial_form_requester.gohtml ✅
 system_intake_submit_initial_form_reviewer.gohtml
 
-system_intake_submit_business_case_requester.gohtml
-system_intake_submit_business_case_reviewer.gohtml
+system_intake_submit_business_case_requester.gohtml ✅
+system_intake_submit_business_case_reviewer.gohtml ✅
 
 system_intake_admin_upload_doc.gohtml
 

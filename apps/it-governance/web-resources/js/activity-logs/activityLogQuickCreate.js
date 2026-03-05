@@ -84,25 +84,28 @@ const TYPE_RULES = {
 
   [ACTIVITY_TYPES.IssueALifeCycleID]: {
     show: [
-      "cr3ee_lcid",
+      "cr3ee_lifecycleid",
+
+      "cr3ee_nextsteps",
+      "cr3ee_trbconsult",
       "cr3ee_projectcostbaseline",
+
       "new_additionalinformation",
       "new_adminnote",
     ],
     hide: [
+      "cr3ee_lcid",
+      "cr3ee_scopeofthelifecycleid",
+      "cr3ee_expirationdate",
+
+      //unrelated fields
       "cr3ee_reason",
       "new_process_target_step",
       "cr3ee_whyareyouclosingthisrequest",
       "new_requester_feedback",
       "new_recommendationsforthegrb",
     ],
-    require: [
-      "cr3ee_lifecycleid",
-      "cr3ee_expirationdate",
-      "cr3ee_scopeofthelifecycleid",
-      "cr3ee_trbconsult",
-      "cr3ee_nextsteps",
-    ],
+    require: ["cr3ee_lifecycleid", "cr3ee_nextsteps", "cr3ee_trbconsult"],
   },
 
   [ACTIVITY_TYPES.NotAnITGovernanceRequest]: {
@@ -187,6 +190,34 @@ function onActivityTypeChange(executionContext) {
   applyRules(formContext);
 }
 
+function onLifecycleIDSelectionChange(executionContext) {
+  const formContext = executionContext.getFormContext();
+
+  const activityType = formContext
+    .getAttribute("cr3ee_lifecycleid")
+    ?.getValue();
+  console.log("activityType", activityType);
+  if (activityType === 216640000) {
+    //Generate new LCID
+    setVisible(formContext, "cr3ee_lcid", false);
+    setRequired(formContext, "cr3ee_lcid", false);
+
+    setVisible(formContext, "cr3ee_expirationdate", true);
+    setRequired(formContext, "cr3ee_expirationdate", true);
+
+    setVisible(formContext, "cr3ee_scopeofthelifecycleid", true);
+  } else {
+    //Use existing LCID
+    setRequired(formContext, "cr3ee_lcid", true);
+    setVisible(formContext, "cr3ee_lcid", true);
+
+    setVisible(formContext, "cr3ee_expirationdate", false);
+    setRequired(formContext, "cr3ee_expirationdate", false);
+
+    setVisible(formContext, "cr3ee_scopeofthelifecycleid", false);
+  }
+}
+
 function applyRules(formContext) {
   const activityType = formContext
     .getAttribute("cr3ee_activitytype")
@@ -244,10 +275,14 @@ function setRequired(formContext, logicalName, required) {
 }
 
 function setActivityLogTitle(formContext, title) {
+  console.log("setting title to", title);
   formContext.getAttribute("new_activity")?.setValue(title);
 
   const header = parent.document.querySelector("[data-id='quickHeaderTitle']");
+  console.log(header);
   if (header) {
     header.textContent = title;
+  } else {
+    console.log("header not found?");
   }
 }

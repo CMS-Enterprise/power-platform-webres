@@ -1,6 +1,5 @@
 function onLoad(executionContext) {
   onDecisionChange(executionContext);
-  onLCIDTypeChange(executionContext);
   const formContext = executionContext.getFormContext();
   updateProgressTracker(formContext);
 }
@@ -91,66 +90,6 @@ function onDecisionChange(executionContext) {
     sections.section_lcid = true;
   }
   showHideSections(formContext, "tab_decision", sections);
-}
-
-function onLCIDTypeChange(executionContext) {
-  const formContext = executionContext.getFormContext();
-
-  const lcidTypeValue = formContext
-    .getAttribute("cr69a_lifecycleid")
-    .getValue();
-
-  const lcid = formContext.getAttribute("cr69a_lcid").getValue();
-
-  if (lcid) {
-    formContext.getControl("cr69a_lcid").setVisible(true);
-    formContext.getControl("cr69a_lcidrequested").setVisible(true);
-    formContext.getControl("cr69a_lcidrequestedon").setVisible(true);
-    formContext.getControl("cr69a_lcidrequestedby").setVisible(true);
-
-    formContext.getControl("cr69a_lifecycleid").setDisabled(true);
-    formContext.getControl("cr69a_decision").setDisabled(true);
-
-    formContext.getControl("cr69a_lcidexpirationdate").setDisabled(true);
-    formContext.getControl("cr69a_lcidexpirationdate").setVisible(true);
-
-    formContext.getControl("cr69a_scopeoflifecycleid").setDisabled(true);
-    formContext.getControl("cr69a_scopeoflifecycleid").setVisible(true);
-
-    formContext.getControl("WebResource_issue_lcid_button").setVisible(false);
-    return;
-  }
-
-  formContext.getControl("cr69a_lifecycleid").setDisabled(false);
-
-  if (!lcidTypeValue) {
-    formContext.getControl("cr69a_lcid").setVisible(false);
-    return;
-  } else if (lcidTypeValue === 971270000) {
-    //Generate a new Life Cycle ID
-    formContext.getControl("cr69a_lcid").setVisible(false);
-    formContext.getControl("cr69a_lcid").setDisabled(true);
-
-    formContext.getControl("cr69a_lcidexpirationdate").setVisible(true);
-    formContext.getControl("cr69a_scopeoflifecycleid").setVisible(true);
-
-    formContext.getControl("cr69a_lcidrequested").setVisible(true);
-    formContext.getControl("cr69a_lcidrequestedon").setVisible(true);
-    formContext.getControl("cr69a_lcidrequestedby").setVisible(true);
-    formContext.getControl("WebResource_issue_lcid_button").setVisible(true);
-  } else if (lcidTypeValue === 971270001) {
-    //Use an existing Life Cycle ID
-    formContext.getControl("cr69a_lcid").setVisible(true);
-    formContext.getControl("cr69a_lcid").setDisabled(false);
-    formContext.getControl("cr69a_lcidexpirationdate").setVisible(false);
-    formContext.getControl("cr69a_scopeoflifecycleid").setVisible(false);
-
-    formContext.getControl("cr69a_lcidrequested").setVisible(false);
-    formContext.getControl("cr69a_lcidrequestedon").setVisible(false);
-    formContext.getControl("cr69a_lcidrequestedby").setVisible(false);
-
-    formContext.getControl("WebResource_issue_lcid_button").setVisible(false);
-  }
 }
 
 function updateProgressTracker(formContext, attempt = 0) {

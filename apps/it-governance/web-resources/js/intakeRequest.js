@@ -14,7 +14,6 @@ const BPF_STAGES = {
   REQUEST_TYPE: 971270010,
   GOVERNANCE_PROCESS_STEPS: 971270011,
 };
-
 const ALL_SECTIONS = [
   "section_governance_process_steps",
   "section_request_type",
@@ -31,7 +30,9 @@ const ALL_SECTIONS = [
   "section_grb_review",
   "section_awaiting_decision",
   "section_decision",
-  "section_intake_request_complete",
+  "section_intake_request_decision",
+  "section_complete_lcid",
+  "section_complete_next_steps",
 ];
 
 //Use this map like building blocks.
@@ -59,18 +60,10 @@ const PAGES = {
   AWAITING_DECISION: ["section_progress_tracker", "section_awaiting_decision"],
   DECISION: ["section_progress_tracker", "section_decision"],
   FINISHED: [
-    "section_progress_tracker",
-    "section_linked_systems",
-    "section_contact_details",
-    "section_request_details",
-    "section_contract_details",
-    "section_additional_documentation",
-    "section_business_case",
-    "section_grt_meeting",
-    "section_final_business_case_review",
-    "section_grb_review",
-    "section_decision",
-    "section_intake_request_complete",
+    "section_intake_request_decision",
+    "section_complete_lcid",
+    "section_complete_next_steps",
+    "section_request_complete_questsions",
   ],
 };
 
@@ -151,6 +144,7 @@ function onLoad(executionContext) {
 
   showHideFields(formContext);
   onLoadDebugToggle(formContext);
+  onDecisionChange(formContext);
 
   const readyForReview = formContext
     .getAttribute("cr69a_readyforreview")
@@ -204,6 +198,41 @@ function onLoadDebugToggle(formContext) {
     section?.setVisible(true);
 
     console.log("Debug mode ON: showing hidden fields.");
+  }
+}
+
+const DECISIONS = {
+  ISSUE_LCID: 971270000,
+  NOT_AN_IT_GOV_REQUEST: 971270001,
+  NOT_APPROVED_BY_GRB: 971270002,
+  CLOSE_REQUEST: 971270003,
+};
+
+function onDecisionChange(formContext) {
+  console.log("on decision change");
+  const decision = formContext.getAttribute("easi_decision")?.getValue();
+  const lcid_section = formContext.ui.tabs
+    .get("General")
+    ?.sections.get("section_complete_lcid");
+  const next_steps_section = formContext.ui.tabs
+    .get("General")
+    ?.sections.get("section_complete_next_steps");
+
+  if (decision === DECISIONS.ISSUE_LCID) {
+    formContext.getControl("lcid_quick_view")?.setVisible(true);
+    lcid_section?.setVisible(true);
+  } else if (decision === DECISIONS.NOT_AN_IT_GOV_REQUEST) {
+    formContext.getControl("lcid_quick_view")?.setVisible(false);
+    lcid_section?.setVisible(false);
+    next_steps_section?.setVisible(false);
+  } else if (decision === DECISIONS.NOT_APPROVED_BY_GRB) {
+    formContext.getControl("lcid_quick_view")?.setVisible(false);
+    lcid_section?.setVisible(false);
+    next_steps_section?.setVisible(true);
+  } else if (decision === DECISIONS.CLOSE_REQUEST) {
+    formContext.getControl("lcid_quick_view")?.setVisible(false);
+    lcid_section?.setVisible(false);
+    next_steps_section?.setVisible(false);
   }
 }
 

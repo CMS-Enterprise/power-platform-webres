@@ -83,33 +83,12 @@ function onDecisionChange(executionContext) {
 
   const sections = {
     section_lifecycle_id: false,
-    section_not_an_it_gov_request: false,
-    section_not_approved_by_grb: false,
-    section_close_request: false,
-    section_issue_LCID: false,
     section_lcid: false,
-    section_next_steps: false,
   };
 
-  //section_lifecycle_id
   if (decisionValue === 971270000) {
     sections.section_lifecycle_id = true;
-
-    sections.section_issue_LCID = true;
     sections.section_lcid = true;
-    sections.section_next_steps = true;
-
-    //section_not_an_it_gov_request
-  } else if (decisionValue === 971270001) {
-    sections.section_not_an_it_gov_request = true;
-    //section_not_approved_by_grb
-  } else if (decisionValue === 971270002) {
-    sections.section_not_approved_by_grb = true;
-    //section_close_request
-  } else if (decisionValue === 971270003) {
-    sections.section_close_request = true;
-  } else {
-    console.error("Error: Something went wrong showing Decision sections.");
   }
   showHideSections(formContext, "tab_decision", sections);
 }

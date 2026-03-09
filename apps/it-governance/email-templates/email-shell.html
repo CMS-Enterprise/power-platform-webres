@@ -1,0 +1,175 @@
+<!doctype html>
+<html
+  lang="en"
+  dir="ltr"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="format-detection"
+      content="telephone=no, date=no, address=no, email=no, url=no"
+    />
+    <meta name="x-apple-disable-message-reformatting" />
+
+    <!--[if mso]>
+      <noscript>
+        <xml>
+          <o:OfficeDocumentSettings>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+          </o:OfficeDocumentSettings>
+        </xml>
+      </noscript>
+    <![endif]-->
+
+    <!--[if mso]>
+      <style>
+        table,
+        tr,
+        td,
+        p,
+        span,
+        a {
+          mso-line-height-rule: exactly !important;
+        }
+        table {
+          border-collapse: collapse !important;
+        }
+      </style>
+    <![endif]-->
+
+    <style>
+      /* Prevent iOS and some clients from auto-link styling */
+      a[x-apple-data-detectors],
+      u + #body a,
+      #MessageViewBody a {
+        color: inherit !important;
+        text-decoration: none !important;
+        font-size: inherit !important;
+        font-family: inherit !important;
+        font-weight: inherit !important;
+        line-height: inherit !important;
+      }
+
+      /* Mobile */
+      @media only screen and (max-width: 599px) {
+        .container {
+          width: 100% !important;
+        }
+        .content-padding {
+          padding: 20px !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body id="body" style="margin: 0; padding: 0; background-color: #f4f4f4">
+    <!-- Preheader (appears in inbox preview; hidden in body) -->
+    <div
+      style="
+        display: none;
+        font-size: 1px;
+        color: #f4f4f4;
+        line-height: 1px;
+        max-height: 0;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+      "
+    >
+      {{PREHEADER}}
+    </div>
+    <!-- Extra hidden spacing to prevent some clients from showing body text as preview -->
+    <div style="display: none; max-height: 0; overflow: hidden">
+      &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+    </div>
+
+    <!-- Outer wrapper -->
+    <table
+      role="presentation"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      width="100%"
+      style="background-color: #f4f4f4; border-collapse: collapse"
+    >
+      <tr>
+        <td align="center" style="padding: 30px 10px">
+          <!--[if mso]>
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600">
+          <tr>
+            <td>
+        <![endif]-->
+
+          <!-- Container -->
+          <table
+            role="presentation"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            width="600"
+            class="container"
+            style="
+              width: 600px;
+              max-width: 600px;
+              background-color: #ffffff;
+              border-collapse: collapse;
+            "
+          >
+            <!-- Optional header row (safe to leave empty) -->
+            <tr>
+              <td
+                style="
+                  padding: 24px 30px 0 30px;
+                  font-family: Arial, sans-serif;
+                "
+              >
+                {{HEADER_HTML}}
+              </td>
+            </tr>
+
+            <!-- Main content -->
+            <tr>
+              <td
+                class="content-padding"
+                style="
+                  padding: 24px 30px 24px 30px;
+                  font-family: Arial, sans-serif;
+                  font-size: 16px;
+                  line-height: 24px;
+                  color: #000000;
+                "
+              >
+                {{BODY_HTML}}
+              </td>
+            </tr>
+
+            <!-- Optional footer row (safe to leave empty) -->
+            <tr>
+              <td
+                style="
+                  padding: 0 30px 24px 30px;
+                  font-family: Arial, sans-serif;
+                  font-size: 12px;
+                  line-height: 18px;
+                  color: #777777;
+                "
+              >
+                {{FOOTER_HTML}}
+              </td>
+            </tr>
+          </table>
+
+          <!--[if mso]>
+            </td>
+          </tr>
+        </table>
+        <![endif]-->
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

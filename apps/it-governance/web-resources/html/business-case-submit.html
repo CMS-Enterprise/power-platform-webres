@@ -210,9 +210,35 @@
         }
       }
 
+      function initReadyForReviewUIWithRetry(retriesLeft) {
+        if (typeof retriesLeft === "undefined") {
+          retriesLeft = 25; // ~5 seconds total if delay is 200ms
+        }
+
+        try {
+          if (parent && parent.Xrm && parent.Xrm.Page) {
+            hookReadyForReviewOnChange();
+            updateUIFromReadyForReview();
+            return;
+          }
+        } catch (e) {
+          console.warn("Error while checking parent.Xrm.Page during RFR init:", e);
+        }
+
+        if (retriesLeft <= 0) {
+          console.warn(
+            "Parent form context (parent.Xrm.Page) not available; giving up ready-for-review UI initialization.",
+          );
+          return;
+        }
+
+        window.setTimeout(function () {
+          initReadyForReviewUIWithRetry(retriesLeft - 1);
+        }, 200);
+      }
+
       document.addEventListener("DOMContentLoaded", function () {
-        hookReadyForReviewOnChange();
-        updateUIFromReadyForReview();
+        initReadyForReviewUIWithRetry();
       });
     </script>
   </head>

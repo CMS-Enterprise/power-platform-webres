@@ -63,30 +63,62 @@
           padding: 20px !important;
         }
       }
+
+      @import url("https://fonts.googleapis.com/css2?family=Public+Sans&display=swap");
+      p,
+      h1,
+      h2,
+      h3,
+      li {
+        font-family: "Public Sans", Arial, sans-serif;
+        color: #1b1b1b;
+      }
+      a {
+        font-family: "Public Sans", Arial, sans-serif;
+      }
+      .header-subtitle {
+        font-size: 15px;
+        color: #71767a;
+        margin: 0.5rem 0 2rem;
+      }
+      .no-margin,
+      .no-margin * {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      .header-title,
+      .no-margin-bottom {
+        margin-bottom: 0;
+      }
+      .no-margin-top {
+        margin-top: 0;
+      }
+      hr {
+        border-style: solid;
+        border-color: #bbb;
+        border-radius: 2px;
+      }
+
+      .mention {
+        color: #005ea2;
+      }
+
+      .quote > p:first-of-type {
+        margin-top: 0;
+      }
+      .quote > p:first-of-type::before {
+        content: "\201C";
+      }
+      .quote > p:last-of-type {
+        margin-bottom: 0;
+      }
+      .quote > p:last-of-type::after {
+        content: "\201D";
+      }
     </style>
   </head>
 
   <body id="body" style="margin: 0; padding: 0; background-color: #f4f4f4">
-    <!-- Preheader (appears in inbox preview; hidden in body) -->
-    <div
-      style="
-        display: none;
-        font-size: 1px;
-        color: #f4f4f4;
-        line-height: 1px;
-        max-height: 0;
-        max-width: 0;
-        opacity: 0;
-        overflow: hidden;
-      "
-    >
-      {{PREHEADER}}
-    </div>
-    <!-- Extra hidden spacing to prevent some clients from showing body text as preview -->
-    <div style="display: none; max-height: 0; overflow: hidden">
-      &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
-    </div>
-
     <!-- Outer wrapper -->
     <table
       role="presentation"

@@ -28,6 +28,8 @@ const ACTIVITY_TYPES = {
   NotAnITGovernanceRequest: 216640002,
   NotApprovedByGRB: 216640003,
   CloseRequest: 216640004,
+  EditRequest: 216640005, //not used in this context, we have another quick create for Edit Requests
+  ReopenRequest: 216640006,
 };
 
 const ACTIVITY_TITLES = {
@@ -36,6 +38,7 @@ const ACTIVITY_TITLES = {
   216640002: "Not an IT Gov Request",
   216640003: "Not Approved by GRB",
   216640004: "Close Request",
+  216640006: "Re-open Request",
 };
 
 // All fields we manage in this quick create
@@ -54,6 +57,7 @@ const ALL_FIELDS = [
   "new_additionalinformation",
   "new_adminnote",
   "cr3ee_nextsteps",
+  "new_whyareyoureopeningthisrequest",
 ];
 
 // Config per activity type
@@ -78,6 +82,7 @@ const TYPE_RULES = {
       "cr3ee_reason",
       "cr3ee_whyareyouclosingthisrequest",
       "cr3ee_nextsteps",
+      "new_whyareyoureopeningthisrequest",
     ],
     require: ["new_process_target_step"],
   },
@@ -97,13 +102,12 @@ const TYPE_RULES = {
       "cr3ee_lcid",
       "cr3ee_scopeofthelifecycleid",
       "cr3ee_expirationdate",
-
-      //unrelated fields
       "cr3ee_reason",
       "new_process_target_step",
       "cr3ee_whyareyouclosingthisrequest",
       "new_requester_feedback",
       "new_recommendationsforthegrb",
+      "new_whyareyoureopeningthisrequest",
     ],
     require: ["cr3ee_lifecycleid", "cr3ee_nextsteps", "cr3ee_trbconsult"],
   },
@@ -126,6 +130,7 @@ const TYPE_RULES = {
       "new_requester_feedback",
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
+      "new_whyareyoureopeningthisrequest",
     ],
     require: [],
   },
@@ -148,6 +153,7 @@ const TYPE_RULES = {
       "new_process_target_step",
       "cr3ee_whyareyouclosingthisrequest",
       "new_requester_feedback",
+      "new_whyareyoureopeningthisrequest",
     ],
     require: [],
   },
@@ -170,6 +176,30 @@ const TYPE_RULES = {
       "new_requester_feedback",
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
+      "new_whyareyoureopeningthisrequest",
+    ],
+    require: [],
+  },
+
+  [ACTIVITY_TYPES.ReopenRequest]: {
+    show: [
+      "new_whyareyoureopeningthisrequest",
+      "new_additionalinformation",
+      "new_adminnote",
+    ],
+    hide: [
+      "cr3ee_lifecycleid",
+      "cr3ee_lcid",
+      "cr3ee_projectcostbaseline",
+      "cr3ee_expirationdate",
+      "cr3ee_scopeofthelifecycleid",
+      "cr3ee_trbconsult",
+      "cr3ee_reason",
+      "new_process_target_step",
+      "new_requester_feedback",
+      "new_recommendationsforthegrb",
+      "cr3ee_nextsteps",
+      "cr3ee_whyareyouclosingthisrequest",
     ],
     require: [],
   },
@@ -278,11 +308,19 @@ function setActivityLogTitle(formContext, title) {
   console.log("setting title to", title);
   formContext.getAttribute("new_activity")?.setValue(title);
 
-  const header = parent.document.querySelector("[data-id='quickHeaderTitle']");
+  const header =
+    parent.document.querySelector("[data-id='quickHeaderTitle']") ||
+    document.querySelector("[data-id='quickHeaderTitle']");
   console.log(header);
   if (header) {
     header.textContent = title;
   } else {
     console.log("header not found?");
+  }
+
+  if (formContext.getAttribute("new_activity")) {
+    formContext.getAttribute("new_activity")?.setValue(title);
+  } else {
+    console.log("could not find Activity");
   }
 }

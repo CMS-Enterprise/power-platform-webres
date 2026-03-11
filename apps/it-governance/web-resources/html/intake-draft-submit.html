@@ -93,11 +93,13 @@
         if (!form) return false;
 
         const submittedAttr = getAttr(form, REQUEST_STATUS);
-
         const isSubmitted =
           submittedAttr && submittedAttr.getValue() != DRAFT_STATE;
 
-        return isSubmitted;
+        const rfrAttr = getAttr(form, "cr69a_readyforreview");
+        const isReadyForReview = rfrAttr && rfrAttr.getValue() === true;
+
+        return isSubmitted && isReadyForReview;
       }
 
       function initBannerFromFields() {

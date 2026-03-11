@@ -109,13 +109,15 @@
           return;
         }
 
-        // Form and field are available - now hook up events and update
+        // Registering onChange here rather than the form editor to keep this
+        // component self-contained. If this web resource is removed, the listener
+        // goes with it automatically.
         if (rfr.addOnChange) {
           rfr.addOnChange(updateUI);
         }
 
-        // Update UI now that data is available
-        updateUI();
+        // Small delay to let the parent form finish populating field values
+        setTimeout(updateUI, 300);
       }
 
       document.addEventListener("DOMContentLoaded", function () {

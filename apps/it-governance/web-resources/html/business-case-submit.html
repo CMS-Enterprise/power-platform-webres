@@ -172,7 +172,7 @@
           if (submittedAttr) submittedAttr.setValue(true);
 
           const submittedDateAttr = getAttr(form, SUBMITTED_DATE);
-          if (submittedDateAttr && !submittedDateAttr.getValue()) {
+          if (submittedDateAttr) {
             submittedDateAttr.setValue(new Date());
           }
 

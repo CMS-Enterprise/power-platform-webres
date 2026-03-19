@@ -72,9 +72,6 @@
         new_activitybyname: currentUserName,
         new_activitybytype: "systemuser",
 
-        // Prefill date/time
-        new_activityon: new Date(),
-
         cr3ee_activitytype: activityTypeValue,
 
         // Allow per-button overrides

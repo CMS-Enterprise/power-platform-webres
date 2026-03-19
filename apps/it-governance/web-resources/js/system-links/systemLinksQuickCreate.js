@@ -7,7 +7,7 @@ function toggleOtherSystemDescription(executionContext) {
   var otherDescControl = formContext.getControl("cr69a_othersystemdescription");
   var otherDescAttr = formContext.getAttribute("cr69a_othersystemdescription");
 
-  if (!relationshipAttr || !otherDescControl) return;
+  if (!relationshipAttr || !otherDescControl || !otherDescAttr) return;
 
   var values = relationshipAttr.getValue(); // array or null
   var OTHER_VALUE = 971270004;

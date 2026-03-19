@@ -95,12 +95,13 @@ function onDecisionChange(executionContext) {
 function updateProgressTracker(formContext, attempt = 0) {
   console.log("calling update progress tracker");
   const tab = formContext.ui.tabs.get("tab_request_home");
-  const trackerSectionVisible = tab?.sections
-    .get("section_progress_tracker")
-    ?.getVisible();
-
-  if (!trackerSectionVisible) {
-    console.error("Unable to find the progress tracker.");
+  const trackerSection = tab?.sections.get("section_progress_tracker");
+  if (!trackerSection) {
+    console.error("Progress Tracker Section does not exist.");
+    return;
+  }
+  if (!trackerSection?.getVisible()) {
+    console.error("Progress Tracker Section is not currently visible.");
     return;
   }
 

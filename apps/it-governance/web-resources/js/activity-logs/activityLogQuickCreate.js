@@ -230,7 +230,6 @@ function onLifecycleIDSelectionChange(executionContext) {
   const lifecycleIdSelection = formContext
     .getAttribute("cr3ee_lifecycleid")
     ?.getValue();
-  console.log("lifecycleIdSelection", lifecycleIdSelection);
   if (lifecycleIdSelection === LIFECYCLE_ID_SELECTION_GENERATE_NEW) {
     //Generate new LCID
     setVisible(formContext, "cr3ee_lcid", false);
@@ -309,13 +308,11 @@ function setRequired(formContext, logicalName, required) {
 }
 
 function setActivityLogTitle(formContext, title) {
-  console.log("setting title to", title);
   formContext.getAttribute("new_activity")?.setValue(title);
 
   const header =
     parent.document.querySelector("[data-id='quickHeaderTitle']") ||
     document.querySelector("[data-id='quickHeaderTitle']");
-  console.log(header);
   if (header) {
     header.textContent = title;
   } else {

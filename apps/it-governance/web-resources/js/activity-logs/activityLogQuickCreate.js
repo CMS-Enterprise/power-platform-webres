@@ -220,14 +220,18 @@ function onActivityTypeChange(executionContext) {
   applyRules(formContext);
 }
 
+// cr3ee_lifecycleid option-set values
+// NOTE: 216640000 is currently configured to represent "Generate new LCID".
+const LIFECYCLE_ID_SELECTION_GENERATE_NEW = 216640000;
+
 function onLifecycleIDSelectionChange(executionContext) {
   const formContext = executionContext.getFormContext();
 
-  const activityType = formContext
+  const lifecycleIdSelection = formContext
     .getAttribute("cr3ee_lifecycleid")
     ?.getValue();
-  console.log("activityType", activityType);
-  if (activityType === 216640000) {
+  console.log("lifecycleIdSelection", lifecycleIdSelection);
+  if (lifecycleIdSelection === LIFECYCLE_ID_SELECTION_GENERATE_NEW) {
     //Generate new LCID
     setVisible(formContext, "cr3ee_lcid", false);
     setRequired(formContext, "cr3ee_lcid", false);

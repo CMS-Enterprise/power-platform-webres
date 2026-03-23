@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Turn Indicator</title>
+    <title>Ready for Review Indicator</title>
     <style>
       body {
         margin: 0;
@@ -53,6 +53,8 @@
     </style>
     <script>
       const READY_FOR_REVIEW = "cr69a_readyforreview";
+      const MAX_WAIT_MS = 5000;
+      const WAIT_INTERVAL_MS = 100;
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
@@ -96,16 +98,26 @@
         render(ready);
       }
 
-      function waitForFormData() {
+      function waitForFormData(startTime = Date.now()) {
         const form = getParentForm();
+
+        // Timeout guard
+        if (Date.now() - startTime > MAX_WAIT_MS) {
+          console.warn(
+            "Ready for Review card: form data did not load within timeout.",
+          );
+          updateUI(); // attempt one last render
+          return;
+        }
+
         if (!form) {
-          setTimeout(waitForFormData, 100);
+          setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
           return;
         }
 
         const rfr = getAttr(form, READY_FOR_REVIEW);
         if (!rfr) {
-          setTimeout(waitForFormData, 100);
+          setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
           return;
         }
 

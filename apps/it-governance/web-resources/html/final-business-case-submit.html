@@ -208,9 +208,44 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
+      // Retry-based initialization to ensure parent form context is ready
+      const INIT_MAX_ATTEMPTS = 10;
+      const INIT_RETRY_DELAY_MS = 500;
+
+      function isParentFormReady() {
+        try {
+          const form = getParentForm();
+          return !!(form && form.data);
+        } catch (e) {
+          // If accessing the form throws, treat as not ready yet
+          return false;
+        }
+      }
+
+      function initUIWithRetry(attempt) {
+        var currentAttempt = attempt || 1;
+
+        if (!isParentFormReady()) {
+          if (currentAttempt >= INIT_MAX_ATTEMPTS) {
+            console.warn(
+              "Parent form context not ready after maximum retries; UI may not reflect correct state.",
+            );
+            return;
+          }
+
+          setTimeout(function () {
+            initUIWithRetry(currentAttempt + 1);
+          }, INIT_RETRY_DELAY_MS);
+          return;
+        }
+
+        // Parent form is ready; perform the original initialization
         hookReadyForReviewOnChange();
         updateUIFromReadyForReview();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        initUIWithRetry(1);
       });
     </script>
   </head>

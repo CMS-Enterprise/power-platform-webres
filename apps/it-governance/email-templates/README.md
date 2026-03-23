@@ -173,7 +173,8 @@ Recipients are defined separately (environment variable, user lookup, or other l
 
 ### Environment Safety
 
-- Templates are deployed via solution
+- Templates are stored as data in Dataverse and are not included in the solution package
+- Template data is moved between environments via controlled data migration (Power Automate migration job)
 - Email recipients use Environment Variables
 - No hardcoded environment-specific URLs
 

@@ -62,98 +62,57 @@
       }
     </style>
     <script>
-      const PAGE_REQUIRED_FIELDS = {
-        REQUEST_TYPE: [],
-        GOVERNANCE_STEPS: [],
-        INTAKE: [
-          "cr69a_requester",
-          "cr69a_requestercomponent",
-          "cr69a_cmsbusinessownername",
-          "cr69a_cmsbusinessownercomponent",
-          "cr69a_cmsprojectproductmanager",
-          "cr69a_cmsproductmanagercomponent",
-          "cr69a_collaborators",
-          // "cr69a_business_need", Deprecated
-          "cr3ee_business_need_multi",
-          // "cr69a_solution", Deprecated
-          "cr3ee_proposedsolution",
-          "cr69a_current_process_status",
-          "cr69a_enterprise_architecture_support",
-          "cr69a_ai_technologies_used",
-          "cr69a_interface_component",
-          "cr69a_software_products",
-          // "cr69a_annual_spending",
-          "cr3ee_currentannualspending",
-          // "cr69a_current_it_spending_portion",
-          "cr3ee_annualspendingitpercentage",
-          // "cr69a_planned_annual_spending",
-          "cr3ee_plannedannualspendingoffirstyear",
-          // "cr69a_whatportionofyr1plannedannualspendingisit",
-          "cr3ee_itpercentageofy1annualspending",
-          // "cr69a_doesthisrequestalreadyhavecontractsupport",
-        ],
-        BUSINESS_CASE: ["cr69a_businesscase"],
-        GRT_MEETING: [],
-        FINAL_BUSINESS_CASE: ["cr69a_finalbusinesscase"],
-        GRB_REVIEW: [],
-        AWAITING_DECISION: [],
-        DECISION: [],
-        FINISHED: [],
-      };
+      const PAGE_REQUIRED_FIELDS = [
+        "cr69a_requester",
+        "cr69a_requestercomponent",
+        "cr69a_cmsbusinessownername",
+        "cr69a_cmsbusinessownercomponent",
+        "cr69a_cmsprojectproductmanager",
+        "cr69a_cmsproductmanagercomponent",
+        "cr69a_collaborators",
+        "cr3ee_business_need_multi",
+        "cr3ee_proposedsolution",
+        "cr69a_current_process_status",
+        "cr69a_enterprise_architecture_support",
+        "cr69a_ai_technologies_used",
+        "cr69a_interface_component",
+        "cr69a_software_products",
+        "cr3ee_currentannualspending",
+        "cr3ee_annualspendingitpercentage",
+        "cr3ee_plannedannualspendingoffirstyear",
+        "cr3ee_itpercentageofy1annualspending",
+      ];
 
-      const BPF_STAGES = {
-        DRAFT: 971270006,
-        INTAKE_REQUEST_REVIEW: 971270000,
-        DRAFT_BUSINESS_CASE: 971270001,
-        SCHEDULE_GRT_MEETING: 100000001,
-        GRT_MEETING: 971270002,
-        FINAL_BUSINESS_CASE: 971270003,
-        SCHEDULE_GRB_REVIEW: 100000002,
-        GRB_REVIEW: 971270004,
-        AWAITING_DECISION: 971270007,
-        DECISION: 971270005,
-        ISSUE_LCID: 971270008,
-        FINISHED: 971270009,
-        REQUEST_TYPE: 971270010,
-        GOVERNANCE_PROCESS_STEPS: 971270011,
-      };
-
-      const ALWAYS_REQUIRED_FIELDS = [];
-
-      const STAGE_TO_PAGE = {
-        [BPF_STAGES.REQUEST_TYPE]: "REQUEST_TYPE",
-        [BPF_STAGES.GOVERNANCE_PROCESS_STEPS]: "GOVERNANCE_STEPS",
-        [BPF_STAGES.DRAFT]: "INTAKE",
-        [BPF_STAGES.INTAKE_REQUEST_REVIEW]: "INTAKE",
-        [BPF_STAGES.DRAFT_BUSINESS_CASE]: "BUSINESS_CASE",
-        [BPF_STAGES.SCHEDULE_GRT_MEETING]: "GRT_MEETING",
-        [BPF_STAGES.GRT_MEETING]: "GRT_MEETING",
-        [BPF_STAGES.FINAL_BUSINESS_CASE]: "FINAL_BUSINESS_CASE",
-        [BPF_STAGES.SCHEDULE_GRB_REVIEW]: "GRB_REVIEW",
-        [BPF_STAGES.GRB_REVIEW]: "GRB_REVIEW",
-        [BPF_STAGES.AWAITING_DECISION]: "AWAITING_DECISION",
-        [BPF_STAGES.DECISION]: "DECISION",
-        [BPF_STAGES.ISSUE_LCID]: "DECISION",
-        [BPF_STAGES.FINISHED]: "FINISHED",
-      };
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
       }
 
-      function getAttr(form, schema) {
-        return form ? form.getAttribute(schema) : null;
-      }
-
       function showSuccess(text) {
-        var box = document.getElementById("submitStatus");
+        const box = document.getElementById("submitStatus");
         if (!box) return;
         box.textContent =
           text ||
           "System Intake Draft successfully submitted. Waiting for feedback.";
         box.classList.remove("hidden");
-        var submitButton = document.getElementById("submitIntakeRequestButton");
+        box.style.borderLeftColor = "#107c10";
+        box.style.backgroundColor = "#dff6dd";
+        box.style.color = "#0b5a0b";
+
+        const submitButton = document.getElementById(
+          "submitIntakeRequestButton",
+        );
         if (!submitButton) return;
         submitButton.classList.add("hidden");
+      }
+
+      function showError(text) {
+        const box = document.getElementById("submitStatus");
+        if (!box) return;
+        box.textContent = text || "Something went wrong.";
+        box.classList.remove("hidden");
+        box.style.borderLeftColor = "#d13438";
+        box.style.backgroundColor = "#fde7e9";
+        box.style.color = "#a4262c";
       }
 
       const DRAFT_STATE = 971270000;
@@ -162,17 +121,19 @@
       const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
       const INTAKE_REQUEST_REVIEW = 971270000;
 
-      
       function shouldShowSuccessOnLoad() {
         const form = getParentForm();
         if (!form) return false;
 
-        const submittedAttr = getAttr(form, REQUEST_STATUS);
+        const submittedAttr = form.getAttribute(REQUEST_STATUS);
+        const rfrAttr = form.getAttribute("cr69a_readyforreview");
+
+        const submittedValue = submittedAttr ? submittedAttr.getValue() : null;
+        const rfrValue = rfrAttr ? rfrAttr.getValue() : null;
 
         const isSubmitted =
-          submittedAttr && submittedAttr.getValue() != DRAFT_STATE;
-        const rfrAttr = getAttr(form, "cr69a_readyforreview");
-        const isReadyForReview = rfrAttr && rfrAttr.getValue() === true;
+          submittedValue !== null && submittedValue !== DRAFT_STATE;
+        const isReadyForReview = rfrValue === true;
 
         return isSubmitted && isReadyForReview;
       }
@@ -185,115 +146,6 @@
         }
       }
 
-      function getAllWizardRequiredFields() {
-        const all = new Set(ALWAYS_REQUIRED_FIELDS);
-        Object.values(PAGE_REQUIRED_FIELDS).forEach((arr) => {
-          (arr || []).forEach((f) => all.add(f));
-        });
-        return Array.from(all);
-      }
-
-      function setFieldRequired(logicalName, isRequired) {
-        const form = getParentForm();
-        var REQUIRED = false;
-        if (!form) {
-          console.error("Could not access parent form context.");
-          showError("Unable to access form. Please refresh and try again.");
-          return;
-        }
-        const attr = getAttr(form, logicalName);
-        const attrValue = getAttr(form, logicalName).getValue();
-        //const attr = formContext.getAttribute(logicalName);
-        if (!attr) {
-          console.warn(
-            `Required mapping references missing attribute: ${logicalName}`,
-          );
-          return;
-        }
-        if(!attrValue) {
-          form.getControl(logicalName).setNotification("Field is required");
-          parent.Xrm.App.addGlobalNotification({
-            type: 2, // 2 = banner
-            level: 1, // "INFO" | "WARNING" | "ERROR"
-            message: `${logicalName}: Field is required`,
-            showCloseButton: true,
-          });
-          REQUIRED = true;
-        }
-        // attr.setRequiredLevel(isRequired ? "required" : "none");
-        console.log(REQUIRED);
-        return(REQUIRED);
-      }
-
-      function setFieldUnrequired(logicalName, isRequired) {
-        const form = getParentForm();
-        if (!form) {
-          console.error("Could not access parent form context.");
-          showError("Unable to access form. Please refresh and try again.");
-          return;
-        }
-        const attr = getAttr(form, logicalName);
-        //const attr = formContext.getAttribute(logicalName);
-        if (!attr) {
-          console.warn(
-            `Required mapping references missing attribute: ${logicalName}`,
-          );
-          return;
-        }
-        form.getControl(logicalName).clearNotification();
-        // attr.setRequiredLevel(isRequired ? "none" : "none");
-      }
-
-      function applyRequiredFieldsForPage(pageName) {
-        if (!Object.prototype.hasOwnProperty.call(PAGE_REQUIRED_FIELDS, pageName)) {
-          console.error(`Unknown pageName for required fields: ${pageName}`);
-          return;
-        }
-
-        const allWizardFields = getAllWizardRequiredFields();
-        const pageFields = new Set([
-          ...(PAGE_REQUIRED_FIELDS[pageName] || []),
-          ...ALWAYS_REQUIRED_FIELDS,
-        ]);
-
-        // First, clear required for all wizard-managed fields
-        allWizardFields.forEach((fieldName) =>
-          setFieldRequired(fieldName, false),
-          //setFieldRequired(formContext, fieldName, false),
-        );
-
-        // Then, set required only for current page fields
-        pageFields.forEach((fieldName) =>
-          setFieldRequired(fieldName, true),
-          // setFieldRequired(formContext, fieldName, true),
-        );
-      }
-
-      function applyUnrequiredFieldsForPage(pageName) {
-        if (!Object.prototype.hasOwnProperty.call(PAGE_REQUIRED_FIELDS, pageName)) {
-          console.error(`Unknown pageName for required fields: ${pageName}`);
-          return;
-        }
-
-        const allWizardFields = getAllWizardRequiredFields();
-        const pageFields = new Set([
-          ...(PAGE_REQUIRED_FIELDS[pageName] || []),
-          ...ALWAYS_REQUIRED_FIELDS,
-        ]);
-
-        // First, clear required for all wizard-managed fields
-        allWizardFields.forEach((fieldName) =>
-          setFieldUnrequired(fieldName, false),
-          //setFieldRequired(formContext, fieldName, false),
-        );
-
-        // Then, set required only for current page fields
-        pageFields.forEach((fieldName) =>
-          setFieldUnrequired(fieldName, true),
-          // setFieldRequired(formContext, fieldName, true),
-        );
-      }
-
       function submitIntakeRequestDraft() {
         const form = getParentForm();
         if (!form) {
@@ -301,81 +153,135 @@
           showError("Unable to access form. Please refresh and try again.");
           return;
         }
-        const stage = form
-          .getAttribute("new_admingovernanceprocessstep")
-          ?.getValue();
-        // const stage = formContext
-        //   .getAttribute("new_admingovernanceprocessstep")
-        //   ?.getValue();
 
-        const isNew = !form.data.entity.getId();
+        const submitButton = document.getElementById(
+          "submitIntakeRequestButton",
+        );
+        if (submitButton) {
+          submitButton.disabled = true;
+        }
 
-        // new record should start at request type page
-        const pageName = isNew ? "REQUEST_TYPE" : STAGE_TO_PAGE[stage] || "INTAKE";
-        const req = applyRequiredFieldsForPage(pageName);
-        // applyRequiredFieldsForPage(formContext, pageName);
-        console.log(req);
-        if(req === false)
-        {
-          try {
-            const form = getParentForm();
-            if (!form) {
-              console.error("Could not access parent form context.");
-              return;
+        let allValid = true;
+
+        PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
+          const attribute = form.getAttribute(fieldName);
+          const control = form.getControl(fieldName);
+
+          if (!attribute) {
+            console.warn(`Attribute not found on form: ${fieldName}`);
+            allValid = false;
+            return;
+          }
+
+          if (control) {
+            control.clearNotification("required_check");
+          }
+
+          const value = attribute.getValue();
+
+          const isEmpty =
+            value === null ||
+            (typeof value === "string" && value.trim() === "") ||
+            (Array.isArray(value) && value.length === 0);
+
+          if (isEmpty) {
+            allValid = false;
+
+            if (control) {
+              control.setNotification(
+                "This field is required.",
+                "required_check",
+              );
+            } else {
+              console.warn(
+                `Control not found for required field: ${fieldName}`,
+              );
             }
+          }
+        });
 
-            // 1) Mark status as Submitted
-            const statusAttr = getAttr(form, REQUEST_STATUS);
-            if (!statusAttr) {
-              console.error("Could not access Form Status field.");
-              return;
-            }
-            statusAttr.setValue(971270002);
+        console.log("allValid", allValid);
 
-            const taskListStep = getAttr(form, ADMIN_GOV_TASK_LIST_STEP_FIELD);
-            if (!taskListStep) {
-              console.error("Could not access Form Status field.");
-              return;
-            }
-            taskListStep.setValue(INTAKE_REQUEST_REVIEW);
+        if (!allValid) {
+          showError("Please complete all required fields before submitting.");
+          if (submitButton) {
+            submitButton.disabled = false;
+          }
+          return;
+        }
 
-            // 2) Set Ready For Review
-            const rfr = form.getAttribute("cr69a_readyforreview");
-            if (!rfr) {
-              console.error("Could not access ready for review.");
-              return;
-            }
-            rfr.setValue(true);
-
-            // 3) Save form
-            form.data.save().then(
-              function () {
-                if (parent.lockAllFields) {
-                  parent.lockAllFields(form);
-                } else {
-                  console.warn(
-                    "lockAllFields function not found on parent window",
-                  );
-                }
-                taskListStep.fireOnChange();
-                // notify("System Intake Form successfully submitted.", "success");
-                showSuccess(
-                  "Your Intake Request form has been submitted. You will receive an automatic email, and a Governance Admin Team member will reach out shortly regarding next steps.",
-                );
-              },
-              function (err) {
-                console.error(
-                  "Save failed:",
-                  err && err.message ? err.message : err,
-                );
-                // setTimeout(() => {applyUnrequiredFieldsForPage(pageName)}, 10000);
-              },
+        try {
+          // 1) Mark status as Submitted
+          const statusAttr = form.getAttribute(REQUEST_STATUS);
+          if (!statusAttr) {
+            console.error("Could not access Request Status field.");
+            showError(
+              "Unable to submit because a required system field is unavailable.",
             );
-          } catch (e) {
-            console.error("Unexpected error during submit:", e);
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+          statusAttr.setValue(971270002);
+
+          const taskListStep = form.getAttribute(
+            ADMIN_GOV_TASK_LIST_STEP_FIELD,
+          );
+          if (!taskListStep) {
+            console.error(
+              "Could not access Admin Governance Process Step field.",
+            );
+            showError(
+              "Unable to submit because a required system field is unavailable.",
+            );
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+          taskListStep.setValue(INTAKE_REQUEST_REVIEW);
+          taskListStep.fireOnChange();
+
+          // 2) Set Ready For Review
+          const rfr = form.getAttribute("cr69a_readyforreview");
+          if (!rfr) {
+            console.error("Could not access ready for review.");
+            showError(
+              "Unable to submit because a required system field is unavailable.",
+            );
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+          rfr.setValue(true);
+
+          // 3) Save form
+          form.data.save().then(
+            function () {
+              if (parent.lockAllFields) {
+                parent.lockAllFields(form);
+              } else {
+                console.warn(
+                  "lockAllFields function not found on parent window",
+                );
+              }
+              // notify("System Intake Form successfully submitted.", "success");
+              showSuccess(
+                "Your Intake Request form has been submitted. You will receive an automatic email, and a Governance Admin Team member will reach out shortly regarding next steps.",
+              );
+            },
+            function (err) {
+              console.error(
+                "Save failed:",
+                err && err.message ? err.message : err,
+              );
+              showError("Save failed. Please try again or refresh the form.");
+              if (submitButton) submitButton.disabled = false;
+            },
+          );
+        } catch (e) {
+          console.error("Unexpected error during submit:", e);
+          showError("An unexpected error occurred while submitting.");
+          if (submitButton) {
+            submitButton.disabled = false;
           }
         }
-        setTimeout(() => {applyUnrequiredFieldsForPage(pageName)}, 10000);
       }
 
       document.addEventListener("DOMContentLoaded", initBannerFromFields);

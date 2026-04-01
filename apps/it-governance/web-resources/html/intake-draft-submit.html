@@ -40,19 +40,6 @@
         box-shadow: 0 0 0 2px #0078d4;
       }
 
-      .alert {
-        padding: 12px 16px;
-        margin: 12px 0;
-        border-radius: 4px;
-        border-left: 6px solid #107c10;
-        background-color: #dff6dd;
-        color: #0b5a0b;
-      }
-
-      .hidden {
-        display: none;
-      }
-
       @media (max-width: 768px) {
         body {
           padding: 8px;
@@ -87,67 +74,60 @@
       const READY_FOR_REVIEW_FIELD = "cr69a_readyforreview";
       const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
       const INTAKE_REQUEST_REVIEW = 971270000;
-      const SUBMIT_WARNING_ID = "submit_missing_fields_warning";
+
+      const NOTIF_IDS = {
+        missingFields: "submit_missing_fields_warning",
+        success: "submit_success_message",
+        error: "submit_error_message",
+      };
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
       }
 
-      function showSuccess(text) {
-        const box = document.getElementById("submitStatus");
-        if (!box) return;
+      function clearActionNotifications(formContext) {
+        formContext.ui.clearFormNotification(NOTIF_IDS.missingFields);
+        formContext.ui.clearFormNotification(NOTIF_IDS.success);
+        formContext.ui.clearFormNotification(NOTIF_IDS.error);
+      }
 
-        box.textContent =
+      function showFormNotification(formContext, message, level, uniqueId) {
+        formContext.ui.clearFormNotification(uniqueId);
+        formContext.ui.setFormNotification(message, level, uniqueId);
+      }
+
+      function showMissingFieldsWarning(formContext, missingFieldLabels) {
+        const message =
+          "Successfully saved. Complete required fields before submitting: " +
+          missingFieldLabels.join(", ");
+
+        showFormNotification(
+          formContext,
+          message,
+          "WARNING",
+          NOTIF_IDS.missingFields,
+        );
+      }
+
+      function showSuccess(formContext, text) {
+        const message =
           text ||
           "System Intake Draft successfully submitted. Waiting for feedback.";
-        box.classList.remove("hidden");
-        box.style.borderLeftColor = "#107c10";
-        box.style.backgroundColor = "#dff6dd";
-        box.style.color = "#0b5a0b";
+
+        showFormNotification(formContext, message, "INFO", NOTIF_IDS.success);
 
         const submitButton = document.getElementById(
           "submitIntakeRequestButton",
         );
         if (submitButton) {
-          submitButton.classList.add("hidden");
+          submitButton.style.display = "none";
         }
       }
 
-      function showError(text) {
-        const box = document.getElementById("submitStatus");
-        if (!box) return;
+      function showError(formContext, text) {
+        const message = text || "Something went wrong.";
 
-        box.textContent = text || "Something went wrong.";
-        box.classList.remove("hidden");
-        box.style.borderLeftColor = "#d13438";
-        box.style.backgroundColor = "#fde7e9";
-        box.style.color = "#a4262c";
-      }
-
-      function clearBanner() {
-        const box = document.getElementById("submitStatus");
-        if (!box) return;
-
-        box.textContent = "";
-        box.classList.add("hidden");
-      }
-
-      function showMissingFieldsWarning(formContext, missingFieldLabels) {
-        formContext.ui.clearFormNotification(SUBMIT_WARNING_ID);
-
-        const message =
-          "Your request has been saved, but these fields are still required before submission: " +
-          missingFieldLabels.join(", ");
-
-        formContext.ui.setFormNotification(
-          message,
-          "WARNING",
-          SUBMIT_WARNING_ID,
-        );
-      }
-
-      function clearMissingFieldsWarning(formContext) {
-        formContext.ui.clearFormNotification(SUBMIT_WARNING_ID);
+        showFormNotification(formContext, message, "ERROR", NOTIF_IDS.error);
       }
 
       function shouldShowSuccessOnLoad() {
@@ -168,10 +148,23 @@
       }
 
       function initBannerFromFields() {
+        const form = getParentForm();
+        if (!form) return;
+
         if (shouldShowSuccessOnLoad()) {
+          clearActionNotifications(form);
+
           showSuccess(
+            form,
             "System Intake Draft successfully submitted. Waiting for feedback.",
           );
+
+          const submitButton = document.getElementById(
+            "submitIntakeRequestButton",
+          );
+          if (submitButton) {
+            submitButton.style.display = "none";
+          }
         }
       }
 
@@ -217,12 +210,10 @@
 
         if (!form) {
           console.error("Could not access parent form context.");
-          showError("Unable to access form. Please refresh and try again.");
           return;
         }
 
-        clearBanner();
-        clearMissingFieldsWarning(form);
+        clearActionNotifications(form);
 
         const submitButton = document.getElementById(
           "submitIntakeRequestButton",
@@ -234,8 +225,6 @@
         const validationResult = validateFields(form);
         const allValid = validationResult.allValid;
         const missingFieldLabels = validationResult.missingFieldLabels;
-
-        console.log("allValid", allValid);
 
         if (!allValid) {
           form.data.save().then(
@@ -250,8 +239,8 @@
                 "Save failed:",
                 err && err.message ? err.message : err,
               );
-              showMissingFieldsWarning(form, missingFieldLabels);
               showError(
+                form,
                 "Your request could not be submitted, and the draft could not be saved. Please try again or refresh the form.",
               );
               if (submitButton) {
@@ -267,6 +256,7 @@
           if (!statusAttr) {
             console.error("Could not access Request Status field.");
             showError(
+              form,
               "Unable to submit because a required system field is unavailable.",
             );
             if (submitButton) submitButton.disabled = false;
@@ -282,6 +272,7 @@
               "Could not access Admin Governance Process Step field.",
             );
             showError(
+              form,
               "Unable to submit because a required system field is unavailable.",
             );
             if (submitButton) submitButton.disabled = false;
@@ -294,6 +285,7 @@
           if (!rfr) {
             console.error("Could not access ready for review.");
             showError(
+              form,
               "Unable to submit because a required system field is unavailable.",
             );
             if (submitButton) submitButton.disabled = false;
@@ -301,7 +293,7 @@
           }
           rfr.setValue(true);
 
-          clearMissingFieldsWarning(form);
+          clearActionNotifications(form);
 
           form.data.save().then(
             function () {
@@ -314,6 +306,7 @@
               }
 
               showSuccess(
+                form,
                 "Your Intake Request form has been submitted. You will receive an automatic email, and a Governance Admin Team member will reach out shortly regarding next steps.",
               );
             },
@@ -322,7 +315,10 @@
                 "Save failed:",
                 err && err.message ? err.message : err,
               );
-              showError("Save failed. Please try again or refresh the form.");
+              showError(
+                form,
+                "Save failed. Please try again or refresh the form.",
+              );
               if (submitButton) {
                 submitButton.disabled = false;
               }
@@ -330,7 +326,7 @@
           );
         } catch (e) {
           console.error("Unexpected error during submit:", e);
-          showError("An unexpected error occurred while submitting.");
+          showError(form, "An unexpected error occurred while submitting.");
           if (submitButton) {
             submitButton.disabled = false;
           }
@@ -341,13 +337,6 @@
     </script>
   </head>
   <body>
-    <div
-      id="submitStatus"
-      class="alert hidden"
-      role="status"
-      aria-live="polite"
-    ></div>
-
     <div style="text-align: right">
       <button
         id="submitIntakeRequestButton"

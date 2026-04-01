@@ -87,7 +87,7 @@
       const READY_FOR_REVIEW_FIELD = "cr69a_readyforreview";
       const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
       const INTAKE_REQUEST_REVIEW = 971270000;
-      const REQUIRED_CHECK_ID = "required_check";
+      const SUBMIT_WARNING_ID = "submit_missing_fields_warning";
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
@@ -132,6 +132,24 @@
         box.classList.add("hidden");
       }
 
+      function showMissingFieldsWarning(formContext, missingFieldLabels) {
+        formContext.ui.clearFormNotification(SUBMIT_WARNING_ID);
+
+        const message =
+          "Your request has been saved, but these fields are still required before submission: " +
+          missingFieldLabels.join(", ");
+
+        formContext.ui.setFormNotification(
+          message,
+          "WARNING",
+          SUBMIT_WARNING_ID,
+        );
+      }
+
+      function clearMissingFieldsWarning(formContext) {
+        formContext.ui.clearFormNotification(SUBMIT_WARNING_ID);
+      }
+
       function shouldShowSuccessOnLoad() {
         const form = getParentForm();
         if (!form) return false;
@@ -159,20 +177,16 @@
 
       function validateFields(form) {
         let allValid = true;
-        const invalidControls = [];
+        const missingFieldLabels = [];
 
         PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
           const attribute = form.getAttribute(fieldName);
           const control = form.getControl(fieldName);
 
           if (!attribute) {
-            console.warn(`Attribute not found on form: ${fieldName}`);
             allValid = false;
+            missingFieldLabels.push(fieldName);
             return;
-          }
-
-          if (control) {
-            control.clearNotification(REQUIRED_CHECK_ID);
           }
 
           const value = attribute.getValue();
@@ -184,26 +198,18 @@
           if (isEmpty) {
             allValid = false;
 
-            if (control) {
-              invalidControls.push(control);
+            if (control && typeof control.getLabel === "function") {
+              missingFieldLabels.push(control.getLabel());
             } else {
-              console.warn(
-                `Control not found for required field: ${fieldName}`,
-              );
+              missingFieldLabels.push(fieldName);
             }
           }
         });
 
         return {
           allValid: allValid,
-          invalidControls: invalidControls,
+          missingFieldLabels: missingFieldLabels,
         };
-      }
-
-      function applyMissingFieldNotifications(invalidControls) {
-        invalidControls.forEach(function (control) {
-          control.setNotification("This field is required.", REQUIRED_CHECK_ID);
-        });
       }
 
       function submitIntakeRequestDraft() {
@@ -216,6 +222,7 @@
         }
 
         clearBanner();
+        clearMissingFieldsWarning(form);
 
         const submitButton = document.getElementById(
           "submitIntakeRequestButton",
@@ -226,17 +233,14 @@
 
         const validationResult = validateFields(form);
         const allValid = validationResult.allValid;
-        const invalidControls = validationResult.invalidControls;
+        const missingFieldLabels = validationResult.missingFieldLabels;
 
         console.log("allValid", allValid);
 
         if (!allValid) {
           form.data.save().then(
             function () {
-              applyMissingFieldNotifications(invalidControls);
-              showError(
-                "Your request has been saved, but required fields are still missing before it can be submitted.",
-              );
+              showMissingFieldsWarning(form, missingFieldLabels);
               if (submitButton) {
                 submitButton.disabled = false;
               }
@@ -246,7 +250,7 @@
                 "Save failed:",
                 err && err.message ? err.message : err,
               );
-              applyMissingFieldNotifications(invalidControls);
+              showMissingFieldsWarning(form, missingFieldLabels);
               showError(
                 "Your request could not be submitted, and the draft could not be saved. Please try again or refresh the form.",
               );
@@ -296,6 +300,8 @@
             return;
           }
           rfr.setValue(true);
+
+          clearMissingFieldsWarning(form);
 
           form.data.save().then(
             function () {

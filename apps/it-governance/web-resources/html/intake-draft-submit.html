@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Submit Intake Request Draft</title>
     <style>
-      /* Base */
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         font-size: 14px;
@@ -16,7 +15,6 @@
         padding: 12px;
       }
 
-      /* Primary button */
       .btn-primary {
         background-color: #0078d4;
         border: 1px solid #0078d4;
@@ -30,17 +28,18 @@
           background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
+
       .btn-primary:hover {
         background-color: #106ebe;
         border-color: #106ebe;
       }
+
       .btn-primary:focus {
         outline: 1px solid #ffffff;
         outline-offset: 2px;
         box-shadow: 0 0 0 2px #0078d4;
       }
 
-      /* Success alert */
       .alert {
         padding: 12px 16px;
         margin: 12px 0;
@@ -50,7 +49,6 @@
         color: #0b5a0b;
       }
 
-      /* Hide/show utility */
       .hidden {
         display: none;
       }
@@ -83,6 +81,14 @@
         "cr3ee_itpercentageofy1annualspending",
       ];
 
+      const DRAFT_STATE = 971270000;
+      const SUBMITTED_STATE = 971270002;
+      const REQUEST_STATUS = "cr69a_status";
+      const READY_FOR_REVIEW_FIELD = "cr69a_readyforreview";
+      const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
+      const INTAKE_REQUEST_REVIEW = 971270000;
+      const REQUIRED_CHECK_ID = "required_check";
+
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
       }
@@ -90,6 +96,7 @@
       function showSuccess(text) {
         const box = document.getElementById("submitStatus");
         if (!box) return;
+
         box.textContent =
           text ||
           "System Intake Draft successfully submitted. Waiting for feedback.";
@@ -101,13 +108,15 @@
         const submitButton = document.getElementById(
           "submitIntakeRequestButton",
         );
-        if (!submitButton) return;
-        submitButton.classList.add("hidden");
+        if (submitButton) {
+          submitButton.classList.add("hidden");
+        }
       }
 
       function showError(text) {
         const box = document.getElementById("submitStatus");
         if (!box) return;
+
         box.textContent = text || "Something went wrong.";
         box.classList.remove("hidden");
         box.style.borderLeftColor = "#d13438";
@@ -115,18 +124,20 @@
         box.style.color = "#a4262c";
       }
 
-      const DRAFT_STATE = 971270000;
-      const REQUEST_STATUS = "cr69a_status";
+      function clearBanner() {
+        const box = document.getElementById("submitStatus");
+        if (!box) return;
 
-      const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
-      const INTAKE_REQUEST_REVIEW = 971270000;
+        box.textContent = "";
+        box.classList.add("hidden");
+      }
 
       function shouldShowSuccessOnLoad() {
         const form = getParentForm();
         if (!form) return false;
 
         const submittedAttr = form.getAttribute(REQUEST_STATUS);
-        const rfrAttr = form.getAttribute("cr69a_readyforreview");
+        const rfrAttr = form.getAttribute(READY_FOR_REVIEW_FIELD);
 
         const submittedValue = submittedAttr ? submittedAttr.getValue() : null;
         const rfrValue = rfrAttr ? rfrAttr.getValue() : null;
@@ -146,22 +157,9 @@
         }
       }
 
-      function submitIntakeRequestDraft() {
-        const form = getParentForm();
-        if (!form) {
-          console.error("Could not access parent form context.");
-          showError("Unable to access form. Please refresh and try again.");
-          return;
-        }
-
-        const submitButton = document.getElementById(
-          "submitIntakeRequestButton",
-        );
-        if (submitButton) {
-          submitButton.disabled = true;
-        }
-
+      function validateFields(form) {
         let allValid = true;
+        const invalidControls = [];
 
         PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
           const attribute = form.getAttribute(fieldName);
@@ -174,11 +172,10 @@
           }
 
           if (control) {
-            control.clearNotification("required_check");
+            control.clearNotification(REQUIRED_CHECK_ID);
           }
 
           const value = attribute.getValue();
-
           const isEmpty =
             value === null ||
             (typeof value === "string" && value.trim() === "") ||
@@ -188,10 +185,7 @@
             allValid = false;
 
             if (control) {
-              control.setNotification(
-                "This field is required.",
-                "required_check",
-              );
+              invalidControls.push(control);
             } else {
               console.warn(
                 `Control not found for required field: ${fieldName}`,
@@ -200,18 +194,71 @@
           }
         });
 
+        return {
+          allValid: allValid,
+          invalidControls: invalidControls,
+        };
+      }
+
+      function applyMissingFieldNotifications(invalidControls) {
+        invalidControls.forEach(function (control) {
+          control.setNotification("This field is required.", REQUIRED_CHECK_ID);
+        });
+      }
+
+      function submitIntakeRequestDraft() {
+        const form = getParentForm();
+
+        if (!form) {
+          console.error("Could not access parent form context.");
+          showError("Unable to access form. Please refresh and try again.");
+          return;
+        }
+
+        clearBanner();
+
+        const submitButton = document.getElementById(
+          "submitIntakeRequestButton",
+        );
+        if (submitButton) {
+          submitButton.disabled = true;
+        }
+
+        const validationResult = validateFields(form);
+        const allValid = validationResult.allValid;
+        const invalidControls = validationResult.invalidControls;
+
         console.log("allValid", allValid);
 
         if (!allValid) {
-          showError("Please complete all required fields before submitting.");
-          if (submitButton) {
-            submitButton.disabled = false;
-          }
+          form.data.save().then(
+            function () {
+              applyMissingFieldNotifications(invalidControls);
+              showError(
+                "Your request has been saved, but required fields are still missing before it can be submitted.",
+              );
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
+            },
+            function (err) {
+              console.error(
+                "Save failed:",
+                err && err.message ? err.message : err,
+              );
+              applyMissingFieldNotifications(invalidControls);
+              showError(
+                "Your request could not be submitted, and the draft could not be saved. Please try again or refresh the form.",
+              );
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
+            },
+          );
           return;
         }
 
         try {
-          // 1) Mark status as Submitted
           const statusAttr = form.getAttribute(REQUEST_STATUS);
           if (!statusAttr) {
             console.error("Could not access Request Status field.");
@@ -221,7 +268,7 @@
             if (submitButton) submitButton.disabled = false;
             return;
           }
-          statusAttr.setValue(971270002);
+          statusAttr.setValue(SUBMITTED_STATE);
 
           const taskListStep = form.getAttribute(
             ADMIN_GOV_TASK_LIST_STEP_FIELD,
@@ -239,8 +286,7 @@
           taskListStep.setValue(INTAKE_REQUEST_REVIEW);
           taskListStep.fireOnChange();
 
-          // 2) Set Ready For Review
-          const rfr = form.getAttribute("cr69a_readyforreview");
+          const rfr = form.getAttribute(READY_FOR_REVIEW_FIELD);
           if (!rfr) {
             console.error("Could not access ready for review.");
             showError(
@@ -251,7 +297,6 @@
           }
           rfr.setValue(true);
 
-          // 3) Save form
           form.data.save().then(
             function () {
               if (parent.lockAllFields) {
@@ -261,7 +306,7 @@
                   "lockAllFields function not found on parent window",
                 );
               }
-              // notify("System Intake Form successfully submitted.", "success");
+
               showSuccess(
                 "Your Intake Request form has been submitted. You will receive an automatic email, and a Governance Admin Team member will reach out shortly regarding next steps.",
               );
@@ -272,7 +317,9 @@
                 err && err.message ? err.message : err,
               );
               showError("Save failed. Please try again or refresh the form.");
-              if (submitButton) submitButton.disabled = false;
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
             },
           );
         } catch (e) {

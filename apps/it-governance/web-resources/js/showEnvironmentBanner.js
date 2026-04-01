@@ -18,7 +18,7 @@ function showEnvironmentBanner() {
     url.includes("itgovernanceuat")
   ) {
     text = "UAT";
-    bg = "#004578";
+    bg = "#0fb34e";
   } else {
     return;
   }

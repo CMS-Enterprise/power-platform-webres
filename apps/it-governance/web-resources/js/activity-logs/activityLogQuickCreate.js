@@ -1,26 +1,9 @@
-function onProcessTargetStepChange(executionContext) {
-  var formContext = executionContext.getFormContext();
+const GRT_MEETING_DATE_FIELD = "new_grtmeetingdate";
+const GRB_REVIEW_MEETING_DATE_FIELD = "new_grbreviewmeetingdate";
 
-  var stepAttr = formContext.getAttribute("new_process_target_step");
-  var activityAttr = formContext.getAttribute("new_activity");
-
-  if (!stepAttr || !activityAttr) return;
-
-  var stepValue = stepAttr.getValue();
-  if (stepValue === null || stepValue === undefined) {
-    // Optional: clear activity text if step is cleared
-    // activityAttr.setValue(null);
-    return;
-  }
-
-  // This is the key line: get the LABEL, not the number
-  var stepText = stepAttr.getText();
-  if (!stepText) return;
-
-  var description = "Request moved to " + stepText;
-
-  activityAttr.setValue(description);
-}
+// new_process_target_step option-set values
+const PROCESS_TARGET_STEP_GRT_MEETING = 971270002;
+const PROCESS_TARGET_STEP_GRB_REVIEW_MEETING = 971270004;
 
 const ACTIVITY_TYPES = {
   ProgressToNewStep: 216640000,
@@ -28,7 +11,7 @@ const ACTIVITY_TYPES = {
   NotAnITGovernanceRequest: 216640002,
   NotApprovedByGRB: 216640003,
   CloseRequest: 216640004,
-  EditRequest: 216640005, //not used in this context, we have another quick create for Edit Requests
+  EditRequest: 216640005, // not used in this context; separate quick create
   ReopenRequest: 216640006,
 };
 
@@ -41,7 +24,11 @@ const ACTIVITY_TITLES = {
   216640006: "Re-open Request",
 };
 
-// All fields we manage in this quick create
+// cr3ee_lifecycleid option-set values
+// 216640000 = Generate new LCID
+const LIFECYCLE_ID_SELECTION_GENERATE_NEW = 216640000;
+
+// All fields managed by the quick create rules
 const ALL_FIELDS = [
   "cr3ee_lifecycleid",
   "cr3ee_lcid",
@@ -58,12 +45,11 @@ const ALL_FIELDS = [
   "new_adminnote",
   "cr3ee_nextsteps",
   "new_whyareyoureopeningthisrequest",
+  GRT_MEETING_DATE_FIELD,
+  GRB_REVIEW_MEETING_DATE_FIELD,
 ];
 
 // Config per activity type
-// - show: visible
-// - hide: hidden
-// - require: required (also implies visible in practice)
 const TYPE_RULES = {
   [ACTIVITY_TYPES.ProgressToNewStep]: {
     show: [
@@ -83,6 +69,8 @@ const TYPE_RULES = {
       "cr3ee_whyareyouclosingthisrequest",
       "cr3ee_nextsteps",
       "new_whyareyoureopeningthisrequest",
+      GRT_MEETING_DATE_FIELD,
+      GRB_REVIEW_MEETING_DATE_FIELD,
     ],
     require: ["new_process_target_step"],
   },
@@ -90,11 +78,9 @@ const TYPE_RULES = {
   [ACTIVITY_TYPES.IssueALifeCycleID]: {
     show: [
       "cr3ee_lifecycleid",
-
       "cr3ee_nextsteps",
       "cr3ee_trbconsult",
       "cr3ee_projectcostbaseline",
-
       "new_additionalinformation",
       "new_adminnote",
     ],
@@ -108,6 +94,8 @@ const TYPE_RULES = {
       "new_requester_feedback",
       "new_recommendationsforthegrb",
       "new_whyareyoureopeningthisrequest",
+      GRT_MEETING_DATE_FIELD,
+      GRB_REVIEW_MEETING_DATE_FIELD,
     ],
     require: ["cr3ee_lifecycleid", "cr3ee_nextsteps", "cr3ee_trbconsult"],
   },
@@ -131,6 +119,8 @@ const TYPE_RULES = {
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
       "new_whyareyoureopeningthisrequest",
+      GRT_MEETING_DATE_FIELD,
+      GRB_REVIEW_MEETING_DATE_FIELD,
     ],
     require: [],
   },
@@ -154,6 +144,8 @@ const TYPE_RULES = {
       "cr3ee_whyareyouclosingthisrequest",
       "new_requester_feedback",
       "new_whyareyoureopeningthisrequest",
+      GRT_MEETING_DATE_FIELD,
+      GRB_REVIEW_MEETING_DATE_FIELD,
     ],
     require: [],
   },
@@ -177,6 +169,8 @@ const TYPE_RULES = {
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
       "new_whyareyoureopeningthisrequest",
+      GRT_MEETING_DATE_FIELD,
+      GRB_REVIEW_MEETING_DATE_FIELD,
     ],
     require: [],
   },
@@ -200,6 +194,8 @@ const TYPE_RULES = {
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
       "cr3ee_whyareyouclosingthisrequest",
+      GRT_MEETING_DATE_FIELD,
+      GRB_REVIEW_MEETING_DATE_FIELD,
     ],
     require: [],
   },
@@ -208,47 +204,142 @@ const TYPE_RULES = {
 function onLoad(executionContext) {
   const formContext = executionContext.getFormContext();
 
-  // Apply immediately (handles when type is prefilled via parameters)
   applyRules(formContext);
-
-  // Defensive: if you don't wire OnChange, this still helps in some QC experiences.
-  // But best practice is still to add the OnChange handler explicitly.
+  updateProcessTargetStepVisibility(formContext);
+  updateLifecycleIdSelectionVisibility(formContext);
 }
 
 function onActivityTypeChange(executionContext) {
   const formContext = executionContext.getFormContext();
+
   applyRules(formContext);
+  updateProcessTargetStepVisibility(formContext);
+  updateLifecycleIdSelectionVisibility(formContext);
 }
 
-// cr3ee_lifecycleid option-set values
-// NOTE: 216640000 is currently configured to represent "Generate new LCID".
-const LIFECYCLE_ID_SELECTION_GENERATE_NEW = 216640000;
+function onProcessTargetStepChange(executionContext) {
+  const formContext = executionContext.getFormContext();
+
+  updateProcessTargetStepVisibility(formContext);
+  updateProgressToNewStepTitle(formContext);
+}
 
 function onLifecycleIDSelectionChange(executionContext) {
   const formContext = executionContext.getFormContext();
+  updateLifecycleIdSelectionVisibility(formContext);
+}
+
+function updateLifecycleIdSelectionVisibility(formContext) {
+  const activityType = formContext
+    .getAttribute("cr3ee_activitytype")
+    ?.getValue();
+
+  // Only manage these fields for Issue a Life Cycle ID
+  if (activityType !== ACTIVITY_TYPES.IssueALifeCycleID) {
+    setVisible(formContext, "cr3ee_lcid", false);
+    setRequired(formContext, "cr3ee_lcid", false);
+    clearValue(formContext, "cr3ee_lcid");
+
+    setVisible(formContext, "cr3ee_expirationdate", false);
+    setRequired(formContext, "cr3ee_expirationdate", false);
+    clearValue(formContext, "cr3ee_expirationdate");
+
+    setVisible(formContext, "cr3ee_scopeofthelifecycleid", false);
+    clearValue(formContext, "cr3ee_scopeofthelifecycleid");
+
+    return;
+  }
 
   const lifecycleIdSelection = formContext
     .getAttribute("cr3ee_lifecycleid")
     ?.getValue();
+
   if (lifecycleIdSelection === LIFECYCLE_ID_SELECTION_GENERATE_NEW) {
-    //Generate new LCID
+    // Generate new LCID
     setVisible(formContext, "cr3ee_lcid", false);
     setRequired(formContext, "cr3ee_lcid", false);
+    clearValue(formContext, "cr3ee_lcid");
 
     setVisible(formContext, "cr3ee_expirationdate", true);
     setRequired(formContext, "cr3ee_expirationdate", true);
 
     setVisible(formContext, "cr3ee_scopeofthelifecycleid", true);
   } else {
-    //Use existing LCID
-    setRequired(formContext, "cr3ee_lcid", true);
+    // Use existing LCID
     setVisible(formContext, "cr3ee_lcid", true);
+    setRequired(formContext, "cr3ee_lcid", true);
 
     setVisible(formContext, "cr3ee_expirationdate", false);
     setRequired(formContext, "cr3ee_expirationdate", false);
+    clearValue(formContext, "cr3ee_expirationdate");
 
     setVisible(formContext, "cr3ee_scopeofthelifecycleid", false);
+    clearValue(formContext, "cr3ee_scopeofthelifecycleid");
   }
+}
+
+function updateProcessTargetStepVisibility(formContext) {
+  const stepValue = formContext
+    .getAttribute("new_process_target_step")
+    ?.getValue();
+
+  const grtDateAttr = formContext.getAttribute(GRT_MEETING_DATE_FIELD);
+  const grbReviewDateAttr = formContext.getAttribute(
+    GRB_REVIEW_MEETING_DATE_FIELD,
+  );
+
+  setVisible(formContext, GRT_MEETING_DATE_FIELD, false);
+  setVisible(formContext, GRB_REVIEW_MEETING_DATE_FIELD, false);
+
+  if (stepValue === PROCESS_TARGET_STEP_GRT_MEETING) {
+    setVisible(formContext, GRT_MEETING_DATE_FIELD, true);
+
+    if (grbReviewDateAttr) {
+      grbReviewDateAttr.setValue(null);
+    }
+  } else if (stepValue === PROCESS_TARGET_STEP_GRB_REVIEW_MEETING) {
+    setVisible(formContext, GRB_REVIEW_MEETING_DATE_FIELD, true);
+
+    if (grtDateAttr) {
+      grtDateAttr.setValue(null);
+    }
+  } else {
+    if (grtDateAttr) {
+      grtDateAttr.setValue(null);
+    }
+    if (grbReviewDateAttr) {
+      grbReviewDateAttr.setValue(null);
+    }
+  }
+}
+
+function updateProgressToNewStepTitle(formContext) {
+  const activityType = formContext
+    .getAttribute("cr3ee_activitytype")
+    ?.getValue();
+
+  if (activityType !== ACTIVITY_TYPES.ProgressToNewStep) {
+    return;
+  }
+
+  const stepAttr = formContext.getAttribute("new_process_target_step");
+  const activityAttr = formContext.getAttribute("new_activity");
+
+  if (!stepAttr || !activityAttr) return;
+
+  const stepValue = stepAttr.getValue();
+  if (stepValue === null || stepValue === undefined) {
+    activityAttr.setValue(ACTIVITY_TITLES[ACTIVITY_TYPES.ProgressToNewStep]);
+    return;
+  }
+
+  const stepText = stepAttr.getText();
+  if (!stepText) {
+    activityAttr.setValue(ACTIVITY_TITLES[ACTIVITY_TYPES.ProgressToNewStep]);
+    return;
+  }
+
+  activityAttr.setValue("Request moved to " + stepText);
 }
 
 function applyRules(formContext) {
@@ -257,47 +348,43 @@ function applyRules(formContext) {
     ?.getValue();
   const rules = TYPE_RULES[activityType];
 
-  // Reset all managed required fields to not required
   ALL_FIELDS.forEach((fieldName) => setRequired(formContext, fieldName, false));
 
-  // Default: hide everything until we know the type (optional)
-  // If you prefer "do nothing until chosen", replace this with a return when !rules.
   if (!rules) {
-    // If activity type isn't selected yet, keep things simple:
-    // show only the type field and any always-visible notes fields if you want.
     ALL_FIELDS.forEach((fieldName) =>
       setVisible(formContext, fieldName, false),
     );
-    // Show a couple common fields (optional):
     setVisible(formContext, "new_additionalinformation", true);
     setVisible(formContext, "new_adminnote", true);
     return;
   }
 
-  // Start from a known state: hide everything…
   ALL_FIELDS.forEach((fieldName) => setVisible(formContext, fieldName, false));
 
-  // …then show what this type wants shown
-  (rules.show || []).forEach((f) => setVisible(formContext, f, true));
+  (rules.show || []).forEach((fieldName) =>
+    setVisible(formContext, fieldName, true),
+  );
 
-  // Require fields (also make sure they’re visible)
-  (rules.require || []).forEach((f) => {
-    setVisible(formContext, f, true);
-    setRequired(formContext, f, true);
+  (rules.require || []).forEach((fieldName) => {
+    setVisible(formContext, fieldName, true);
+    setRequired(formContext, fieldName, true);
   });
 
-  // Explicit hides (overrides show/require if you fat-finger config)
-  (rules.hide || []).forEach((f) => {
-    setRequired(formContext, f, false);
-    setVisible(formContext, f, false);
+  (rules.hide || []).forEach((fieldName) => {
+    setRequired(formContext, fieldName, false);
+    setVisible(formContext, fieldName, false);
   });
 
-  setActivityLogTitle(formContext, ACTIVITY_TITLES[activityType]);
+  if (activityType === ACTIVITY_TYPES.ProgressToNewStep) {
+    updateProgressToNewStepTitle(formContext);
+  } else {
+    setActivityLogTitle(formContext, ACTIVITY_TITLES[activityType]);
+  }
 }
 
 function setVisible(formContext, logicalName, visible) {
   const ctrl = formContext.getControl(logicalName);
-  if (!ctrl) return; // quick create may not include the field
+  if (!ctrl) return;
   ctrl.setVisible(visible);
 }
 
@@ -307,21 +394,27 @@ function setRequired(formContext, logicalName, required) {
   attr.setRequiredLevel(required ? "required" : "none");
 }
 
+function clearValue(formContext, logicalName) {
+  const attr = formContext.getAttribute(logicalName);
+  if (!attr) return;
+  attr.setValue(null);
+}
+
 function setActivityLogTitle(formContext, title) {
-  formContext.getAttribute("new_activity")?.setValue(title);
+  const activityAttr = formContext.getAttribute("new_activity");
+  if (activityAttr) {
+    activityAttr.setValue(title);
+  } else {
+    console.log("could not find new_activity");
+  }
 
   const header =
     parent.document.querySelector("[data-id='quickHeaderTitle']") ||
     document.querySelector("[data-id='quickHeaderTitle']");
+
   if (header) {
     header.textContent = title;
   } else {
-    console.log("header not found?");
-  }
-
-  if (formContext.getAttribute("new_activity")) {
-    formContext.getAttribute("new_activity")?.setValue(title);
-  } else {
-    console.log("could not find Activity");
+    console.log("header not found");
   }
 }

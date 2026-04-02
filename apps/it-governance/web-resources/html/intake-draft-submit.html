@@ -15,6 +15,33 @@
         padding: 12px;
       }
 
+      /* Two columns: messages / list (flex) + submit always top-aligned */
+      .layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .layout-main {
+        flex: 1 1 220px;
+        min-width: 0;
+      }
+
+      .layout-actions {
+        flex: 0 0 auto;
+        align-self: flex-start;
+        text-align: right;
+      }
+
+      .layout .alert {
+        margin: 0 0 12px 0;
+      }
+
+      .layout .alert:last-child {
+        margin-bottom: 0;
+      }
+
       .btn-primary {
         background-color: #0078d4;
         border: 1px solid #0078d4;
@@ -69,11 +96,23 @@
       .missing-fields-list {
         margin: 8px 0 0 0;
         padding-left: 18px;
+        max-height: min(42vh, 280px);
+        overflow-y: auto;
       }
 
       @media (max-width: 768px) {
         body {
           padding: 8px;
+        }
+
+        .layout {
+          flex-direction: column;
+        }
+
+        .layout-actions {
+          order: -1;
+          width: 100%;
+          text-align: left;
         }
       }
     </style>
@@ -266,6 +305,49 @@
         let allValid = true;
         const missingFieldLabels = [];
 
+        function getFundingSourcesGridRoot() {
+          try {
+            var doc = parent && parent.document ? parent.document : null;
+            if (!doc) return null;
+
+            // Control wrapper for the subgrid
+            return doc.querySelector('[data-control-name="sg_funding_sources"]');
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function hasAtLeastOneFundingSourceRow() {
+          const root = getFundingSourcesGridRoot();
+          if (!root) return null; // unknown
+
+          // AG Grid renders rows with `.ag-row` when records exist.
+          const rowEls = root.querySelectorAll(".ag-center-cols-container .ag-row");
+          if (rowEls && rowEls.length > 0) return true;
+
+          // If "no rows" overlay is visible, we can safely treat as empty.
+          const noRowsOverlay = root.querySelector(".ag-overlay-no-rows-wrapper");
+          if (noRowsOverlay) {
+            const hidden =
+              noRowsOverlay.classList.contains("ag-hidden") ||
+              noRowsOverlay.getAttribute("aria-hidden") === "true";
+            if (!hidden) return false;
+          }
+
+          // Fallback: if AG Grid root advertises 0 rows, treat as empty.
+          const gridRoot = root.querySelector(".ag-root[aria-rowcount]");
+          if (gridRoot) {
+            const ariaRowCount = parseInt(
+              gridRoot.getAttribute("aria-rowcount") || "",
+              10,
+            );
+            if (!Number.isNaN(ariaRowCount) && ariaRowCount <= 0) return false;
+          }
+
+          // If we couldn't confidently detect, return unknown.
+          return null;
+        }
+
         PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
           const attribute = form.getAttribute(fieldName);
           const control = form.getControl(fieldName);
@@ -292,6 +374,19 @@
             }
           }
         });
+
+        // Subgrid validation: require at least one Funding Source row.
+        const fundingHasRow = hasAtLeastOneFundingSourceRow();
+        if (fundingHasRow === false) {
+          allValid = false;
+          missingFieldLabels.push("Funding Sources (add at least one)");
+        } else if (fundingHasRow === null) {
+          // If we cannot reliably detect (timing/DOM changes), don't block submit.
+          // Users will still see the grid on the form.
+          console.warn(
+            "Funding Sources grid presence could not be validated (DOM not ready).",
+          );
+        }
 
         return {
           allValid: allValid,
@@ -468,26 +563,30 @@
     </script>
   </head>
   <body>
-    <div
-      id="submitStatus"
-      class="alert hidden"
-      role="status"
-      aria-live="polite"
-    ></div>
+    <div class="layout">
+      <div class="layout-main">
+        <div
+          id="submitStatus"
+          class="alert hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
 
-    <div id="missingFieldsBox" class="alert alert-warning hidden">
-      <div><strong>Missing required fields</strong></div>
-      <ul id="missingFieldsList" class="missing-fields-list"></ul>
-    </div>
+        <div id="missingFieldsBox" class="alert alert-warning hidden">
+          <div><strong>Missing required fields</strong></div>
+          <ul id="missingFieldsList" class="missing-fields-list"></ul>
+        </div>
+      </div>
 
-    <div style="text-align: right">
-      <button
-        id="submitIntakeRequestButton"
-        class="btn-primary"
-        onclick="submitIntakeRequestDraft()"
-      >
-        Submit Intake Request Draft
-      </button>
+      <div class="layout-actions">
+        <button
+          id="submitIntakeRequestButton"
+          class="btn-primary"
+          onclick="submitIntakeRequestDraft()"
+        >
+          Submit Intake Request Draft
+        </button>
+      </div>
     </div>
   </body>
 </html>

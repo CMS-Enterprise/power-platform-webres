@@ -32,7 +32,7 @@ function onDecisionChange(executionContext) {
     sections.section_lifecycle_id = true;
     sections.section_lcid = true;
   }
-  showHideSections(formContext, "tab_decision", sections);
+  showHideSections(formContext, "tab_request_home", sections);
 }
 
 function updateProgressTracker(formContext, attempt = 0) {

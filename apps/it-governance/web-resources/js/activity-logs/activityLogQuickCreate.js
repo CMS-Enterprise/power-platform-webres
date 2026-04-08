@@ -401,20 +401,76 @@ function clearValue(formContext, logicalName) {
 }
 
 function setActivityLogTitle(formContext, title) {
-  const activityAttr = formContext.getAttribute("new_activity");
+  // 1) Set the Dataverse column on the form (this is the supported part)
+  const activityAttr = formContext?.getAttribute("new_activity");
   if (activityAttr) {
     activityAttr.setValue(title);
   } else {
     console.log("could not find new_activity");
   }
 
-  const header =
-    parent.document.querySelector("[data-id='quickHeaderTitle']") ||
-    document.querySelector("[data-id='quickHeaderTitle']");
+  // 2) Try to find the header DOM across likely contexts, with retries
+  const MAX_ATTEMPTS = 30; // ~3s total with 100ms delay
+  const DELAY_MS = 100;
 
-  if (header) {
-    header.textContent = title;
-  } else {
-    console.log("header not found");
-  }
+  let attempts = 0;
+
+  const findHeader = () => {
+    attempts++;
+
+    // Try current document first
+    let header =
+      document.querySelector("[data-id='quickHeaderTitle']") ||
+      document.querySelector("[data-id='header_title']"); // fallback selector if needed
+
+    // Try parent document (host) next
+    if (!header && typeof parent !== "undefined" && parent.document) {
+      header =
+        parent.document.querySelector("[data-id='quickHeaderTitle']") ||
+        parent.document.querySelector("[data-id='header_title']");
+    }
+
+    // Try dialog iframes (some hosts render quick create in an iframe)
+    if (!header) {
+      const docList = [];
+      docList.push(...document.querySelectorAll("iframe"));
+      if (typeof parent !== "undefined" && parent.document) {
+        docList.push(...parent.document.querySelectorAll("iframe"));
+      }
+      for (const frame of docList) {
+        try {
+          const d = frame.contentDocument || frame.contentWindow?.document;
+          if (!d) continue;
+          header =
+            d.querySelector("[data-id='quickHeaderTitle']") ||
+            d.querySelector("[data-id='header_title']");
+          if (header) break;
+        } catch (e) {
+          // cross-origin or inaccessible iframe; ignore
+        }
+      }
+    }
+
+    if (header) {
+      header.textContent = title;
+      // Re-apply after reflow (defensive)
+      setTimeout(() => {
+        if (header && header.textContent !== title) {
+          header.textContent = title;
+        }
+      }, 250);
+      return true;
+    }
+
+    if (attempts < MAX_ATTEMPTS) {
+      setTimeout(findHeader, DELAY_MS);
+      return false;
+    }
+
+    console.log("header not found after retries");
+    return false;
+  };
+
+  // Start the search (slight delay to let dialog mount)
+  setTimeout(findHeader, 50);
 }

@@ -6,7 +6,6 @@
     <title>Business Case Header</title>
 
     <style>
-      /* Base */
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         font-size: 14px;
@@ -17,7 +16,6 @@
         padding: 12px;
       }
 
-      /* Primary button */
       .btn-primary {
         background-color: #0078d4;
         border: 1px solid #0078d4;
@@ -31,17 +29,18 @@
           background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
+
       .btn-primary:hover {
         background-color: #106ebe;
         border-color: #106ebe;
       }
+
       .btn-primary:focus {
         outline: 1px solid #ffffff;
         outline-offset: 2px;
         box-shadow: 0 0 0 2px #0078d4;
       }
 
-      /* Success alert */
       .alert {
         padding: 12px 16px;
         margin: 12px 0;
@@ -51,14 +50,12 @@
         color: #0b5a0b;
       }
 
-      /* Error alert */
       .alert-error {
         border-left-color: #a80000;
         background-color: #fde7e9;
         color: #a80000;
       }
 
-      /* Hide/show utility */
       .hidden {
         display: none;
       }
@@ -73,7 +70,7 @@
     <script>
       const SUBMITTED_BOOL = "cr69a_finalbusinesscasesubmitted";
       const SUBMITTED_DATE = "cr69a_finalbusinesscasesubmitteddate";
-      const FINAL_BUSINESS_CASE = "cr69a_finalbusinesscase";
+      const BUSINESS_CASE = "cr69a_businesscase";
       const READY_FOR_REVIEW = "cr69a_readyforreview";
 
       function getParentForm() {
@@ -101,6 +98,7 @@
       function hideMessage() {
         var box = document.getElementById("submitStatus");
         if (!box) return;
+
         box.classList.add("hidden");
         box.classList.remove("alert-error");
         box.textContent = "";
@@ -119,19 +117,20 @@
           "submitFinalBusinessCaseButton",
         );
         if (!submitButton) return;
+
         submitButton.classList.toggle("hidden", !!hidden);
       }
 
-      // ✅ UI depends ONLY on Ready For Review
+      // UI depends only on Ready For Review
       function updateUIFromReadyForReview() {
         const form = getParentForm();
         if (!form) return;
 
-        const rfr = getAttr(form, READY_FOR_REVIEW);
-        const ready = !!(rfr && rfr.getValue());
+        const readyForReviewAttr = getAttr(form, READY_FOR_REVIEW);
+        const ready = !!(readyForReviewAttr && readyForReviewAttr.getValue());
 
         if (ready) {
-          showSuccess("Final Business Case submitted. Waiting for feedback.");
+          showSuccess("Business Case submitted. Waiting for feedback.");
           setSubmitButtonHidden(true);
         } else {
           hideMessage();
@@ -143,13 +142,13 @@
         const form = getParentForm();
         if (!form) return;
 
-        const rfr = getAttr(form, READY_FOR_REVIEW);
-        if (rfr && rfr.addOnChange) {
-          rfr.addOnChange(updateUIFromReadyForReview);
+        const readyForReviewAttr = getAttr(form, READY_FOR_REVIEW);
+        if (readyForReviewAttr && readyForReviewAttr.addOnChange) {
+          readyForReviewAttr.addOnChange(updateUIFromReadyForReview);
         }
       }
 
-      function submitFinalBusinessCase() {
+      function submitBusinessCase() {
         try {
           const form = getParentForm();
           if (!form) {
@@ -158,17 +157,23 @@
             return;
           }
 
-          const finalBusinessCase = getAttr(form, FINAL_BUSINESS_CASE);
-          if (!finalBusinessCase || finalBusinessCase.getValue() == null) {
+          const businessCaseAttr = getAttr(form, BUSINESS_CASE);
+          const businessCaseValue = businessCaseAttr
+            ? businessCaseAttr.getValue()
+            : null;
+
+          if (businessCaseValue == null || businessCaseValue === "") {
             showError(
-              "Please fill out the Final Business Case field before submitting.",
+              "Please fill out the Business Case field before submitting.",
             );
             return;
           }
 
           // 1) Mark as submitted
           const submittedAttr = getAttr(form, SUBMITTED_BOOL);
-          if (submittedAttr) submittedAttr.setValue(true);
+          if (submittedAttr) {
+            submittedAttr.setValue(true);
+          }
 
           const submittedDateAttr = getAttr(form, SUBMITTED_DATE);
           if (submittedDateAttr) {
@@ -176,8 +181,10 @@
           }
 
           // 2) Hand off turn to admin
-          const rfr = getAttr(form, READY_FOR_REVIEW);
-          if (rfr) rfr.setValue(true);
+          const readyForReviewAttr = getAttr(form, READY_FOR_REVIEW);
+          if (readyForReviewAttr) {
+            readyForReviewAttr.setValue(true);
+          }
 
           // 3) Save form
           form.data.save().then(
@@ -208,7 +215,6 @@
         }
       }
 
-      // Retry-based initialization to ensure parent form context is ready
       const INIT_MAX_ATTEMPTS = 10;
       const INIT_RETRY_DELAY_MS = 500;
 
@@ -217,7 +223,6 @@
           const form = getParentForm();
           return !!(form && form.data);
         } catch (e) {
-          // If accessing the form throws, treat as not ready yet
           return false;
         }
       }
@@ -239,7 +244,6 @@
           return;
         }
 
-        // Parent form is ready; perform the original initialization
         hookReadyForReviewOnChange();
         updateUIFromReadyForReview();
       }
@@ -262,7 +266,7 @@
       <button
         id="submitFinalBusinessCaseButton"
         class="btn-primary"
-        onclick="submitFinalBusinessCase()"
+        onclick="submitBusinessCase()"
       >
         Submit Final Business Case
       </button>

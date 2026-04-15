@@ -220,6 +220,7 @@ function onDecisionChange(formContext) {
   if (decision === DECISIONS.ISSUE_LCID) {
     formContext.getControl("lcid_quick_view")?.setVisible(true);
     lcid_section?.setVisible(true);
+    next_steps_section?.setVisible(true);
   } else if (decision === DECISIONS.NOT_AN_IT_GOV_REQUEST) {
     formContext.getControl("lcid_quick_view")?.setVisible(false);
     lcid_section?.setVisible(false);

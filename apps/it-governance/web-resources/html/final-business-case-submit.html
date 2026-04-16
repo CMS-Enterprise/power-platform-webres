@@ -176,7 +176,8 @@
           }
 
           const submittedDateAttr = getAttr(form, SUBMITTED_DATE);
-          if (submittedDateAttr) {
+          // Only set the submitted date if it is not already set, to preserve the original timestamp
+          if (submittedDateAttr && !submittedDateAttr.getValue()) {
             submittedDateAttr.setValue(new Date());
           }
 

@@ -3,7 +3,14 @@ async function openEditRequestQuickCreate(primaryControl) {
 
   try {
     // --- Review (parent record) ---
-    const reviewId = formContext.data.entity.getId().replace(/[{}]/g, "");
+    const reviewIdRaw = formContext.data.entity.getId();
+    if (!reviewIdRaw) {
+      await Xrm.Navigation.openAlertDialog({
+        text: "Please save the Review record before creating an Edit Request.",
+      });
+      return;
+    }
+    const reviewId = reviewIdRaw.replace(/[{}]/g, "");
     const reviewName =
       formContext.data.entity.getPrimaryAttributeValue() || "Review";
 

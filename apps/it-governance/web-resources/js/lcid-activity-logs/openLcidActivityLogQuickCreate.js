@@ -123,32 +123,4 @@
       LCID_ACTIVITY_TYPES.Unretire,
     );
   };
-
-  window.ITGov_UpdateLCID = function (primaryControl) {
-    return openLCIDActivityLogQuickCreate(
-      primaryControl,
-      LCID_ACTIVITY_TYPES.Update,
-    );
-  };
-
-  window.ITGov_ExpireLCID = function (primaryControl) {
-    return openLCIDActivityLogQuickCreate(
-      primaryControl,
-      LCID_ACTIVITY_TYPES.Expire,
-    );
-  };
-
-  window.ITGov_ConfirmLCID = function (primaryControl) {
-    return openLCIDActivityLogQuickCreate(
-      primaryControl,
-      LCID_ACTIVITY_TYPES.Confirm,
-    );
-  };
-
-  window.ITGov_UpdateRetirementDate = function (primaryControl) {
-    return openLCIDActivityLogQuickCreate(
-      primaryControl,
-      LCID_ACTIVITY_TYPES.UpdateRetirementDate,
-    );
-  };
 })();

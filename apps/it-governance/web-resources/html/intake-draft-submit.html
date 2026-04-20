@@ -311,7 +311,9 @@
             if (!doc) return null;
 
             // Control wrapper for the subgrid
-            return doc.querySelector('[data-control-name="sg_funding_sources"]');
+            return doc.querySelector(
+              '[data-control-name="sg_funding_sources"]',
+            );
           } catch (e) {
             return null;
           }
@@ -322,11 +324,15 @@
           if (!root) return null; // unknown
 
           // AG Grid renders rows with `.ag-row` when records exist.
-          const rowEls = root.querySelectorAll(".ag-center-cols-container .ag-row");
+          const rowEls = root.querySelectorAll(
+            ".ag-center-cols-container .ag-row",
+          );
           if (rowEls && rowEls.length > 0) return true;
 
           // If "no rows" overlay is visible, we can safely treat as empty.
-          const noRowsOverlay = root.querySelector(".ag-overlay-no-rows-wrapper");
+          const noRowsOverlay = root.querySelector(
+            ".ag-overlay-no-rows-wrapper",
+          );
           if (noRowsOverlay) {
             const hidden =
               noRowsOverlay.classList.contains("ag-hidden") ||

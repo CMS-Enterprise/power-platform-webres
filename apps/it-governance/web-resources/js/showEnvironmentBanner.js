@@ -1,46 +1,59 @@
-let envNotifId = null;
-
 function showEnvironmentBanner() {
-  const environment = Xrm.Utility.getGlobalContext().getClientUrl();
+  const url = Xrm.Utility.getGlobalContext().getClientUrl();
 
   let text = "";
-  let level = "INFO"; // INFO | WARNING | ERROR
+  let bg = "";
+  let color = "#ffffff";
 
   if (
-    environment.includes("org389e8766") ||
-    environment.includes("dev.") ||
-    environment.includes("itgovernancedev")
+    url.includes("org389e8766") ||
+    url.includes("dev.") ||
+    url.includes("itgovernancedev")
   ) {
-    text = "🔧 DEVELOPMENT ENVIRONMENT";
-    level = "WARNING";
+    text = "DEV";
+    bg = "#d83b01";
   } else if (
-    environment.includes("org1e8d7583") ||
-    environment.includes("test.") ||
-    environment.includes("itgovernanceuat")
+    url.includes("org1e8d7583") ||
+    url.includes("test.") ||
+    url.includes("itgovernanceuat")
   ) {
-    text = "🧪 UAT ENVIRONMENT";
-    level = "INFO";
+    text = "UAT";
+    bg = "#0fb34e";
+  } else {
+    return;
   }
 
-  if (!text) return;
+  const badgeId = "custom-environment-badge";
 
   // avoid duplicates
-  if (envNotifId) return;
+  let badge = window.top.document.getElementById(badgeId);
+  if (badge) {
+    badge.textContent = text;
+    badge.style.backgroundColor = bg;
+    badge.style.color = color;
+    return;
+  }
 
-  Xrm.App.addGlobalNotification({
-    type: 2, // 2 = banner
-    level: level, // "INFO" | "WARNING" | "ERROR"
-    message: text,
-    showCloseButton: false,
-  })
-    .then(function (id) {
-      envNotifId = id;
-    })
-    .catch(function (error) {
-      // Handle unsupported client/app context or other failures gracefully
-      envNotifId = null;
-      if (typeof console !== "undefined" && console && typeof console.error === "function") {
-        console.error("Failed to add environment banner notification:", error);
-      }
-    });
+  badge = window.top.document.createElement("div");
+  badge.id = badgeId;
+  badge.textContent = text;
+
+  Object.assign(badge.style, {
+    position: "fixed",
+    top: "12px",
+    left: "285px",
+    zIndex: "99999",
+    padding: "6px 10px",
+    borderRadius: "999px",
+    fontFamily: "'Segoe UI', sans-serif",
+    fontSize: "12px",
+    fontWeight: "600",
+    letterSpacing: "0.5px",
+    backgroundColor: bg,
+    color: color,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+    pointerEvents: "none",
+  });
+
+  window.top.document.body.appendChild(badge);
 }

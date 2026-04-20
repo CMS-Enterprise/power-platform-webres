@@ -14,6 +14,7 @@ const BPF_STAGES = {
   REQUEST_TYPE: 971270010,
   GOVERNANCE_PROCESS_STEPS: 971270011,
 };
+
 const ALL_SECTIONS = [
   "section_governance_process_steps",
   "section_request_type",
@@ -30,9 +31,7 @@ const ALL_SECTIONS = [
   "section_grb_review",
   "section_awaiting_decision",
   "section_decision",
-  "section_intake_request_decision",
-  "section_complete_lcid",
-  "section_complete_next_steps",
+  "section_intake_request_complete",
 ];
 
 //Use this map like building blocks.
@@ -63,42 +62,8 @@ const PAGES = {
     "section_intake_request_decision",
     "section_complete_lcid",
     "section_complete_next_steps",
+    "section_request_complete_questsions",
   ],
-};
-
-const PAGE_REQUIRED_FIELDS = {
-  REQUEST_TYPE: [],
-  GOVERNANCE_STEPS: [],
-  INTAKE: [
-    "cr69a_requester",
-    "cr69a_requestercomponent",
-    "cr69a_cmsbusinessownername",
-    "cr69a_cmsbusinessownercomponent",
-    "cr69a_cmsprojectproductmanager",
-    "cr69a_cmsproductmanagercomponent",
-    "cr69a_collaborators",
-    // "cr69a_business_need", Deprecated
-    "cr3ee_business_need_multi",
-    // "cr69a_solution", Deprecated
-    "cr3ee_proposedsolution",
-    "cr69a_current_process_status",
-    "cr69a_enterprise_architecture_support",
-    "cr69a_ai_technologies_used",
-    "cr69a_interface_component",
-    "cr69a_software_products",
-    "cr69a_annual_spending",
-    "cr69a_current_it_spending_portion",
-    "cr69a_planned_annual_spending",
-    "cr69a_whatportionofyr1plannedannualspendingisit",
-    "cr69a_doesthisrequestalreadyhavecontractsupport",
-  ],
-  BUSINESS_CASE: ["cr69a_businesscase"],
-  GRT_MEETING: [],
-  FINAL_BUSINESS_CASE: ["cr69a_finalbusinesscase"],
-  GRB_REVIEW: [],
-  AWAITING_DECISION: [],
-  DECISION: [],
-  FINISHED: [],
 };
 
 const ALWAYS_REQUIRED_FIELDS = [];
@@ -220,7 +185,6 @@ function onDecisionChange(formContext) {
   if (decision === DECISIONS.ISSUE_LCID) {
     formContext.getControl("lcid_quick_view")?.setVisible(true);
     lcid_section?.setVisible(true);
-    next_steps_section?.setVisible(true);
   } else if (decision === DECISIONS.NOT_AN_IT_GOV_REQUEST) {
     formContext.getControl("lcid_quick_view")?.setVisible(false);
     lcid_section?.setVisible(false);
@@ -251,8 +215,6 @@ function showHideFields(formContext) {
     .getAttribute("cr69a_readyforreview")
     ?.getValue();
   if (readyForReview) return;
-
-  applyRequiredFieldsForPage(formContext, pageName);
 
   if (pageName === "FINISHED") {
     lockAllFields(formContext);
@@ -314,44 +276,26 @@ function updateProgressTracker(formContext, attempt = 0) {
   );
 }
 
-function getAllWizardRequiredFields() {
-  const all = new Set(ALWAYS_REQUIRED_FIELDS);
-  Object.values(PAGE_REQUIRED_FIELDS).forEach((arr) => {
-    (arr || []).forEach((f) => all.add(f));
+function clearCustomNotificationsOnSave(executionContext) {
+  const formContext = executionContext.getFormContext();
+  console.log("clearCustomNotificationsOnSave");
+
+  formContext.ui.controls.forEach(function (control) {
+    try {
+      if (
+        control &&
+        typeof control.clearNotification === "function" &&
+        typeof control.getControlType === "function" &&
+        typeof control.getAttribute === "function"
+      ) {
+        const attribute = control.getAttribute();
+        if (attribute) {
+          control.clearNotification("required_check");
+        }
+      }
+    } catch (e) {
+      // Ignore unsupported controls
+    }
   });
-  return Array.from(all);
-}
-
-function setFieldRequired(formContext, logicalName, isRequired) {
-  const attr = formContext.getAttribute(logicalName);
-  if (!attr) {
-    console.warn(
-      `Required mapping references missing attribute: ${logicalName}`,
-    );
-    return;
-  }
-  attr.setRequiredLevel(isRequired ? "required" : "none");
-}
-
-function applyRequiredFieldsForPage(formContext, pageName) {
-  if (!Object.prototype.hasOwnProperty.call(PAGE_REQUIRED_FIELDS, pageName)) {
-    console.error(`Unknown pageName for required fields: ${pageName}`);
-    return;
-  }
-
-  const allWizardFields = getAllWizardRequiredFields();
-  const pageFields = new Set([
-    ...(PAGE_REQUIRED_FIELDS[pageName] || []),
-    ...ALWAYS_REQUIRED_FIELDS,
-  ]);
-
-  // First, clear required for all wizard-managed fields
-  allWizardFields.forEach((fieldName) =>
-    setFieldRequired(formContext, fieldName, false),
-  );
-
-  // Then, set required only for current page fields
-  pageFields.forEach((fieldName) =>
-    setFieldRequired(formContext, fieldName, true),
-  );
+  console.log("clearCustomNotificationsOnSave end");
 }

@@ -66,6 +66,8 @@ const PAGES = {
   ],
 };
 
+const ALWAYS_REQUIRED_FIELDS = [];
+
 const STAGE_TO_PAGE = {
   [BPF_STAGES.REQUEST_TYPE]: "REQUEST_TYPE",
   [BPF_STAGES.GOVERNANCE_PROCESS_STEPS]: "GOVERNANCE_STEPS",
@@ -82,8 +84,6 @@ const STAGE_TO_PAGE = {
   [BPF_STAGES.ISSUE_LCID]: "DECISION",
   [BPF_STAGES.FINISHED]: "FINISHED",
 };
-
-const SUBMIT_WARNING_ID = "submit_missing_fields_warning";
 
 function onLoad(executionContext) {
   const formContext = executionContext.getFormContext();
@@ -216,8 +216,6 @@ function showHideFields(formContext) {
     ?.getValue();
   if (readyForReview) return;
 
-  // applyRequiredFieldsForPage(formContext, pageName);
-
   if (pageName === "FINISHED") {
     lockAllFields(formContext);
   }
@@ -280,5 +278,24 @@ function updateProgressTracker(formContext, attempt = 0) {
 
 function clearCustomNotificationsOnSave(executionContext) {
   const formContext = executionContext.getFormContext();
-  formContext.ui.clearFormNotification(SUBMIT_WARNING_ID);
+  console.log("clearCustomNotificationsOnSave");
+
+  formContext.ui.controls.forEach(function (control) {
+    try {
+      if (
+        control &&
+        typeof control.clearNotification === "function" &&
+        typeof control.getControlType === "function" &&
+        typeof control.getAttribute === "function"
+      ) {
+        const attribute = control.getAttribute();
+        if (attribute) {
+          control.clearNotification("required_check");
+        }
+      }
+    } catch (e) {
+      // Ignore unsupported controls
+    }
+  });
+  console.log("clearCustomNotificationsOnSave end");
 }

@@ -15,6 +15,33 @@
         padding: 12px;
       }
 
+      /* Two columns: messages / list (flex) + submit always top-aligned */
+      .layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .layout-main {
+        flex: 1 1 220px;
+        min-width: 0;
+      }
+
+      .layout-actions {
+        flex: 0 0 auto;
+        align-self: flex-start;
+        text-align: right;
+      }
+
+      .layout .alert {
+        margin: 0 0 12px 0;
+      }
+
+      .layout .alert:last-child {
+        margin-bottom: 0;
+      }
+
       .btn-primary {
         background-color: #0078d4;
         border: 1px solid #0078d4;
@@ -40,9 +67,52 @@
         box-shadow: 0 0 0 2px #0078d4;
       }
 
+      /* Alerts */
+      .alert {
+        padding: 12px 16px;
+        margin: 12px 0;
+        border-radius: 4px;
+        border-left: 6px solid #107c10;
+        background-color: #dff6dd;
+        color: #0b5a0b;
+      }
+
+      .alert-warning {
+        border-left-color: #ffbe2e;
+        background-color: #fff4ce;
+        color: #323130;
+      }
+
+      .alert-error {
+        border-left-color: #a80000;
+        background-color: #fde7e9;
+        color: #a80000;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .missing-fields-list {
+        margin: 8px 0 0 0;
+        padding-left: 18px;
+        max-height: min(42vh, 280px);
+        overflow-y: auto;
+      }
+
       @media (max-width: 768px) {
         body {
           padding: 8px;
+        }
+
+        .layout {
+          flex-direction: column;
+        }
+
+        .layout-actions {
+          order: -1;
+          width: 100%;
+          text-align: left;
         }
       }
     </style>
@@ -85,6 +155,60 @@
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
       }
 
+      function showInlineMessage(text, variant) {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+
+        box.textContent = text || "";
+        box.classList.remove("hidden", "alert-warning", "alert-error");
+
+        if (variant === "warning") {
+          box.classList.add("alert-warning");
+        } else if (variant === "error") {
+          box.classList.add("alert-error");
+        }
+      }
+
+      function hideInlineMessage() {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+        box.classList.add("hidden");
+        box.classList.remove("alert-warning", "alert-error");
+        box.textContent = "";
+      }
+
+      function showMissingFieldsList(missingFieldLabels) {
+        var container = document.getElementById("missingFieldsBox");
+        var list = document.getElementById("missingFieldsList");
+        if (!container || !list) return;
+
+        list.innerHTML = "";
+        (missingFieldLabels || []).forEach(function (label) {
+          var li = document.createElement("li");
+          li.textContent = label;
+          list.appendChild(li);
+        });
+
+        container.classList.toggle(
+          "hidden",
+          (missingFieldLabels || []).length === 0,
+        );
+      }
+
+      function hideMissingFieldsList() {
+        var container = document.getElementById("missingFieldsBox");
+        var list = document.getElementById("missingFieldsList");
+        if (!container || !list) return;
+        container.classList.add("hidden");
+        list.innerHTML = "";
+      }
+
+      function setSubmitButtonHidden(hidden) {
+        var submitButton = document.getElementById("submitIntakeRequestButton");
+        if (!submitButton) return;
+        submitButton.classList.toggle("hidden", !!hidden);
+      }
+
       function clearActionNotifications(formContext) {
         formContext.ui.clearFormNotification(NOTIF_IDS.missingFields);
         formContext.ui.clearFormNotification(NOTIF_IDS.success);
@@ -97,9 +221,17 @@
       }
 
       function showMissingFieldsWarning(formContext, missingFieldLabels) {
+        const totalMissing = (missingFieldLabels || []).length;
+        const maxPreview = 8;
+        const preview = (missingFieldLabels || []).slice(0, maxPreview);
+        const remaining = Math.max(0, totalMissing - preview.length);
+
         const message =
-          "Successfully saved. Complete required fields before submitting: " +
-          missingFieldLabels.join(", ");
+          "Successfully saved. " +
+          totalMissing +
+          " required field" +
+          (totalMissing === 1 ? "" : "s") +
+          " missing. Please complete the highlighted fields before submitting.";
 
         showFormNotification(
           formContext,
@@ -107,6 +239,13 @@
           "WARNING",
           NOTIF_IDS.missingFields,
         );
+
+        showInlineMessage(
+          "Saved as draft. Please complete the missing required fields before submitting.",
+          "warning",
+        );
+        showMissingFieldsList(missingFieldLabels || []);
+        setSubmitButtonHidden(false);
       }
 
       function showSuccess(formContext, text) {
@@ -115,19 +254,16 @@
           "System Intake Draft successfully submitted. Waiting for feedback.";
 
         showFormNotification(formContext, message, "INFO", NOTIF_IDS.success);
-
-        const submitButton = document.getElementById(
-          "submitIntakeRequestButton",
-        );
-        if (submitButton) {
-          submitButton.style.display = "none";
-        }
+        showInlineMessage(message, "success");
+        hideMissingFieldsList();
+        setSubmitButtonHidden(true);
       }
 
       function showError(formContext, text) {
         const message = text || "Something went wrong.";
 
         showFormNotification(formContext, message, "ERROR", NOTIF_IDS.error);
+        showInlineMessage(message, "error");
       }
 
       function shouldShowSuccessOnLoad() {
@@ -158,19 +294,65 @@
             form,
             "System Intake Draft successfully submitted. Waiting for feedback.",
           );
-
-          const submitButton = document.getElementById(
-            "submitIntakeRequestButton",
-          );
-          if (submitButton) {
-            submitButton.style.display = "none";
-          }
+        } else {
+          hideInlineMessage();
+          hideMissingFieldsList();
+          setSubmitButtonHidden(false);
         }
       }
 
       function validateFields(form) {
         let allValid = true;
         const missingFieldLabels = [];
+
+        function getFundingSourcesGridRoot() {
+          try {
+            var doc = parent && parent.document ? parent.document : null;
+            if (!doc) return null;
+
+            // Control wrapper for the subgrid
+            return doc.querySelector(
+              '[data-control-name="sg_funding_sources"]',
+            );
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function hasAtLeastOneFundingSourceRow() {
+          const root = getFundingSourcesGridRoot();
+          if (!root) return null; // unknown
+
+          // AG Grid renders rows with `.ag-row` when records exist.
+          const rowEls = root.querySelectorAll(
+            ".ag-center-cols-container .ag-row",
+          );
+          if (rowEls && rowEls.length > 0) return true;
+
+          // If "no rows" overlay is visible, we can safely treat as empty.
+          const noRowsOverlay = root.querySelector(
+            ".ag-overlay-no-rows-wrapper",
+          );
+          if (noRowsOverlay) {
+            const hidden =
+              noRowsOverlay.classList.contains("ag-hidden") ||
+              noRowsOverlay.getAttribute("aria-hidden") === "true";
+            if (!hidden) return false;
+          }
+
+          // Fallback: if AG Grid root advertises 0 rows, treat as empty.
+          const gridRoot = root.querySelector(".ag-root[aria-rowcount]");
+          if (gridRoot) {
+            const ariaRowCount = parseInt(
+              gridRoot.getAttribute("aria-rowcount") || "",
+              10,
+            );
+            if (!Number.isNaN(ariaRowCount) && ariaRowCount <= 0) return false;
+          }
+
+          // If we couldn't confidently detect, return unknown.
+          return null;
+        }
 
         PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
           const attribute = form.getAttribute(fieldName);
@@ -199,6 +381,19 @@
           }
         });
 
+        // Subgrid validation: require at least one Funding Source row.
+        const fundingHasRow = hasAtLeastOneFundingSourceRow();
+        if (fundingHasRow === false) {
+          allValid = false;
+          missingFieldLabels.push("Funding Sources (add at least one)");
+        } else if (fundingHasRow === null) {
+          // If we cannot reliably detect (timing/DOM changes), don't block submit.
+          // Users will still see the grid on the form.
+          console.warn(
+            "Funding Sources grid presence could not be validated (DOM not ready).",
+          );
+        }
+
         return {
           allValid: allValid,
           missingFieldLabels: missingFieldLabels,
@@ -214,6 +409,8 @@
         }
 
         clearActionNotifications(form);
+        hideInlineMessage();
+        hideMissingFieldsList();
 
         const submitButton = document.getElementById(
           "submitIntakeRequestButton",
@@ -333,18 +530,69 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", initBannerFromFields);
+      // Retry-based initialization to ensure parent form context is ready
+      const INIT_MAX_ATTEMPTS = 10;
+      const INIT_RETRY_DELAY_MS = 500;
+
+      function isParentFormReady() {
+        try {
+          const form = getParentForm();
+          return !!(form && form.data);
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function initUIWithRetry(attempt) {
+        var currentAttempt = attempt || 1;
+
+        if (!isParentFormReady()) {
+          if (currentAttempt >= INIT_MAX_ATTEMPTS) {
+            console.warn(
+              "Parent form context not ready after maximum retries; UI may not reflect correct state.",
+            );
+            return;
+          }
+
+          setTimeout(function () {
+            initUIWithRetry(currentAttempt + 1);
+          }, INIT_RETRY_DELAY_MS);
+          return;
+        }
+
+        initBannerFromFields();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        initUIWithRetry(1);
+      });
     </script>
   </head>
   <body>
-    <div style="text-align: right">
-      <button
-        id="submitIntakeRequestButton"
-        class="btn-primary"
-        onclick="submitIntakeRequestDraft()"
-      >
-        Submit Intake Request Draft
-      </button>
+    <div class="layout">
+      <div class="layout-main">
+        <div
+          id="submitStatus"
+          class="alert hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <div id="missingFieldsBox" class="alert alert-warning hidden">
+          <div><strong>Missing required fields</strong></div>
+          <ul id="missingFieldsList" class="missing-fields-list"></ul>
+        </div>
+      </div>
+
+      <div class="layout-actions">
+        <button
+          id="submitIntakeRequestButton"
+          class="btn-primary"
+          onclick="submitIntakeRequestDraft()"
+        >
+          Submit Intake Request Draft
+        </button>
+      </div>
     </div>
   </body>
 </html>

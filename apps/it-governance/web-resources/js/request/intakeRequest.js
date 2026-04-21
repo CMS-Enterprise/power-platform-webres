@@ -144,14 +144,8 @@ function onSoftwareProductsChange(executionContext) {
   updateSoftwareAcquisitionVisibility(formContext);
 }
 
-/** Yes for cr69a_software_products: boolean two-option, or local choice codes used in migrations. */
-function isSoftwareProductsYes(value) {
-  return value === true || value === 971270000;
-}
-
 function updateSoftwareAcquisitionVisibility(formContext) {
   const softwareAttr = formContext.getAttribute("cr69a_software_products");
-  const softwareCtrl = formContext.getControl("cr69a_software_products");
   const acquisitionCtrl = formContext.getControl(
     "cr69a_howwillthesoftwarebeacquired",
   );
@@ -159,12 +153,10 @@ function updateSoftwareAcquisitionVisibility(formContext) {
     "cr69a_howwillthesoftwarebeacquired",
   );
 
-  // Parent question should always be visible.
-  softwareCtrl?.setVisible(true);
-
   if (!acquisitionCtrl) return;
 
-  const show = isSoftwareProductsYes(softwareAttr?.getValue());
+  // value is yes (971270000)
+  const show = softwareAttr?.getValue() === 971270000;
 
   acquisitionCtrl.setVisible(show);
   if (!acquisitionAttr) return;

@@ -106,7 +106,6 @@ function onLoad(executionContext) {
     console.warn("Requester auto-fill skipped:", e);
   }
 
-  registerSoftwareProductsOnChange(formContext);
   showHideFields(formContext);
   onLoadDebugToggle(formContext);
   onDecisionChange(formContext);
@@ -119,18 +118,6 @@ function onLoad(executionContext) {
     lockAllFields(formContext);
   }
   updateProgressTracker(formContext);
-}
-
-function registerSoftwareProductsOnChange(formContext) {
-  const softwareAttr = formContext.getAttribute("cr69a_software_products");
-  if (!softwareAttr) {
-    console.warn("Attribute not found: cr69a_software_products");
-    return;
-  }
-
-  // Remove before add to avoid duplicate handlers on refreshes.
-  softwareAttr.removeOnChange(onSoftwareProductsChange);
-  softwareAttr.addOnChange(onSoftwareProductsChange);
 }
 
 function onAdminGovTaskListChange(executionContext) {

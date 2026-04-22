@@ -126,6 +126,36 @@ function onAdminGovTaskListChange(executionContext) {
   updateProgressTracker(formContext);
 }
 
+function onSoftwareProductsChange(executionContext) {
+  const formContext = executionContext.getFormContext();
+  updateSoftwareAcquisitionVisibility(formContext);
+}
+
+function updateSoftwareAcquisitionVisibility(formContext) {
+  const softwareAttr = formContext.getAttribute("cr69a_software_products");
+  const acquisitionCtrl = formContext.getControl(
+    "cr69a_howwillthesoftwarebeacquired",
+  );
+  const acquisitionAttr = formContext.getAttribute(
+    "cr69a_howwillthesoftwarebeacquired",
+  );
+
+  if (!acquisitionCtrl) return;
+
+  // value is yes (971270000)
+  const show = softwareAttr?.getValue() === 971270000;
+
+  acquisitionCtrl.setVisible(show);
+  if (!acquisitionAttr) return;
+
+  if (show) {
+    return;
+  }
+
+  acquisitionAttr.setRequiredLevel("none");
+  acquisitionAttr.setValue(null);
+}
+
 function onLoadDebugToggle(formContext) {
   var debugMode = localStorage.getItem("debugMode") === "true";
 
@@ -210,6 +240,8 @@ function showHideFields(formContext) {
   const pageName = isNew ? "REQUEST_TYPE" : STAGE_TO_PAGE[stage] || "INTAKE";
 
   showPage(formContext, pageName);
+
+  updateSoftwareAcquisitionVisibility(formContext);
 
   const readyForReview = formContext
     .getAttribute("cr69a_readyforreview")

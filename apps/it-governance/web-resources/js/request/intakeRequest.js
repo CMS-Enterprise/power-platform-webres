@@ -136,24 +136,19 @@ function updateSoftwareAcquisitionVisibility(formContext) {
   const acquisitionCtrl = formContext.getControl(
     "cr69a_howwillthesoftwarebeacquired",
   );
-  const acquisitionAttr = formContext.getAttribute(
-    "cr69a_howwillthesoftwarebeacquired",
-  );
+  const requestDetailsSection = formContext.ui.tabs
+    .get("General")
+    ?.sections.get("section_request_details");
 
-  if (!acquisitionCtrl) return;
+  if (!softwareAttr || !acquisitionCtrl) return;
 
-  // value is yes (971270000)
-  const show = softwareAttr?.getValue() === 971270000;
-
-  acquisitionCtrl.setVisible(show);
-  if (!acquisitionAttr) return;
-
-  if (show) {
+  if (!requestDetailsSection || !requestDetailsSection.getVisible()) {
+    acquisitionCtrl.setVisible(false);
     return;
   }
 
-  acquisitionAttr.setRequiredLevel("none");
-  acquisitionAttr.setValue(null);
+  const show = softwareAttr.getValue() === 971270000;
+  acquisitionCtrl.setVisible(show);
 }
 
 function onLoadDebugToggle(formContext) {

@@ -15,6 +15,11 @@ namespace SystemIntake.Plugins
             var tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
             var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
 
+
+            tracing?.Trace("ActivityLog_Update_BlockAll: Disabled (no-op).");
+            return;
+
+
             if (context == null)
             {
                 tracing?.Trace("ActivityLog_Update_BlockAll: context is null. Exiting.");

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Decision Banners</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: transparent;
+      }
+
+      .decision-banner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-left: 4px solid transparent;
+        border-radius: 2px;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .icon {
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .banner-approved {
+        background: #e6f4ea;
+        border-left-color: #2e7d32;
+        color: #1b5e20;
+      }
+
+      .banner-not-approved {
+        background: #fdecea;
+        border-left-color: #d93025;
+        color: #8a1c1c;
+      }
+
+      .banner-not-itgov {
+        background: #f3f2f1;
+        border-left-color: #8a8886;
+        color: #323130;
+      }
+
+      .banner-closed {
+        background: #fff4ce;
+        border-left-color: #ffb900;
+        color: #5c4400;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: underline;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+    <script>
+      const DECISIONS = {
+        ISSUE_LCID: 971270000,
+        NOT_AN_IT_GOV_REQUEST: 971270001,
+        NOT_APPROVED_BY_GRB: 971270002,
+        CLOSE_REQUEST: 971270003,
+      };
+
+      function getFormContext() {
+        try {
+          return parent.Xrm.Page;
+        } catch (e) {
+          console.error("Unable to access parent form context", e);
+          return null;
+        }
+      }
+      window.onload = function () {
+        const formContext = getFormContext();
+        if (!formContext) return;
+
+        const decision = formContext.getAttribute("easi_decision")?.getValue();
+
+        console.log("decision", decision);
+
+        if (decision === DECISIONS.ISSUE_LCID) {
+          document.getElementById("banner").classList.add("banner-approved");
+          document
+            .getElementById("icon-banner-approved")
+            .classList.remove("hidden");
+
+          document.getElementById("banner-text").innerText =
+            "Your request has been approved and a Life Cycle ID (LCID) has been issued.";
+        } else if (decision === DECISIONS.NOT_APPROVED_BY_GRB) {
+          document
+            .getElementById("banner")
+            .classList.add("banner-not-approved");
+          document
+            .getElementById("icon-banner-not-approved")
+            .classList.remove("hidden");
+          document.getElementById("banner-text").innerText =
+            "Your request was not approved.";
+        } else if (decision === DECISIONS.NOT_AN_IT_GOV_REQUEST) {
+          document.getElementById("banner").classList.add("banner-not-itgov");
+          document
+            .getElementById("icon-banner-not-an-it-gov-request")
+            .classList.remove("hidden");
+          document.getElementById("banner-text").innerText =
+            "The Governance Team decided that your request is not an IT Governance request.";
+        } else if (decision === DECISIONS.CLOSE_REQUEST) {
+          document.getElementById("banner").classList.add("banner-closed");
+          document
+            .getElementById("icon-banner-closed")
+            .classList.remove("hidden");
+          document.getElementById("banner-text").innerHTML =
+            'The Governance Team has closed this request without issuing a decision. If you have questions, you may contact them at <a href="mailto:IT_Governance@cms.hhs.gov">IT_Governance@cms.hhs.gov</a>';
+        }
+      };
+    </script>
+  </head>
+
+  <body>
+    <div id="banner" class="decision-banner">
+      <span id="icon-banner-approved" class="icon hidden">✅</span>
+      <span id="icon-banner-not-approved" class="icon hidden">❌</span>
+      <span id="icon-banner-not-an-it-gov-request" class="icon hidden">✖</span>
+      <span id="icon-banner-closed" class="icon hidden">⚠️</span>
+      <span id="banner-text"
+        >Your request has been approved and a Life Cycle ID (LCID) has been
+        issued.</span
+      >
+    </div>
+  </body>
+</html>

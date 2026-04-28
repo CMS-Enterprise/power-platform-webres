@@ -93,6 +93,7 @@ namespace LCIDActivityLogs
                 else
                 {
                     tracing.Trace($"Activity type {activityType.Value} not handled. Exiting.");
+                    return;
                 }
 
                 var reason = target.GetAttributeValue<string>(ActivityLogReasonField);

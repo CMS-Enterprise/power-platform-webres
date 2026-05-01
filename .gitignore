@@ -93,3 +93,10 @@ appsettings.Development.json
 # =========================
 .DS_Store
 Thumbs.db`
+
+# =========================
+# Postman
+# =========================
+postman/*local*.json
+postman/*env*.json
+!postman/*example*.json

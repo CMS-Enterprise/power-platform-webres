@@ -24,11 +24,12 @@ Notes:
   - The current expiration date for this token is 3/11/2027
   - A new client secret must be generated in Microsoft Entra (App Registration)
   - The updated client_secret must be stored in the password manager
-- The Postman environment must be updated with the new value
+  - The Postman environment must be updated with the new value
 - This collection can be used for Dev, UAT, Production environments. Environment-specific values (such as flow_trigger_url) must be updated accordingly.
-- Service Principal information should remain the same between three environments
+- Service Principal information should remain the same between Dev, UAT, and Production environments
 - Uses OAuth (no SAS)
 - Scope must be https://gov.service.flow.microsoft.us//.default
+- The flow_trigger_url must NOT include SAS parameters (sp, sv, sig)
 
 Troubleshooting:
 

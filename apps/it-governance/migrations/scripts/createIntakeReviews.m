@@ -1,5 +1,23 @@
 let
     Prev = StagingRaw,
+    // Normalize date fields
+    NormalizeDate = (v as any) as nullable date =>
+        let
+            result =
+                if v = null then
+                    null
+                else if Value.Is(v, type date) then
+                    v
+                else if Value.Is(v, type datetime) then
+                    Date.From(v)
+                else
+                    try Date.From(Text.Trim(Text.From(v))) otherwise null
+        in
+            result,
+    DateCols = {"cr69a_grt_date", "cr69a_grb_date"},
+    ColsPresentDates = List.Intersect({DateCols, Table.ColumnNames(Prev)}),
+    DateTransformers = List.Transform(ColsPresentDates, each {_, each NormalizeDate(_), type date}),
+    WithDates = Table.TransformColumns(Prev, DateTransformers),
     // Map to Dataverse-style two-option codes:
     NormalizeTwoOption = (v as any) as nullable number =>
         let
@@ -26,7 +44,7 @@ let
     },
     ColsPresent = List.Intersect({TwoOptionCols, Table.ColumnNames(Prev)}),
     Transformers = List.Transform(ColsPresent, each {_, each NormalizeTwoOption(_), Int64.Type}),
-    FixedBools = Table.TransformColumns(Prev, Transformers),
+    FixedBools = Table.TransformColumns(WithDates, Transformers),
     WithAdminTask = Table.AddColumn(FixedBools, "cr69a_admingovernancetasklist", each 971270009, Int64.Type),
     // Normalize Yes/No to logical true/false (nullable)
     NormalizeYesNo = (v as any) as nullable logical =>

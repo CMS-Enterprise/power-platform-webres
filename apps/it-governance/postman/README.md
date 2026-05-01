@@ -46,3 +46,5 @@ Troubleshooting:
 
 - If authentication fails after previously working:
   - The client_secret may have expired
+
+- Ensure the Service Principal Object ID is included in the "Allowed users" configuration of the Power Automate HTTP trigger

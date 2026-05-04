@@ -21,7 +21,7 @@ Steps to initiate a connection and make a request:
 Notes:
 
 - IMPORTANT: The client_secret used for authentication will expire.
-  - The current expiration date for this token is 3/11/2027
+  - The current expiration date for this token is 2027-03-11
   - A new client secret must be generated in Microsoft Entra (App Registration)
   - The updated client_secret must be stored in the password manager
   - The Postman environment must be updated with the new value

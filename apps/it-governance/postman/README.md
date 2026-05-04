@@ -4,18 +4,24 @@ This Postman collection was created to connect the Power Apps Dataverse environm
 
 Steps to initiate a connection and make a request:
 
-1. Create a Postman environment
-2. This information is currently available in the EASI password manager vault. We will be moving these credentials to the Cedar team for storage in an accessible place for them.
+1. Import the provided Postman collection and example environment file
+2. Import the provided environment (You can drag and drop it into Postman)
+
+- The environment file includes all required variables (not the values though), including "bearer_token", which will be automatically populated during authentication.
+
+3. Populate the following variables. This information is currently available in the EASI password manager vault. We will be moving these credentials to the Cedar team for storage in an accessible place for them.
    - tenant_id
    - client_id
    - client_secret
    - flow_trigger_url
-3. Run "Authentication" request
+4. Select the imported environment in Postman
+5. Run "Authentication" request
    - This retrieves an OAuth2 access token using the Service Principal
    - The token is automatically stored in the Postman environment as "bearer_token"
-4. Run "Trigger Power Automate Flow"
+6. Run "Trigger Power Automate Flow"
    - This sends an authenticated request to the Power Automate HTTP trigger
-   - A successful response confirms that the Cedar system can connect to the IT Governance environment
+   - A successful response will contain placeholder dev data
+     Example: "IntakeID": "f8455dec-2122-f111-8341-001dd804cd4c"
    - The response payload is currently a work in progress.
 
 Notes:

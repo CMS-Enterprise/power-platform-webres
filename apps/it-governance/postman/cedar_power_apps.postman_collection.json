@@ -62,14 +62,8 @@
         "url": {
           "raw": "https://login.microsoftonline.com/{{tenant_id}}/oauth2/v2.0/token",
           "protocol": "https",
-          "path": ["{{tenant_id}}", "oauth2", "v2.0", "token"],
-          "query": [
-            {
-              "key": "Content-Type",
-              "value": "application/x-www-form-urlencoded",
-              "disabled": true
-            }
-          ]
+          "host": ["login", "microsoftonline", "com"],
+          "path": ["{{tenant_id}}", "oauth2", "v2.0", "token"]
         }
       },
       "response": []
@@ -87,15 +81,7 @@
             "value": "Bearer {{bearer_token}}"
           }
         ],
-        "url": {
-          "raw": "{{flow_trigger_url}}?api-version=2016-06-01",
-          "query": [
-            {
-              "key": "api-version",
-              "value": "2016-06-01"
-            }
-          ]
-        }
+        "url": "{{flow_trigger_url}}?api-version=2016-06-01"
       },
       "response": []
     }

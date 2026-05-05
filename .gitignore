@@ -83,6 +83,9 @@ TestResults/
 # =========================
 # Local config / secrets
 # =========================
+.env
+.env.*
+!.env.example
 appsettings.json
 appsettings.Development.json
 *.local.json

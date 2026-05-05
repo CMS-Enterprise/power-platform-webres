@@ -1,0 +1,186 @@
+{
+  "resourceRoot": "apps/it-governance/web-resources",
+  "nameTemplate": "change_me/{relativePath}",
+  "defaultCreateMissing": true,
+  "defaultPublishAfterUpload": true,
+  "resources": [
+    {
+      "file": "html/admin-review-complete-action-button.html",
+      "name": "easi_admin_review_complete_action_button"
+    },
+    {
+      "file": "html/business-case-header.html",
+      "name": "easi_BusinessCaseHeader"
+    },
+    {
+      "file": "html/business-case-submit.html",
+      "name": "cr69a_BusinessCaseSubmit"
+    },
+    {
+      "file": "html/close-request-button.html",
+      "name": "easi_close_request_button"
+    },
+    {
+      "file": "html/conditional-helper-text.html",
+      "name": "cr69a_conditional_helper_text"
+    },
+    {
+      "file": "html/final-business-case-submit.html",
+      "name": "cr69a_final_business_case_submit"
+    },
+    {
+      "file": "html/governance-process-steps.html",
+      "name": "new_governanceProcessSteps"
+    },
+    {
+      "file": "html/intake-business-case.html",
+      "name": "cr3ee_intake_business_case_help"
+    },
+    {
+      "file": "html/intake-draft-submit.html",
+      "name": "cr69a_intake_request_draft_submit"
+    },
+    {
+      "file": "html/intake-request-complete-header.html"
+    },
+    {
+      "file": "html/intake-request-completed-further-info.html",
+      "name": "new_request_completed_further_info"
+    },
+    {
+      "file": "html/intake-request-completed-next-steps.html",
+      "name": "new_request_completed_next_steps"
+    },
+    {
+      "file": "html/intake-request-get-started-submit.html",
+      "name": "easi_SystemIntakeRequestGetStartedSubmit"
+    },
+    {
+      "file": "html/intake-request-have-questions-about-decision.html",
+      "name": "new_request_questions_about_decision"
+    },
+    {
+      "file": "html/intake-request-result-display-banner.html",
+      "name": "new_request_result_display_banner"
+    },
+    {
+      "file": "html/upload-files-helper-text.html",
+      "name": "cr3ee_upload_files_helper_text"
+    },
+    {
+      "file": "html/issue-lcid-button.html",
+      "name": "cr69a_issue_lcid_button"
+    },
+    {
+      "file": "html/it-gov-process-steps-ux/awaiting-decision-header.html",
+      "name": "new_awaiting_decision_header"
+    },
+    {
+      "file": "html/it-gov-process-steps-ux/decision-header.html",
+      "name": "new_decision_header"
+    },
+    {
+      "file": "html/it-gov-process-steps-ux/final-business-case-review-header.html",
+      "name": "new_final_business_case_review_header"
+    },
+    {
+      "file": "html/it-gov-process-steps-ux/grb-review-header.html",
+      "name": "new_grb_review_header"
+    },
+    {
+      "file": "html/it-gov-process-steps-ux/grt-meeting-header.html",
+      "name": "new_grt_meeting_header"
+    },
+    {
+      "file": "html/new-system-warning.html",
+      "name": "new_newSystemWarning"
+    },
+    {
+      "file": "html/request-progress-tracker.html",
+      "name": "cr69a_system_intake_progress_tracker"
+    },
+    {
+      "file": "html/request-type.html",
+      "name": "easi_requestTypeHtml"
+    },
+    {
+      "file": "html/review-action-submit.html",
+      "name": "new-review-action-submit"
+    },
+    {
+      "file": "html/review-progress-tracker.html",
+      "name": "new_review_progress_tracker"
+    },
+    {
+      "file": "html/review-ready-for-review.html",
+      "name": "new_review_ready_for_review"
+    },
+    {
+      "file": "html/what-is-a-major-change.html",
+      "name": "new_WhatIsAMajorChange"
+    },
+    {
+      "file": "html/why-does-the-governance-process-exist.html",
+      "name": "new_whyDoesTheGovernanceProcessExist"
+    },
+    {
+      "file": "js/activity-logs/activityLogMainForm.js",
+      "name": "new_activity_log_main_form"
+    },
+    {
+      "file": "js/activity-logs/activityLogQuickCreate.js",
+      "name": "cr3ee_activity_log_quick_create_script"
+    },
+    {
+      "file": "js/activity-logs/openActivityLogQuickCreate.js",
+      "name": "cr3ee_ActivityLogQuickCreate_HelperFunction"
+    },
+    {
+      "file": "js/activity-logs/openEditRequestQuickCreate.js",
+      "name": "cr3ee_open_edit_requests_quick_create"
+    },
+    {
+      "file": "js/business-case/businessCase.js",
+      "name": "cr3ee_business_case_form_script"
+    },
+    {
+      "file": "js/commonJSLibrary.js",
+      "name": "easi_common"
+    },
+    {
+      "file": "js/intakeReview.js",
+      "name": "easi_system_intake_admin_review"
+    },
+    {
+      "file": "js/lcid-activity-logs/lcidActivityLogMainForm.js"
+    },
+    {
+      "file": "js/lcid-activity-logs/lcidActivityLogQuickCreate.js",
+      "name": "cr3ee_lcidActivityLogQuickCreate"
+    },
+    {
+      "file": "js/lcid-activity-logs/openLcidActivityLogQuickCreate.js",
+      "name": "cr3ee_openLcidActivityLogQuickCreate"
+    },
+    {
+      "file": "js/request/intakeRequest.js",
+      "name": "new_systemIntake"
+    },
+    {
+      "file": "js/request/intakeRequestUploadDocumentsButton.js",
+      "name": "cr3ee_intakeRequestUploadDocumentsButton"
+    },
+    {
+      "file": "js/request/requestAdmin.js",
+      "name": "cr3ee_intakeRequestAdminView"
+    },
+    {
+      "file": "js/showEnvironmentBanner.js",
+      "name": "cr69a_showEnvironmentBanner"
+    },
+    {
+      "file": "js/system-links/systemLinksQuickCreate.js",
+      "name": "cr3ee_system_link_script"
+    }
+  ]
+}

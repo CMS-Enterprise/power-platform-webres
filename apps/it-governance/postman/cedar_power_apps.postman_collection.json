@@ -1,0 +1,89 @@
+{
+  "info": {
+    "name": "Power Apps API - Cedar",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const json = pm.response.json();",
+              "    pm.environment.set(\"bearer_token\", json.access_token);",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "client_id",
+              "value": "{{client_id}}",
+              "type": "text",
+              "uuid": "ae0df25c-837b-4a1a-98d5-2f0f3487f717"
+            },
+            {
+              "key": "client_secret",
+              "value": "{{client_secret}}",
+              "type": "text",
+              "uuid": "01949b0c-0a6b-42d3-ae01-c7f9a0240a77"
+            },
+            {
+              "key": "grant_type",
+              "value": "client_credentials",
+              "type": "text",
+              "uuid": "103fcd61-bf22-46e8-a1ca-094189fae654"
+            },
+            {
+              "key": "scope",
+              "value": "https://gov.service.flow.microsoft.us//.default",
+              "type": "text",
+              "uuid": "76e05f4f-078f-464c-b8ef-4c90fbfae4cf"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://login.microsoftonline.com/{{tenant_id}}/oauth2/v2.0/token",
+          "protocol": "https",
+          "host": ["login", "microsoftonline", "com"],
+          "path": ["{{tenant_id}}", "oauth2", "v2.0", "token"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Trigger Power Automate Flow",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearer_token}}"
+          }
+        ],
+        "url": "{{flow_trigger_url}}?api-version=2016-06-01"
+      },
+      "response": []
+    }
+  ]
+}

@@ -37,6 +37,12 @@ The deploy script:
   - Local path to Dataverse name mapping
 - `scripts/deploy-webresources.mjs`
   - Deployment CLI
+- `scripts/check-webresources.mjs`
+  - Compare local files to Dataverse without changing either side
+- `scripts/pull-webresource-snapshot.mjs`
+  - Save the Dataverse version beside a local file as a safe review snapshot
+- `scripts/webresources-help.mjs`
+  - Quick command index for the web resource workflow
 
 ## Setup
 
@@ -85,6 +91,12 @@ If a historical web resource name does not follow that pattern, set a `name` on 
 
 ## Commands
 
+Show the command summary:
+
+```bash
+npm run webres:help
+```
+
 Sync new local files into the manifest:
 
 ```bash
@@ -107,24 +119,70 @@ node ./scripts/sync-webresources-manifest.mjs \
   --with-names
 ```
 
-Preview actions without uploading:
+Check whether local files match Dataverse before publishing:
 
 ```bash
-npm run webres:plan
+npm run webres:check
 ```
 
-Deploy everything in the manifest:
+Check one file only:
 
 ```bash
-npm run webres:deploy
+npm run webres:check:file -- js/commonJSLibrary.js
 ```
 
-Deploy one file only:
+Clean up all `.remote` snapshot files after a confirmation prompt:
 
 ```bash
-node ./scripts/deploy-webresources.mjs \
-  --manifest ./apps/it-governance/web-resources/webresources.manifest.json \
-  --resource js/commonJSLibrary.js
+npm run webres:clean:snapshots
+```
+
+Pull a remote snapshot for one file without overwriting the local source:
+
+```bash
+npm run webres:pull:file -- js/commonJSLibrary.js
+```
+
+Pull a remote snapshot and immediately diff it against local:
+
+```bash
+npm run webres:review:file -- js/commonJSLibrary.js
+```
+
+Choose local after review and publish it over Dataverse:
+
+```bash
+npm run webres:use:local:file -- js/commonJSLibrary.js
+```
+
+Choose Dataverse after review and replace the local file from the pulled snapshot:
+
+```bash
+npm run webres:use:remote:file -- js/commonJSLibrary.js
+```
+
+Diff the local file against the pulled remote snapshot:
+
+```bash
+npm run webres:diff:file -- js/commonJSLibrary.js
+```
+
+Publish one file only:
+
+```bash
+npm run webres:publish:file -- js/commonJSLibrary.js
+```
+
+Force a publish after reviewing and intentionally choosing to overwrite Dataverse:
+
+```bash
+node ./scripts/deploy-webresources.mjs js/commonJSLibrary.js --force
+```
+
+Preview one file only:
+
+```bash
+npm run webres:plan:file -- js/commonJSLibrary.js
 ```
 
 ## Why Node instead of raw curl
@@ -153,6 +211,58 @@ The manifest sync helper:
 
 If a local filename does not match the Power Platform web resource name, keep using an explicit `name` override in that manifest entry. The sync helper will not overwrite it.
 
+## Check behavior
+
+The check helper:
+
+- Compares local file content to Dataverse web resource content using hashes
+- Reports `IN_SYNC`, `DIFFERS`, or `REMOTE_MISSING`
+- Shows local and remote modified timestamps when available
+- Shows who last modified the Dataverse resource when available
+- Exits with code `1` if any checked resource differs or is missing remotely
+
+This is useful before publishing a single file.
+
+## Publish safety behavior
+
+The publish script now protects against accidental overwrite by default.
+
+For existing web resources, it compares the currently published Dataverse content to the file's `git HEAD` version:
+
+- If Dataverse matches `git HEAD`, publish is allowed
+- If Dataverse already matches the current local file, publish is allowed
+- If Dataverse differs from `git HEAD`, publish is blocked until you review the difference
+- If a file is not available in `git HEAD` and Dataverse differs from local, publish is blocked until you review or force it
+
+This means normal local edits do **not** require `--force`. The block only happens when Dataverse appears to have drifted from the version your branch was based on.
+
+Recommended recovery flow when publish is blocked:
+
+1. `npm run webres:check:file -- js/commonJSLibrary.js`
+2. `npm run webres:pull:file -- js/commonJSLibrary.js`
+3. `npm run webres:diff:file -- js/commonJSLibrary.js`
+4. Decide whether to merge, choose local, or choose Dataverse
+5. If local should win: `npm run webres:use:local:file -- js/commonJSLibrary.js`
+6. If Dataverse should win: `npm run webres:use:remote:file -- js/commonJSLibrary.js`
+
+## Remote snapshot behavior
+
+The remote snapshot helper:
+
+- Fetches the currently published Dataverse content for a mapped resource
+- Writes it beside the local file using a `.remote` suffix such as `example.remote.html`
+- Does not modify the local source file
+- Helps you diff local work against the version currently published in Power Apps
+- Remote snapshot files are ignored by git via `*.remote.*`
+- Snapshot cleanup is available via `npm run webres:clean:snapshots`
+
+Recommended review flow for a differing file:
+
+1. `npm run webres:check:file -- js/commonJSLibrary.js`
+2. `npm run webres:pull:file -- js/commonJSLibrary.js`
+3. `npm run webres:diff:file -- js/commonJSLibrary.js`
+4. Decide whether to merge, choose local, or choose Dataverse
+
 ## Solution behavior
 
 For new web resources, the script sends the `MSCRM.SolutionUniqueName` header on create, which associates the new component with your chosen unmanaged solution.
@@ -164,9 +274,9 @@ For updates, the script also sends `MSCRM.SolutionUniqueName` on `PATCH`. That h
 The safest first run is:
 
 1. Set `nameTemplate` to the prefix you think matches most existing web resource names
-2. Run `npm run webres:plan`
+2. Run `npm run webres:plan:file -- html/example.html`
 3. Fix any mismatched entries by adding explicit `name` values in the manifest
-4. Run `npm run webres:deploy`
+4. Run `npm run webres:publish:file -- html/example.html`
 
 ## Common Issues
 

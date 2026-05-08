@@ -3,8 +3,17 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "webres:help": "node ./scripts/webresources-help.mjs",
+    "webres:check": "node ./scripts/check-webresources.mjs --manifest ./apps/it-governance/web-resources/webresources.manifest.json",
+    "webres:check:file": "node ./scripts/check-webresources.mjs",
+    "webres:clean:snapshots": "node ./scripts/clean-webresource-snapshots.mjs",
+    "webres:diff:file": "node ./scripts/diff-webresource-snapshot.mjs",
+    "webres:pull:file": "node ./scripts/pull-webresource-snapshot.mjs",
+    "webres:review:file": "node ./scripts/pull-webresource-snapshot.mjs --diff",
+    "webres:use:local:file": "node ./scripts/use-local-webresource-file.mjs",
+    "webres:use:remote:file": "node ./scripts/use-remote-webresource-file.mjs",
     "webres:manifest:sync": "node ./scripts/sync-webresources-manifest.mjs --manifest ./apps/it-governance/web-resources/webresources.manifest.json",
-    "webres:plan": "node ./scripts/deploy-webresources.mjs --manifest ./apps/it-governance/web-resources/webresources.manifest.json --dry-run",
-    "webres:deploy": "node ./scripts/deploy-webresources.mjs --manifest ./apps/it-governance/web-resources/webresources.manifest.json"
+    "webres:plan:file": "node ./scripts/deploy-webresources.mjs --dry-run",
+    "webres:publish:file": "node ./scripts/deploy-webresources.mjs"
   }
 }

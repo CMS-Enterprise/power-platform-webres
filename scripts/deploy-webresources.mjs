@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
+import { spawnSync } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
 import { stat } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+
+const DEFAULT_MANIFEST =
+  "./apps/it-governance/web-resources/webresources.manifest.json";
 
 const WEB_RESOURCE_TYPES = {
   ".htm": 1,
@@ -77,11 +81,23 @@ async function main() {
       );
     }
 
+    const publishSafety = evaluatePublishSafety({
+      force: args.force,
+      localContentBase64: resource.contentBase64,
+      remote: existing,
+      repoRelativePath: resource.repoRelativePath
+    });
+
     if (args.dryRun) {
+      const safetySuffix = publishSafety.message ? ` [${publishSafety.message}]` : "";
       console.log(
-        `- ${mode.toUpperCase()} ${resource.file} -> ${resource.name}${resource.publishAfterUpload ? " (publish)" : ""}`
+        `- ${mode.toUpperCase()} ${resource.file} -> ${resource.name}${resource.publishAfterUpload ? " (publish)" : ""}${safetySuffix}`
       );
       continue;
+    }
+
+    if (!publishSafety.allowed) {
+      throw new Error(buildPublishSafetyError(resource, existing, publishSafety));
     }
 
     const payload = {
@@ -170,8 +186,9 @@ async function main() {
 
 function parseArgs(argv) {
   const args = {
-    manifest: "",
+    manifest: DEFAULT_MANIFEST,
     dryRun: false,
+    force: false,
     resources: []
   };
 
@@ -185,6 +202,11 @@ function parseArgs(argv) {
 
     if (current === "--dry-run") {
       args.dryRun = true;
+      continue;
+    }
+
+    if (current === "--force") {
+      args.force = true;
       continue;
     }
 
@@ -203,6 +225,11 @@ function parseArgs(argv) {
       process.exit(0);
     }
 
+    if (!current.startsWith("-")) {
+      args.resources.push(normalizeRelativePath(current));
+      continue;
+    }
+
     throw new Error(`Unknown argument: ${current}`);
   }
 
@@ -211,12 +238,15 @@ function parseArgs(argv) {
 
 function printHelp() {
   console.log(`Usage:
-  node ./scripts/deploy-webresources.mjs --manifest ./apps/it-governance/web-resources/webresources.manifest.json
+  node ./scripts/deploy-webresources.mjs
+  node ./scripts/deploy-webresources.mjs html/example.html
+  node ./scripts/deploy-webresources.mjs --resource html/example.html
 
 Options:
   --dry-run                 Resolve create/update actions without uploading content.
+  --force                   Publish even if Dataverse does not match the file's git HEAD version.
   --resource <relativePath> Deploy only a specific manifest entry. Repeatable.
-  --manifest <path>         Path to the manifest file.
+  --manifest <path>         Path to the manifest file. Defaults to ${DEFAULT_MANIFEST}
   --help                    Show this help message.
 `);
 }
@@ -272,10 +302,6 @@ function validateConfig({ args, env, manifest, solutionUniqueName }) {
 
   if (missingEnv.length > 0) {
     throw new Error(`Missing required environment values: ${missingEnv.join(", ")}`);
-  }
-
-  if (!args.manifest) {
-    throw new Error("You must provide --manifest.");
   }
 
   if (!manifest.resourceRoot) {
@@ -338,6 +364,7 @@ async function buildResourcePlan({ manifest, manifestPath, resourceRoot, filterF
       manifestDir,
       name,
       publishAfterUpload: entry.publishAfterUpload ?? manifest.defaultPublishAfterUpload ?? true,
+      repoRelativePath: normalizeRelativePath(path.relative(process.cwd(), absolutePath)),
       webResourceType,
       contentBase64: fileBuffer.toString("base64")
     });
@@ -394,7 +421,7 @@ async function getAccessToken(env, dataverseUrl) {
 async function findExistingWebResource({ dataverseUrl, token, name }) {
   const filter = encodeURIComponent(`name eq '${name.replaceAll("'", "''")}'`);
   const requestPath =
-    `/api/data/v9.2/webresourceset?$select=webresourceid,name,webresourcetype&$filter=${filter}`;
+    `/api/data/v9.2/webresourceset?$select=webresourceid,name,webresourcetype,content,modifiedon,_modifiedby_value&$filter=${filter}`;
   const response = await dataverseRequest({
     dataverseUrl,
     token,
@@ -487,6 +514,84 @@ function extractGuidFromEntityId(entityId) {
 
   const match = entityId.match(/\(([0-9a-fA-F-]{36})\)$/);
   return match ? match[1] : "";
+}
+
+function evaluatePublishSafety({ force, localContentBase64, remote, repoRelativePath }) {
+  if (force || !remote) {
+    return {
+      allowed: true,
+      message: force ? "force enabled" : ""
+    };
+  }
+
+  const headContentBase64 = getGitHeadContentBase64(repoRelativePath);
+  if (headContentBase64 === null) {
+    if (remote.content === localContentBase64) {
+      return {
+        allowed: true,
+        message: "not tracked in git, but already matches Dataverse"
+      };
+    }
+
+    return {
+      allowed: false,
+      message: "remote differs and no git HEAD baseline is available"
+    };
+  }
+
+  if (remote.content === headContentBase64) {
+    return {
+      allowed: true,
+      message: "Dataverse matches git HEAD"
+    };
+  }
+
+  if (remote.content === localContentBase64) {
+    return {
+      allowed: true,
+      message: "Dataverse already matches local"
+    };
+  }
+
+  return {
+    allowed: false,
+    message: "Dataverse differs from git HEAD"
+  };
+}
+
+function getGitHeadContentBase64(repoRelativePath) {
+  const result = spawnSync("git", ["show", `HEAD:${repoRelativePath}`], {
+    cwd: process.cwd(),
+    encoding: "buffer"
+  });
+
+  if (result.status !== 0) {
+    return null;
+  }
+
+  return Buffer.from(result.stdout).toString("base64");
+}
+
+function buildPublishSafetyError(resource, remote, publishSafety) {
+  const remoteModified = remote?.modifiedon
+    ? new Date(remote.modifiedon).toISOString()
+    : "unknown";
+  const remoteModifiedBy =
+    remote?.["_modifiedby_value@OData.Community.Display.V1.FormattedValue"] ||
+    remote?._modifiedby_value ||
+    "unknown";
+
+  return [
+    `Blocked publish for '${resource.file}' because ${publishSafety.message}.`,
+    `Dataverse web resource: ${resource.name}`,
+    `Remote modified: ${remoteModified}`,
+    `Remote modified by: ${remoteModifiedBy}`,
+    "Review the local file against the currently published version first:",
+    `  npm run webres:check:file -- ${resource.file}`,
+    `  npm run webres:pull:file -- ${resource.file}`,
+    `  npm run webres:diff:file -- ${resource.file}`,
+    "If you intentionally want to overwrite Dataverse, rerun with --force."
+  ].join("\n");
 }
 
 main().catch((error) => {

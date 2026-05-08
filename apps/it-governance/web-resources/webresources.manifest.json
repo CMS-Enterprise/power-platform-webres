@@ -41,9 +41,6 @@
       "name": "cr69a_intake_request_draft_submit"
     },
     {
-      "file": "html/intake-request-complete-header.html"
-    },
-    {
       "file": "html/intake-request-completed-further-info.html",
       "name": "new_request_completed_further_info"
     },
@@ -104,10 +101,6 @@
       "name": "easi_requestTypeHtml"
     },
     {
-      "file": "html/review-action-submit.html",
-      "name": "new-review-action-submit"
-    },
-    {
       "file": "html/review-progress-tracker.html",
       "name": "new_review_progress_tracker"
     },
@@ -150,9 +143,6 @@
     {
       "file": "js/intakeReview.js",
       "name": "easi_system_intake_admin_review"
-    },
-    {
-      "file": "js/lcid-activity-logs/lcidActivityLogMainForm.js"
     },
     {
       "file": "js/lcid-activity-logs/lcidActivityLogQuickCreate.js",

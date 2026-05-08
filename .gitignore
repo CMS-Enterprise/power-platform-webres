@@ -43,6 +43,7 @@ package-lock.json
 tmp
 *.swp
 todos_in_diff.log
+*.remote.*
 
 # Binaries
 /bin/

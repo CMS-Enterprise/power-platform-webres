@@ -8,6 +8,7 @@ import process from "node:process";
 
 const DEFAULT_MANIFEST =
   "./apps/it-governance/web-resources/webresources.manifest.json";
+const DATAVERSE_REQUEST_TIMEOUT_MS = 60_000;
 
 const WEB_RESOURCE_TYPES = {
   ".htm": 1,
@@ -173,6 +174,7 @@ async function main() {
   }
 
   if (!args.dryRun && changedResourceIds.length > 0) {
+    console.log(`Publishing ${changedResourceIds.length} web resource(s)...`);
     await publishWebResources({
       dataverseUrl,
       token,
@@ -446,6 +448,7 @@ async function publishWebResources({ dataverseUrl, token, webResourceIds }) {
     token,
     path: "/api/data/v9.2/PublishXml",
     method: "POST",
+    operationName: "publish web resources",
     body: {
       ParameterXml: xml
     }
@@ -458,20 +461,40 @@ async function dataverseRequest({
   path: requestPath,
   method,
   headers = {},
-  body
+  body,
+  operationName
 }) {
-  const response = await fetch(`${dataverseUrl}${requestPath}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      ...(body ? { "Content-Type": "application/json" } : {}),
-      "OData-Version": "4.0",
-      "OData-MaxVersion": "4.0",
-      ...headers
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), DATAVERSE_REQUEST_TIMEOUT_MS);
+
+  let response;
+
+  try {
+    response = await fetch(`${dataverseUrl}${requestPath}`, {
+      method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
+        "OData-Version": "4.0",
+        "OData-MaxVersion": "4.0",
+        ...headers
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      const target = operationName || `${method} ${requestPath}`;
+      throw new Error(
+        `Dataverse request timed out after ${DATAVERSE_REQUEST_TIMEOUT_MS / 1000}s while trying to ${target}.`
+      );
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     const errorText = await response.text();

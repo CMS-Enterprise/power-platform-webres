@@ -11,6 +11,71 @@
     ReOpenRequest: 216640006,
   };
 
+  async function refreshEmbeddedWebResources(formContext) {
+    const statusValue = formContext
+      ?.getAttribute?.("new_admingovernancetasklist")
+      ?.getValue?.();
+    const controls = formContext?.ui?.controls;
+
+    if (!controls?.forEach) {
+      return;
+    }
+
+    const refreshTasks = [];
+
+    controls.forEach((control) => {
+      if (
+        !control ||
+        control.getControlType?.() !== "webresource" ||
+        typeof control.getContentWindow !== "function"
+      ) {
+        return;
+      }
+
+      refreshTasks.push(
+        control.getContentWindow().then(
+          (contentWindow) => {
+            if (
+              typeof contentWindow.updateProgress === "function" &&
+              statusValue !== null &&
+              statusValue !== undefined
+            ) {
+              console.log(
+                "[openActivityLogQuickCreate] refreshing progress tracker web resource",
+                {
+                  controlName: control.getName?.(),
+                  statusValue,
+                },
+              );
+              contentWindow.updateProgress(statusValue);
+            }
+
+            if (typeof contentWindow.refreshReadyForReview === "function") {
+              console.log(
+                "[openActivityLogQuickCreate] refreshing ready-for-review web resource",
+                {
+                  controlName: control.getName?.(),
+                },
+              );
+              contentWindow.refreshReadyForReview();
+            }
+          },
+          (error) => {
+            console.warn(
+              "[openActivityLogQuickCreate] unable to access web resource content window",
+              {
+                controlName: control.getName?.(),
+                error: error?.message || error,
+              },
+            );
+          },
+        ),
+      );
+    });
+
+    await Promise.allSettled(refreshTasks);
+  }
+
   async function openActivityLogQuickCreate(
     primaryControl,
     activityTypeValue,
@@ -84,10 +149,19 @@
       };
 
       const result = await Xrm.Navigation.openForm(formOptions, parameters);
+      const saveParentBeforeRefresh = !!result?.savedEntityReference;
 
-      if (result?.savedEntityReference) {
-        await formContext.data.refresh(true);
-      }
+      // Refresh after the quick create closes so the host form picks up any
+      // side effects even when the dialog closes without returning a saved ref.
+      console.log(
+        "[openActivityLogQuickCreate] quick create closed, refreshing parent form",
+        {
+          savedEntityReference: result?.savedEntityReference || null,
+          saveParentBeforeRefresh,
+        },
+      );
+      await formContext.data.refresh(saveParentBeforeRefresh);
+      await refreshEmbeddedWebResources(formContext);
     } catch (error) {
       const message =
         "An error occurred while opening the Activity Log quick create form. Please try again or contact your system administrator.";

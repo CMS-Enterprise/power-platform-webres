@@ -188,6 +188,10 @@
         // Start checking for form data availability
         waitForFormData();
       });
+
+      // Allow the parent form to explicitly re-run this component after a modal
+      // closes and the host form refreshes.
+      window.refreshReadyForReview = updateUI;
     </script>
   </head>
 

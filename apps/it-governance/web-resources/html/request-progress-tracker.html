@@ -216,7 +216,7 @@
     <script>
       // Process steps configuration
       const processSteps = [
-        { label: "Draft", status: 971270006 },
+        { label: "Draft Intake Request", status: 971270006 },
         { label: "Intake Request Review", status: 971270000 },
         { label: "Draft Business Case", status: 971270001 },
         { label: "GRT Meeting", status: 971270002 },
@@ -239,13 +239,17 @@
           (step) => step.status === currentStatus,
         );
         if (currentStepIndex === -1) currentStepIndex = 0;
+        const isLastStepCurrent = currentStepIndex === processSteps.length - 1;
 
         // Create step elements
         processSteps.forEach((step, index) => {
           const stepElement = document.createElement("div");
           stepElement.className = "step";
 
-          if (index < currentStepIndex) {
+          if (
+            index < currentStepIndex ||
+            (isLastStepCurrent && index === currentStepIndex)
+          ) {
             stepElement.classList.add("completed");
           } else if (index === currentStepIndex) {
             stepElement.classList.add("current");
@@ -261,8 +265,9 @@
 
         // Update progress line fill
         const progressFill = document.getElementById("progressFill");
-        const progressPercentage =
-          (currentStepIndex / (processSteps.length - 1)) * 100;
+        const progressPercentage = isLastStepCurrent
+          ? 100
+          : (currentStepIndex / (processSteps.length - 1)) * 100;
         progressFill.style.width = `${progressPercentage}%`;
 
         // Update current status text

@@ -53,8 +53,14 @@
     </style>
     <script>
       const READY_FOR_REVIEW = "cr69a_readyforreview";
+      const CURRENT_PROCESS_STATUS = "new_admingovernancetasklist";
       const MAX_WAIT_MS = 5000;
       const WAIT_INTERVAL_MS = 100;
+      const PROCESS_STEPS = {
+        GRT_MEETING: 971270002,
+        GRB_REVIEW: 971270004,
+        FINISHED: 971270009,
+      };
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
@@ -64,7 +70,7 @@
         return form ? form.getAttribute(schema) : null;
       }
 
-      function render(ready) {
+      function render(state) {
         const card = document.getElementById("card");
         const icon = document.getElementById("icon");
         const title = document.getElementById("titleText");
@@ -72,7 +78,30 @@
 
         if (!card || !icon || !title || !subtitle) return;
 
-        if (ready) {
+        console.log("render", state);
+
+        if (state === "finished") {
+          card.classList.remove("state-wait");
+          card.classList.add("state-review");
+          icon.textContent = "✅";
+          title.textContent = "This request is finished";
+          subtitle.textContent =
+            "If you need to make changes, go to the Actions dropdown and re-open the request.";
+        } else if (state === "grt-meeting") {
+          card.classList.remove("state-wait");
+          card.classList.add("state-review");
+          icon.textContent = "⏳";
+          title.textContent = "Awaiting results of the GRT meeting";
+          subtitle.textContent =
+            "Waiting for input from the GRT meeting. Once the meeting has finished, please put a link into the Meeting Minutes section of this Review and use the Actions dropdown to move this request to another step in the process.";
+        } else if (state === "grb-review") {
+          card.classList.remove("state-wait");
+          card.classList.add("state-review");
+          icon.textContent = "⏳";
+          title.textContent = "Awaiting results of the GRB review";
+          subtitle.textContent =
+            "Waiting for input from the GRB review. Once the review has finished, please put a link into the Meeting Minutes section of this Review and use the Actions dropdown to move this request to another step in the process.";
+        } else if (state === "review") {
           card.classList.remove("state-wait");
           card.classList.add("state-review");
           icon.textContent = "✅";
@@ -94,8 +123,27 @@
         if (!form) return;
 
         const rfr = getAttr(form, READY_FOR_REVIEW);
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
         const ready = !!(rfr && rfr.getValue());
-        render(ready);
+        const currentStatus = statusAttr ? statusAttr.getValue() : null;
+        console.log("current status", currentStatus);
+
+        if (currentStatus === PROCESS_STEPS.GRT_MEETING) {
+          render("grt-meeting");
+          return;
+        }
+
+        if (currentStatus === PROCESS_STEPS.GRB_REVIEW) {
+          render("grb-review");
+          return;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINISHED) {
+          render("finished");
+          return;
+        }
+
+        render(ready ? "review" : "wait");
       }
 
       function waitForFormData(startTime = Date.now()) {
@@ -116,7 +164,8 @@
         }
 
         const rfr = getAttr(form, READY_FOR_REVIEW);
-        if (!rfr) {
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        if (!rfr || !statusAttr) {
           setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
           return;
         }
@@ -126,6 +175,9 @@
         // goes with it automatically.
         if (rfr.addOnChange) {
           rfr.addOnChange(updateUI);
+        }
+        if (statusAttr.addOnChange) {
+          statusAttr.addOnChange(updateUI);
         }
 
         // Small delay to let the parent form finish populating field values

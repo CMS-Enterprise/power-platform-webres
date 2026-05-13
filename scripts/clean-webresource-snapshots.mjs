@@ -88,10 +88,29 @@ async function walk(dir, results) {
       continue;
     }
 
-    if (entry.isFile() && entry.name.includes(".remote.")) {
+    if (entry.isFile() && await isRemoteSnapshotFile(dir, entry.name)) {
       results.push(absolutePath);
     }
   }
+}
+
+async function isRemoteSnapshotFile(dir, fileName) {
+  const extension = path.extname(fileName);
+  const baseName = path.basename(fileName, extension);
+
+  if (!extension || !baseName.endsWith(".remote")) {
+    return false;
+  }
+
+  const sourceFileName = `${baseName.slice(0, -".remote".length)}${extension}`;
+  if (!sourceFileName || sourceFileName === fileName) {
+    return false;
+  }
+
+  const siblingEntries = await readdir(dir, { withFileTypes: true });
+  return siblingEntries.some(
+    (entry) => entry.isFile() && entry.name === sourceFileName
+  );
 }
 
 async function confirm(promptText) {

@@ -311,7 +311,11 @@ function validateConfig({ args, env, manifest, solutionUniqueName }) {
   }
 
   if (!Array.isArray(manifest.resources)) {
-    throw new Error("Manifest must define resources.");
+    throw new Error("Manifest resources must be a non-empty array.");
+  }
+
+  if (manifest.resources.length === 0) {
+    throw new Error("Manifest resources must be a non-empty array.");
   }
 
   if (!solutionUniqueName) {

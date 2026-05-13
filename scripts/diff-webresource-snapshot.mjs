@@ -32,13 +32,7 @@ async function main() {
     console.log(`remote: ${path.relative(repoRoot, remotePath)}`);
     console.log("");
 
-    const result = spawnSync("diff", ["-u", remotePath, localPath], {
-      stdio: "inherit"
-    });
-
-    if (result.error) {
-      throw result.error;
-    }
+    const result = runDiff(remotePath, localPath);
 
     if (result.status === 0) {
       console.log("No differences.");
@@ -94,10 +88,48 @@ function printHelp() {
   node ./scripts/diff-webresource-snapshot.mjs --resource html/example.html
 
 Behavior:
-  Compares the local file to its sibling .remote snapshot using diff -u.
+  Compares the local file to its sibling .remote snapshot using diff -u,
+  or git diff --no-index when diff is unavailable.
   If the .remote snapshot does not exist yet, pull it first:
   npm run webres:pull:file -- html/example.html
 `);
+}
+
+function runDiff(remotePath, localPath) {
+  const commands = [
+    {
+      command: "diff",
+      args: ["-u", remotePath, localPath]
+    },
+    {
+      command: "git",
+      args: ["diff", "--no-index", "--no-ext-diff", "--", remotePath, localPath]
+    }
+  ];
+
+  const failures = [];
+
+  for (const candidate of commands) {
+    const result = spawnSync(candidate.command, candidate.args, {
+      stdio: "inherit"
+    });
+
+    if (!result.error) {
+      return result;
+    }
+
+    if (result.error.code === "ENOENT") {
+      failures.push(candidate.command);
+      continue;
+    }
+
+    throw result.error;
+  }
+
+  throw new Error(
+    `No supported diff tool was found. Tried: ${failures.join(", ")}. ` +
+      "Install a Unix-style diff tool or Git and ensure it is available on PATH."
+  );
 }
 
 function buildSnapshotPath(absolutePath) {

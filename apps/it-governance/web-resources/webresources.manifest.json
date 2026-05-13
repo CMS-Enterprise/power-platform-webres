@@ -1,6 +1,6 @@
 {
   "resourceRoot": "apps/it-governance/web-resources",
-  "nameTemplate": "change_me/{relativePath}",
+  "nameTemplate": "new_itgov/{relativePath}",
   "defaultCreateMissing": true,
   "defaultPublishAfterUpload": true,
   "resources": [
@@ -61,10 +61,6 @@
       "name": "new_request_result_display_banner"
     },
     {
-      "file": "html/upload-files-helper-text.html",
-      "name": "cr3ee_upload_files_helper_text"
-    },
-    {
       "file": "html/issue-lcid-button.html",
       "name": "cr69a_issue_lcid_button"
     },
@@ -109,6 +105,10 @@
       "name": "new_review_ready_for_review"
     },
     {
+      "file": "html/upload-files-helper-text.html",
+      "name": "cr3ee_upload_files_helper_text"
+    },
+    {
       "file": "html/what-is-a-major-change.html",
       "name": "new_WhatIsAMajorChange"
     },
@@ -135,6 +135,9 @@
     {
       "file": "js/business-case/businessCase.js",
       "name": "cr3ee_business_case_form_script"
+    },
+    {
+      "file": "js/business-case/solutionQuickCreateZeroTrustInfo.js"
     },
     {
       "file": "js/commonJSLibrary.js",

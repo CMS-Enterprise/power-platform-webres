@@ -27,7 +27,6 @@ const ALL_SECTIONS = [
   "section_request_submit",
   "section_business_case",
   "section_grt_meeting",
-  "section_final_business_case_review",
   "section_grb_review",
   "section_awaiting_decision",
   "section_decision",
@@ -51,10 +50,7 @@ const PAGES = {
   ],
   BUSINESS_CASE: ["section_progress_tracker", "section_business_case"],
   GRT_MEETING: ["section_progress_tracker", "section_grt_meeting"],
-  FINAL_BUSINESS_CASE: [
-    "section_progress_tracker",
-    "section_final_business_case_review",
-  ],
+  FINAL_BUSINESS_CASE: ["section_progress_tracker", "section_business_case"],
   GRB_REVIEW: ["section_progress_tracker", "section_grb_review"],
   AWAITING_DECISION: ["section_progress_tracker", "section_awaiting_decision"],
   DECISION: ["section_progress_tracker", "section_decision"],
@@ -235,6 +231,7 @@ function showHideFields(formContext) {
   const pageName = isNew ? "REQUEST_TYPE" : STAGE_TO_PAGE[stage] || "INTAKE";
 
   showPage(formContext, pageName);
+  updateBusinessCaseSectionContent(formContext, pageName);
 
   updateSoftwareAcquisitionVisibility(formContext);
 
@@ -259,6 +256,42 @@ function showPage(formContext, pageName) {
     if (!section) return console.warn(`Section not found: ${sectionName}`);
     section.setVisible(visibleSections.has(sectionName));
   });
+}
+
+function updateBusinessCaseSectionContent(formContext, pageName) {
+  const isBusinessCasePage = pageName === "BUSINESS_CASE";
+  const isFinalBusinessCasePage = pageName === "FINAL_BUSINESS_CASE";
+
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_business_case_review_header",
+    isBusinessCasePage,
+  );
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_business_case_submit",
+    isBusinessCasePage,
+  );
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_final_business_case_review_header",
+    isFinalBusinessCasePage,
+  );
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_final_business_case_submit",
+    isFinalBusinessCasePage,
+  );
+}
+
+function setBusinessCaseControlVisible(formContext, controlName, visible) {
+  const control = formContext.getControl(controlName);
+  if (!control) {
+    console.warn(`Control not found: ${controlName}`);
+    return;
+  }
+
+  control.setVisible(visible);
 }
 
 function lockAllFields(formContext) {

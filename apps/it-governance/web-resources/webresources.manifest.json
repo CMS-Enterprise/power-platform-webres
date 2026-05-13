@@ -1,6 +1,6 @@
 {
   "resourceRoot": "apps/it-governance/web-resources",
-  "nameTemplate": "change_me/{relativePath}",
+  "nameTemplate": "new_itgov/{relativePath}",
   "defaultCreateMissing": true,
   "defaultPublishAfterUpload": true,
   "resources": [

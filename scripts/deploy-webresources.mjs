@@ -30,7 +30,10 @@ const WEB_RESOURCE_TYPES = {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const repoRoot = process.cwd();
+  const repoRoot = getGitRepoRoot(process.cwd());
+  if (!repoRoot) {
+    throw new Error("Run this script from inside the git repository.");
+  }
   const env = loadEnv(path.join(repoRoot, ".env"));
   const manifestPath = path.resolve(repoRoot, args.manifest);
   const manifest = readJson(manifestPath);
@@ -46,6 +49,7 @@ async function main() {
 
   const resourceRoot = path.resolve(repoRoot, manifest.resourceRoot);
   const resources = await buildResourcePlan({
+    repoRoot,
     manifest,
     manifestPath,
     resourceRoot,
@@ -86,7 +90,8 @@ async function main() {
       force: args.force,
       localContentBase64: resource.contentBase64,
       remote: existing,
-      repoRelativePath: resource.repoRelativePath
+      repoRelativePath: resource.repoRelativePath,
+      repoRoot
     });
 
     if (args.dryRun) {
@@ -325,7 +330,7 @@ function validateConfig({ args, env, manifest, solutionUniqueName }) {
   }
 }
 
-async function buildResourcePlan({ manifest, manifestPath, resourceRoot, filterFiles }) {
+async function buildResourcePlan({ repoRoot, manifest, manifestPath, resourceRoot, filterFiles }) {
   if (!Array.isArray(manifest.resources) || manifest.resources.length === 0) {
     throw new Error("Manifest resources must be a non-empty array.");
   }
@@ -370,7 +375,7 @@ async function buildResourcePlan({ manifest, manifestPath, resourceRoot, filterF
       manifestDir,
       name,
       publishAfterUpload: entry.publishAfterUpload ?? manifest.defaultPublishAfterUpload ?? true,
-      repoRelativePath: normalizeRelativePath(path.relative(process.cwd(), absolutePath)),
+      repoRelativePath: normalizeRelativePath(path.relative(repoRoot, absolutePath)),
       webResourceType,
       contentBase64: fileBuffer.toString("base64")
     });
@@ -543,7 +548,7 @@ function extractGuidFromEntityId(entityId) {
   return match ? match[1] : "";
 }
 
-function evaluatePublishSafety({ force, localContentBase64, remote, repoRelativePath }) {
+function evaluatePublishSafety({ force, localContentBase64, remote, repoRelativePath, repoRoot }) {
   if (force || !remote) {
     return {
       allowed: true,
@@ -551,7 +556,7 @@ function evaluatePublishSafety({ force, localContentBase64, remote, repoRelative
     };
   }
 
-  const headContentBase64 = getGitHeadContentBase64(repoRelativePath);
+  const headContentBase64 = getGitHeadContentBase64(repoRelativePath, repoRoot);
   if (headContentBase64 === null) {
     if (remote.content === localContentBase64) {
       return {
@@ -586,9 +591,9 @@ function evaluatePublishSafety({ force, localContentBase64, remote, repoRelative
   };
 }
 
-function getGitHeadContentBase64(repoRelativePath) {
+function getGitHeadContentBase64(repoRelativePath, repoRoot) {
   const result = spawnSync("git", ["show", `HEAD:${repoRelativePath}`], {
-    cwd: process.cwd(),
+    cwd: repoRoot,
     encoding: "buffer"
   });
 
@@ -597,6 +602,19 @@ function getGitHeadContentBase64(repoRelativePath) {
   }
 
   return Buffer.from(result.stdout).toString("base64");
+}
+
+function getGitRepoRoot(startDir) {
+  const result = spawnSync("git", ["rev-parse", "--show-toplevel"], {
+    cwd: startDir,
+    encoding: "utf8"
+  });
+
+  if (result.status !== 0) {
+    return "";
+  }
+
+  return result.stdout.trim();
 }
 
 function buildPublishSafetyError(resource, remote, publishSafety) {

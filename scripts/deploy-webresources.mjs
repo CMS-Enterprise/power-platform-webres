@@ -310,7 +310,7 @@ function validateConfig({ args, env, manifest, solutionUniqueName }) {
     throw new Error("Manifest must define resourceRoot.");
   }
 
-  if (!manifest.nameTemplate && !Array.isArray(manifest.resources)) {
+  if (!Array.isArray(manifest.resources)) {
     throw new Error("Manifest must define resources.");
   }
 

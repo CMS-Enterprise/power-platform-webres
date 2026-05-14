@@ -8,6 +8,7 @@ import process from "node:process";
 
 const DEFAULT_MANIFEST =
   "./apps/it-governance/web-resources/webresources.manifest.json";
+const DATAVERSE_REQUEST_TIMEOUT_MS = 60_000;
 
 const WEB_RESOURCE_TYPES = {
   ".htm": 1,
@@ -29,7 +30,10 @@ const WEB_RESOURCE_TYPES = {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-  const repoRoot = process.cwd();
+  const repoRoot = getGitRepoRoot(process.cwd());
+  if (!repoRoot) {
+    throw new Error("Run this script from inside the git repository.");
+  }
   const env = loadEnv(path.join(repoRoot, ".env"));
   const manifestPath = path.resolve(repoRoot, args.manifest);
   const manifest = readJson(manifestPath);
@@ -45,6 +49,7 @@ async function main() {
 
   const resourceRoot = path.resolve(repoRoot, manifest.resourceRoot);
   const resources = await buildResourcePlan({
+    repoRoot,
     manifest,
     manifestPath,
     resourceRoot,
@@ -85,7 +90,8 @@ async function main() {
       force: args.force,
       localContentBase64: resource.contentBase64,
       remote: existing,
-      repoRelativePath: resource.repoRelativePath
+      repoRelativePath: resource.repoRelativePath,
+      repoRoot
     });
 
     if (args.dryRun) {
@@ -173,6 +179,7 @@ async function main() {
   }
 
   if (!args.dryRun && changedResourceIds.length > 0) {
+    console.log(`Publishing ${changedResourceIds.length} web resource(s)...`);
     await publishWebResources({
       dataverseUrl,
       token,
@@ -308,8 +315,12 @@ function validateConfig({ args, env, manifest, solutionUniqueName }) {
     throw new Error("Manifest must define resourceRoot.");
   }
 
-  if (!manifest.nameTemplate && !Array.isArray(manifest.resources)) {
-    throw new Error("Manifest must define resources.");
+  if (!Array.isArray(manifest.resources)) {
+    throw new Error("Manifest resources must be a non-empty array.");
+  }
+
+  if (manifest.resources.length === 0) {
+    throw new Error("Manifest resources must be a non-empty array.");
   }
 
   if (!solutionUniqueName) {
@@ -319,7 +330,7 @@ function validateConfig({ args, env, manifest, solutionUniqueName }) {
   }
 }
 
-async function buildResourcePlan({ manifest, manifestPath, resourceRoot, filterFiles }) {
+async function buildResourcePlan({ repoRoot, manifest, manifestPath, resourceRoot, filterFiles }) {
   if (!Array.isArray(manifest.resources) || manifest.resources.length === 0) {
     throw new Error("Manifest resources must be a non-empty array.");
   }
@@ -364,7 +375,7 @@ async function buildResourcePlan({ manifest, manifestPath, resourceRoot, filterF
       manifestDir,
       name,
       publishAfterUpload: entry.publishAfterUpload ?? manifest.defaultPublishAfterUpload ?? true,
-      repoRelativePath: normalizeRelativePath(path.relative(process.cwd(), absolutePath)),
+      repoRelativePath: normalizeRelativePath(path.relative(repoRoot, absolutePath)),
       webResourceType,
       contentBase64: fileBuffer.toString("base64")
     });
@@ -446,6 +457,7 @@ async function publishWebResources({ dataverseUrl, token, webResourceIds }) {
     token,
     path: "/api/data/v9.2/PublishXml",
     method: "POST",
+    operationName: "publish web resources",
     body: {
       ParameterXml: xml
     }
@@ -458,20 +470,40 @@ async function dataverseRequest({
   path: requestPath,
   method,
   headers = {},
-  body
+  body,
+  operationName
 }) {
-  const response = await fetch(`${dataverseUrl}${requestPath}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-      ...(body ? { "Content-Type": "application/json" } : {}),
-      "OData-Version": "4.0",
-      "OData-MaxVersion": "4.0",
-      ...headers
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), DATAVERSE_REQUEST_TIMEOUT_MS);
+
+  let response;
+
+  try {
+    response = await fetch(`${dataverseUrl}${requestPath}`, {
+      method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
+        "OData-Version": "4.0",
+        "OData-MaxVersion": "4.0",
+        ...headers
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      signal: controller.signal
+    });
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      const target = operationName || `${method} ${requestPath}`;
+      throw new Error(
+        `Dataverse request timed out after ${DATAVERSE_REQUEST_TIMEOUT_MS / 1000}s while trying to ${target}.`
+      );
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -516,7 +548,7 @@ function extractGuidFromEntityId(entityId) {
   return match ? match[1] : "";
 }
 
-function evaluatePublishSafety({ force, localContentBase64, remote, repoRelativePath }) {
+function evaluatePublishSafety({ force, localContentBase64, remote, repoRelativePath, repoRoot }) {
   if (force || !remote) {
     return {
       allowed: true,
@@ -524,7 +556,7 @@ function evaluatePublishSafety({ force, localContentBase64, remote, repoRelative
     };
   }
 
-  const headContentBase64 = getGitHeadContentBase64(repoRelativePath);
+  const headContentBase64 = getGitHeadContentBase64(repoRelativePath, repoRoot);
   if (headContentBase64 === null) {
     if (remote.content === localContentBase64) {
       return {
@@ -559,9 +591,9 @@ function evaluatePublishSafety({ force, localContentBase64, remote, repoRelative
   };
 }
 
-function getGitHeadContentBase64(repoRelativePath) {
+function getGitHeadContentBase64(repoRelativePath, repoRoot) {
   const result = spawnSync("git", ["show", `HEAD:${repoRelativePath}`], {
-    cwd: process.cwd(),
+    cwd: repoRoot,
     encoding: "buffer"
   });
 
@@ -570,6 +602,19 @@ function getGitHeadContentBase64(repoRelativePath) {
   }
 
   return Buffer.from(result.stdout).toString("base64");
+}
+
+function getGitRepoRoot(startDir) {
+  const result = spawnSync("git", ["rev-parse", "--show-toplevel"], {
+    cwd: startDir,
+    encoding: "utf8"
+  });
+
+  if (result.status !== 0) {
+    return "";
+  }
+
+  return result.stdout.trim();
 }
 
 function buildPublishSafetyError(resource, remote, publishSafety) {

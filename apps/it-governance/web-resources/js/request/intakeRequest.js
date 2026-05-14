@@ -308,7 +308,12 @@ function updateProgressTracker(formContext, attempt = 0) {
     .get("section_progress_tracker")
     ?.getVisible();
 
-  if (!trackerSectionVisible) return;
+  if (!trackerSectionVisible) {
+    if (attempt < 20) {
+      setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
+    }
+    return;
+  }
 
   const statusValue = formContext
     .getAttribute("new_admingovernanceprocessstep")
@@ -317,20 +322,27 @@ function updateProgressTracker(formContext, attempt = 0) {
   const webResourceControl = formContext.getControl(
     "WebResource_progress_tracker",
   );
-  if (!webResourceControl || !statusValue) return;
+  if (!webResourceControl || !statusValue) {
+    if (attempt < 20) {
+      setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
+    }
+    return;
+  }
 
   webResourceControl.getContentWindow().then(
     (contentWindow) => {
       if (typeof contentWindow.updateProgress === "function") {
         contentWindow.updateProgress(statusValue);
-      } else if (attempt < 10) {
-        // web resource loaded but function not ready yet
-        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      }
+      if (typeof contentWindow.refreshProgressTracker === "function") {
+        contentWindow.refreshProgressTracker();
+      } else if (attempt < 20) {
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
       }
     },
     () => {
-      if (attempt < 10) {
-        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      if (attempt < 20) {
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
       }
     },
   );

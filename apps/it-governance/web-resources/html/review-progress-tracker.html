@@ -46,7 +46,7 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin: 60px 20px 30px;
+        margin: 20px;
       }
 
       .progress-line {
@@ -151,10 +151,6 @@
   </head>
   <body>
     <div class="progress-container">
-      <div class="progress-header">
-        <h2>Request Progress</h2>
-      </div>
-
       <div class="progress-track">
         <div class="progress-line">
           <div class="progress-line-fill" id="progressFill"></div>
@@ -164,6 +160,11 @@
 
     <script>
       // Process steps configuration
+      const CURRENT_PROCESS_STATUS = "new_admingovernancetasklist";
+      const MAX_WAIT_MS = 15000;
+      const WAIT_INTERVAL_MS = 250;
+      let listenersRegistered = false;
+
       const processSteps = [
         { label: "Draft Intake Request", status: 971270006 },
         { label: "Intake Request Review", status: 971270000 },
@@ -177,6 +178,14 @@
       function getQueryParameter(name) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
+      }
+
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, schema) {
+        return form ? form.getAttribute(schema) : null;
       }
 
       function renderProgress(currentStatus) {
@@ -221,6 +230,55 @@
       window.updateProgress = function (newStatus) {
         renderProgress(newStatus);
       };
+
+      function updateFromParentForm() {
+        const form = getParentForm();
+        if (!form) return false;
+
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        const statusValue = statusAttr ? statusAttr.getValue() : null;
+        if (statusValue === null || statusValue === undefined) {
+          return false;
+        }
+
+        renderProgress(statusValue);
+        return true;
+      }
+
+      function scheduleStabilityRefreshes() {
+        [200, 800, 1800].forEach((delay) => {
+          window.setTimeout(updateFromParentForm, delay);
+        });
+      }
+
+      function waitForFormData(startTime = Date.now()) {
+        if (Date.now() - startTime > MAX_WAIT_MS) {
+          updateFromParentForm();
+          return;
+        }
+
+        const form = getParentForm();
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+
+        if (!form || !statusAttr) {
+          window.setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
+          return;
+        }
+
+        if (!listenersRegistered && statusAttr.addOnChange) {
+          statusAttr.addOnChange(updateFromParentForm);
+          listenersRegistered = true;
+        }
+
+        updateFromParentForm();
+        scheduleStabilityRefreshes();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        waitForFormData();
+      });
+
+      window.refreshProgressTracker = updateFromParentForm;
     </script>
   </body>
 </html>

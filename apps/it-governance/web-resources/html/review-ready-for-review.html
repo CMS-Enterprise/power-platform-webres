@@ -54,10 +54,13 @@
     <script>
       const READY_FOR_REVIEW = "cr69a_readyforreview";
       const CURRENT_PROCESS_STATUS = "new_admingovernancetasklist";
-      const MAX_WAIT_MS = 5000;
-      const WAIT_INTERVAL_MS = 100;
+      const MAX_WAIT_MS = 15000;
+      const WAIT_INTERVAL_MS = 250;
+      let listenersRegistered = false;
       const PROCESS_STEPS = {
+        DRAFT_BUSINESS_CASE: 971270001,
         GRT_MEETING: 971270002,
+        FINAL_BUSINESS_CASE: 971270003,
         GRB_REVIEW: 971270004,
         FINISHED: 971270009,
       };
@@ -78,8 +81,6 @@
 
         if (!card || !icon || !title || !subtitle) return;
 
-        console.log("render", state);
-
         if (state === "finished") {
           card.classList.remove("state-wait");
           card.classList.add("state-review");
@@ -87,6 +88,36 @@
           title.textContent = "This request is finished";
           subtitle.textContent =
             "If you need to make changes, go to the Actions dropdown and re-open the request.";
+        } else if (state === "business-case-review") {
+          card.classList.remove("state-wait");
+          card.classList.add("state-review");
+          icon.textContent = "✅";
+          title.textContent = "Please review the Business Case";
+          subtitle.textContent =
+            "Please review the Business Case in the Business Case section below and make a decision on how to proceed with this request by using the Actions tab at the top of the page.";
+        } else if (state === "business-case-wait") {
+          card.classList.remove("state-review");
+          card.classList.add("state-wait");
+          icon.textContent = "⏳";
+          title.textContent =
+            "Waiting on the requester to make changes to the Business Case";
+          subtitle.textContent =
+            "Once the requester has submitted updates, review the Business Case and Solutions in the Business Case section below.";
+        } else if (state === "final-business-case-review") {
+          card.classList.remove("state-wait");
+          card.classList.add("state-review");
+          icon.textContent = "✅";
+          title.textContent = "Please review the Final Business Case";
+          subtitle.textContent =
+            "Please review the updated Business Case in the Business Case section below and make a decision on how to proceed with this request by using the Actions tab at the top of the page.";
+        } else if (state === "final-business-case-wait") {
+          card.classList.remove("state-review");
+          card.classList.add("state-wait");
+          icon.textContent = "⏳";
+          title.textContent =
+            "Waiting on the requester to make changes to the Final Business Case";
+          subtitle.textContent =
+            "Once the requester has submitted updates, review the Business Case and Solutions in the Business Case section below.";
         } else if (state === "grt-meeting") {
           card.classList.remove("state-wait");
           card.classList.add("state-review");
@@ -120,30 +151,50 @@
 
       function updateUI() {
         const form = getParentForm();
-        if (!form) return;
+        if (!form) return false;
 
         const rfr = getAttr(form, READY_FOR_REVIEW);
         const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
         const ready = !!(rfr && rfr.getValue());
         const currentStatus = statusAttr ? statusAttr.getValue() : null;
-        console.log("current status", currentStatus);
+
+        if (!rfr || currentStatus === null || currentStatus === undefined) {
+          return false;
+        }
+
+        if (currentStatus === PROCESS_STEPS.DRAFT_BUSINESS_CASE) {
+          render(ready ? "business-case-review" : "business-case-wait");
+          return true;
+        }
 
         if (currentStatus === PROCESS_STEPS.GRT_MEETING) {
           render("grt-meeting");
-          return;
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINAL_BUSINESS_CASE) {
+          render(ready ? "final-business-case-review" : "final-business-case-wait");
+          return true;
         }
 
         if (currentStatus === PROCESS_STEPS.GRB_REVIEW) {
           render("grb-review");
-          return;
+          return true;
         }
 
         if (currentStatus === PROCESS_STEPS.FINISHED) {
           render("finished");
-          return;
+          return true;
         }
 
         render(ready ? "review" : "wait");
+        return true;
+      }
+
+      function scheduleStabilityRefreshes() {
+        [200, 800, 1800].forEach((delay) => {
+          window.setTimeout(updateUI, delay);
+        });
       }
 
       function waitForFormData(startTime = Date.now()) {
@@ -173,15 +224,18 @@
         // Registering onChange here rather than the form editor to keep this
         // component self-contained. If this web resource is removed, the listener
         // goes with it automatically.
-        if (rfr.addOnChange) {
-          rfr.addOnChange(updateUI);
-        }
-        if (statusAttr.addOnChange) {
-          statusAttr.addOnChange(updateUI);
+        if (!listenersRegistered) {
+          if (rfr.addOnChange) {
+            rfr.addOnChange(updateUI);
+          }
+          if (statusAttr.addOnChange) {
+            statusAttr.addOnChange(updateUI);
+          }
+          listenersRegistered = true;
         }
 
-        // Small delay to let the parent form finish populating field values
-        setTimeout(updateUI, 300);
+        updateUI();
+        scheduleStabilityRefreshes();
       }
 
       document.addEventListener("DOMContentLoaded", function () {

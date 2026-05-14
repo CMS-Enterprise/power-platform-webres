@@ -8,6 +8,17 @@ import process from "node:process";
 
 const DEFAULT_MANIFEST =
   "./apps/it-governance/web-resources/webresources.manifest.json";
+const TEXT_WEB_RESOURCE_EXTENSIONS = new Set([
+  ".htm",
+  ".html",
+  ".css",
+  ".js",
+  ".xml",
+  ".xsl",
+  ".xslt",
+  ".svg",
+  ".resx",
+]);
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -227,6 +238,10 @@ async function buildResourcePlan({ manifest, resourceRoot, filterFiles }) {
     const absolutePath = path.resolve(resourceRoot, file);
     const localStat = await stat(absolutePath);
     const localBuffer = readFileSync(absolutePath);
+    const normalizedLocalBuffer = normalizeContentForComparison(
+      absolutePath,
+      localBuffer,
+    );
     const name = resolveWebResourceName({
       entry,
       file,
@@ -236,8 +251,8 @@ async function buildResourcePlan({ manifest, resourceRoot, filterFiles }) {
     matched.push({
       file,
       name,
-      localBuffer,
-      localHash: hashContent(localBuffer),
+      localBuffer: normalizedLocalBuffer,
+      localHash: hashContent(normalizedLocalBuffer),
       localModified: localStat.mtime,
     });
   }
@@ -355,7 +370,10 @@ function buildComparisonResult(resource, remote) {
     };
   }
 
-  const remoteBuffer = Buffer.from(remote.content || "", "base64");
+  const remoteBuffer = normalizeContentForComparison(
+    resource.file,
+    Buffer.from(remote.content || "", "base64"),
+  );
   const remoteHash = hashContent(remoteBuffer);
   const inSync = remoteBuffer.equals(resource.localBuffer);
 
@@ -441,6 +459,20 @@ function summarize(results) {
 
 function hashContent(value) {
   return createHash("sha256").update(value).digest("hex").slice(0, 12);
+}
+
+function normalizeContentForComparison(filePath, buffer) {
+  const extension = path.extname(filePath).toLowerCase();
+  if (!TEXT_WEB_RESOURCE_EXTENSIONS.has(extension)) {
+    return buffer;
+  }
+
+  const normalizedText = buffer
+    .toString("utf8")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n");
+
+  return Buffer.from(normalizedText, "utf8");
 }
 
 function normalizeRelativePath(value) {

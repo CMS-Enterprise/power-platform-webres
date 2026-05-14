@@ -1,9 +1,23 @@
 #!/usr/bin/env node
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { spawnSync } from "node:child_process";
+
+const TEXT_WEB_RESOURCE_EXTENSIONS = new Set([
+  ".htm",
+  ".html",
+  ".css",
+  ".js",
+  ".xml",
+  ".xsl",
+  ".xslt",
+  ".svg",
+  ".resx",
+]);
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -32,7 +46,7 @@ async function main() {
     console.log(`remote: ${path.relative(repoRoot, remotePath)}`);
     console.log("");
 
-    const result = runDiff(remotePath, localPath);
+    const result = await runDiff(resource, remotePath, localPath);
 
     if (result.status === 0) {
       console.log("No differences.");
@@ -95,15 +109,42 @@ Behavior:
 `);
 }
 
-function runDiff(remotePath, localPath) {
+async function runDiff(resource, remotePath, localPath) {
+  const tempDir = await mkdtemp(
+    path.join(os.tmpdir(), "webresource-diff-normalized-"),
+  );
+
+  try {
+    const normalizedRemotePath = path.join(
+      tempDir,
+      path.basename(buildSnapshotPath(resource)),
+    );
+    const normalizedLocalPath = path.join(tempDir, path.basename(resource));
+
+    await writeFile(
+      normalizedRemotePath,
+      normalizeContentForComparison(remotePath, readFileSync(remotePath)),
+    );
+    await writeFile(
+      normalizedLocalPath,
+      normalizeContentForComparison(localPath, readFileSync(localPath)),
+    );
+
   const commands = [
     {
       command: "diff",
-      args: ["-u", remotePath, localPath]
+      args: ["-u", normalizedRemotePath, normalizedLocalPath]
     },
     {
       command: "git",
-      args: ["diff", "--no-index", "--no-ext-diff", "--", remotePath, localPath]
+      args: [
+        "diff",
+        "--no-index",
+        "--no-ext-diff",
+        "--",
+        normalizedRemotePath,
+        normalizedLocalPath,
+      ]
     }
   ];
 
@@ -130,6 +171,9 @@ function runDiff(remotePath, localPath) {
     `No supported diff tool was found. Tried: ${failures.join(", ")}. ` +
       "Install a Unix-style diff tool or Git and ensure it is available on PATH."
   );
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
 }
 
 function buildSnapshotPath(absolutePath) {
@@ -140,6 +184,20 @@ function buildSnapshotPath(absolutePath) {
 
 function normalizeRelativePath(value) {
   return value.replaceAll("\\", "/").replace(/^\.?\//, "");
+}
+
+function normalizeContentForComparison(filePath, buffer) {
+  const extension = path.extname(filePath).toLowerCase();
+  if (!TEXT_WEB_RESOURCE_EXTENSIONS.has(extension)) {
+    return buffer;
+  }
+
+  const normalizedText = buffer
+    .toString("utf8")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n");
+
+  return Buffer.from(normalizedText, "utf8");
 }
 
 main().catch((error) => {

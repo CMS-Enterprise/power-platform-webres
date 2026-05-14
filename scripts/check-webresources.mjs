@@ -227,7 +227,6 @@ async function buildResourcePlan({ manifest, resourceRoot, filterFiles }) {
     const absolutePath = path.resolve(resourceRoot, file);
     const localStat = await stat(absolutePath);
     const localBuffer = readFileSync(absolutePath);
-    const localBase64 = localBuffer.toString("base64");
     const name = resolveWebResourceName({
       entry,
       file,
@@ -237,8 +236,8 @@ async function buildResourcePlan({ manifest, resourceRoot, filterFiles }) {
     matched.push({
       file,
       name,
-      localBase64,
-      localHash: hashContent(localBase64),
+      localBuffer,
+      localHash: hashContent(localBuffer),
       localModified: localStat.mtime,
     });
   }
@@ -356,9 +355,9 @@ function buildComparisonResult(resource, remote) {
     };
   }
 
-  const remoteBase64 = remote.content || "";
-  const remoteHash = hashContent(remoteBase64);
-  const inSync = remoteBase64 === resource.localBase64;
+  const remoteBuffer = Buffer.from(remote.content || "", "base64");
+  const remoteHash = hashContent(remoteBuffer);
+  const inSync = remoteBuffer.equals(resource.localBuffer);
 
   return {
     file: resource.file,

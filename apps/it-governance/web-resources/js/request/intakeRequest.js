@@ -114,12 +114,14 @@ function onLoad(executionContext) {
     lockAllFields(formContext);
   }
   updateProgressTracker(formContext);
+  updateRequestHelper(formContext);
 }
 
 function onAdminGovTaskListChange(executionContext) {
   const formContext = executionContext.getFormContext();
   showHideFields(formContext);
   updateProgressTracker(formContext);
+  updateRequestHelper(formContext);
 }
 
 function onSoftwareProductsChange(executionContext) {
@@ -346,6 +348,49 @@ function updateProgressTracker(formContext, attempt = 0) {
       }
     },
   );
+}
+
+function updateRequestHelper(formContext, attempt = 0) {
+  const controls = formContext?.ui?.controls;
+  if (!controls?.forEach) {
+    if (attempt < 20) {
+      setTimeout(() => updateRequestHelper(formContext, attempt + 1), 300);
+    }
+    return;
+  }
+
+  let foundRefreshHook = false;
+  const refreshTasks = [];
+
+  controls.forEach((control) => {
+    if (
+      !control ||
+      control.getControlType?.() !== "webresource" ||
+      typeof control.getContentWindow !== "function"
+    ) {
+      return;
+    }
+
+    refreshTasks.push(
+      control.getContentWindow().then(
+        (contentWindow) => {
+          if (typeof contentWindow.refreshRequestHelper === "function") {
+            foundRefreshHook = true;
+            contentWindow.refreshRequestHelper();
+          }
+        },
+        () => {
+          // Ignore inaccessible web resource windows during retries.
+        },
+      ),
+    );
+  });
+
+  Promise.allSettled(refreshTasks).then(() => {
+    if (!foundRefreshHook && attempt < 20) {
+      setTimeout(() => updateRequestHelper(formContext, attempt + 1), 300);
+    }
+  });
 }
 
 function clearCustomNotificationsOnSave(executionContext) {

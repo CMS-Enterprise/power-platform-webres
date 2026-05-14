@@ -89,6 +89,9 @@
       "name": "new_newSystemWarning"
     },
     {
+      "file": "html/request-helper.html"
+    },
+    {
       "file": "html/request-progress-tracker.html",
       "name": "cr69a_system_intake_progress_tracker"
     },

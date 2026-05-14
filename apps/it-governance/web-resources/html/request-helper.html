@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Helper</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 12px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: transparent;
+        color: #323130;
+      }
+
+      .card {
+        border-radius: 12px;
+        padding: 16px 18px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .subtitle {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .state-info {
+        background: #eff6fc;
+        border-color: #5c9bd5;
+      }
+
+      .state-action {
+        background: #dceeff;
+        border-color: #0078d4;
+      }
+
+      .state-wait {
+        background: #eef3f8;
+        border-color: #7f95ad;
+      }
+
+      .icon {
+        font-size: 22px;
+        line-height: 1;
+      }
+    </style>
+    <script>
+      const READY_FOR_REVIEW = "cr69a_readyforreview";
+      const CURRENT_PROCESS_STATUS = "new_admingovernanceprocessstep";
+      const MAX_WAIT_MS = 15000;
+      const WAIT_INTERVAL_MS = 250;
+      let listenersRegistered = false;
+
+      const PROCESS_STEPS = {
+        DRAFT: 971270006,
+        INTAKE_REQUEST_REVIEW: 971270000,
+        DRAFT_BUSINESS_CASE: 971270001,
+        GRT_MEETING: 971270002,
+        FINAL_BUSINESS_CASE: 971270003,
+        GRB_REVIEW: 971270004,
+        FINISHED: 971270009,
+      };
+
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, schema) {
+        return form ? form.getAttribute(schema) : null;
+      }
+
+      function render(state) {
+        const card = document.getElementById("card");
+        const icon = document.getElementById("icon");
+        const title = document.getElementById("titleText");
+        const subtitle = document.getElementById("subtitleText");
+
+        if (!card || !icon || !title || !subtitle) return;
+
+        card.classList.remove("state-info", "state-action", "state-wait");
+
+        if (state === "draft-requester") {
+          card.classList.add("state-info");
+          icon.textContent = "📝";
+          title.textContent = "Complete your Intake Request";
+          subtitle.textContent =
+            "Fill out the request details below and use the submit section when you are ready to send the request forward.";
+        } else if (state === "draft-admin") {
+          card.classList.add("state-wait");
+          icon.textContent = "⏳";
+          title.textContent = "Your Intake Request is being reviewed";
+          subtitle.textContent =
+            "The Governance Admin Team is reviewing your Intake Request and will contact you if any updates or next steps are needed.";
+        } else if (state === "intake-review") {
+          card.classList.add("state-wait");
+          icon.textContent = "⏳";
+          title.textContent = "Your request is under review";
+          subtitle.textContent =
+            "The Governance Admin Team is reviewing your Intake Request and will contact you if any updates or next steps are needed.";
+        } else if (state === "business-case-requester") {
+          card.classList.add("state-action");
+          icon.textContent = "📝";
+          title.textContent = "Complete the Business Case";
+          subtitle.textContent =
+            "Fill out the Business Case section below, add at least one Solution, and submit the Business Case when you are ready for review.";
+        } else if (state === "business-case-admin") {
+          card.classList.add("state-wait");
+          icon.textContent = "⏳";
+          title.textContent = "Business Case submitted";
+          subtitle.textContent =
+            "The Governance Admin Team is reviewing your Business Case and Solutions. Wait for feedback or the next step in the process.";
+        } else if (state === "grt-meeting") {
+          card.classList.add("state-wait");
+          icon.textContent = "📅";
+          title.textContent = "Prepare for the GRT meeting";
+          subtitle.textContent =
+            "Work with the Governance Admin Team to prepare for the GRT meeting and wait for further guidance after the meeting is complete.";
+        } else if (state === "final-business-case-requester") {
+          card.classList.add("state-action");
+          icon.textContent = "📝";
+          title.textContent = "Update the Final Business Case";
+          subtitle.textContent =
+            "Review any requested updates, revise the Business Case and Solutions in the Business Case section below, and resubmit when the changes are complete.";
+        } else if (state === "final-business-case-admin") {
+          card.classList.add("state-wait");
+          icon.textContent = "⏳";
+          title.textContent = "Final Business Case submitted";
+          subtitle.textContent =
+            "The Governance Admin Team is reviewing the updated Business Case and Solutions. Wait for feedback or the next step in the process.";
+        } else if (state === "grb-review") {
+          card.classList.add("state-wait");
+          icon.textContent = "⏳";
+          title.textContent = "Awaiting GRB review";
+          subtitle.textContent =
+            "The Governance Review Board is reviewing this request. Wait for the next update or decision before making additional changes.";
+        } else if (state === "finished") {
+          card.classList.add("state-action");
+          icon.textContent = "✅";
+          title.textContent = "This request is finished";
+          subtitle.textContent =
+            "This request has completed the current process. If additional updates are needed later, the Governance Admin Team can re-open it.";
+        } else {
+          card.classList.add("state-info");
+          icon.textContent = "ℹ️";
+          title.textContent = "Request guidance";
+          subtitle.textContent =
+            "Step-specific guidance will appear here as the request moves through the governance process.";
+        }
+      }
+
+      function updateUI() {
+        const form = getParentForm();
+        if (!form) return false;
+
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        const readyAttr = getAttr(form, READY_FOR_REVIEW);
+        const currentStatus = statusAttr ? statusAttr.getValue() : null;
+        const readyForReview = !!(readyAttr && readyAttr.getValue());
+
+        if (currentStatus === null || currentStatus === undefined) {
+          return false;
+        }
+
+        if (currentStatus === PROCESS_STEPS.DRAFT) {
+          render(readyForReview ? "draft-admin" : "draft-requester");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.INTAKE_REQUEST_REVIEW) {
+          render("intake-review");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.DRAFT_BUSINESS_CASE) {
+          render(
+            readyForReview
+              ? "business-case-admin"
+              : "business-case-requester",
+          );
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.GRT_MEETING) {
+          render("grt-meeting");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINAL_BUSINESS_CASE) {
+          render(
+            readyForReview
+              ? "final-business-case-admin"
+              : "final-business-case-requester",
+          );
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.GRB_REVIEW) {
+          render("grb-review");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINISHED) {
+          render("finished");
+          return true;
+        }
+
+        render("default");
+        return true;
+      }
+
+      function scheduleStabilityRefreshes() {
+        [200, 800, 1800].forEach((delay) => {
+          window.setTimeout(updateUI, delay);
+        });
+      }
+
+      function waitForFormData(startTime = Date.now()) {
+        if (Date.now() - startTime > MAX_WAIT_MS) {
+          updateUI();
+          return;
+        }
+
+        const form = getParentForm();
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        const readyAttr = getAttr(form, READY_FOR_REVIEW);
+
+        if (!form || !statusAttr || !readyAttr) {
+          window.setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
+          return;
+        }
+
+        if (!listenersRegistered) {
+          if (statusAttr.addOnChange) {
+            statusAttr.addOnChange(function () {
+              updateUI();
+              scheduleStabilityRefreshes();
+            });
+          }
+          if (readyAttr.addOnChange) {
+            readyAttr.addOnChange(function () {
+              updateUI();
+              scheduleStabilityRefreshes();
+            });
+          }
+          listenersRegistered = true;
+        }
+
+        updateUI();
+        scheduleStabilityRefreshes();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        waitForFormData();
+      });
+
+      window.refreshRequestHelper = updateUI;
+    </script>
+  </head>
+
+  <body>
+    <div id="card" class="card state-info" role="status" aria-live="polite">
+      <div class="title">
+        <span id="icon" class="icon">ℹ️</span>
+        <span id="titleText">Loading…</span>
+      </div>
+      <p id="subtitleText" class="subtitle"></p>
+    </div>
+  </body>
+</html>

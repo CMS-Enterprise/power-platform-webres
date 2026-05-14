@@ -43,6 +43,7 @@ package-lock.json
 tmp
 *.swp
 todos_in_diff.log
+*.remote.*
 
 # Binaries
 /bin/
@@ -83,6 +84,9 @@ TestResults/
 # =========================
 # Local config / secrets
 # =========================
+.env
+.env.*
+!.env.example
 appsettings.json
 appsettings.Development.json
 *.local.json

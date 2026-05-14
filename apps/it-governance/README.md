@@ -8,6 +8,7 @@ The goal is to keep **everything needed to understand, modify, and deploy this a
 
 - `docs/`
   - Architecture notes, form behavior, and deployment guidance
+  - See `docs/web-resource-deployment.md` for the local web resource deploy workflow
 - `migrations/`
   - One-time or scripted data migrations
 - `plugins/`

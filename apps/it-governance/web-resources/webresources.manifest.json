@@ -171,6 +171,9 @@
       "name": "cr3ee_intakeRequestAdminView"
     },
     {
+      "file": "js/review/openRelatedRequestAdminForm.js"
+    },
+    {
       "file": "js/showEnvironmentBanner.js",
       "name": "cr69a_showEnvironmentBanner"
     },

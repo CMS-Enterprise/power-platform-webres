@@ -215,6 +215,49 @@
         formContext.ui.clearFormNotification(NOTIF_IDS.error);
       }
 
+      const EMBEDDED_REFRESH_METHODS = [
+        "refreshRequestHelper",
+        "refreshProgressTracker",
+      ];
+
+      function refreshEmbeddedHelpers(formContext) {
+        const controls = formContext?.ui?.controls;
+        if (!controls || typeof controls.forEach !== "function") {
+          return;
+        }
+
+        controls.forEach(function (control) {
+          if (
+            !control ||
+            control.getControlType?.() !== "webresource" ||
+            typeof control.getContentWindow !== "function"
+          ) {
+            return;
+          }
+
+          control.getContentWindow().then(
+            function (contentWindow) {
+              EMBEDDED_REFRESH_METHODS.forEach(function (methodName) {
+                if (typeof contentWindow[methodName] === "function") {
+                  contentWindow[methodName]();
+                }
+              });
+            },
+            function () {
+              // Ignore inaccessible web resource windows.
+            },
+          );
+        });
+      }
+
+      function scheduleEmbeddedRefreshes(formContext) {
+        [0, 300, 1200].forEach(function (delay) {
+          window.setTimeout(function () {
+            refreshEmbeddedHelpers(formContext);
+          }, delay);
+        });
+      }
+
       function showFormNotification(formContext, message, level, uniqueId) {
         formContext.ui.clearFormNotification(uniqueId);
         formContext.ui.setFormNotification(message, level, uniqueId);
@@ -426,6 +469,7 @@
         if (!allValid) {
           form.data.save().then(
             function () {
+              scheduleEmbeddedRefreshes(form);
               showMissingFieldsWarning(form, missingFieldLabels);
               if (submitButton) {
                 submitButton.disabled = false;
@@ -494,6 +538,7 @@
 
           form.data.save().then(
             function () {
+              scheduleEmbeddedRefreshes(form);
               if (parent.lockAllFields) {
                 parent.lockAllFields(form);
               } else {

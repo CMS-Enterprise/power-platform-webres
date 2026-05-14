@@ -113,7 +113,7 @@
           icon.textContent = "📝";
           title.textContent = "Complete the Business Case";
           subtitle.textContent =
-            "Fill out the Business Case section below, add at least one Solution, and submit the Business Case when you are ready for review.";
+            "Fill out the Business Case section below, add at least one Solution, and submit the Business Case when you are ready for review. Draft a Business Case to communicate your business need, possible solutions and their associated costs. The Governance Team will review this business case and determine whether you are ready for a GRT meeting or GRB review.";
         } else if (state === "business-case-admin") {
           card.classList.add("state-wait");
           icon.textContent = "⏳";
@@ -184,9 +184,7 @@
 
         if (currentStatus === PROCESS_STEPS.DRAFT_BUSINESS_CASE) {
           render(
-            readyForReview
-              ? "business-case-admin"
-              : "business-case-requester",
+            readyForReview ? "business-case-admin" : "business-case-requester",
           );
           return true;
         }

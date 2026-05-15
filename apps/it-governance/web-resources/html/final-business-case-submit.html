@@ -6,12 +6,31 @@
     <title>Business Case Header</title>
 
     <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-surface: transparent;
+        --itgov-primary: #0078d4;
+        --itgov-primary-hover: #106ebe;
+        --itgov-primary-text: #ffffff;
+        --itgov-radius-md: 8px;
+        --itgov-alert-radius: 8px;
+        --itgov-success-bg: #dff6dd;
+        --itgov-success-border: #107c10;
+        --itgov-success-text: #0b5a0b;
+        --itgov-warning-bg: #fff4ce;
+        --itgov-warning-border: #ffbe2e;
+        --itgov-warning-text: #323130;
+        --itgov-error-bg: #fde7e9;
+        --itgov-error-border: #a80000;
+        --itgov-error-text: #a80000;
+      }
+
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         font-size: 14px;
         line-height: 1.428571429;
-        color: #323130;
-        background-color: #faf9f8;
+        color: var(--itgov-text);
+        background-color: var(--itgov-surface);
         margin: 0;
         padding: 12px;
       }
@@ -43,13 +62,13 @@
       }
 
       .btn-primary {
-        background-color: #0078d4;
-        border: 1px solid #0078d4;
-        color: #ffffff;
+        background-color: var(--itgov-primary);
+        border: 1px solid var(--itgov-primary);
+        color: var(--itgov-primary-text);
         padding: 8px 16px;
         font-size: 14px;
         font-weight: 400;
-        border-radius: 5px;
+        border-radius: var(--itgov-radius-md);
         cursor: pointer;
         transition:
           background-color 0.15s ease-in-out,
@@ -57,35 +76,35 @@
       }
 
       .btn-primary:hover {
-        background-color: #106ebe;
-        border-color: #106ebe;
+        background-color: var(--itgov-primary-hover);
+        border-color: var(--itgov-primary-hover);
       }
 
       .btn-primary:focus {
-        outline: 1px solid #ffffff;
+        outline: 1px solid var(--itgov-primary-text);
         outline-offset: 2px;
-        box-shadow: 0 0 0 2px #0078d4;
+        box-shadow: 0 0 0 2px var(--itgov-primary);
       }
 
       .alert {
         padding: 12px 16px;
         margin: 12px 0;
-        border-radius: 4px;
-        border-left: 6px solid #107c10;
-        background-color: #dff6dd;
-        color: #0b5a0b;
+        border-radius: var(--itgov-alert-radius);
+        border-left: 6px solid var(--itgov-success-border);
+        background-color: var(--itgov-success-bg);
+        color: var(--itgov-success-text);
       }
 
       .alert-error {
-        border-left-color: #a80000;
-        background-color: #fde7e9;
-        color: #a80000;
+        border-left-color: var(--itgov-error-border);
+        background-color: var(--itgov-error-bg);
+        color: var(--itgov-error-text);
       }
 
       .alert-warning {
-        border-left-color: #ffbe2e;
-        background-color: #fff4ce;
-        color: #323130;
+        border-left-color: var(--itgov-warning-border);
+        background-color: var(--itgov-warning-bg);
+        color: var(--itgov-warning-text);
       }
 
       .hidden {

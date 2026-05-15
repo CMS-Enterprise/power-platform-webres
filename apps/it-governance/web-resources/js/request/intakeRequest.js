@@ -15,6 +15,10 @@ const BPF_STAGES = {
   GOVERNANCE_PROCESS_STEPS: 971270011,
 };
 
+const REQUEST_STATUS = {
+  CLOSED: 100000000,
+};
+
 const ALL_SECTIONS = [
   "section_governance_process_steps",
   "section_request_type",
@@ -31,6 +35,10 @@ const ALL_SECTIONS = [
   "section_awaiting_decision",
   "section_decision",
   "section_intake_request_complete",
+  "section_intake_request_decision",
+  "section_complete_lcid",
+  "section_complete_next_steps",
+  "section_request_complete_questsions",
 ];
 
 //Use this map like building blocks.
@@ -55,6 +63,7 @@ const PAGES = {
   AWAITING_DECISION: ["section_progress_tracker", "section_awaiting_decision"],
   DECISION: ["section_progress_tracker", "section_decision"],
   FINISHED: [
+    "section_decision",
     "section_intake_request_decision",
     "section_complete_lcid",
     "section_complete_next_steps",
@@ -237,14 +246,25 @@ function showHideFields(formContext) {
 
   updateSoftwareAcquisitionVisibility(formContext);
 
+  if (shouldLockRequest(formContext, pageName)) {
+    lockAllFields(formContext);
+  }
+}
+
+function shouldLockRequest(formContext, pageName) {
   const readyForReview = formContext
     .getAttribute("cr69a_readyforreview")
     ?.getValue();
-  if (readyForReview) return;
-
-  if (pageName === "FINISHED") {
-    lockAllFields(formContext);
+  if (readyForReview) {
+    return true;
   }
+
+  const requestStatus = formContext.getAttribute("cr69a_status")?.getValue();
+  if (requestStatus === REQUEST_STATUS.CLOSED) {
+    return true;
+  }
+
+  return pageName === "FINISHED";
 }
 
 function showPage(formContext, pageName) {

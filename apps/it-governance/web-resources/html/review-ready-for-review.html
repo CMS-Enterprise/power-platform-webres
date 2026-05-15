@@ -5,22 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ready for Review Indicator</title>
     <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-card-radius: 12px;
+        --itgov-card-border: rgba(0, 0, 0, 0.08);
+        --itgov-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --itgov-action-bg: #dceeff;
+        --itgov-action-border: #0078d4;
+        --itgov-wait-bg: #eef3f8;
+        --itgov-wait-border: #7f95ad;
+      }
+
       body {
         margin: 0;
         padding: 12px;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: transparent;
-        color: #323130;
+        color: var(--itgov-text);
       }
 
-      .card {
-        border-radius: 12px;
+      .helper-card {
+        border-radius: var(--itgov-card-radius);
         padding: 16px 18px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: var(--itgov-card-shadow);
+        border: 1px solid var(--itgov-card-border);
       }
 
-      .title {
+      .helper-title {
         font-size: 18px;
         font-weight: 700;
         margin: 0 0 6px 0;
@@ -29,21 +40,20 @@
         gap: 10px;
       }
 
-      .subtitle {
+      .helper-body {
         margin: 0;
         font-size: 14px;
         opacity: 0.9;
       }
 
-      /* States */
-      .state-review {
-        background: #dff6dd; /* green-ish */
-        border-color: #107c10;
+      .helper-card--action {
+        background: var(--itgov-action-bg);
+        border-color: var(--itgov-action-border);
       }
 
-      .state-wait {
-        background: #edf7ee;
-        border-color: #6c9f74;
+      .helper-card--wait {
+        background: var(--itgov-wait-bg);
+        border-color: var(--itgov-wait-border);
       }
 
       .icon {
@@ -82,66 +92,66 @@
         if (!card || !icon || !title || !subtitle) return;
 
         if (state === "finished") {
-          card.classList.remove("state-wait");
-          card.classList.add("state-review");
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
           icon.textContent = "✅";
           title.textContent = "This request is finished";
           subtitle.textContent =
             "If you need to make changes, go to the Actions dropdown and re-open the request.";
         } else if (state === "business-case-review") {
-          card.classList.remove("state-wait");
-          card.classList.add("state-review");
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
           icon.textContent = "✅";
           title.textContent = "Please review the Business Case";
           subtitle.textContent =
             "Please review the Business Case in the Business Case section below and make a decision on how to proceed with this request by using the Actions tab at the top of the page.";
         } else if (state === "business-case-wait") {
-          card.classList.remove("state-review");
-          card.classList.add("state-wait");
+          card.classList.remove("helper-card--action");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent =
             "Waiting on the requester to make changes to the Business Case";
           subtitle.textContent =
             "Once the requester has submitted updates, review the Business Case and Solutions in the Business Case section below.";
         } else if (state === "final-business-case-review") {
-          card.classList.remove("state-wait");
-          card.classList.add("state-review");
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
           icon.textContent = "✅";
           title.textContent = "Please review the Final Business Case";
           subtitle.textContent =
             "Please review the updated Business Case in the Business Case section below and make a decision on how to proceed with this request by using the Actions tab at the top of the page.";
         } else if (state === "final-business-case-wait") {
-          card.classList.remove("state-review");
-          card.classList.add("state-wait");
+          card.classList.remove("helper-card--action");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent =
             "Waiting on the requester to make changes to the Final Business Case";
           subtitle.textContent =
             "Once the requester has submitted updates, review the Business Case and Solutions in the Business Case section below.";
         } else if (state === "grt-meeting") {
-          card.classList.remove("state-wait");
-          card.classList.add("state-review");
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
           icon.textContent = "⏳";
           title.textContent = "Awaiting results of the GRT meeting";
           subtitle.textContent =
             "Waiting for input from the GRT meeting. Once the meeting has finished, please put a link into the Meeting Minutes section of this Review and use the Actions dropdown to move this request to another step in the process.";
         } else if (state === "grb-review") {
-          card.classList.remove("state-wait");
-          card.classList.add("state-review");
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
           icon.textContent = "⏳";
           title.textContent = "Awaiting results of the GRB review";
           subtitle.textContent =
             "Waiting for input from the GRB review. Once the review has finished, please put a link into the Meeting Minutes section of this Review and use the Actions dropdown to move this request to another step in the process.";
         } else if (state === "review") {
-          card.classList.remove("state-wait");
-          card.classList.add("state-review");
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
           icon.textContent = "✅";
           title.textContent = "Your turn: Review this request";
           subtitle.textContent =
             "The requester has submitted changes. Please review and either approve or request edits.";
         } else {
-          card.classList.remove("state-review");
-          card.classList.add("state-wait");
+          card.classList.remove("helper-card--action");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent = "Waiting on requester updates";
           subtitle.textContent =
@@ -250,12 +260,17 @@
   </head>
 
   <body>
-    <div id="card" class="card state-wait" role="status" aria-live="polite">
-      <div class="title">
+    <div
+      id="card"
+      class="helper-card helper-card--wait"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="helper-title">
         <span id="icon" class="icon">⏳</span>
         <span id="titleText">Loading…</span>
       </div>
-      <p id="subtitleText" class="subtitle"></p>
+      <p id="subtitleText" class="helper-body"></p>
     </div>
   </body>
 </html>

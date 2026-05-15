@@ -5,22 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Request Helper</title>
     <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-card-radius: 12px;
+        --itgov-card-border: rgba(0, 0, 0, 0.08);
+        --itgov-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --itgov-info-bg: #eff6fc;
+        --itgov-info-border: #5c9bd5;
+        --itgov-action-bg: #dceeff;
+        --itgov-action-border: #0078d4;
+        --itgov-wait-bg: #eef3f8;
+        --itgov-wait-border: #7f95ad;
+      }
+
       body {
         margin: 0;
-        padding: 12px;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: transparent;
-        color: #323130;
+        color: var(--itgov-text);
       }
 
-      .card {
-        border-radius: 12px;
+      .helper-card {
+        border-radius: var(--itgov-card-radius);
         padding: 16px 18px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: var(--itgov-card-shadow);
+        border: 1px solid var(--itgov-card-border);
       }
 
-      .title {
+      .helper-title {
         font-size: 18px;
         font-weight: 700;
         margin: 0 0 6px 0;
@@ -29,25 +41,25 @@
         gap: 10px;
       }
 
-      .subtitle {
+      .helper-body {
         margin: 0;
         font-size: 14px;
         opacity: 0.9;
       }
 
-      .state-info {
-        background: #eff6fc;
-        border-color: #5c9bd5;
+      .helper-card--info {
+        background: var(--itgov-info-bg);
+        border-color: var(--itgov-info-border);
       }
 
-      .state-action {
-        background: #dceeff;
-        border-color: #0078d4;
+      .helper-card--action {
+        background: var(--itgov-action-bg);
+        border-color: var(--itgov-action-border);
       }
 
-      .state-wait {
-        background: #eef3f8;
-        border-color: #7f95ad;
+      .helper-card--wait {
+        background: var(--itgov-wait-bg);
+        border-color: var(--itgov-wait-border);
       }
 
       .icon {
@@ -88,70 +100,74 @@
 
         if (!card || !icon || !title || !subtitle) return;
 
-        card.classList.remove("state-info", "state-action", "state-wait");
+        card.classList.remove(
+          "helper-card--info",
+          "helper-card--action",
+          "helper-card--wait",
+        );
 
         if (state === "draft-requester") {
-          card.classList.add("state-info");
+          card.classList.add("helper-card--info");
           icon.textContent = "📝";
           title.textContent = "Complete your Intake Request";
           subtitle.textContent =
             "Fill out the request details below and use the submit section when you are ready to send the request forward.";
         } else if (state === "draft-admin") {
-          card.classList.add("state-wait");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent = "Your Intake Request is being reviewed";
           subtitle.textContent =
             "The Governance Admin Team is reviewing your Intake Request and will contact you if any updates or next steps are needed.";
         } else if (state === "intake-review") {
-          card.classList.add("state-wait");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent = "Your request is under review";
           subtitle.textContent =
             "The Governance Admin Team is reviewing your Intake Request and will contact you if any updates or next steps are needed.";
         } else if (state === "business-case-requester") {
-          card.classList.add("state-action");
+          card.classList.add("helper-card--action");
           icon.textContent = "📝";
           title.textContent = "Complete the Business Case";
           subtitle.textContent =
             "Fill out the Business Case section below, add at least one Solution, and submit the Business Case when you are ready for review. Draft a Business Case to communicate your business need, possible solutions and their associated costs. The Governance Team will review this business case and determine whether you are ready for a GRT meeting or GRB review.";
         } else if (state === "business-case-admin") {
-          card.classList.add("state-wait");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent = "Business Case submitted";
           subtitle.textContent =
             "The Governance Admin Team is reviewing your Business Case and Solutions. Wait for feedback or the next step in the process.";
         } else if (state === "grt-meeting") {
-          card.classList.add("state-wait");
+          card.classList.add("helper-card--wait");
           icon.textContent = "📅";
           title.textContent = "Prepare for the GRT meeting";
           subtitle.textContent =
             "Work with the Governance Admin Team to prepare for the GRT meeting and wait for further guidance after the meeting is complete.";
         } else if (state === "final-business-case-requester") {
-          card.classList.add("state-action");
+          card.classList.add("helper-card--action");
           icon.textContent = "📝";
           title.textContent = "Update the Final Business Case";
           subtitle.textContent =
             "Review any requested updates, revise the Business Case and Solutions in the Business Case section below, and resubmit when the changes are complete.";
         } else if (state === "final-business-case-admin") {
-          card.classList.add("state-wait");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent = "Final Business Case submitted";
           subtitle.textContent =
             "The Governance Admin Team is reviewing the updated Business Case and Solutions. Wait for feedback or the next step in the process.";
         } else if (state === "grb-review") {
-          card.classList.add("state-wait");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent = "Awaiting GRB review";
           subtitle.textContent =
             "The Governance Review Board is reviewing this request. Wait for the next update or decision before making additional changes.";
         } else if (state === "finished") {
-          card.classList.add("state-action");
+          card.classList.add("helper-card--action");
           icon.textContent = "✅";
           title.textContent = "This request is finished";
           subtitle.textContent =
             "This request has completed the current process. If additional updates are needed later, the Governance Admin Team can re-open it.";
         } else {
-          card.classList.add("state-info");
+          card.classList.add("helper-card--info");
           icon.textContent = "ℹ️";
           title.textContent = "Request guidance";
           subtitle.textContent =
@@ -267,12 +283,17 @@
   </head>
 
   <body>
-    <div id="card" class="card state-info" role="status" aria-live="polite">
-      <div class="title">
+    <div
+      id="card"
+      class="helper-card helper-card--info"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="helper-title">
         <span id="icon" class="icon">ℹ️</span>
         <span id="titleText">Loading…</span>
       </div>
-      <p id="subtitleText" class="subtitle"></p>
+      <p id="subtitleText" class="helper-body"></p>
     </div>
   </body>
 </html>

@@ -21,10 +21,6 @@
       "name": "easi_close_request_button"
     },
     {
-      "file": "html/conditional-helper-text.html",
-      "name": "cr69a_conditional_helper_text"
-    },
-    {
       "file": "html/final-business-case-submit.html",
       "name": "cr69a_final_business_case_submit"
     },
@@ -55,10 +51,6 @@
     {
       "file": "html/intake-request-have-questions-about-decision.html",
       "name": "new_request_questions_about_decision"
-    },
-    {
-      "file": "html/intake-request-result-display-banner.html",
-      "name": "new_request_result_display_banner"
     },
     {
       "file": "html/issue-lcid-button.html",

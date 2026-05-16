@@ -4,37 +4,50 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-card-radius: 12px;
+        --itgov-card-border: rgba(0, 0, 0, 0.08);
+        --itgov-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --itgov-info-bg: #eff6fc;
+        --itgov-info-border: #5c9bd5;
+      }
+
       body {
-        font-family: "Segoe UI", Arial, sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         font-size: 14px;
         line-height: 1.43;
         margin: 0;
-        color: #323130;
+        color: var(--itgov-text);
+        background: transparent;
         overflow: hidden;
       }
 
-      .container {
-        border-left: 4px solid #ffbe2e;
-        background-color: #faf3d1;
-        border-radius: 3px;
-        padding: 12px 16px;
+      .helper-card {
+        border-radius: var(--itgov-card-radius);
+        padding: 16px 18px;
+        box-shadow: var(--itgov-card-shadow);
+        border: 1px solid var(--itgov-card-border);
+        background: var(--itgov-info-bg);
+        border-color: var(--itgov-info-border);
       }
 
-      .title {
+      .helper-title {
         font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 6px;
+        font-weight: 700;
+        margin: 0 0 6px 0;
       }
 
       p {
         margin: 0;
+        opacity: 0.9;
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <div class="title">Upload Documents</div>
+    <div class="helper-card">
+      <div class="helper-title">Upload Documents</div>
       <p>
         To upload documents, click "Upload Documents" at the top of the page.
         Once uploaded, your documents will appear in the list below.

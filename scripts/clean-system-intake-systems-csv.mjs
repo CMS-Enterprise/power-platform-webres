@@ -260,7 +260,7 @@ function parseCsvLine(line) {
 }
 
 function cleanSystemId(value) {
-  return value.replace(/[{}]/g, "");
+  return value.replace(/[{}]/g, "").toUpperCase();
 }
 
 function formatCsvField(value, wasQuoted) {

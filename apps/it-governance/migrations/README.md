@@ -39,6 +39,25 @@ npm run cedar:clean -- apps/it-governance/migrations/easi-dev-data/cedar_systems
 Use `--dry-run --verbose` first to review the changes. The in-place command rewrites the
 JSON file after removing supported export artifacts.
 
+## Linked system CSV cleanup
+
+The `system_intake_systems.csv` export may mix braced and unbraced values in the
+`system_id` column. Normalize that column before uploading the CSV for migration work.
+The cleanup only changes `system_id`; relationship values such as `{PRIMARY_SUPPORT,OTHER}`
+are left as-is.
+
+```bash
+npm run intake:systems:clean -- --dry-run --verbose
+npm run intake:systems:clean -- --in-place
+```
+
+The command defaults to `easi-dev-data/system_intake_systems.csv`. Pass one or more paths
+to reuse it for UAT or prod exports:
+
+```bash
+npm run intake:systems:clean -- path/to/system_intake_systems.csv --dry-run --verbose
+```
+
 EASI Postgresql Table Data Source Inventory
 
 business_cases

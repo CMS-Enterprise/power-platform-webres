@@ -5,20 +5,12 @@
   "defaultPublishAfterUpload": true,
   "resources": [
     {
-      "file": "html/admin-review-complete-action-button.html",
-      "name": "easi_admin_review_complete_action_button"
-    },
-    {
       "file": "html/business-case-header.html",
       "name": "easi_BusinessCaseHeader"
     },
     {
       "file": "html/business-case-submit.html",
       "name": "cr69a_BusinessCaseSubmit"
-    },
-    {
-      "file": "html/close-request-button.html",
-      "name": "easi_close_request_button"
     },
     {
       "file": "html/final-business-case-submit.html",
@@ -51,10 +43,6 @@
     {
       "file": "html/intake-request-have-questions-about-decision.html",
       "name": "new_request_questions_about_decision"
-    },
-    {
-      "file": "html/issue-lcid-button.html",
-      "name": "cr69a_issue_lcid_button"
     },
     {
       "file": "html/it-gov-process-steps-ux/awaiting-decision-header.html",

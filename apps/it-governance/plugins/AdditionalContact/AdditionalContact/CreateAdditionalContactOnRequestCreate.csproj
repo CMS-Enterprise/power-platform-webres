@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="CMS.ITGovernance.pfx" />
     <None Include="CMS.ITGovernance.snk" />
     <None Include="packages.config" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 (function () {
   const RELATED_REQUEST_LOOKUP = "cr69a_systemintake";
   const TARGET_ENTITY_NAME = "new_systemintake";
+  // Solution-managed Request Admin form ID, verified consistent across Dev, UAT, and Prod.
   const TARGET_FORM_ID = "e894fe33-da2e-f111-8341-001dd8055bb1";
 
   function sanitizeGuid(id) {

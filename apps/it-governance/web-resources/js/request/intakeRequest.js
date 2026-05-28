@@ -38,7 +38,7 @@ const ALL_SECTIONS = [
   "section_intake_request_decision",
   "section_complete_lcid",
   "section_complete_next_steps",
-  "section_request_complete_questsions",
+  "section_request_complete_questions",
 ];
 
 //Use this map like building blocks.
@@ -67,7 +67,7 @@ const PAGES = {
     "section_intake_request_decision",
     "section_complete_lcid",
     "section_complete_next_steps",
-    "section_request_complete_questsions",
+    "section_request_complete_questions",
   ],
 };
 

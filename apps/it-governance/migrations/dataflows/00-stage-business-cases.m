@@ -1,0 +1,129 @@
+section Section1;
+shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+shared SharePointSiteUrl = "https://cmsgovonline-my.sharepoint.com/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+shared FileName = "business_cases.csv" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+shared FolderPath = "personal/cooper_heinrichs_cms_hhs_gov/Documents/Apps/IT_Governance/Data_Migrations/Dev/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+shared business_cases = let
+    CsvUrl = SharePointSiteUrl & FolderPath & FileName,
+    
+    Source = Csv.Document(
+        Web.Contents(CsvUrl),
+        [
+            Delimiter = ",",
+            Columns = 72,
+            QuoteStyle = QuoteStyle.None
+        ]
+    ),
+
+    #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+
+    #"Replace NULLs" =
+        Table.ReplaceValue(
+            #"Promoted headers",
+            "NULL",
+            null,
+            Replacer.ReplaceValue,
+            Table.ColumnNames(#"Promoted headers")
+        ),
+
+    #"Changed column type" =
+        Table.TransformColumnTypes(
+            #"Replace NULLs",
+            {
+                {"id", type text},
+                {"eua_user_id", type text},
+                {"project_name", type text},
+                {"requester", type text},
+                {"requester_phone_number", Int64.Type},
+                {"business_owner", type text},
+                {"business_need", type text},
+                {"cms_benefit", type text},
+                {"priority_alignment", type text},
+                {"success_indicators", type text},
+                {"current_solution_summary", type text},
+                {"preferred_title", type text},
+                {"preferred_summary", type text},
+                {"preferred_acquisition_approach", type text},
+                {"preferred_pros", type text},
+                {"preferred_cons", type text},
+                {"preferred_cost_savings", type text},
+                {"alternative_a_title", type text},
+                {"alternative_a_summary", type text},
+                {"alternative_a_acquisition_approach", type text},
+                {"alternative_a_pros", type text},
+                {"alternative_a_cons", type text},
+                {"alternative_a_cost_savings", type text},
+                {"alternative_b_title", type text},
+                {"alternative_b_summary", type text},
+                {"alternative_b_acquisition_approach", type text},
+                {"alternative_b_pros", type text},
+                {"alternative_b_cons", type text},
+                {"alternative_b_cost_savings", type text},
+                {"system_intake", type text},
+                {"created_at", type datetime},
+                {"updated_at", type datetime},
+                {"status", type text},
+                {"preferred_hosting_type", type text},
+                {"preferred_hosting_location", type text},
+                {"preferred_hosting_cloud_service_type", type text},
+                {"preferred_has_ui", type text},
+                {"alternative_a_hosting_type", type text},
+                {"alternative_a_hosting_location", type text},
+                {"alternative_a_hosting_cloud_service_type", type text},
+                {"alternative_a_has_ui", type text},
+                {"alternative_b_hosting_type", type text},
+                {"alternative_b_hosting_location", type text},
+                {"alternative_b_hosting_cloud_service_type", type text},
+                {"alternative_b_has_ui", type text},
+                {"initial_submitted_at", type text},
+                {"last_submitted_at", type text},
+                {"archived_at", type text},
+                {"preferred_security_is_approved", type logical},
+                {"preferred_security_is_being_reviewed", type text},
+                {"alternative_a_security_is_approved", type logical},
+                {"alternative_a_security_is_being_reviewed", type text},
+                {"alternative_b_security_is_approved", type logical},
+                {"alternative_b_security_is_being_reviewed", type text},
+                {"collaboration_needed", type text},
+                {"project_acronym", type text},
+                {"response_to_grt_feedback", type text},
+                {"preferred_target_contract_award_date", type text},
+                {"preferred_target_completion_date", type text},
+                {"preferred_zero_trust_alignment", type text},
+                {"preferred_hosting_cloud_strategy", type text},
+                {"preferred_workforce_training_reqs", type text},
+                {"alternative_a_target_contract_award_date", type text},
+                {"alternative_a_target_completion_date", type text},
+                {"alternative_a_zero_trust_alignment", type text},
+                {"alternative_a_hosting_cloud_strategy", type text},
+                {"alternative_a_workforce_training_reqs", type text},
+                {"alternative_b_target_contract_award_date", type text},
+                {"alternative_b_target_completion_date", type text},
+                {"alternative_b_zero_trust_alignment", type text},
+                {"alternative_b_hosting_cloud_strategy", type text},
+                {"alternative_b_workforce_training_reqs", type text}
+            }
+        ),
+
+    // --- DATAVERSE LOOKUP FOR CURRENT BATCH ---
+    Dv = CommonDataService.Database(DataverseEnvironmentUrl),
+
+    // Update this table name to your actual MigrationRun logical name
+    MigrationRuns = Dv{[Name = "easi_migrationrun", Kind = "Table"]}[Data],
+
+    // If cr69a_status is an option set numeric, this filter will need adjusting
+    RunningOnly = Table.SelectRows(MigrationRuns, each [easi_migrationrunstatus] = 100000000),
+
+    Sorted = Table.Sort(RunningOnly, {{"easi_startedon", Order.Descending}}),
+    Latest = Table.FirstN(Sorted, 1),
+
+    BatchId =
+        if Table.RowCount(Latest) > 0
+        then Text.From(Latest{0}[easi_batchid])
+        else error "No Running MigrationRun found – check MigrationRun table.",
+
+    // --- ADD BATCH ID TO OUTPUT ---
+    #"Added Batch Id" = Table.AddColumn(#"Changed column type", "migrate_batch_id", each BatchId, type text)
+
+in
+    #"Added Batch Id";

@@ -1,5 +1,41 @@
-let
+section Section1;
+shared StagingRaw = let
+  Source = CommonDataService.Database(DataverseEnvironmentUrl),
+  #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_intakestaging"]}[Data],
+  #"From Value" = Table.FromValue(#"Navigation 1"),
+  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
+in
+  #"Remove Columns";
+shared Reviews = let
     Prev = StagingRaw,
+    // Normalize date fields
+    NormalizeDate = (v as any) as nullable date =>
+        let
+            result =
+                if v = null then
+                    null
+                else if Value.Is(v, type date) then
+                    v
+                else if Value.Is(v, type datetime) then
+                    Date.From(v)
+                else
+                    try Date.From(Text.Trim(Text.From(v))) otherwise null
+        in
+            result,
+
+    DateCols = {
+        "cr69a_grt_date",
+        "cr69a_grb_date"
+    },
+
+    ColsPresentDates = List.Intersect({DateCols, Table.ColumnNames(Prev)}),
+
+    DateTransformers = List.Transform(
+        ColsPresentDates,
+        each {_, each NormalizeDate(_), type date}
+    ),
+
+    WithDates = Table.TransformColumns(Prev, DateTransformers),
     // Map to Dataverse-style two-option codes:
     NormalizeTwoOption = (v as any) as nullable number =>
         let
@@ -26,8 +62,7 @@ let
     },
     ColsPresent = List.Intersect({TwoOptionCols, Table.ColumnNames(Prev)}),
     Transformers = List.Transform(ColsPresent, each {_, each NormalizeTwoOption(_), Int64.Type}),
-    FixedBools = Table.TransformColumns(Prev, Transformers),
-    WithAdminTask = Table.AddColumn(FixedBools, "new_admingovernanceprocessstep", each 971270009, Int64.Type),
+    FixedBools = Table.TransformColumns(WithDates, Transformers),
     // Normalize Yes/No to logical true/false (nullable)
     NormalizeYesNo = (v as any) as nullable logical =>
         if Value.Is(v, type logical) then
@@ -47,9 +82,9 @@ let
     // 🔁 List your Dynamics Yes/No columns here
     YesNoCols = {"cr69a_does_not_support_systems"},
     // Apply only to columns that actually exist
-    ColsPresentYN = List.Intersect({YesNoCols, Table.ColumnNames(WithAdminTask)}),
+    ColsPresentYN = List.Intersect({YesNoCols, Table.ColumnNames(FixedBools)}),
     YNTransformers = List.Transform(ColsPresentYN, each {_, each NormalizeYesNo(_), type logical}),
-    FixedYesNo = Table.TransformColumns(WithAdminTask, YNTransformers),
+    FixedYesNo = Table.TransformColumns(FixedBools, YNTransformers),
     EnableQA = false,
     // set to false to suppress QA columns
     // 1) Specs
@@ -108,13 +143,13 @@ let
         ],
         [
             source = "cr69a_step",
-            dest = "step_dataverse_format",
+            dest = "cr69a_step_dataverse_format",
             map = [
                 INITIAL_REQUEST_FORM = 971270000,
                 DRAFT_BUSINESS_CASE = 971270001,
                 GRT_MEETING = 971270002,
-                GRB_MEETING = 971270004,
                 FINAL_BUSINESS_CASE = 971270003,
+                GRB_MEETING = 971270004,
                 DECISION_AND_NEXT_STEPS = 971270005
             ]
         ],
@@ -162,6 +197,18 @@ let
                 FED_FURNISHED = 971270002,
                 NOT_YET_DETERMINED = 971270003,
                 OTHER = 971270004
+            ]
+        ],
+        [
+            source = "cr69a_existing_contract",
+            dest = "cr3ee_contractstatus-dataverse_format",
+            map = [
+                HAVE_CONTRACT = 216640000,
+                IN_PROGRESS = 216640001,
+                NOT_STARTED = 216640002,
+                NOT_NEEDED = 216640003,
+                UNKNOWN = 216640004,
+                NO = 216640004
             ]
         ]
     },
@@ -231,6 +278,17 @@ let
                     type text
                 )
             in
-                AddIssues
+                AddIssues,
+    #"From Value" = Table.FromValue(WithQA),
+    #"Remove Columns" = Table.RemoveColumns(
+        #"From Value",
+        Table.ColumnsOfType(
+            #"From Value", {type table, type record, type list, type nullable binary, type binary, type function}
+        )
+    )
 in
-    WithQA
+    #"Remove Columns";
+shared DataverseEnvironmentUrl = let
+  DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text]
+in
+  DataverseEnvironmentUrl;

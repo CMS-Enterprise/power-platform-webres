@@ -17,6 +17,8 @@ namespace Cms.ItGovernance.Plugins.Request
         private const string AdditionalContact_Component = "cr69a_component"; // option set
         private const int Component_NoneSpecified = 216640001;
         private const string IsRequesterField = "cr69a_isrequester";
+        private const string SkipRequesterContactCreationField = "cr3ee_skiprequestercontactcreation";
+
         public void Execute(IServiceProvider serviceProvider)
         {
             var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
@@ -46,6 +48,12 @@ namespace Cms.ItGovernance.Plugins.Request
             if (requestId == Guid.Empty)
             {
                 tracing.Trace("Request ID is empty in PostOperation. Exiting.");
+                return;
+            }
+
+            if (ShouldSkipRequesterContactCreation(target, service, tracing, requestId))
+            {
+                tracing.Trace("Skip requester contact creation flag is true. Skipping additional contact creation.");
                 return;
             }
 
@@ -88,6 +96,25 @@ namespace Cms.ItGovernance.Plugins.Request
             var additionalId = service.Create(additional);
 
             tracing.Trace($"Created Additional Contact: {additionalId}");
+        }
+
+        private static bool ShouldSkipRequesterContactCreation(Entity target, IOrganizationService service, ITracingService tracing, Guid requestId)
+        {
+            if (target.Attributes.Contains(SkipRequesterContactCreationField))
+            {
+                var skipFromTarget = target.GetAttributeValue<bool>(SkipRequesterContactCreationField);
+                tracing.Trace($"Skip requester contact creation flag from Target: {skipFromTarget}");
+                return skipFromTarget;
+            }
+
+            tracing.Trace("Skip requester contact creation flag not present on Target. Attempting Retrieve.");
+
+            var request = service.Retrieve(RequestEntity, requestId, new ColumnSet(SkipRequesterContactCreationField));
+            var skipFromRequest = request.GetAttributeValue<bool>(SkipRequesterContactCreationField);
+
+            tracing.Trace($"Skip requester contact creation flag from Retrieve: {skipFromRequest}");
+
+            return skipFromRequest;
         }
     }
 }

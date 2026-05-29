@@ -1,5 +1,13 @@
 section Section1;
 shared MaxDataverseCurrencyValue = 922337203685477;
+shared NormalizeLegacyBusinessCaseId = (value as any) as nullable text =>
+    if value = null then
+        null
+    else
+        let
+            normalized = Text.Upper(Text.Trim(Text.From(value)))
+        in
+            if normalized = "" then null else normalized;
 shared EstimatedLifecycleCosts = let
     Source = CommonDataService.Database(DataverseEnvironmentUrl),
     StagingRaw = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingestimatedlifecycleco"]}[Data],
@@ -29,7 +37,7 @@ shared EstimatedLifecycleCosts = let
         Table.AddColumn(
             StagingRaw,
             "LegacyBusinessCaseId",
-            each if [cr69a_businesscase] = null then null else Text.Trim(Text.From([cr69a_businesscase])),
+            each NormalizeLegacyBusinessCaseId([cr69a_businesscase]),
             type nullable text
         ),
 
@@ -192,7 +200,7 @@ shared ExistingRequests = let
     WithNormalizedLegacyId =
         Table.TransformColumns(
             SelectedColumns,
-            {{"new_legacybusinesscaseid", each if _ = null then null else Text.Trim(Text.From(_)), type nullable text}}
+            {{"new_legacybusinesscaseid", each NormalizeLegacyBusinessCaseId(_), type nullable text}}
         )
 in
     WithNormalizedLegacyId;
@@ -214,6 +222,34 @@ shared DuplicateRequestLegacyBusinessCaseIds = let
     Duplicates = Table.SelectRows(Grouped, each [RequestCount] > 1)
 in
     Duplicates;
+shared EstimatedLifecycleCostIdsWithoutRequestIds = let
+    LifecycleIds =
+        Table.Distinct(
+            Table.SelectRows(
+                Table.SelectColumns(EstimatedLifecycleCosts, {"LegacyBusinessCaseId"}),
+                each [LegacyBusinessCaseId] <> null and [LegacyBusinessCaseId] <> ""
+            )
+        ),
+    RequestIds =
+        Table.Distinct(
+            Table.SelectRows(
+                Table.SelectColumns(ExistingRequests, {"new_legacybusinesscaseid"}),
+                each [new_legacybusinesscaseid] <> null and [new_legacybusinesscaseid] <> ""
+            )
+        ),
+    Joined =
+        Table.NestedJoin(
+            LifecycleIds,
+            {"LegacyBusinessCaseId"},
+            RequestIds,
+            {"new_legacybusinesscaseid"},
+            "RequestMatch",
+            JoinKind.LeftOuter
+        ),
+    Missing = Table.SelectRows(Joined, each Table.IsEmpty([RequestMatch])),
+    SelectedColumns = Table.RemoveColumns(Missing, {"RequestMatch"})
+in
+    SelectedColumns;
 shared ExistingSolutions = let
     Source = CommonDataService.Database(DataverseEnvironmentUrl),
     Solutions = Source{[Schema = "dbo", Item = "cr69a_businesscasesolution"]}[Data],
@@ -224,7 +260,8 @@ shared ExistingSolutions = let
             {
                 "cr69a_businesscasesolutionid",
                 "new_request",
-                "cr69a_solution_type"
+                "cr69a_solution_type",
+                "cr69a_batchid"
             },
             MissingField.Error
         )
@@ -257,7 +294,10 @@ shared EstimatedLifecycleCostsWithSolutions = let
       JoinKind.LeftOuter
   ),
   Expanded = Table.ExpandTableColumn(
-      Joined, "SolutionMatch", {"cr69a_businesscasesolutionid"}, {"cr69a_businesscasesolutionid"}
+      Joined,
+      "SolutionMatch",
+      {"cr69a_businesscasesolutionid", "new_request", "cr69a_batchid"},
+      {"cr69a_businesscasesolutionid", "new_request", "cr69a_batchid"}
   )
 in
   Expanded;
@@ -287,6 +327,8 @@ shared Query = let
       ValidatedEstimatedLifecycleCosts,
       {
           "cr69a_businesscasesolutionid",
+          "new_request",
+          "cr69a_batchid",
           "new_fy1costperyear",
           "new_fy2costperyear",
           "new_fy3costperyear",
@@ -296,46 +338,5 @@ shared Query = let
   )
 in
   UpdateColumns
-
-// let
-//     EmptyUpdateColumns =
-//         #table(
-//             type table [
-//                 cr69a_businesscasesolutionid = nullable text,
-//                 new_fy1costperyear = Currency.Type,
-//                 new_fy2costperyear = Currency.Type,
-//                 new_fy3costperyear = Currency.Type,
-//                 new_fy4costperyear = Currency.Type,
-//                 new_fy5costperyear = Currency.Type
-//             ],
-//             {}
-//         ),
-
-//     ValidatedEstimatedLifecycleCosts =
-//         if Table.RowCount(InvalidCostRows) > 0 then
-//             EmptyUpdateColumns
-//         else if Table.RowCount(DuplicateRequestLegacyBusinessCaseIds) > 0 then
-//             EmptyUpdateColumns
-//         else if Table.RowCount(EstimatedLifecycleCostsWithoutRequest) > 0 then
-//             EmptyUpdateColumns
-//         else if Table.RowCount(EstimatedLifecycleCostsWithoutSolution) > 0 then
-//             EmptyUpdateColumns
-//         else
-//             EstimatedLifecycleCostsWithSolutions,
-
-//     UpdateColumns =
-//         Table.SelectColumns(
-//             ValidatedEstimatedLifecycleCosts,
-//             {
-//                 "cr69a_businesscasesolutionid",
-//                 "new_fy1costperyear",
-//                 "new_fy2costperyear",
-//                 "new_fy3costperyear",
-//                 "new_fy4costperyear",
-//                 "new_fy5costperyear"
-//             }
-//         )
-// in
-//     UpdateColumns
 ;
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];

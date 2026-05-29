@@ -1,170 +1,236 @@
 section Section1;
-shared ELCKeys = let
-    Source = CommonDataService.Database(DataverseEnvironmentUrl),
-    StagingRaw = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingestimatedlifecycleco"]}[Data],
 
-    // =========================================
-    // Choice mapping specs
-    // =========================================
-    ChoiceSpecs = {
-        [
-            source = "cr69a_phase",
-            dest = "lifecycle_cost_phase_dataverse",
-            map = [
-                DEVELOPMENT = 971270000,
-                OPERATIONS_AND_MAINTENANCE = 971270001,
-                HELP_DESK_CALL_CENTER = 971270002,
-                SOFTWARE_LICENSES = 971270003,
-                PLANNING_SUPPORT_AND_PROFESSIONAL_SERVICES = 971270004,
-                INFRASTRUCTURE = 971270005,
-                OIT_SERVICES_TOOLS_AND_PILOTS = 971270006,
-                OTHER = 971270007
-            ]
-        ],
-        [
-            source = "cr69a_year",
-            dest = "year_dataverse",
-            map = [
-                #"1" = 971270000,
-                #"2" = 971270001,
-                #"3" = 971270002,
-                #"4" = 971270003,
-                #"5" = 971270004
-            ]
-        ],
-        [
-            source = "cr69a_solution",
-            dest = "solution_type_dataverse",
-            map = [
-                PREFERRED = 971270000,
-                A = 971270001,
-                B = 971270002
-            ]
-        ]
-    },
-
-    NormalizeChoiceKey = (v as any) as nullable text =>
-        if v = null then
-            null
-        else
-            let
-                t0 = Text.From(v),
-                t1 = Text.Upper(Text.Trim(t0)),
-                t2 = Text.Replace(t1, " ", "_"),
-                t3 = Text.Replace(t2, "(", ""),
-                t4 = Text.Replace(t3, ")", ""),
-                t5 = Text.Replace(t4, "-", "_"),
-                t6 = Text.Replace(t5, "/", "_"),
-                t7 = Text.Replace(t6, ",", "")
-            in
-                t7,
-
-    ApplyAll =
-        List.Accumulate(
-            ChoiceSpecs,
-            StagingRaw,
-            (state as table, spec as record) =>
+shared MaxDataverseCurrencyValue = 922337203685477;
+shared EstimatedLifecycleCosts =
+    let
+        Source = CommonDataService.Database(DataverseEnvironmentUrl),
+        StagingRaw = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingestimatedlifecycleco"]}[Data],
+        NormalizeChoiceKey = (value as any) as nullable text =>
+            if value = null then
+                null
+            else
                 let
-                    src = spec[source],
-                    dest = spec[dest],
-                    map = spec[map],
-                    rawCol = src & "_raw",
-                    WithRaw = Table.AddColumn(
-                        state,
-                        rawCol,
-                        each
-                            let
-                                original = try Record.Field(_, src) otherwise null
-                            in
-                                if original = null then
-                                    null
-                                else
-                                    Text.From(original),
-                        type text
-                    ),
-                    WithChoice = Table.AddColumn(
-                        WithRaw,
-                        dest,
-                        each
-                            let
-                                raw = Record.Field(_, rawCol),
-                                key = NormalizeChoiceKey(raw)
-                            in
-                                if key = null then
-                                    null
-                                else if Record.HasFields(map, key) then
-                                    Record.Field(map, key)
-                                else
-                                    null,
-                        Int64.Type
-                    )
+                    textValue = Text.Upper(Text.Trim(Text.From(value))),
+                    normalizedSpaces = Text.Replace(textValue, " ", "_"),
+                    withoutOpenParen = Text.Replace(normalizedSpaces, "(", ""),
+                    withoutCloseParen = Text.Replace(withoutOpenParen, ")", ""),
+                    withoutDash = Text.Replace(withoutCloseParen, "-", "_"),
+                    withoutSlash = Text.Replace(withoutDash, "/", "_"),
+                    withoutComma = Text.Replace(withoutSlash, ",", "")
                 in
-                    WithChoice
-        ),
-
-    WithLegacyBusinessCaseId =
-        Table.AddColumn(
-            ApplyAll,
+                    withoutComma,
+        SolutionTypeMap = [
+            PREFERRED = 971270000,
+            A = 971270001,
+            B = 971270002
+        ],
+        WithKeys = Table.AddColumn(
+            StagingRaw,
             "LegacyBusinessCaseId",
-            each Text.Trim(Text.From([cr69a_businesscase])),   // <-- swap this source field if needed
-            type text
+            each if [cr69a_businesscase] = null then null else Text.Trim(Text.From([cr69a_businesscase])),
+            type nullable text
         ),
-  #"From Value" = Table.FromValue(WithLegacyBusinessCaseId),
-  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
-in
-    #"Remove Columns";
-shared ExistingSolutions = let
-    Source = CommonDataService.Database(DataverseEnvironmentUrl),
-    #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_businesscasesolution"]}[Data],
-
-    // Select only the key columns from the actual Solutions table
-    SelectedColumns = Table.SelectColumns(
-        #"Navigation 1",
-        {
-            "cr69a_legacybusinesscaseid",   // name of your Legacy BC ID column
-            "cr69a_solution_type"           // schema name of Solution Type option set
+        WithSolutionType = Table.AddColumn(
+            WithKeys,
+            "solution_type_dataverse",
+            each
+                let
+                    key = NormalizeChoiceKey([cr69a_solution])
+                in
+                    if key = null or not Record.HasFields(SolutionTypeMap, key) then
+                        null
+                    else
+                        Record.Field(SolutionTypeMap, key),
+            Int64.Type
+        ),
+        WithCost = Table.AddColumn(
+            WithSolutionType, "CostValue", each try Number.From([cr69a_cost]) otherwise 0, Currency.Type
+        ),
+        WithYear = Table.AddColumn(
+            WithCost, "YearNumber", each try Number.From([cr69a_year]) otherwise null, Int64.Type
+        ),
+        ValidRows = Table.SelectRows(
+            WithYear,
+            each
+                [LegacyBusinessCaseId] <> null
+                and [LegacyBusinessCaseId] <> ""
+                and [solution_type_dataverse] <> null
+                and List.Contains({1, 2, 3, 4, 5}, [YearNumber])
+        ),
+        Grouped = Table.Group(
+            ValidRows,
+            {"LegacyBusinessCaseId", "solution_type_dataverse", "YearNumber"},
+            {{"YearCost", each List.Sum([CostValue]), Currency.Type}}
+        ),
+        WithYearColumn = Table.AddColumn(
+            Grouped, "YearColumn", each "new_fy" & Text.From([YearNumber]) & "costperyear", type text
+        ),
+        Pivoted = Table.Pivot(
+            Table.SelectColumns(
+                WithYearColumn, {"LegacyBusinessCaseId", "solution_type_dataverse", "YearColumn", "YearCost"}
+            ),
+            {
+                "new_fy1costperyear",
+                "new_fy2costperyear",
+                "new_fy3costperyear",
+                "new_fy4costperyear",
+                "new_fy5costperyear"
+            },
+            "YearColumn",
+            "YearCost",
+            List.Sum
+        ),
+        YearCostColumns = {
+            "new_fy1costperyear",
+            "new_fy2costperyear",
+            "new_fy3costperyear",
+            "new_fy4costperyear",
+            "new_fy5costperyear"
         },
-        MissingField.Ignore                  // prevents errors if you mis-type a column
-    )
-in
-    SelectedColumns;
-shared Query = let
-    // Aliases for readability
-    ELC = ELCKeys,                    // query #1 (with LegacyBusinessCaseId + solution_type_dataverse)
-    Solutions = ExistingSolutions,    // query #2 (from Dataverse)
-
-    Joined =
-        Table.NestedJoin(
-            ELC,
-            {"LegacyBusinessCaseId", "solution_type_dataverse"},
-            Solutions,
-            {"cr69a_legacybusinesscaseid", "cr69a_solution_type"},
+        WithMissingYearColumns = List.Accumulate(
+            YearCostColumns,
+            Pivoted,
+            (state as table, columnName as text) =>
+                if Table.HasColumns(state, columnName) then
+                    state
+                else
+                    Table.AddColumn(state, columnName, each 0, Currency.Type)
+        ),
+        WithMissingYearDefaults = Table.TransformColumns(
+            WithMissingYearColumns,
+            List.Transform(YearCostColumns, each {_, each if _ = null then 0 else _, Currency.Type})
+        )
+    in
+        WithMissingYearDefaults;
+shared InvalidCostRows =
+    let
+        // Dataverse currency fields cannot store values outside +/- 922,337,203,685,477.
+        // Lifecycle costs are migrated as dollars, not cents; values above this limit are treated as bad source data.
+        YearCostColumns = {
+            "new_fy1costperyear",
+            "new_fy2costperyear",
+            "new_fy3costperyear",
+            "new_fy4costperyear",
+            "new_fy5costperyear"
+        },
+        Unpivoted = Table.Unpivot(EstimatedLifecycleCosts, YearCostColumns, "FiscalYearCostField", "CostValue"),
+        InvalidRows = Table.SelectRows(Unpivoted, each Number.Abs([CostValue]) > MaxDataverseCurrencyValue),
+        SelectedColumns = Table.SelectColumns(
+            InvalidRows, {"LegacyBusinessCaseId", "solution_type_dataverse", "FiscalYearCostField", "CostValue"}
+        )
+    in
+        SelectedColumns;
+shared ExistingRequests =
+    let
+        Source = CommonDataService.Database(DataverseEnvironmentUrl),
+        Requests = Source{[Schema = "dbo", Item = "new_systemintake"]}[Data],
+        SelectedColumns = Table.SelectColumns(
+            Requests, {"new_systemintakeid", "new_legacybusinesscaseid"}, MissingField.Error
+        ),
+        WithNormalizedLegacyId = Table.TransformColumns(
+            SelectedColumns,
+            {{"new_legacybusinesscaseid", each if _ = null then null else Text.Trim(Text.From(_)), type nullable text}}
+        )
+    in
+        WithNormalizedLegacyId;
+shared DuplicateRequestLegacyBusinessCaseIds =
+    let
+        NonBlankRequests = Table.SelectRows(
+            ExistingRequests, each [new_legacybusinesscaseid] <> null and [new_legacybusinesscaseid] <> ""
+        ),
+        Grouped = Table.Group(
+            NonBlankRequests,
+            {"new_legacybusinesscaseid"},
+            {
+                {"RequestCount", each Table.RowCount(_), Int64.Type},
+                {"RequestIds", each Text.Combine(List.Transform([new_systemintakeid], Text.From), ", "), type text}
+            }
+        ),
+        Duplicates = Table.SelectRows(Grouped, each [RequestCount] > 1)
+    in
+        Duplicates;
+shared ExistingSolutions =
+    let
+        Source = CommonDataService.Database(DataverseEnvironmentUrl),
+        Solutions = Source{[Schema = "dbo", Item = "cr69a_businesscasesolution"]}[Data],
+        SelectedColumns = Table.SelectColumns(
+            Solutions, {"cr69a_businesscasesolutionid", "new_request", "cr69a_solution_type"}, MissingField.Error
+        )
+    in
+        SelectedColumns;
+shared EstimatedLifecycleCostsWithRequests =
+    let
+        Joined = Table.NestedJoin(
+            EstimatedLifecycleCosts,
+            {"LegacyBusinessCaseId"},
+            ExistingRequests,
+            {"new_legacybusinesscaseid"},
+            "RequestMatch",
+            JoinKind.LeftOuter
+        ),
+        Expanded = Table.ExpandTableColumn(Joined, "RequestMatch", {"new_systemintakeid"}, {"new_systemintakeid"})
+    in
+        Expanded;
+shared EstimatedLifecycleCostsWithoutRequest =
+    let
+        MissingRequests = Table.SelectRows(EstimatedLifecycleCostsWithRequests, each [new_systemintakeid] = null)
+    in
+        MissingRequests;
+shared EstimatedLifecycleCostsWithSolutions =
+    let
+        MatchedRequests = Table.SelectRows(EstimatedLifecycleCostsWithRequests, each [new_systemintakeid] <> null),
+        Joined = Table.NestedJoin(
+            MatchedRequests,
+            {"new_systemintakeid", "solution_type_dataverse"},
+            ExistingSolutions,
+            {"new_request", "cr69a_solution_type"},
             "SolutionMatch",
             JoinKind.LeftOuter
         ),
-
-    // Keep only rows where no Solution was matched
-    Unmatched =
-        Table.SelectRows(
-            Joined,
-            each Table.IsEmpty([SolutionMatch])
-        ),
-
-    // Optional: Only keep a few columns to make it easier to read
-    Preview =
-        Table.SelectColumns(
-            Unmatched,
-            {
-                "LegacyBusinessCaseId",
-                "solution_type_dataverse",
-                "cr69a_caseid",
-                "cr69a_businesscase",
-                "cr69a_phase",
-                "cr69a_year",
-                "cr69a_cost"
-            },
-            MissingField.Ignore
+        Expanded = Table.ExpandTableColumn(
+            Joined, "SolutionMatch", {"cr69a_businesscasesolutionid"}, {"cr69a_businesscasesolutionid"}
         )
-in
-    Unmatched;
-shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+    in
+        Expanded;
+shared EstimatedLifecycleCostsWithoutSolution =
+    let
+        MissingSolutions = Table.SelectRows(
+            EstimatedLifecycleCostsWithSolutions, each [cr69a_businesscasesolutionid] = null
+        )
+    in
+        MissingSolutions;
+shared Query =
+    let
+        ValidatedEstimatedLifecycleCosts =
+            if Table.RowCount(InvalidCostRows) > 0 then
+                error
+                    "One or more grouped fiscal year costs exceeds the Dataverse currency maximum. Review InvalidCostRows before loading solution costs."
+            else if Table.RowCount(DuplicateRequestLegacyBusinessCaseIds) > 0 then
+                error
+                    "One or more legacy business case IDs maps to multiple Requests. Review DuplicateRequestLegacyBusinessCaseIds before loading solution costs."
+            else if Table.RowCount(EstimatedLifecycleCostsWithoutRequest) > 0 then
+                error
+                    "One or more lifecycle cost groups could not be matched to a Request. Review EstimatedLifecycleCostsWithoutRequest before loading solution costs."
+            else if Table.RowCount(EstimatedLifecycleCostsWithoutSolution) > 0 then
+                error
+                    "One or more lifecycle cost groups could not be matched to a Solution. Review EstimatedLifecycleCostsWithoutSolution before loading solution costs."
+            else
+                EstimatedLifecycleCostsWithSolutions,
+        UpdateColumns = Table.SelectColumns(
+            ValidatedEstimatedLifecycleCosts,
+            {
+                "cr69a_businesscasesolutionid",
+                "new_fy1costperyear",
+                "new_fy2costperyear",
+                "new_fy3costperyear",
+                "new_fy4costperyear",
+                "new_fy5costperyear"
+            }
+        )
+    in
+        UpdateColumns;
+shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [
+    IsParameterQuery = true,
+    IsParameterQueryRequired = false,
+    Type = type text
+];

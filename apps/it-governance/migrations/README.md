@@ -36,6 +36,21 @@ DEV dataflows currently have duplicate display names.
 
 `dataflows:check` verifies the pulled `./dataflows` files match Dataverse.
 
+## Estimated Lifecycle Costs
+
+The EASI `estimated_lifecycle_costs` rows are migrated into fiscal-year cost
+fields on Business Case Solution records. The old EASI shape has one row per
+business case, solution, phase, and year; the Power Platform shape stores one
+currency value per solution fiscal year. Migration therefore sums all phases for
+the same business case, solution, and fiscal year.
+
+Costs are treated as dollar values, not cents. The FY target fields are
+Dataverse currency fields, so grouped values must stay within Dataverse's money
+range of +/- 922,337,203,685,477. The `06-create-estimated-lifecycle-costs.m`
+dataflow exposes `InvalidCostRows` and fails the final update query if any FY
+cost exceeds that limit. Do not write to `new_systemtotalcost`; it is a
+calculated field.
+
 TODO
 Review Data Migration - move required data from intake requests to Reviews.
 CEDAR systems need some sort of connection, a representation in dev, and then higher environments.

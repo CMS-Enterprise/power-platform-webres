@@ -4,10 +4,19 @@
     <meta charset="utf-8" />
     <title>Next Steps</title>
     <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-card-radius: 12px;
+        --itgov-card-border: rgba(0, 0, 0, 0.08);
+        --itgov-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --itgov-info-bg: #eff6fc;
+        --itgov-info-border: #5c9bd5;
+      }
+
       body {
-        font-family: "Segoe UI", Arial, sans-serif;
-        color: #242424;
-        background: #ffffff;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--itgov-text);
+        background: transparent;
         line-height: 1.5;
         margin: 0;
       }
@@ -31,31 +40,26 @@
         font-size: 14px;
       }
 
-      .info-banner {
+      .helper-card {
+        border-radius: var(--itgov-card-radius);
+        padding: 16px 18px;
+        box-shadow: var(--itgov-card-shadow);
+        border: 1px solid var(--itgov-card-border);
+      }
+
+      .helper-card--info {
+        background: var(--itgov-info-bg);
+        border-color: var(--itgov-info-border);
+      }
+
+      .helper-title {
         display: flex;
         gap: 12px;
         align-items: flex-start;
-        background: #e8f3f8;
-        border-left: 4px solid #00b7c3;
-        padding: 14px 16px;
-      }
-
-      .info-banner .icon {
+        margin: 0;
         font-size: 16px;
-        line-height: 1.2;
+        font-weight: 600;
         color: #1f1f1f;
-        margin-top: 1px;
-      }
-
-      .muted-label {
-        font-size: 14px;
-        margin-bottom: 4px;
-      }
-
-      .muted-date {
-        font-size: 14px;
-        color: #6b6b6b;
-        margin-bottom: 8px;
       }
 
       ul {
@@ -84,35 +88,18 @@
         font-weight: 500;
       }
 
-      .callout-card {
-        margin-top: 32px;
-        background: #dff1f7;
-        border: 1px solid #8fd3e8;
-        border-radius: 2px;
-        padding: 18px 18px 16px 18px;
-        max-width: 390px;
-      }
-
-      .callout-card h3 {
-        margin: 0 0 10px 0;
-        font-size: 16px;
-        font-weight: 600;
-        color: #1f1f1f;
-      }
-
-      .callout-card p {
-        margin: 0;
-      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="info-banner">
-        <div class="icon">ℹ️</div>
-        <div>
-          The Governance Review Board (GRB) and Governance Review Team (GRT)
-          recommend that you complete the following next steps as part of the
-          Governance Review process and your ongoing project.
+      <div class="helper-card helper-card--info" role="status" aria-live="polite">
+        <div class="helper-title">
+          <span aria-hidden="true">ℹ️</span>
+          <span>
+            The Governance Review Board (GRB) and Governance Review Team (GRT)
+            recommend that you complete the following next steps as part of the
+            Governance Review process and your ongoing project.
+          </span>
         </div>
       </div>
     </div>

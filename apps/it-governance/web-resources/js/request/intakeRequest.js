@@ -2,6 +2,8 @@ const BPF_STAGES = {
   DRAFT: 971270006,
   INTAKE_REQUEST_REVIEW: 971270000,
   DRAFT_BUSINESS_CASE: 971270001,
+  // Deprecated scheduling stages are hidden from Admins, but still route to
+  // their meeting pages for existing records that may have legacy values.
   SCHEDULE_GRT_MEETING: 100000001,
   GRT_MEETING: 971270002,
   FINAL_BUSINESS_CASE: 971270003,

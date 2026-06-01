@@ -85,8 +85,12 @@
         DRAFT: 971270006,
         INTAKE_REQUEST_REVIEW: 971270000,
         DRAFT_BUSINESS_CASE: 971270001,
+        // Deprecated scheduling steps are hidden from Admins, but keep them
+        // routed for existing records that may still have the legacy values.
+        SCHEDULE_GRT_MEETING: 100000001,
         GRT_MEETING: 971270002,
         FINAL_BUSINESS_CASE: 971270003,
+        SCHEDULE_GRB_REVIEW: 100000002,
         GRB_REVIEW: 971270004,
         FINISHED: 971270009,
       };
@@ -407,7 +411,10 @@
           return true;
         }
 
-        if (currentStatus === PROCESS_STEPS.GRT_MEETING) {
+        if (
+          currentStatus === PROCESS_STEPS.SCHEDULE_GRT_MEETING ||
+          currentStatus === PROCESS_STEPS.GRT_MEETING
+        ) {
           renderForCurrentState("grt-meeting", { grtScheduled, grtMeetingDate });
           return true;
         }
@@ -421,7 +428,10 @@
           return true;
         }
 
-        if (currentStatus === PROCESS_STEPS.GRB_REVIEW) {
+        if (
+          currentStatus === PROCESS_STEPS.SCHEDULE_GRB_REVIEW ||
+          currentStatus === PROCESS_STEPS.GRB_REVIEW
+        ) {
           renderForCurrentState("grb-review", { grbScheduled, grbMeetingDate });
           return true;
         }

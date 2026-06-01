@@ -150,16 +150,27 @@
 
       const result = await Xrm.Navigation.openForm(formOptions, parameters);
       const saveParentBeforeRefresh = !!result?.savedEntityReference;
+      const parentHasUnsavedChanges =
+        formContext.data.entity.getIsDirty?.() || false;
 
       // Refresh after the quick create closes so the host form picks up any
-      // side effects even when the dialog closes without returning a saved ref.
+      // side effects. If the dialog was canceled and the parent form is dirty,
+      // skip refresh(false) so unsaved parent edits are not discarded.
       console.log(
         "[openActivityLogQuickCreate] quick create closed, refreshing parent form",
         {
           savedEntityReference: result?.savedEntityReference || null,
           saveParentBeforeRefresh,
+          parentHasUnsavedChanges,
         },
       );
+      if (!saveParentBeforeRefresh && parentHasUnsavedChanges) {
+        console.log(
+          "[openActivityLogQuickCreate] skipping parent refresh because quick create did not save and parent form has unsaved changes",
+        );
+        return;
+      }
+
       await formContext.data.refresh(saveParentBeforeRefresh);
       await refreshEmbeddedWebResources(formContext);
     } catch (error) {

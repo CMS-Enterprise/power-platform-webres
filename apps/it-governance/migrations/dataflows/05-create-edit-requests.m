@@ -1,83 +1,124 @@
 section Section1;
-shared cr69a_systemintakestagingeditrequests = let
-    Source = CommonDataService.Database(DataverseEnvironmentUrl),
-    DataSource = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingeditrequests"]}[Data],
-    ChoiceSpecs = {
-        [
-            source = "cr69a_targetform",
-            dest = "target_form_dataverse_format",
-            map = [
-                NO_TARGET_PROVIDED = 971270003,
-                INTAKE_REQUEST = 971270000,
-                DRAFT_BUSINESS_CASE = 971270001,
-                FINAL_BUSINESS_CASE = 971270002
+
+shared cr69a_systemintakestagingeditrequests =
+    let
+        Source = CommonDataService.Database(DataverseEnvironmentUrl),
+        DataSource = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingeditrequests"]}[Data],
+        ChoiceSpecs = {
+            [
+                source = "cr69a_targetform",
+                dest = "target_form_dataverse_format",
+                map = [
+                    NO_TARGET_PROVIDED = 971270003,
+                    INTAKE_REQUEST = 971270000,
+                    DRAFT_BUSINESS_CASE = 971270001,
+                    FINAL_BUSINESS_CASE = 971270002
+                ]
             ]
-        ]
-    },
-    NormalizeChoiceKey = (v as any) as nullable text =>
-        if v = null then
-            null
-        else
+        },
+        NormalizeChoiceKey = (v as any) as nullable text =>
+            if v = null then
+                null
+            else
+                let
+                    t0 = Text.From(v),
+                    t1 = Text.Upper(Text.Trim(t0)),
+                    t2 = Text.Replace(t1, " ", "_"),
+                    t3 = Text.Replace(t2, "(", ""),
+                    t4 = Text.Replace(t3, ")", ""),
+                    t5 = Text.Replace(t4, "-", "_"),
+                    t6 = Text.Replace(t5, "/", "_")
+                in
+                    t6,
+        GetOptionalField = (row as record, fieldName as text) as any =>
+            if Record.HasFields(row, fieldName) then
+                Record.Field(row, fieldName)
+            else
+                null,
+        TargetFormTitle = (targetForm as any) as text =>
             let
-                t0 = Text.From(v),
-                t1 = Text.Upper(Text.Trim(t0)),
-                t2 = Text.Replace(t1, " ", "_"),
-                t3 = Text.Replace(t2, "(", ""),
-                t4 = Text.Replace(t3, ")", ""),
-                t5 = Text.Replace(t4, "-", "_"),
-                t6 = Text.Replace(t5, "/", "_")
+                key = NormalizeChoiceKey(targetForm)
             in
-                t6,
-    EnableQA = false,
-    // Apply all choice mappings starting from the actual table
-    ApplyAll = List.Accumulate(
-        ChoiceSpecs,
-        DataSource,
-        // 🔹 start from your staging table, not Source
-        (state as table, spec as record) =>
+                if key = null then
+                    "General Feedback"
+                else if key = "INTAKE_REQUEST" then
+                    "Intake Request"
+                else if key = "DRAFT_BUSINESS_CASE" then
+                    "Draft Business Case"
+                else if key = "FINAL_BUSINESS_CASE" then
+                    "Final Business Case"
+                else
+                    "General Feedback",
+        BuildEditRequestName = (row as record) as text =>
             let
-                src = spec[source],
-                dest = spec[dest],
-                map = spec[map],
-                rawCol = src & "_raw",
-                // 1) Add raw column preserving original value as text
-                WithRaw = Table.AddColumn(
-                    state,
-                    rawCol,
-                    each
-                        let
-                            original = try Record.Field(_, src) otherwise null
-                        in
-                            if original = null then
-                                null
-                            else
-                                Text.From(original),
-                    type text
-                ),
-                // 2) Add Dataverse choice column using normalized key
-                WithChoice = Table.AddColumn(
-                    WithRaw,
-                    dest,
-                    each
-                        let
-                            raw = Record.Field(_, rawCol), key = NormalizeChoiceKey(raw)
-                        in
-                            if key = null then
-                                null
-                            else if Record.HasFields(map, key) then
-                                Record.Field(map, key)
-                            else
-                                null,
-                    Int64.Type
-                )
+                rawTargetForm = GetOptionalField(row, "cr69a_targetform_raw"),
+                targetForm = if rawTargetForm = null then GetOptionalField(row, "cr69a_targetform") else rawTargetForm,
+                formTitle = TargetFormTitle(targetForm)
             in
-                WithChoice
-    ),
-    // Return the transformed table
-    Custom = ApplyAll,
-  #"Filtered rows" = Table.SelectRows(Custom, each [cr69a_feedbacktype] = "REQUESTER"),
-  #"From Value" = Table.FromValue(#"Filtered rows"),
-  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
-in
-    #"Remove Columns";
-shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+                "Edit Request - " & formTitle,
+        EnableQA = false,
+        // Apply all choice mappings starting from the actual table
+        ApplyAll = List.Accumulate(
+            ChoiceSpecs,
+            DataSource,
+            // 🔹 start from your staging table, not Source
+            (state as table, spec as record) =>
+                let
+                    src = spec[source],
+                    dest = spec[dest],
+                    map = spec[map],
+                    rawCol = src & "_raw",
+                    // 1) Add raw column preserving original value as text
+                    WithRaw = Table.AddColumn(
+                        state,
+                        rawCol,
+                        each
+                            let
+                                original = try Record.Field(_, src) otherwise null
+                            in
+                                if original = null then
+                                    null
+                                else
+                                    Text.From(original),
+                        type text
+                    ),
+                    // 2) Add Dataverse choice column using normalized key
+                    WithChoice = Table.AddColumn(
+                        WithRaw,
+                        dest,
+                        each
+                            let
+                                raw = Record.Field(_, rawCol), key = NormalizeChoiceKey(raw)
+                            in
+                                if key = null then
+                                    null
+                                else if Record.HasFields(map, key) then
+                                    Record.Field(map, key)
+                                else
+                                    null,
+                        Int64.Type
+                    )
+                in
+                    WithChoice
+        ),
+        #"Removed existing generated name" = Table.RemoveColumns(ApplyAll, {"cr69a_name"}, MissingField.Ignore),
+        #"Added generated name" = Table.AddColumn(
+            #"Removed existing generated name", "cr69a_name", each BuildEditRequestName(_), type text
+        ),
+        // Return the transformed table
+        Custom = #"Added generated name",
+        #"Filtered rows" = Table.SelectRows(Custom, each [cr69a_feedbacktype] = "REQUESTER"),
+        #"From Value" = Table.FromValue(#"Filtered rows"),
+        #"Remove Columns" = Table.RemoveColumns(
+            #"From Value",
+            Table.ColumnsOfType(
+                #"From Value", {type table, type record, type list, type nullable binary, type binary, type function}
+            )
+        )
+    in
+        #"Remove Columns";
+shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [
+    IsParameterQuery = true,
+    IsParameterQueryRequired = false,
+    Type = type text
+];

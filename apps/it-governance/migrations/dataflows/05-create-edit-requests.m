@@ -1,30 +1,19 @@
-let
-    Source = CommonDataService.Database("icpg-dev.crm9.dynamics.com"),
-    #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingdocument"]}[Data],
+section Section1;
+shared cr69a_systemintakestagingeditrequests = let
+    Source = CommonDataService.Database(DataverseEnvironmentUrl),
+    DataSource = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingeditrequests"]}[Data],
     ChoiceSpecs = {
         [
-            source = "cr69a_documenttype",
-            dest = "document_type_dataverse_format",
+            source = "cr69a_targetform",
+            dest = "target_form_dataverse_format",
             map = [
-                SOO_SOW = 971270000,
-                ACQUISITION_PLAN_OR_STRATEGY = 971270001,
-                DRAFT_IGCE = 971270002,
-                REQUEST_FOR_ADDITIONAL_FUNDING = 971270003,
-                SOFTWARE_BILL_OF_MATERIALS = 971270004,
-                MEETING_MINUTES = 971270005,
-                OTHER = 971270006
-            ]
-        ],
-        [
-            source = "cr69a_uploaderrole",
-            dest = "uploader_role_dataverse_format",
-            map = [
-                REQUESTER = 971270000,
-                ADMIN = 971270001
+                NO_TARGET_PROVIDED = 971270003,
+                INTAKE_REQUEST = 971270000,
+                DRAFT_BUSINESS_CASE = 971270001,
+                FINAL_BUSINESS_CASE = 971270002
             ]
         ]
     },
-    // Helper: normalize source text -> enum key
     NormalizeChoiceKey = (v as any) as nullable text =>
         if v = null then
             null
@@ -43,7 +32,7 @@ let
     // Apply all choice mappings starting from the actual table
     ApplyAll = List.Accumulate(
         ChoiceSpecs,
-        #"Navigation 1",
+        DataSource,
         // 🔹 start from your staging table, not Source
         (state as table, spec as record) =>
             let
@@ -85,6 +74,10 @@ let
                 WithChoice
     ),
     // Return the transformed table
-    Custom = ApplyAll
+    Custom = ApplyAll,
+  #"Filtered rows" = Table.SelectRows(Custom, each [cr69a_feedbacktype] = "REQUESTER"),
+  #"From Value" = Table.FromValue(#"Filtered rows"),
+  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
 in
-    Custom
+    #"Remove Columns";
+shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];

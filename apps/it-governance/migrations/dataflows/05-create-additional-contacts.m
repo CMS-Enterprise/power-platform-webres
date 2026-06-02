@@ -1,6 +1,8 @@
-let
-    Source = CommonDataService.Database("icpg-dev.crm9.dynamics.com"),
+section Section1;
+shared cr69a_systemintakestagingcontact = let
+    Source = CommonDataService.Database(DataverseEnvironmentUrl),
     #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingcontact"]}[Data],
+
     // =========================================
     // Choice mapping specs
     // =========================================
@@ -47,7 +49,7 @@ let
                 OFFICE_OF_ENTERPRISE_DATA_AND_ANALYTICS_OEDA = 971270015,
                 OFFICE_OF_EQUAL_OPPORTUNITY_AND_CIVIL_RIGHTS = 971270016,
                 OFFICE_OF_HUMAN_CAPITAL = 971270017,
-                OFFICE_OF_MINORITY_HEALTH_OMH = 971270018,
+                OFFICE_OF_MINORITY_HEALTH_OMH = 971270018,   // <-- fixed typo
                 OFFICE_OF_PROGRAM_OPERATIONS_AND_LOCAL_ENGAGEMENT_OPOLE = 971270019,
                 OFFICE_OF_SECURITY_FACILITIES_AND_LOGISTICS_OPERATIONS_OSFLO = 971270020,
                 OFFICE_OF_STRATEGIC_OPERATIONS_AND_REGULATORY_AFFAIRS_OSORA = 971270021,
@@ -64,6 +66,7 @@ let
             ]
         ]
     },
+
     // =========================================
     // Helper: normalize source text -> enum key
     // =========================================
@@ -81,6 +84,7 @@ let
                 t6 = Text.Replace(t5, "/", "_")
             in
                 t6,
+
     // =========================================
     // Boolean cleaner
     // "TRUE", "Yes", "1" -> true
@@ -94,12 +98,10 @@ let
             let
                 t = Text.Upper(Text.Trim(Text.From(v)))
             in
-                if List.Contains({"TRUE", "T", "YES", "Y", "1"}, t) then
-                    true
-                else if List.Contains({"FALSE", "F", "NO", "N", "0"}, t) then
-                    false
-                else
-                    null,
+                if List.Contains({"TRUE","T","YES","Y","1"}, t) then true
+                else if List.Contains({"FALSE","F","NO","N","0"}, t) then false
+                else null,
+
     // =========================================
     // Multi-select helpers
     // =========================================
@@ -116,6 +118,7 @@ let
                 nonEmpty = List.Select(parts, each _ <> "")
             in
                 nonEmpty,
+
     MapMultiSelectToDataverseString = (raw as any, map as record) as nullable text =>
         let
             labels = ParseMultiSelectLabels(raw),
@@ -129,6 +132,7 @@ let
             )
         in
             result,
+
     // =========================================
     // Apply all choice mappings
     // =========================================
@@ -141,30 +145,27 @@ let
                 dest = spec[dest],
                 map = spec[map],
                 rawCol = src & "_raw",
+
                 WithRaw = Table.AddColumn(
                     state,
                     rawCol,
                     each
-                        let
-                            original = try Record.Field(_, src) otherwise null
-                        in
-                            if original = null then
-                                null
-                            else
-                                Text.From(original),
+                        let original = try Record.Field(_, src) otherwise null
+                        in if original = null then null else Text.From(original),
                     type text
                 ),
+
                 WithChoice = Table.AddColumn(
-                    WithRaw, dest, each MapMultiSelectToDataverseString(Record.Field(_, rawCol), map), type text
+                    WithRaw,
+                    dest,
+                    each MapMultiSelectToDataverseString(Record.Field(_, rawCol), map),
+                    type text
                 )
             in
                 WithChoice
     ),
-    // =========================================
-    // Apply boolean cleaning
-    // =========================================
-    WithBooleans = Table.TransformColumns(
-        ApplyAll, {{"cr69a_isrequester", each NormalizeBoolean(_), type logical}}, MissingField.Ignore
-    )
+  #"From Value" = Table.FromValue(ApplyAll),
+  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
 in
-    WithBooleans
+    #"Remove Columns";
+shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];

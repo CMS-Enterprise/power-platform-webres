@@ -1,5 +1,0 @@
-let
-  Source = StagingRaw,
-  #"Filtered rows" = Table.SelectRows(Source, each [cr69a_lcid] <> null and [cr69a_lcid] <> "")
-in
-  #"Filtered rows"

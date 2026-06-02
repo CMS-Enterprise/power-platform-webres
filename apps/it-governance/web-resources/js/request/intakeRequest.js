@@ -2,6 +2,8 @@ const BPF_STAGES = {
   DRAFT: 971270006,
   INTAKE_REQUEST_REVIEW: 971270000,
   DRAFT_BUSINESS_CASE: 971270001,
+  // Deprecated scheduling stages are hidden from Admins, but still route to
+  // their meeting pages for existing records that may have legacy values.
   SCHEDULE_GRT_MEETING: 100000001,
   GRT_MEETING: 971270002,
   FINAL_BUSINESS_CASE: 971270003,
@@ -13,6 +15,10 @@ const BPF_STAGES = {
   FINISHED: 971270009,
   REQUEST_TYPE: 971270010,
   GOVERNANCE_PROCESS_STEPS: 971270011,
+};
+
+const REQUEST_STATUS = {
+  CLOSED: 100000000,
 };
 
 const ALL_SECTIONS = [
@@ -27,11 +33,14 @@ const ALL_SECTIONS = [
   "section_request_submit",
   "section_business_case",
   "section_grt_meeting",
-  "section_final_business_case_review",
   "section_grb_review",
   "section_awaiting_decision",
   "section_decision",
   "section_intake_request_complete",
+  "section_intake_request_decision",
+  "section_complete_lcid",
+  "section_complete_next_steps",
+  "section_request_complete_questsions",
 ];
 
 //Use this map like building blocks.
@@ -51,14 +60,12 @@ const PAGES = {
   ],
   BUSINESS_CASE: ["section_progress_tracker", "section_business_case"],
   GRT_MEETING: ["section_progress_tracker", "section_grt_meeting"],
-  FINAL_BUSINESS_CASE: [
-    "section_progress_tracker",
-    "section_final_business_case_review",
-  ],
+  FINAL_BUSINESS_CASE: ["section_progress_tracker", "section_business_case"],
   GRB_REVIEW: ["section_progress_tracker", "section_grb_review"],
   AWAITING_DECISION: ["section_progress_tracker", "section_awaiting_decision"],
   DECISION: ["section_progress_tracker", "section_decision"],
   FINISHED: [
+    "section_decision",
     "section_intake_request_decision",
     "section_complete_lcid",
     "section_complete_next_steps",
@@ -118,12 +125,14 @@ function onLoad(executionContext) {
     lockAllFields(formContext);
   }
   updateProgressTracker(formContext);
+  updateRequestHelper(formContext);
 }
 
 function onAdminGovTaskListChange(executionContext) {
   const formContext = executionContext.getFormContext();
   showHideFields(formContext);
   updateProgressTracker(formContext);
+  updateRequestHelper(formContext);
 }
 
 function onSoftwareProductsChange(executionContext) {
@@ -235,17 +244,29 @@ function showHideFields(formContext) {
   const pageName = isNew ? "REQUEST_TYPE" : STAGE_TO_PAGE[stage] || "INTAKE";
 
   showPage(formContext, pageName);
+  updateBusinessCaseSectionContent(formContext, pageName);
 
   updateSoftwareAcquisitionVisibility(formContext);
 
+  if (shouldLockRequest(formContext, pageName)) {
+    lockAllFields(formContext);
+  }
+}
+
+function shouldLockRequest(formContext, pageName) {
   const readyForReview = formContext
     .getAttribute("cr69a_readyforreview")
     ?.getValue();
-  if (readyForReview) return;
-
-  if (pageName === "FINISHED") {
-    lockAllFields(formContext);
+  if (readyForReview) {
+    return true;
   }
+
+  const requestStatus = formContext.getAttribute("cr69a_status")?.getValue();
+  if (requestStatus === REQUEST_STATUS.CLOSED) {
+    return true;
+  }
+
+  return pageName === "FINISHED";
 }
 
 function showPage(formContext, pageName) {
@@ -259,6 +280,42 @@ function showPage(formContext, pageName) {
     if (!section) return console.warn(`Section not found: ${sectionName}`);
     section.setVisible(visibleSections.has(sectionName));
   });
+}
+
+function updateBusinessCaseSectionContent(formContext, pageName) {
+  const isBusinessCasePage = pageName === "BUSINESS_CASE";
+  const isFinalBusinessCasePage = pageName === "FINAL_BUSINESS_CASE";
+
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_business_case_review_header",
+    isBusinessCasePage,
+  );
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_business_case_submit",
+    isBusinessCasePage,
+  );
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_final_business_case_review_header",
+    isFinalBusinessCasePage,
+  );
+  setBusinessCaseControlVisible(
+    formContext,
+    "WebResource_final_business_case_submit",
+    isFinalBusinessCasePage,
+  );
+}
+
+function setBusinessCaseControlVisible(formContext, controlName, visible) {
+  const control = formContext.getControl(controlName);
+  if (!control) {
+    console.warn(`Control not found: ${controlName}`);
+    return;
+  }
+
+  control.setVisible(visible);
 }
 
 function lockAllFields(formContext) {
@@ -275,7 +332,12 @@ function updateProgressTracker(formContext, attempt = 0) {
     .get("section_progress_tracker")
     ?.getVisible();
 
-  if (!trackerSectionVisible) return;
+  if (!trackerSectionVisible) {
+    if (attempt < 20) {
+      setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
+    }
+    return;
+  }
 
   const statusValue = formContext
     .getAttribute("new_admingovernanceprocessstep")
@@ -284,23 +346,73 @@ function updateProgressTracker(formContext, attempt = 0) {
   const webResourceControl = formContext.getControl(
     "WebResource_progress_tracker",
   );
-  if (!webResourceControl || !statusValue) return;
+  if (!webResourceControl || !statusValue) {
+    if (attempt < 20) {
+      setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
+    }
+    return;
+  }
 
   webResourceControl.getContentWindow().then(
     (contentWindow) => {
       if (typeof contentWindow.updateProgress === "function") {
         contentWindow.updateProgress(statusValue);
-      } else if (attempt < 10) {
-        // web resource loaded but function not ready yet
-        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      }
+      if (typeof contentWindow.refreshProgressTracker === "function") {
+        contentWindow.refreshProgressTracker();
+      } else if (attempt < 20) {
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
       }
     },
     () => {
-      if (attempt < 10) {
-        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      if (attempt < 20) {
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
       }
     },
   );
+}
+
+function updateRequestHelper(formContext, attempt = 0) {
+  const controls = formContext?.ui?.controls;
+  if (!controls?.forEach) {
+    if (attempt < 20) {
+      setTimeout(() => updateRequestHelper(formContext, attempt + 1), 300);
+    }
+    return;
+  }
+
+  let foundRefreshHook = false;
+  const refreshTasks = [];
+
+  controls.forEach((control) => {
+    if (
+      !control ||
+      control.getControlType?.() !== "webresource" ||
+      typeof control.getContentWindow !== "function"
+    ) {
+      return;
+    }
+
+    refreshTasks.push(
+      control.getContentWindow().then(
+        (contentWindow) => {
+          if (typeof contentWindow.refreshRequestHelper === "function") {
+            foundRefreshHook = true;
+            contentWindow.refreshRequestHelper();
+          }
+        },
+        () => {
+          // Ignore inaccessible web resource windows during retries.
+        },
+      ),
+    );
+  });
+
+  Promise.allSettled(refreshTasks).then(() => {
+    if (!foundRefreshHook && attempt < 20) {
+      setTimeout(() => updateRequestHelper(formContext, attempt + 1), 300);
+    }
+  });
 }
 
 function clearCustomNotificationsOnSave(executionContext) {

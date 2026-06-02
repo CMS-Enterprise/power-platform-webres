@@ -36,15 +36,18 @@ function onDecisionChange(executionContext) {
 }
 
 function updateProgressTracker(formContext, attempt = 0) {
-  console.log("calling update progress tracker");
   const tab = formContext.ui.tabs.get("tab_request_home");
   const trackerSection = tab?.sections.get("section_progress_tracker");
   if (!trackerSection) {
-    console.error("Progress Tracker Section does not exist.");
+    if (attempt < 20) {
+      setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
+    }
     return;
   }
   if (!trackerSection?.getVisible()) {
-    console.error("Progress Tracker Section is not currently visible.");
+    if (attempt < 20) {
+      setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
+    }
     return;
   }
 
@@ -56,9 +59,9 @@ function updateProgressTracker(formContext, attempt = 0) {
     "WebResource_progress_tracker",
   );
   if (!webResourceControl || !statusValue) {
-    console.error(
-      "Cannot find Web Resource Control or the Admin Governance Task List field.",
-    );
+    if (attempt < 20) {
+      setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
+    }
     return;
   }
 
@@ -66,14 +69,16 @@ function updateProgressTracker(formContext, attempt = 0) {
     (contentWindow) => {
       if (typeof contentWindow.updateProgress === "function") {
         contentWindow.updateProgress(statusValue);
-      } else if (attempt < 10) {
-        // web resource loaded but function not ready yet
-        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      }
+      if (typeof contentWindow.refreshProgressTracker === "function") {
+        contentWindow.refreshProgressTracker();
+      } else if (attempt < 20) {
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
       }
     },
     () => {
-      if (attempt < 10) {
-        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 200);
+      if (attempt < 20) {
+        setTimeout(() => updateProgressTracker(formContext, attempt + 1), 300);
       }
     },
   );

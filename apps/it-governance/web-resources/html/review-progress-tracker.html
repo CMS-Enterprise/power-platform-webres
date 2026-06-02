@@ -46,7 +46,7 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin: 60px 20px 30px;
+        margin: 20px;
       }
 
       .progress-line {
@@ -151,10 +151,6 @@
   </head>
   <body>
     <div class="progress-container">
-      <div class="progress-header">
-        <h2>Request Progress</h2>
-      </div>
-
       <div class="progress-track">
         <div class="progress-line">
           <div class="progress-line-fill" id="progressFill"></div>
@@ -164,8 +160,13 @@
 
     <script>
       // Process steps configuration
+      const CURRENT_PROCESS_STATUS = "new_admingovernancetasklist";
+      const MAX_WAIT_MS = 15000;
+      const WAIT_INTERVAL_MS = 250;
+      let listenersRegistered = false;
+
       const processSteps = [
-        { label: "Draft", status: 971270006 },
+        { label: "Draft Intake Request", status: 971270006 },
         { label: "Intake Request Review", status: 971270000 },
         { label: "Draft Business Case", status: 971270001 },
         { label: "GRT Meeting", status: 971270002 },
@@ -179,6 +180,14 @@
         return urlParams.get(name);
       }
 
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, schema) {
+        return form ? form.getAttribute(schema) : null;
+      }
+
       function renderProgress(currentStatus) {
         const trackElement = document.querySelector(".progress-track");
         const existingSteps = trackElement.querySelectorAll(".step");
@@ -188,13 +197,14 @@
           (step) => step.status === currentStatus
         );
         if (currentStepIndex === -1) currentStepIndex = 0;
+        const isLastStepCurrent = currentStepIndex === processSteps.length - 1;
 
         // Create step elements
         processSteps.forEach((step, index) => {
           const stepElement = document.createElement("div");
           stepElement.className = "step";
 
-          if (index < currentStepIndex) {
+          if (index < currentStepIndex || (isLastStepCurrent && index === currentStepIndex)) {
             stepElement.classList.add("completed");
           } else if (index === currentStepIndex) {
             stepElement.classList.add("current");
@@ -210,8 +220,9 @@
 
         // Update progress line fill
         const progressFill = document.getElementById("progressFill");
-        const progressPercentage =
-          (currentStepIndex / (processSteps.length - 1)) * 100;
+        const progressPercentage = isLastStepCurrent
+          ? 100
+          : (currentStepIndex / (processSteps.length - 1)) * 100;
         progressFill.style.width = `${progressPercentage}%`;
       }
 
@@ -219,6 +230,55 @@
       window.updateProgress = function (newStatus) {
         renderProgress(newStatus);
       };
+
+      function updateFromParentForm() {
+        const form = getParentForm();
+        if (!form) return false;
+
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        const statusValue = statusAttr ? statusAttr.getValue() : null;
+        if (statusValue === null || statusValue === undefined) {
+          return false;
+        }
+
+        renderProgress(statusValue);
+        return true;
+      }
+
+      function scheduleStabilityRefreshes() {
+        [200, 800, 1800].forEach((delay) => {
+          window.setTimeout(updateFromParentForm, delay);
+        });
+      }
+
+      function waitForFormData(startTime = Date.now()) {
+        if (Date.now() - startTime > MAX_WAIT_MS) {
+          updateFromParentForm();
+          return;
+        }
+
+        const form = getParentForm();
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+
+        if (!form || !statusAttr) {
+          window.setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
+          return;
+        }
+
+        if (!listenersRegistered && statusAttr.addOnChange) {
+          statusAttr.addOnChange(updateFromParentForm);
+          listenersRegistered = true;
+        }
+
+        updateFromParentForm();
+        scheduleStabilityRefreshes();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        waitForFormData();
+      });
+
+      window.refreshProgressTracker = updateFromParentForm;
     </script>
   </body>
 </html>

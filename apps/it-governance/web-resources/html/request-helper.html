@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Helper</title>
+    <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-card-radius: 12px;
+        --itgov-card-border: rgba(0, 0, 0, 0.08);
+        --itgov-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --itgov-info-bg: #eff6fc;
+        --itgov-info-border: #5c9bd5;
+        --itgov-action-bg: #dceeff;
+        --itgov-action-border: #0078d4;
+        --itgov-wait-bg: #eef3f8;
+        --itgov-wait-border: #7f95ad;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: transparent;
+        color: var(--itgov-text);
+      }
+
+      .helper-card {
+        border-radius: var(--itgov-card-radius);
+        padding: 16px 18px;
+        box-shadow: var(--itgov-card-shadow);
+        border: 1px solid var(--itgov-card-border);
+      }
+
+      .helper-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .helper-body {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .helper-emphasis {
+        font-weight: 700;
+      }
+
+      .helper-card--info {
+        background: var(--itgov-info-bg);
+        border-color: var(--itgov-info-border);
+      }
+
+      .helper-card--action {
+        background: var(--itgov-action-bg);
+        border-color: var(--itgov-action-border);
+      }
+
+      .helper-card--wait {
+        background: var(--itgov-wait-bg);
+        border-color: var(--itgov-wait-border);
+      }
+
+      .icon {
+        font-size: 22px;
+        line-height: 1;
+      }
+    </style>
+    <script>
+      const READY_FOR_REVIEW = "cr69a_readyforreview";
+      const CURRENT_PROCESS_STATUS = "new_admingovernanceprocessstep";
+      const GRT_MEETING_DATE = "cr69a_grtmeetingdate";
+      const GRB_REVIEW_MEETING_DATE = "cr69a_grbreviewmeetingdate";
+      const DECISION = "easi_decision";
+      const MAX_WAIT_MS = 15000;
+      const WAIT_INTERVAL_MS = 250;
+      let listenersRegistered = false;
+
+      const PROCESS_STEPS = {
+        DRAFT: 971270006,
+        INTAKE_REQUEST_REVIEW: 971270000,
+        DRAFT_BUSINESS_CASE: 971270001,
+        // Deprecated scheduling steps are hidden from Admins, but keep them
+        // routed for existing records that may still have the legacy values.
+        SCHEDULE_GRT_MEETING: 100000001,
+        GRT_MEETING: 971270002,
+        FINAL_BUSINESS_CASE: 971270003,
+        SCHEDULE_GRB_REVIEW: 100000002,
+        GRB_REVIEW: 971270004,
+        FINISHED: 971270009,
+      };
+
+      const DECISIONS = {
+        ISSUE_LCID: 971270000,
+        NOT_AN_IT_GOV_REQUEST: 971270001,
+        NOT_APPROVED_BY_GRB: 971270002,
+        CLOSE_REQUEST: 971270003,
+      };
+
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getAttr(form, schema) {
+        return form ? form.getAttribute(schema) : null;
+      }
+
+      function formatMeetingDate(value) {
+        if (!value) return "";
+
+        const date = value instanceof Date ? value : new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "";
+        }
+
+        try {
+          return new Intl.DateTimeFormat(undefined, {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          }).format(date);
+        } catch {
+          return date.toLocaleDateString();
+        }
+      }
+
+      function setCardContent(cardState, iconText, titleText, bodyText) {
+        const card = document.getElementById("card");
+        const icon = document.getElementById("icon");
+        const title = document.getElementById("titleText");
+        const subtitle = document.getElementById("subtitleText");
+
+        if (!card || !icon || !title || !subtitle) return;
+
+        card.classList.remove(
+          "helper-card--info",
+          "helper-card--action",
+          "helper-card--wait",
+        );
+        card.classList.add(cardState);
+        icon.textContent = iconText;
+        title.textContent = titleText;
+        subtitle.textContent = bodyText;
+      }
+
+      function setCardHtmlContent(cardState, iconText, titleText, bodyHtml) {
+        const card = document.getElementById("card");
+        const icon = document.getElementById("icon");
+        const title = document.getElementById("titleText");
+        const subtitle = document.getElementById("subtitleText");
+
+        if (!card || !icon || !title || !subtitle) return;
+
+        card.classList.remove(
+          "helper-card--info",
+          "helper-card--action",
+          "helper-card--wait",
+        );
+        card.classList.add(cardState);
+        icon.textContent = iconText;
+        title.textContent = titleText;
+        subtitle.innerHTML = bodyHtml;
+      }
+
+      function renderMeetingState(type, context) {
+        if (type === "grt") {
+          if (context.grtScheduled) {
+            setCardHtmlContent(
+              "helper-card--wait",
+              "📅",
+              "Your GRT meeting has been scheduled",
+              "The Governance Admin Team has scheduled your GRT meeting" +
+                (context.grtMeetingDate
+                  ? ' for <span class="helper-emphasis">' +
+                    context.grtMeetingDate +
+                    "</span>"
+                  : "") +
+                ". Use the GRT Meeting section below to review the meeting details and prepare any requested materials.",
+            );
+            return;
+          }
+
+          setCardContent(
+            "helper-card--wait",
+            "⏳",
+            "Your GRT meeting will be scheduled",
+            "The Governance Admin Team is working with your team to schedule the GRT meeting. Watch the GRT Meeting section below for the meeting date and next steps.",
+          );
+          return;
+        }
+
+        if (context.grbScheduled) {
+          setCardHtmlContent(
+            "helper-card--wait",
+            "📅",
+            "Your GRB review has been scheduled",
+            "The Governance Admin Team has scheduled your GRB review" +
+              (context.grbMeetingDate
+                ? ' for <span class="helper-emphasis">' +
+                  context.grbMeetingDate +
+                  "</span>"
+                : "") +
+              ". Use the GRB Review section below to review the meeting details and prepare for the review.",
+          );
+          return;
+        }
+
+        setCardContent(
+          "helper-card--wait",
+          "⏳",
+          "Your GRB review will be scheduled",
+          "The Governance Admin Team is coordinating the GRB review schedule. Watch the GRB Review section below for the meeting date and any additional preparation guidance.",
+        );
+      }
+
+      function renderFinishedState(decision) {
+        if (decision === DECISIONS.ISSUE_LCID) {
+          setCardContent(
+            "helper-card--action",
+            "✅",
+            "Your request has been approved",
+            "A Life Cycle ID (LCID) has been issued for this request.",
+          );
+          return;
+        }
+
+        if (decision === DECISIONS.NOT_APPROVED_BY_GRB) {
+          setCardContent(
+            "helper-card--wait",
+            "❌",
+            "Your request was not approved",
+            "Review the decision details and next steps below. If additional updates are needed later, the Governance Admin Team can re-open the request.",
+          );
+          return;
+        }
+
+        if (decision === DECISIONS.NOT_AN_IT_GOV_REQUEST) {
+          setCardContent(
+            "helper-card--info",
+            "✖",
+            "This is not an IT Governance request",
+            "The Governance Team determined that this request does not need to continue through the IT Governance process.",
+          );
+          return;
+        }
+
+        if (decision === DECISIONS.CLOSE_REQUEST) {
+          setCardContent(
+            "helper-card--info",
+            "⚠️",
+            "This request has been closed",
+            "The Governance Team closed this request without issuing a decision.",
+          );
+          return;
+        }
+
+        setCardContent(
+          "helper-card--action",
+          "✅",
+          "This request is finished",
+          "This request has completed the current process. If additional updates are needed later, the Governance Admin Team can re-open it.",
+        );
+      }
+
+      // These form fields are the source of truth for helper state.
+      function renderForCurrentState(state, context = {}) {
+        if (state === "draft-requester") {
+          setCardContent(
+            "helper-card--info",
+            "📝",
+            "Complete your Intake Request",
+            "Fill out the request details below and use the submit section when you are ready to send the request forward.",
+          );
+          return;
+        }
+
+        if (state === "draft-admin") {
+          setCardContent(
+            "helper-card--wait",
+            "⏳",
+            "Your Intake Request is being reviewed",
+            "The Governance Admin Team is reviewing your Intake Request and will contact you if any updates or next steps are needed.",
+          );
+          return;
+        }
+
+        if (state === "intake-review") {
+          setCardContent(
+            "helper-card--wait",
+            "⏳",
+            "Your request is under review",
+            "The Governance Admin Team is reviewing your Intake Request and will contact you if any updates or next steps are needed.",
+          );
+          return;
+        }
+
+        if (state === "business-case-requester") {
+          setCardContent(
+            "helper-card--action",
+            "📝",
+            "Complete the Business Case",
+            "Fill out the Business Case section below, add at least one Solution, and submit the Business Case when you are ready for review. Draft a Business Case to communicate your business need, possible solutions and their associated costs. The Governance Team will review this business case and determine whether you are ready for a GRT meeting or GRB review.",
+          );
+          return;
+        }
+
+        if (state === "business-case-admin") {
+          setCardContent(
+            "helper-card--wait",
+            "⏳",
+            "Business Case submitted",
+            "The Governance Admin Team is reviewing your Business Case and Solutions. Wait for feedback or the next step in the process.",
+          );
+          return;
+        }
+
+        if (state === "grt-meeting") {
+          renderMeetingState("grt", context);
+          return;
+        }
+
+        if (state === "final-business-case-requester") {
+          setCardContent(
+            "helper-card--action",
+            "📝",
+            "Update the Final Business Case",
+            "Review any requested updates, revise the Business Case and Solutions in the Business Case section below, and resubmit when the changes are complete.",
+          );
+          return;
+        }
+
+        if (state === "final-business-case-admin") {
+          setCardContent(
+            "helper-card--wait",
+            "⏳",
+            "Final Business Case submitted",
+            "The Governance Admin Team is reviewing the updated Business Case and Solutions. Wait for feedback or the next step in the process.",
+          );
+          return;
+        }
+
+        if (state === "grb-review") {
+          renderMeetingState("grb", context);
+          return;
+        }
+
+        if (state === "finished") {
+          renderFinishedState(context.decision);
+          return;
+        }
+
+        setCardContent(
+          "helper-card--info",
+          "ℹ️",
+          "Request guidance",
+          "Step-specific guidance will appear here as the request moves through the governance process.",
+        );
+      }
+
+      function updateUI() {
+        const form = getParentForm();
+        if (!form) return false;
+
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        const readyAttr = getAttr(form, READY_FOR_REVIEW);
+        const grtMeetingDateAttr = getAttr(form, GRT_MEETING_DATE);
+        const grbReviewMeetingDateAttr = getAttr(form, GRB_REVIEW_MEETING_DATE);
+        const decisionAttr = getAttr(form, DECISION);
+        const currentStatus = statusAttr ? statusAttr.getValue() : null;
+        const readyForReview = !!(readyAttr && readyAttr.getValue());
+        const decision = decisionAttr ? decisionAttr.getValue() : null;
+        const grtMeetingDate = formatMeetingDate(
+          grtMeetingDateAttr && grtMeetingDateAttr.getValue(),
+        );
+        const grbMeetingDate = formatMeetingDate(
+          grbReviewMeetingDateAttr && grbReviewMeetingDateAttr.getValue(),
+        );
+        const grtScheduled = !!(
+          grtMeetingDateAttr && grtMeetingDateAttr.getValue()
+        );
+        const grbScheduled = !!(
+          grbReviewMeetingDateAttr && grbReviewMeetingDateAttr.getValue()
+        );
+
+        if (currentStatus === null || currentStatus === undefined) {
+          return false;
+        }
+
+        if (currentStatus === PROCESS_STEPS.DRAFT) {
+          renderForCurrentState(
+            readyForReview ? "draft-admin" : "draft-requester",
+          );
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.INTAKE_REQUEST_REVIEW) {
+          renderForCurrentState("intake-review");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.DRAFT_BUSINESS_CASE) {
+          renderForCurrentState(
+            readyForReview ? "business-case-admin" : "business-case-requester",
+          );
+          return true;
+        }
+
+        if (
+          currentStatus === PROCESS_STEPS.SCHEDULE_GRT_MEETING ||
+          currentStatus === PROCESS_STEPS.GRT_MEETING
+        ) {
+          renderForCurrentState("grt-meeting", { grtScheduled, grtMeetingDate });
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINAL_BUSINESS_CASE) {
+          renderForCurrentState(
+            readyForReview
+              ? "final-business-case-admin"
+              : "final-business-case-requester",
+          );
+          return true;
+        }
+
+        if (
+          currentStatus === PROCESS_STEPS.SCHEDULE_GRB_REVIEW ||
+          currentStatus === PROCESS_STEPS.GRB_REVIEW
+        ) {
+          renderForCurrentState("grb-review", { grbScheduled, grbMeetingDate });
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINISHED) {
+          renderForCurrentState("finished", { decision });
+          return true;
+        }
+
+        renderForCurrentState("default");
+        return true;
+      }
+
+      function scheduleStabilityRefreshes() {
+        [200, 800, 1800].forEach((delay) => {
+          window.setTimeout(updateUI, delay);
+        });
+      }
+
+      function waitForFormData(startTime = Date.now()) {
+        if (Date.now() - startTime > MAX_WAIT_MS) {
+          updateUI();
+          return;
+        }
+
+        const form = getParentForm();
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        const readyAttr = getAttr(form, READY_FOR_REVIEW);
+        const grtMeetingDateAttr = getAttr(form, GRT_MEETING_DATE);
+        const grbReviewMeetingDateAttr = getAttr(form, GRB_REVIEW_MEETING_DATE);
+        const decisionAttr = getAttr(form, DECISION);
+
+        if (!form || !statusAttr || !readyAttr) {
+          window.setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
+          return;
+        }
+
+        if (!listenersRegistered) {
+          if (statusAttr.addOnChange) {
+            statusAttr.addOnChange(function () {
+              updateUI();
+              scheduleStabilityRefreshes();
+            });
+          }
+          if (readyAttr.addOnChange) {
+            readyAttr.addOnChange(function () {
+              updateUI();
+              scheduleStabilityRefreshes();
+            });
+          }
+          if (grtMeetingDateAttr?.addOnChange) {
+            grtMeetingDateAttr.addOnChange(function () {
+              updateUI();
+              scheduleStabilityRefreshes();
+            });
+          }
+          if (grbReviewMeetingDateAttr?.addOnChange) {
+            grbReviewMeetingDateAttr.addOnChange(function () {
+              updateUI();
+              scheduleStabilityRefreshes();
+            });
+          }
+          if (decisionAttr?.addOnChange) {
+            decisionAttr.addOnChange(function () {
+              updateUI();
+              scheduleStabilityRefreshes();
+            });
+          }
+          listenersRegistered = true;
+        }
+
+        updateUI();
+        scheduleStabilityRefreshes();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        waitForFormData();
+      });
+
+      window.refreshRequestHelper = updateUI;
+    </script>
+  </head>
+
+  <body>
+    <div
+      id="card"
+      class="helper-card helper-card--info"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="helper-title">
+        <span id="icon" class="icon">ℹ️</span>
+        <span id="titleText">Loading…</span>
+      </div>
+      <p id="subtitleText" class="helper-body"></p>
+    </div>
+  </body>
+</html>

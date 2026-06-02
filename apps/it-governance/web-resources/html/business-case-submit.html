@@ -6,56 +6,103 @@
     <title>Business Case Header</title>
 
     <style>
-      /* Base */
+      :root {
+        --itgov-text: #323130;
+        --itgov-surface: transparent;
+        --itgov-primary: #0078d4;
+        --itgov-primary-hover: #106ebe;
+        --itgov-primary-text: #ffffff;
+        --itgov-radius-md: 8px;
+        --itgov-alert-radius: 8px;
+        --itgov-success-bg: #dff6dd;
+        --itgov-success-border: #107c10;
+        --itgov-success-text: #0b5a0b;
+        --itgov-warning-bg: #fff4ce;
+        --itgov-warning-border: #ffbe2e;
+        --itgov-warning-text: #323130;
+        --itgov-error-bg: #fde7e9;
+        --itgov-error-border: #a80000;
+        --itgov-error-text: #a80000;
+      }
+
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         font-size: 14px;
         line-height: 1.428571429;
-        color: #323130;
-        background-color: #faf9f8;
+        color: var(--itgov-text);
+        background-color: var(--itgov-surface);
         margin: 0;
         padding: 12px;
       }
 
-      /* Primary button */
+      .layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .layout-main {
+        flex: 1 1 220px;
+        min-width: 0;
+      }
+
+      .layout-actions {
+        flex: 0 0 auto;
+        align-self: flex-start;
+        text-align: right;
+      }
+
+      .layout .alert {
+        margin: 0 0 12px 0;
+      }
+
+      .layout .alert:last-child {
+        margin-bottom: 0;
+      }
+
       .btn-primary {
-        background-color: #0078d4;
-        border: 1px solid #0078d4;
-        color: #ffffff;
+        background-color: var(--itgov-primary);
+        border: 1px solid var(--itgov-primary);
+        color: var(--itgov-primary-text);
         padding: 8px 16px;
         font-size: 14px;
         font-weight: 400;
-        border-radius: 5px;
+        border-radius: var(--itgov-radius-md);
         cursor: pointer;
         transition:
           background-color 0.15s ease-in-out,
           border-color 0.15s ease-in-out;
       }
       .btn-primary:hover {
-        background-color: #106ebe;
-        border-color: #106ebe;
+        background-color: var(--itgov-primary-hover);
+        border-color: var(--itgov-primary-hover);
       }
       .btn-primary:focus {
-        outline: 1px solid #ffffff;
+        outline: 1px solid var(--itgov-primary-text);
         outline-offset: 2px;
-        box-shadow: 0 0 0 2px #0078d4;
+        box-shadow: 0 0 0 2px var(--itgov-primary);
       }
 
-      /* Success alert */
       .alert {
         padding: 12px 16px;
         margin: 12px 0;
-        border-radius: 4px;
-        border-left: 6px solid #107c10;
-        background-color: #dff6dd;
-        color: #0b5a0b;
+        border-radius: var(--itgov-alert-radius);
+        border-left: 6px solid var(--itgov-success-border);
+        background-color: var(--itgov-success-bg);
+        color: var(--itgov-success-text);
       }
 
-      /* Error alert */
       .alert-error {
-        border-left-color: #a80000;
-        background-color: #fde7e9;
-        color: #a80000;
+        border-left-color: var(--itgov-error-border);
+        background-color: var(--itgov-error-bg);
+        color: var(--itgov-error-text);
+      }
+
+      .alert-warning {
+        border-left-color: var(--itgov-warning-border);
+        background-color: var(--itgov-warning-bg);
+        color: var(--itgov-warning-text);
       }
 
       /* Hide/show utility */
@@ -63,18 +110,50 @@
         display: none;
       }
 
+      .missing-fields-list {
+        margin: 8px 0 0 0;
+        padding-left: 18px;
+        max-height: min(42vh, 280px);
+        overflow-y: auto;
+      }
+
       @media (max-width: 768px) {
         body {
           padding: 8px;
+        }
+
+        .layout {
+          flex-direction: column;
+        }
+
+        .layout-actions {
+          order: -1;
+          width: 100%;
+          text-align: left;
         }
       }
     </style>
 
     <script>
+      const PAGE_REQUIRED_FIELDS = [
+        "new_internalorexternalsupportneeded",
+        "new_currentprocess",
+        "new_howwillcmsbenefit",
+        "new_organizationalpriorityalignment",
+        "new_successcriteria",
+        "new_businessoruserneed",
+      ];
+
       const SUBMITTED_BOOL = "cr69a_initialbusinesscasesubmitted";
       const SUBMITTED_DATE = "cr69a_initialbusinesscasesubmitteddate";
-      const INITIAL_BUSINESS_CASE = "cr69a_businesscase";
       const READY_FOR_REVIEW = "cr69a_readyforreview";
+      const SOLUTIONS_GRID_NAMES = ["subgrid_solutions"];
+
+      const NOTIF_IDS = {
+        missingFields: "business_case_submit_missing_fields_warning",
+        success: "business_case_submit_success_message",
+        error: "business_case_submit_error_message",
+      };
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
@@ -91,6 +170,7 @@
         box.textContent =
           text || "Draft Business Case submitted. Waiting for feedback.";
         box.classList.remove("hidden");
+        box.classList.remove("alert-warning");
 
         if (isError) {
           box.classList.add("alert-error");
@@ -99,10 +179,25 @@
         }
       }
 
+      function showInlineMessage(text, variant) {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+
+        box.textContent = text || "";
+        box.classList.remove("hidden", "alert-warning", "alert-error");
+
+        if (variant === "warning") {
+          box.classList.add("alert-warning");
+        } else if (variant === "error") {
+          box.classList.add("alert-error");
+        }
+      }
+
       function hideMessage() {
         var box = document.getElementById("submitStatus");
         if (!box) return;
         box.classList.add("hidden");
+        box.classList.remove("alert-warning");
         box.classList.remove("alert-error");
         box.textContent = "";
       }
@@ -121,6 +216,106 @@
         submitButton.classList.toggle("hidden", !!hidden);
       }
 
+      function showMissingFieldsList(missingFieldLabels) {
+        var container = document.getElementById("missingFieldsBox");
+        var list = document.getElementById("missingFieldsList");
+        if (!container || !list) return;
+
+        list.innerHTML = "";
+        (missingFieldLabels || []).forEach(function (label) {
+          var li = document.createElement("li");
+          li.textContent = label;
+          list.appendChild(li);
+        });
+
+        container.classList.toggle(
+          "hidden",
+          (missingFieldLabels || []).length === 0,
+        );
+      }
+
+      function hideMissingFieldsList() {
+        var container = document.getElementById("missingFieldsBox");
+        var list = document.getElementById("missingFieldsList");
+        if (!container || !list) return;
+
+        container.classList.add("hidden");
+        list.innerHTML = "";
+      }
+
+      function clearActionNotifications(form) {
+        form.ui.clearFormNotification(NOTIF_IDS.missingFields);
+        form.ui.clearFormNotification(NOTIF_IDS.success);
+        form.ui.clearFormNotification(NOTIF_IDS.error);
+      }
+
+      const EMBEDDED_REFRESH_METHODS = [
+        "refreshRequestHelper",
+        "refreshProgressTracker",
+      ];
+
+      function refreshEmbeddedHelpers(form) {
+        const controls = form?.ui?.controls;
+        if (!controls || typeof controls.forEach !== "function") {
+          return;
+        }
+
+        controls.forEach(function (control) {
+          if (
+            !control ||
+            control.getControlType?.() !== "webresource" ||
+            typeof control.getContentWindow !== "function"
+          ) {
+            return;
+          }
+
+          control.getContentWindow().then(
+            function (contentWindow) {
+              EMBEDDED_REFRESH_METHODS.forEach(function (methodName) {
+                if (typeof contentWindow[methodName] === "function") {
+                  contentWindow[methodName]();
+                }
+              });
+            },
+            function () {
+              // Ignore inaccessible web resource windows.
+            },
+          );
+        });
+      }
+
+      function scheduleEmbeddedRefreshes(form) {
+        [0, 300, 1200].forEach(function (delay) {
+          window.setTimeout(function () {
+            refreshEmbeddedHelpers(form);
+          }, delay);
+        });
+      }
+
+      function showFormNotification(form, message, level, uniqueId) {
+        form.ui.clearFormNotification(uniqueId);
+        form.ui.setFormNotification(message, level, uniqueId);
+      }
+
+      function showMissingFieldsWarning(form, missingFieldLabels) {
+        const totalMissing = (missingFieldLabels || []).length;
+        const message =
+          "Successfully saved. " +
+          totalMissing +
+          " required item" +
+          (totalMissing === 1 ? "" : "s") +
+          " missing. Please complete the highlighted fields before submitting.";
+
+        showFormNotification(form, message, "WARNING", NOTIF_IDS.missingFields);
+
+        showInlineMessage(
+          "Saved as draft. Please complete the missing required fields before submitting.",
+          "warning",
+        );
+        showMissingFieldsList(missingFieldLabels || []);
+        setSubmitButtonHidden(false);
+      }
+
       // ✅ UI depends ONLY on Ready For Review
       function updateUIFromReadyForReview() {
         const form = getParentForm();
@@ -130,11 +325,15 @@
         const ready = !!(rfr && rfr.getValue());
 
         if (ready) {
+          clearActionNotifications(form);
           showSuccess("Draft Business Case submitted. Waiting for feedback.");
+          hideMissingFieldsList();
           setSubmitButtonHidden(true);
         } else {
           // Back to requester turn (e.g., edit request came in)
+          clearActionNotifications(form);
           hideMessage();
+          hideMissingFieldsList();
           setSubmitButtonHidden(false);
         }
       }
@@ -150,24 +349,54 @@
       }
 
       function submitBusinessCase() {
+        const form = getParentForm();
+        if (!form) {
+          console.error("Could not access parent form context.");
+          return;
+        }
+
+        clearActionNotifications(form);
+        hideMessage();
+        hideMissingFieldsList();
+
+        const submitButton = document.getElementById(
+          "submitBusinessCaseButton",
+        );
+        if (submitButton) {
+          submitButton.disabled = true;
+        }
+
+        const validationResult = validateFields(form);
+
+        if (!validationResult.allValid) {
+          form.data.save().then(
+            function () {
+              scheduleEmbeddedRefreshes(form);
+              showMissingFieldsWarning(
+                form,
+                validationResult.missingFieldLabels,
+              );
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
+            },
+            function (err) {
+              console.error(
+                "Save failed:",
+                err && err.message ? err.message : err,
+              );
+              showError(
+                "Your business case could not be submitted, and the draft could not be saved. Please try again or refresh the form.",
+              );
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
+            },
+          );
+          return;
+        }
+
         try {
-          const form = getParentForm();
-          if (!form) {
-            console.error("Could not access parent form context.");
-            showError("Unable to access form. Please refresh and try again.");
-            return;
-          }
-
-          // Validation stays (this is business logic, not UI gating)
-          const initialBusinessCase = getAttr(form, INITIAL_BUSINESS_CASE);
-          if (!initialBusinessCase || initialBusinessCase.getValue() == null) {
-            showError(
-              "Please fill out the Business Case field before submitting.",
-            );
-            return;
-          }
-
-          // 1) Mark as submitted
           const submittedAttr = getAttr(form, SUBMITTED_BOOL);
           if (submittedAttr) submittedAttr.setValue(true);
 
@@ -176,13 +405,14 @@
             submittedDateAttr.setValue(new Date());
           }
 
-          // 2) Hand off turn to admin
           const readyForReview = getAttr(form, READY_FOR_REVIEW);
           if (readyForReview) readyForReview.setValue(true);
 
-          // 3) Save form
+          clearActionNotifications(form);
+
           form.data.save().then(
             function () {
+              scheduleEmbeddedRefreshes(form);
               if (parent.lockAllFields) {
                 parent.lockAllFields(form);
               } else {
@@ -191,7 +421,6 @@
                 );
               }
 
-              // reflect latest RFR state
               updateUIFromReadyForReview();
             },
             function (err) {
@@ -202,12 +431,129 @@
               showError(
                 "Failed to submit. Please try again or contact support.",
               );
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
             },
           );
         } catch (e) {
           console.error("Unexpected error during submit:", e);
           showError("An unexpected error occurred. Please contact support.");
+          if (submitButton) {
+            submitButton.disabled = false;
+          }
         }
+      }
+
+      function validateFields(form) {
+        let allValid = true;
+        const missingFieldLabels = [];
+
+        PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
+          const attribute = form.getAttribute(fieldName);
+          const control = form.getControl(fieldName);
+
+          if (!attribute) {
+            allValid = false;
+            missingFieldLabels.push(fieldName);
+            return;
+          }
+
+          const value = attribute.getValue();
+          const isEmpty =
+            value === null ||
+            value === undefined ||
+            (typeof value === "string" && value.trim() === "") ||
+            (Array.isArray(value) && value.length === 0);
+
+          if (isEmpty) {
+            allValid = false;
+            missingFieldLabels.push(
+              control && typeof control.getLabel === "function"
+                ? control.getLabel()
+                : fieldName,
+            );
+          }
+        });
+
+        const solutionsGrid = getFirstAvailableControl(
+          form,
+          SOLUTIONS_GRID_NAMES,
+        );
+        if (!solutionsGrid) {
+          const controlNames = [];
+          form.ui.controls.forEach(function (control) {
+            try {
+              if (control && typeof control.getName === "function") {
+                controlNames.push(control.getName());
+              }
+            } catch (e) {
+              // Ignore controls that do not expose a readable name.
+            }
+          });
+
+          console.log(
+            "[business-case-submit] solutions grid control not found",
+            {
+              expectedControlNames: SOLUTIONS_GRID_NAMES,
+              matchingControls: controlNames.filter(function (name) {
+                return /solution/i.test(name || "");
+              }),
+              allControlNames: controlNames,
+            },
+          );
+        }
+
+        const grid =
+          solutionsGrid && solutionsGrid.getGrid
+            ? solutionsGrid.getGrid()
+            : null;
+
+        let solutionCount = null;
+        if (grid) {
+          if (typeof grid.getTotalRecordCount === "function") {
+            solutionCount = grid.getTotalRecordCount();
+          }
+
+          if (
+            (solutionCount === null || solutionCount === undefined) &&
+            typeof grid.getRows === "function"
+          ) {
+            const rows = grid.getRows();
+            if (rows && typeof rows.getLength === "function") {
+              solutionCount = rows.getLength();
+            }
+          }
+        }
+
+        console.log("[business-case-submit] solutions grid validation", {
+          gridFound: !!grid,
+          solutionCount,
+        });
+
+        if (solutionCount === null || solutionCount === undefined) {
+          allValid = false;
+          missingFieldLabels.push("Solutions (add at least one)");
+        } else if (solutionCount <= 0) {
+          allValid = false;
+          missingFieldLabels.push("Solutions (add at least one)");
+        }
+
+        return {
+          allValid: allValid,
+          missingFieldLabels: missingFieldLabels,
+        };
+      }
+
+      function getFirstAvailableControl(form, controlNames) {
+        for (var index = 0; index < controlNames.length; index += 1) {
+          var control = form.getControl(controlNames[index]);
+          if (control) {
+            return control;
+          }
+        }
+
+        return null;
       }
 
       function initReadyForReviewUIWithRetry(retriesLeft) {
@@ -222,7 +568,10 @@
             return;
           }
         } catch (e) {
-          console.warn("Error while checking parent.Xrm.Page during RFR init:", e);
+          console.warn(
+            "Error while checking parent.Xrm.Page during RFR init:",
+            e,
+          );
         }
 
         if (retriesLeft <= 0) {
@@ -244,21 +593,30 @@
   </head>
 
   <body>
-    <div
-      id="submitStatus"
-      class="alert hidden"
-      role="status"
-      aria-live="polite"
-    ></div>
+    <div class="layout">
+      <div class="layout-main">
+        <div
+          id="submitStatus"
+          class="alert hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
 
-    <div style="text-align: right">
-      <button
-        id="submitBusinessCaseButton"
-        class="btn-primary"
-        onclick="submitBusinessCase()"
-      >
-        Submit Business Case
-      </button>
+        <div id="missingFieldsBox" class="alert alert-warning hidden">
+          <div><strong>Missing required fields</strong></div>
+          <ul id="missingFieldsList" class="missing-fields-list"></ul>
+        </div>
+      </div>
+
+      <div class="layout-actions">
+        <button
+          id="submitBusinessCaseButton"
+          class="btn-primary"
+          onclick="submitBusinessCase()"
+        >
+          Submit Business Case
+        </button>
+      </div>
     </div>
   </body>
 </html>

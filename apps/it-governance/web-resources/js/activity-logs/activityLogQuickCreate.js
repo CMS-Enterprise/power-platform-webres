@@ -24,6 +24,29 @@ const ACTIVITY_TITLES = {
   216640006: "Re-open Request",
 };
 
+const WHY_CLOSING_FIELD = "cr3ee_whyareyouclosingthisrequest";
+const WHY_REOPENING_FIELD = "new_whyareyoureopeningthisrequest";
+
+const FIELD_DEFAULT_LABELS = {
+  [WHY_CLOSING_FIELD]: "Why are you closing this request?",
+  [WHY_REOPENING_FIELD]: "Why are you reopening this request?",
+};
+
+const TYPE_FIELD_LABELS = {
+  [ACTIVITY_TYPES.NotAnITGovernanceRequest]: {
+    [WHY_CLOSING_FIELD]: "Why is this not an IT Governance request?",
+  },
+  [ACTIVITY_TYPES.NotApprovedByGRB]: {
+    [WHY_CLOSING_FIELD]: "Why was this request not approved by the GRB?",
+  },
+  [ACTIVITY_TYPES.CloseRequest]: {
+    [WHY_CLOSING_FIELD]: "Why are you closing this request?",
+  },
+  [ACTIVITY_TYPES.ReopenRequest]: {
+    [WHY_REOPENING_FIELD]: "Why are you reopening this request?",
+  },
+};
+
 // cr3ee_lifecycleid option-set values
 // 216640000 = Generate new LCID
 const LIFECYCLE_ID_SELECTION_GENERATE_NEW = 216640000;
@@ -38,13 +61,13 @@ const ALL_FIELDS = [
   "cr3ee_trbconsult",
   "cr3ee_reason",
   "new_process_target_step",
-  "cr3ee_whyareyouclosingthisrequest",
+  WHY_CLOSING_FIELD,
   "new_requester_feedback",
   "new_recommendationsforthegrb",
   "new_additionalinformation",
   "new_adminnote",
   "cr3ee_nextsteps",
-  "new_whyareyoureopeningthisrequest",
+  WHY_REOPENING_FIELD,
   GRT_MEETING_DATE_FIELD,
   GRB_REVIEW_MEETING_DATE_FIELD,
 ];
@@ -66,9 +89,9 @@ const TYPE_RULES = {
       "cr3ee_scopeofthelifecycleid",
       "cr3ee_trbconsult",
       "cr3ee_reason",
-      "cr3ee_whyareyouclosingthisrequest",
+      WHY_CLOSING_FIELD,
       "cr3ee_nextsteps",
-      "new_whyareyoureopeningthisrequest",
+      WHY_REOPENING_FIELD,
       GRT_MEETING_DATE_FIELD,
       GRB_REVIEW_MEETING_DATE_FIELD,
     ],
@@ -90,10 +113,10 @@ const TYPE_RULES = {
       "cr3ee_expirationdate",
       "cr3ee_reason",
       "new_process_target_step",
-      "cr3ee_whyareyouclosingthisrequest",
+      WHY_CLOSING_FIELD,
       "new_requester_feedback",
       "new_recommendationsforthegrb",
-      "new_whyareyoureopeningthisrequest",
+      WHY_REOPENING_FIELD,
       GRT_MEETING_DATE_FIELD,
       GRB_REVIEW_MEETING_DATE_FIELD,
     ],
@@ -102,7 +125,7 @@ const TYPE_RULES = {
 
   [ACTIVITY_TYPES.NotAnITGovernanceRequest]: {
     show: [
-      "cr3ee_whyareyouclosingthisrequest",
+      WHY_CLOSING_FIELD,
       "new_additionalinformation",
       "new_adminnote",
     ],
@@ -118,7 +141,7 @@ const TYPE_RULES = {
       "new_requester_feedback",
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
-      "new_whyareyoureopeningthisrequest",
+      WHY_REOPENING_FIELD,
       GRT_MEETING_DATE_FIELD,
       GRB_REVIEW_MEETING_DATE_FIELD,
     ],
@@ -127,7 +150,7 @@ const TYPE_RULES = {
 
   [ACTIVITY_TYPES.NotApprovedByGRB]: {
     show: [
-      "cr3ee_reason",
+      WHY_CLOSING_FIELD,
       "new_recommendationsforthegrb",
       "new_additionalinformation",
       "new_adminnote",
@@ -140,19 +163,19 @@ const TYPE_RULES = {
       "cr3ee_expirationdate",
       "cr3ee_scopeofthelifecycleid",
       "cr3ee_trbconsult",
+      "cr3ee_reason",
       "new_process_target_step",
-      "cr3ee_whyareyouclosingthisrequest",
       "new_requester_feedback",
-      "new_whyareyoureopeningthisrequest",
+      WHY_REOPENING_FIELD,
       GRT_MEETING_DATE_FIELD,
       GRB_REVIEW_MEETING_DATE_FIELD,
     ],
-    require: [],
+    require: [WHY_CLOSING_FIELD],
   },
 
   [ACTIVITY_TYPES.CloseRequest]: {
     show: [
-      "cr3ee_whyareyouclosingthisrequest",
+      WHY_CLOSING_FIELD,
       "new_additionalinformation",
       "new_adminnote",
     ],
@@ -168,7 +191,7 @@ const TYPE_RULES = {
       "new_requester_feedback",
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
-      "new_whyareyoureopeningthisrequest",
+      WHY_REOPENING_FIELD,
       GRT_MEETING_DATE_FIELD,
       GRB_REVIEW_MEETING_DATE_FIELD,
     ],
@@ -177,7 +200,7 @@ const TYPE_RULES = {
 
   [ACTIVITY_TYPES.ReopenRequest]: {
     show: [
-      "new_whyareyoureopeningthisrequest",
+      WHY_REOPENING_FIELD,
       "new_additionalinformation",
       "new_adminnote",
     ],
@@ -193,7 +216,7 @@ const TYPE_RULES = {
       "new_requester_feedback",
       "new_recommendationsforthegrb",
       "cr3ee_nextsteps",
-      "cr3ee_whyareyouclosingthisrequest",
+      WHY_CLOSING_FIELD,
       GRT_MEETING_DATE_FIELD,
       GRB_REVIEW_MEETING_DATE_FIELD,
     ],
@@ -354,11 +377,13 @@ function applyRules(formContext) {
     ALL_FIELDS.forEach((fieldName) =>
       setVisible(formContext, fieldName, false),
     );
+    applyFieldLabels(formContext, activityType);
     setVisible(formContext, "new_additionalinformation", true);
     setVisible(formContext, "new_adminnote", true);
     return;
   }
 
+  applyFieldLabels(formContext, activityType);
   ALL_FIELDS.forEach((fieldName) => setVisible(formContext, fieldName, false));
 
   (rules.show || []).forEach((fieldName) =>
@@ -386,6 +411,24 @@ function setVisible(formContext, logicalName, visible) {
   const ctrl = formContext.getControl(logicalName);
   if (!ctrl) return;
   ctrl.setVisible(visible);
+}
+
+function setLabel(formContext, logicalName, label) {
+  const ctrl = formContext.getControl(logicalName);
+  if (!ctrl || typeof ctrl.setLabel !== "function") return;
+  ctrl.setLabel(label);
+}
+
+function applyFieldLabels(formContext, activityType) {
+  Object.entries(FIELD_DEFAULT_LABELS).forEach(([logicalName, label]) => {
+    setLabel(formContext, logicalName, label);
+  });
+
+  Object.entries(TYPE_FIELD_LABELS[activityType] || {}).forEach(
+    ([logicalName, label]) => {
+      setLabel(formContext, logicalName, label);
+    },
+  );
 }
 
 function setRequired(formContext, logicalName, required) {

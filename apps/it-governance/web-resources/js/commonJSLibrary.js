@@ -1,5 +1,17 @@
 console.log("Common JS library loaded");
 
+function hideSubgridCommandBars() {
+  setTimeout(() => {
+    const commandBars = window.parent.document.querySelectorAll(
+      '[data-id*="commandBar"]'
+    );
+
+    commandBars.forEach((bar) => {
+      bar.style.display = "none";
+    });
+  }, 500);
+}
+
 parent.lockAllFields = function (formContext) {
   if (!formContext) {
     console.warn("lockAllFields: No form context provided.");
@@ -30,18 +42,10 @@ parent.lockAllFields = function (formContext) {
 
       console.log(`Found subgrid: ${gridName}`);
 
-      // Hook into the subgrid's onLoad event
-      control.addOnLoad(function () {
-        setTimeout(() => {
-          const commandBars = window.parent.document.querySelectorAll(
-            '[data-id*="commandBar"]'
-          );
-
-          commandBars.forEach((bar) => {
-            bar.style.display = "none";
-          });
-        }, 500);
-      });
+      if (!control.__lockAllFieldsCommandBarHandlerAttached) {
+        control.addOnLoad(hideSubgridCommandBars);
+        control.__lockAllFieldsCommandBarHandlerAttached = true;
+      }
     }
   });
 

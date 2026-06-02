@@ -5,22 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ready for Review Indicator</title>
     <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-card-radius: 12px;
+        --itgov-card-border: rgba(0, 0, 0, 0.08);
+        --itgov-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --itgov-review-bg: #dff6dd;
+        --itgov-review-border: #107c10;
+        --itgov-wait-bg: #edf7ee;
+        --itgov-wait-border: #6c9f74;
+      }
+
       body {
         margin: 0;
         padding: 12px;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: transparent;
-        color: #323130;
+        color: var(--itgov-text);
       }
 
-      .card {
-        border-radius: 12px;
+      .helper-card {
+        border-radius: var(--itgov-card-radius);
         padding: 16px 18px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: var(--itgov-card-shadow);
+        border: 1px solid var(--itgov-card-border);
       }
 
-      .title {
+      .helper-title {
         font-size: 18px;
         font-weight: 700;
         margin: 0 0 6px 0;
@@ -29,21 +40,20 @@
         gap: 10px;
       }
 
-      .subtitle {
+      .helper-body {
         margin: 0;
         font-size: 14px;
         opacity: 0.9;
       }
 
-      /* States */
-      .state-review {
-        background: #dff6dd; /* green-ish */
-        border-color: #107c10;
+      .helper-card--action {
+        background: var(--itgov-review-bg);
+        border-color: var(--itgov-review-border);
       }
 
-      .state-wait {
-        background: #fff4ce; /* yellow-ish */
-        border-color: #f2c811;
+      .helper-card--wait {
+        background: var(--itgov-wait-bg);
+        border-color: var(--itgov-wait-border);
       }
 
       .icon {
@@ -53,8 +63,17 @@
     </style>
     <script>
       const READY_FOR_REVIEW = "cr69a_readyforreview";
-      const MAX_WAIT_MS = 5000;
-      const WAIT_INTERVAL_MS = 100;
+      const CURRENT_PROCESS_STATUS = "new_admingovernancetasklist";
+      const MAX_WAIT_MS = 15000;
+      const WAIT_INTERVAL_MS = 250;
+      let listenersRegistered = false;
+      const PROCESS_STEPS = {
+        DRAFT_BUSINESS_CASE: 971270001,
+        GRT_MEETING: 971270002,
+        FINAL_BUSINESS_CASE: 971270003,
+        GRB_REVIEW: 971270004,
+        FINISHED: 971270009,
+      };
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
@@ -64,7 +83,7 @@
         return form ? form.getAttribute(schema) : null;
       }
 
-      function render(ready) {
+      function render(state) {
         const card = document.getElementById("card");
         const icon = document.getElementById("icon");
         const title = document.getElementById("titleText");
@@ -72,16 +91,67 @@
 
         if (!card || !icon || !title || !subtitle) return;
 
-        if (ready) {
-          card.classList.remove("state-wait");
-          card.classList.add("state-review");
+        if (state === "finished") {
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
+          icon.textContent = "✅";
+          title.textContent = "This request is finished";
+          subtitle.textContent =
+            "If you need to make changes, go to the Actions dropdown and re-open the request.";
+        } else if (state === "business-case-review") {
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
+          icon.textContent = "✅";
+          title.textContent = "Please review the Business Case";
+          subtitle.textContent =
+            "Please review the Business Case in the Business Case section below and make a decision on how to proceed with this request by using the Actions tab at the top of the page.";
+        } else if (state === "business-case-wait") {
+          card.classList.remove("helper-card--action");
+          card.classList.add("helper-card--wait");
+          icon.textContent = "⏳";
+          title.textContent =
+            "Waiting on the requester to make changes to the Business Case";
+          subtitle.textContent =
+            "Once the requester has submitted updates, review the Business Case and Solutions in the Business Case section below.";
+        } else if (state === "final-business-case-review") {
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
+          icon.textContent = "✅";
+          title.textContent = "Please review the Final Business Case";
+          subtitle.textContent =
+            "Please review the updated Business Case in the Business Case section below and make a decision on how to proceed with this request by using the Actions tab at the top of the page.";
+        } else if (state === "final-business-case-wait") {
+          card.classList.remove("helper-card--action");
+          card.classList.add("helper-card--wait");
+          icon.textContent = "⏳";
+          title.textContent =
+            "Waiting on the requester to make changes to the Final Business Case";
+          subtitle.textContent =
+            "Once the requester has submitted updates, review the Business Case and Solutions in the Business Case section below.";
+        } else if (state === "grt-meeting") {
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
+          icon.textContent = "⏳";
+          title.textContent = "Awaiting results of the GRT meeting";
+          subtitle.textContent =
+            "Waiting for input from the GRT meeting. Once the meeting has finished, please put a link into the Meeting Minutes section of this Review and use the Actions dropdown to move this request to another step in the process.";
+        } else if (state === "grb-review") {
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
+          icon.textContent = "⏳";
+          title.textContent = "Awaiting results of the GRB review";
+          subtitle.textContent =
+            "Waiting for input from the GRB review. Once the review has finished, please put a link into the Meeting Minutes section of this Review and use the Actions dropdown to move this request to another step in the process.";
+        } else if (state === "review") {
+          card.classList.remove("helper-card--wait");
+          card.classList.add("helper-card--action");
           icon.textContent = "✅";
           title.textContent = "Your turn: Review this request";
           subtitle.textContent =
             "The requester has submitted changes. Please review and either approve or request edits.";
         } else {
-          card.classList.remove("state-review");
-          card.classList.add("state-wait");
+          card.classList.remove("helper-card--action");
+          card.classList.add("helper-card--wait");
           icon.textContent = "⏳";
           title.textContent = "Waiting on requester updates";
           subtitle.textContent =
@@ -91,11 +161,50 @@
 
       function updateUI() {
         const form = getParentForm();
-        if (!form) return;
+        if (!form) return false;
 
         const rfr = getAttr(form, READY_FOR_REVIEW);
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
         const ready = !!(rfr && rfr.getValue());
-        render(ready);
+        const currentStatus = statusAttr ? statusAttr.getValue() : null;
+
+        if (!rfr || currentStatus === null || currentStatus === undefined) {
+          return false;
+        }
+
+        if (currentStatus === PROCESS_STEPS.DRAFT_BUSINESS_CASE) {
+          render(ready ? "business-case-review" : "business-case-wait");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.GRT_MEETING) {
+          render("grt-meeting");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINAL_BUSINESS_CASE) {
+          render(ready ? "final-business-case-review" : "final-business-case-wait");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.GRB_REVIEW) {
+          render("grb-review");
+          return true;
+        }
+
+        if (currentStatus === PROCESS_STEPS.FINISHED) {
+          render("finished");
+          return true;
+        }
+
+        render(ready ? "review" : "wait");
+        return true;
+      }
+
+      function scheduleStabilityRefreshes() {
+        [200, 800, 1800].forEach((delay) => {
+          window.setTimeout(updateUI, delay);
+        });
       }
 
       function waitForFormData(startTime = Date.now()) {
@@ -116,7 +225,8 @@
         }
 
         const rfr = getAttr(form, READY_FOR_REVIEW);
-        if (!rfr) {
+        const statusAttr = getAttr(form, CURRENT_PROCESS_STATUS);
+        if (!rfr || !statusAttr) {
           setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
           return;
         }
@@ -124,28 +234,43 @@
         // Registering onChange here rather than the form editor to keep this
         // component self-contained. If this web resource is removed, the listener
         // goes with it automatically.
-        if (rfr.addOnChange) {
-          rfr.addOnChange(updateUI);
+        if (!listenersRegistered) {
+          if (rfr.addOnChange) {
+            rfr.addOnChange(updateUI);
+          }
+          if (statusAttr.addOnChange) {
+            statusAttr.addOnChange(updateUI);
+          }
+          listenersRegistered = true;
         }
 
-        // Small delay to let the parent form finish populating field values
-        setTimeout(updateUI, 300);
+        updateUI();
+        scheduleStabilityRefreshes();
       }
 
       document.addEventListener("DOMContentLoaded", function () {
         // Start checking for form data availability
         waitForFormData();
       });
+
+      // Allow the parent form to explicitly re-run this component after a modal
+      // closes and the host form refreshes.
+      window.refreshReadyForReview = updateUI;
     </script>
   </head>
 
   <body>
-    <div id="card" class="card state-wait" role="status" aria-live="polite">
-      <div class="title">
+    <div
+      id="card"
+      class="helper-card helper-card--wait"
+      role="status"
+      aria-live="polite"
+    >
+      <div class="helper-title">
         <span id="icon" class="icon">⏳</span>
         <span id="titleText">Loading…</span>
       </div>
-      <p id="subtitleText" class="subtitle"></p>
+      <p id="subtitleText" class="helper-body"></p>
     </div>
   </body>
 </html>

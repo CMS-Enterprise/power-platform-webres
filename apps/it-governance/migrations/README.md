@@ -34,6 +34,11 @@ npm run dataflows:check
 The dataflow manifest uses `dataflowId` values instead of names because some
 DEV dataflows currently have duplicate display names.
 
+Note: the committed `./dataflows/*.m` files are snapshots of what's currently in Dataverse,
+including default parameter values (e.g., Dataverse URLs / SharePoint paths). Review and
+update those parameters in the Power Apps dataflow editor when deploying to another
+environment.
+
 `dataflows:check` verifies the pulled `./dataflows` files match Dataverse.
 
 ## Estimated Lifecycle Costs

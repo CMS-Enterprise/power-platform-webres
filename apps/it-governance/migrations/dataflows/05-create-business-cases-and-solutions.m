@@ -257,7 +257,7 @@ shared Query = let
         }
     ),
     PreviewOnly = Table.SelectColumns(
-        Combined,
+        Normalized,
         {
             "Request ID",
             "cr69a_id",

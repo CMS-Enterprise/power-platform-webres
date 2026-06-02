@@ -20,7 +20,43 @@ Data migration details can be found in the [IT Governance Intake Request Mapping
 
 TODO
 Review Data Migration - move required data from intake requests to Reviews.
-CEDAR systems need some sort of connection, a representation in dev, and then higher environments.
+
+## CEDAR systems dev data
+
+The dev migration data includes a CEDAR systems export at `easi-dev-data/cedar_systems.json`.
+This file represents the system records used by intake migration data when a real CEDAR
+connection is not available in dev.
+
+CEDAR JSON exports may include copied timestamp fragments in keys or values, UUID spacing
+issues, or GUID values wrapped in extra curly braces. Clean new exports before committing
+or using them for migration work:
+
+```bash
+npm run cedar:clean -- apps/it-governance/migrations/easi-dev-data/cedar_systems.json --dry-run --verbose
+npm run cedar:clean -- apps/it-governance/migrations/easi-dev-data/cedar_systems.json --in-place
+```
+
+Use `--dry-run --verbose` first to review the changes. The in-place command rewrites the
+JSON file after removing supported export artifacts.
+
+## Linked system CSV cleanup
+
+The `system_intake_systems.csv` export may mix braced and unbraced values in the
+`system_id` column. Normalize that column before uploading the CSV for migration work.
+The cleanup only changes `system_id`; relationship values such as `{PRIMARY_SUPPORT,OTHER}`
+are left as-is.
+
+```bash
+npm run intake:systems:clean -- --dry-run --verbose
+npm run intake:systems:clean -- --in-place
+```
+
+The command defaults to `easi-dev-data/system_intake_systems.csv`. Pass one or more paths
+to reuse it for UAT or prod exports:
+
+```bash
+npm run intake:systems:clean -- path/to/system_intake_systems.csv --dry-run --verbose
+```
 
 EASI Postgresql Table Data Source Inventory
 

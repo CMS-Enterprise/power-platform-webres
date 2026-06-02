@@ -53,12 +53,9 @@ shared cr69a_systemintakestagingeditrequests =
             let
                 rawTargetForm = GetOptionalField(row, "cr69a_targetform_raw"),
                 targetForm = if rawTargetForm = null then GetOptionalField(row, "cr69a_targetform") else rawTargetForm,
-                formTitle = TargetFormTitle(targetForm),
-                idValue = GetOptionalField(row, "cr69a_id"),
-                idText = if idValue = null then null else Text.Trim(Text.From(idValue)),
-                idSuffix = if idText = null or idText = "" then null else Text.Start(idText, 8)
+                formTitle = TargetFormTitle(targetForm)
             in
-                "Edit Request - " & formTitle & (if idSuffix = null then "" else " - " & idSuffix),
+                "Edit Request - " & formTitle,
         EnableQA = false,
         // Apply all choice mappings starting from the actual table
         ApplyAll = List.Accumulate(

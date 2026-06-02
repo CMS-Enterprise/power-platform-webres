@@ -28,6 +28,47 @@ shared cr69a_systemintakestagingeditrequests = let
                 t6 = Text.Replace(t5, "/", "_")
             in
                 t6,
+    GetOptionalField = (row as record, fieldName as text) as any =>
+        if Record.HasFields(row, fieldName) then
+            Record.Field(row, fieldName)
+        else
+            null,
+    TargetFormTitle = (targetForm as any) as text =>
+        let
+            key = NormalizeChoiceKey(targetForm)
+        in
+            if key = null then
+                "General Feedback"
+            else if key = "INTAKE_REQUEST" then
+                "Intake Request"
+            else if key = "DRAFT_BUSINESS_CASE" then
+                "Draft Business Case"
+            else if key = "FINAL_BUSINESS_CASE" then
+                "Final Business Case"
+            else
+                "General Feedback",
+    BuildEditRequestName = (row as record) as text =>
+        let
+            rawTargetForm = GetOptionalField(row, "cr69a_targetform_raw"),
+            targetForm =
+                if rawTargetForm = null then
+                    GetOptionalField(row, "cr69a_targetform")
+                else
+                    rawTargetForm,
+            formTitle = TargetFormTitle(targetForm),
+            idValue = GetOptionalField(row, "cr69a_id"),
+            idText =
+                if idValue = null then
+                    null
+                else
+                    Text.Trim(Text.From(idValue)),
+            idSuffix =
+                if idText = null or idText = "" then
+                    null
+                else
+                    Text.Start(idText, 8)
+        in
+            "Edit Request - " & formTitle & (if idSuffix = null then "" else " - " & idSuffix),
     EnableQA = false,
     // Apply all choice mappings starting from the actual table
     ApplyAll = List.Accumulate(
@@ -73,11 +114,15 @@ shared cr69a_systemintakestagingeditrequests = let
             in
                 WithChoice
     ),
+    #"Removed existing generated name" = Table.RemoveColumns(ApplyAll, {"cr69a_name"}, MissingField.Ignore),
+    #"Added generated name" = Table.AddColumn(
+        #"Removed existing generated name", "cr69a_name", each BuildEditRequestName(_), type text
+    ),
     // Return the transformed table
-    Custom = ApplyAll,
-  #"Filtered rows" = Table.SelectRows(Custom, each [cr69a_feedbacktype] = "REQUESTER"),
-  #"From Value" = Table.FromValue(#"Filtered rows"),
-  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
+    Custom = #"Added generated name",
+    #"Filtered rows" = Table.SelectRows(Custom, each [cr69a_feedbacktype] = "REQUESTER"),
+    #"From Value" = Table.FromValue(#"Filtered rows"),
+    #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
 in
     #"Remove Columns";
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];

@@ -1,0 +1,140 @@
+{
+  "scriptRoot": "./apps/it-governance/migrations/dataflows",
+  "dataflows": [
+    {
+      "file": "00-stage-business-cases.m",
+      "name": "System Intake - 0 Stage Business Cases",
+      "dataflowId": "084386d7-09c4-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "00-stage-cedar-systems.m",
+      "name": "System Intake - 0 Stage Cedar Systems",
+      "dataflowId": "c81fd991-8f3e-f111-88b3-001dd8055bb1"
+    },
+    {
+      "file": "00-stage-contacts.m",
+      "name": "System Intake - 0 Stage Contacts",
+      "dataflowId": "fc7e6ff1-07c4-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "00-stage-contract-numbers.m",
+      "name": "System Intake - 0 Stage Contract Numbers",
+      "dataflowId": "f44384df-00c4-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "00-stage-documents.m",
+      "name": "System Intake - 0 Stage Documents",
+      "dataflowId": "044c57fa-fec3-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "00-stage-edit-requests.m",
+      "name": "System Intake - 0 Stage Edit Requests",
+      "dataflowId": "fc1b9732-94c1-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "00-stage-estimated-lifecycle-costs.m",
+      "name": "System Intake - 0 Stage Estimated Lifecycle Costs",
+      "dataflowId": "6957b051-aac4-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "00-stage-funding-sources.m",
+      "name": "System Intake - 0 Stage Funding Sources",
+      "dataflowId": "55b3139e-d2c0-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "00-stage-grb-discussion-posts.m",
+      "name": "System Intake - 0 Stage GRB Discussion Posts",
+      "dataflowId": "263baec3-fac3-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "00-stage-grb-presentation-links.m",
+      "name": "System Intake - 0 Stage GRB Presentation Links",
+      "dataflowId": "4614d9ef-f7c3-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "00-stage-grb-reviewers.m",
+      "name": "System Intake - 0 Stage GRB Reviewers",
+      "dataflowId": "ac39efdf-fcc3-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "00-stage-linked-systems.m",
+      "name": "System Intake - 0 Stage Linked Systems",
+      "dataflowId": "3059fc52-dbc3-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "00-stage-system-intakes.m",
+      "name": "System Intake - 0 Stage System Intakes",
+      "dataflowId": "24c33168-d2c0-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "01-create-lcids.m",
+      "name": "System Intake - 1 Create LCIDs",
+      "dataflowId": "f2a99ff5-90b6-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "02-create-cedar-systems.m",
+      "name": "System Intake - 2 Create Cedar Systems",
+      "dataflowId": "0bbde9a0-953e-f111-88b3-001dd8055bb1"
+    },
+    {
+      "file": "03-create-requests.m",
+      "name": "System Intake - 3 Create Requests",
+      "dataflowId": "f4b18fd6-03b9-f011-bbd3-001dd80a6132"
+    },
+    {
+      "file": "03-create-reviews.m",
+      "name": "System Intake - 3 Create Reviews",
+      "dataflowId": "6beb4bd6-9a53-f111-bec6-001dd804cd4c"
+    },
+    {
+      "file": "03-link-requests-to-reviews.m",
+      "name": "System Intake - 3 Link Requests to Reviews",
+      "dataflowId": "8040e853-6c54-f111-bec6-001dd8055bb1"
+    },
+    {
+      "file": "04-create-funding-sources.m",
+      "name": "System Intake - 4 Create Funding Sources",
+      "dataflowId": "e459495d-30bc-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "04-link-lcids-to-requests.m",
+      "name": "System Intake - 4 Link LCIDs to Requests",
+      "dataflowId": "b87303be-a4b9-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "05-create-additional-contacts.m",
+      "name": "System Intake - 5 Create Additional Contacts",
+      "dataflowId": "8dc0bae9-e9e0-f011-8544-001dd8062d4a"
+    },
+    {
+      "file": "05-create-business-cases-and-solutions.m",
+      "name": "System Intake - 5 Create Business Cases & Solutions",
+      "dataflowId": "e85fbdc0-8dc9-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "05-create-documents.m",
+      "name": "System Intake - 5 Create Documents",
+      "dataflowId": "a74bcca0-8fc5-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "05-create-edit-requests.m",
+      "name": "System Intake - 5 Create Edit Requests",
+      "dataflowId": "4349e4ab-96c1-f011-bbd3-001dd8062d4a"
+    },
+    {
+      "file": "05-create-system-links.m",
+      "name": "System Intake - 5 Create System Links",
+      "dataflowId": "94c90179-2ae0-f011-8544-001dd80a6132"
+    },
+    {
+      "file": "05-update-contract-numbers.m",
+      "name": "System Intake - 5 Update Contract Numbers",
+      "dataflowId": "5b8886b6-72db-f011-8544-001dd8062d4a"
+    },
+    {
+      "file": "06-create-estimated-lifecycle-costs.m",
+      "name": "System Intake - 6 Update Solution Costs",
+      "dataflowId": "e1288e9f-b0cf-f011-bbd3-001dd80a6132"
+    }
+  ]
+}

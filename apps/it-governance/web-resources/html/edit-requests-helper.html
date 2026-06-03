@@ -82,12 +82,13 @@
         justify-content: space-between;
         gap: 12px;
         align-items: flex-start;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
       }
 
-      .edit-request-target {
+      .edit-request-form {
+        color: var(--itgov-text);
+        font-size: 13px;
         font-weight: 700;
-        font-size: 14px;
       }
 
       .edit-request-created {
@@ -102,8 +103,9 @@
 
       .edit-request-label {
         margin: 0 0 4px 0;
-        font-weight: 700;
-        font-size: 13px;
+        color: var(--itgov-muted);
+        font-weight: 600;
+        font-size: 12px;
       }
 
       .edit-request-rich-text {
@@ -197,6 +199,7 @@
       const EDIT_REQUEST_ID = "cr69a_editrequestid";
       const EDIT_REQUEST_CHANGES_NEEDED = "cr3ee_changes_needed";
       const EDIT_REQUEST_ADDITIONAL_INFO = "cr3ee_additionalinformation";
+      const EDIT_REQUEST_TARGET_FORM = "cr69a_whichformneedsedits";
       const EDIT_REQUEST_COMPLETED = "new_completed";
       const EDIT_REQUEST_STATE = "statecode";
       const EDIT_REQUEST_CREATED_ON = "createdon";
@@ -319,6 +322,17 @@
         );
       }
 
+      function getEditRequestTargetForm(record) {
+        const formatted = getFormattedValue(record, EDIT_REQUEST_TARGET_FORM);
+        if (formatted && formatted !== "No Target Provided") return formatted;
+
+        const targetForm = record?.[EDIT_REQUEST_TARGET_FORM];
+        if (targetForm === 971270000) return "Intake Request";
+        if (targetForm === 971270001) return "Draft Business Case";
+        if (targetForm === 971270002) return "Final Business Case";
+        return "";
+      }
+
       function setParentSectionVisible(isVisible) {
         const section = getParentForm()
           ?.ui?.tabs?.get("General")
@@ -327,7 +341,9 @@
       }
 
       function notifyParentVisibilityChanged(hasEditRequests) {
-        if (typeof parent?.refreshEditRequestsSectionVisibility === "function") {
+        if (
+          typeof parent?.refreshEditRequestsSectionVisibility === "function"
+        ) {
           parent.refreshEditRequestsSectionVisibility();
           return;
         }
@@ -367,23 +383,28 @@
             item.dataset.recordId = recordId;
           }
 
-          const topline = document.createElement("div");
-          topline.className = "edit-request-topline";
-
-          const target = document.createElement("div");
-          target.className = "edit-request-target";
-          target.textContent = "Requested edits";
-          topline.appendChild(target);
-
+          const targetForm = getEditRequestTargetForm(record);
           const created = getEditRequestCreatedDate(record);
-          if (created) {
-            const createdText = document.createElement("div");
-            createdText.className = "edit-request-created";
-            createdText.textContent = created;
-            topline.appendChild(createdText);
-          }
+          if (targetForm || created) {
+            const topline = document.createElement("div");
+            topline.className = "edit-request-topline";
 
-          item.appendChild(topline);
+            if (targetForm) {
+              const targetFormText = document.createElement("div");
+              targetFormText.className = "edit-request-form";
+              targetFormText.textContent = `Form to edit: ${targetForm}`;
+              topline.appendChild(targetFormText);
+            }
+
+            if (created) {
+              const createdText = document.createElement("div");
+              createdText.className = "edit-request-created";
+              createdText.textContent = created;
+              topline.appendChild(createdText);
+            }
+
+            item.appendChild(topline);
+          }
 
           const changesHtml = sanitizeRichText(
             record?.[EDIT_REQUEST_CHANGES_NEEDED],
@@ -463,6 +484,7 @@
           EDIT_REQUEST_ID,
           EDIT_REQUEST_CHANGES_NEEDED,
           EDIT_REQUEST_ADDITIONAL_INFO,
+          EDIT_REQUEST_TARGET_FORM,
           EDIT_REQUEST_COMPLETED,
           EDIT_REQUEST_STATE,
           EDIT_REQUEST_CREATED_ON,
@@ -526,7 +548,8 @@
         if (queryAppId) return queryAppId;
 
         try {
-          const appProperties = await globalContext?.getCurrentAppProperties?.();
+          const appProperties =
+            await globalContext?.getCurrentAppProperties?.();
           return appProperties?.appId || "";
         } catch {
           return "";

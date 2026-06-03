@@ -149,8 +149,13 @@ shared Query = let
                 )
             in
                 AddIssues,
-  #"From Value" = Table.FromValue(WithQA),
-  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
+  #"Remove Columns" = Table.RemoveColumns(
+      WithQA,
+      Table.ColumnsOfType(
+          WithQA,
+          {type table, type record, type list, type nullable binary, type binary, type function}
+      )
+  )
 in
     #"Remove Columns";
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];

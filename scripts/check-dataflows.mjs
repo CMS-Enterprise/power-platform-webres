@@ -68,7 +68,7 @@ async function main() {
 
   console.log("");
   console.log(
-    `Summary: ${summary.inSync} in sync, ${summary.differs} differ, ${summary.localMissing} missing locally, ${summary.remoteMissing} missing remotely`,
+    `Summary: ${summary.inSync} in sync, ${summary.formatOnly} formatting-only, ${summary.differs} differ, ${summary.localMissing} missing locally, ${summary.remoteMissing} missing remotely`,
   );
 
   if (
@@ -203,19 +203,73 @@ async function buildComparisonResult(entry, remote) {
   );
   const localHash = hashContent(localContent);
   const inSync = localContent === remoteContent;
+  const formatOnly =
+    !inSync &&
+    removeWhitespaceOutsideQuotedText(localContent) ===
+      removeWhitespaceOutsideQuotedText(remoteContent);
+  const status = inSync ? "IN_SYNC" : formatOnly ? "FORMAT_ONLY" : "DIFFERS";
 
   return {
     ...baseResult(entry),
-    status: inSync ? "IN_SYNC" : "DIFFERS",
-    guidance: inSync
-      ? "Local file matches the Dataverse mashup document."
-      : "Local file differs from Dataverse. Pull or review before relying on the local copy.",
+    status,
+    guidance: buildGuidance(status),
     localHash,
     localModified: localStat.mtime,
     remoteHash,
     remoteModified,
     remoteModifiedBy,
   };
+}
+
+function removeWhitespaceOutsideQuotedText(value) {
+  let output = "";
+  let inQuotedText = false;
+
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+
+    if (inQuotedText) {
+      output += char;
+
+      if (char === '"') {
+        const next = value[index + 1];
+        if (next === '"') {
+          output += next;
+          index += 1;
+        } else {
+          inQuotedText = false;
+        }
+      }
+
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotedText = true;
+      output += char;
+      continue;
+    }
+
+    if (/\s/.test(char)) {
+      continue;
+    }
+
+    output += char;
+  }
+
+  return output;
+}
+
+function buildGuidance(status) {
+  if (status === "IN_SYNC") {
+    return "Local file matches the Dataverse mashup document.";
+  }
+
+  if (status === "FORMAT_ONLY") {
+    return "Local file differs from Dataverse only by whitespace/formatting.";
+  }
+
+  return "Local file differs from Dataverse. Pull or review before relying on the local copy.";
 }
 
 function baseResult(entry) {
@@ -234,6 +288,8 @@ function baseResult(entry) {
 function summarize(results) {
   return {
     inSync: results.filter((result) => result.status === "IN_SYNC").length,
+    formatOnly: results.filter((result) => result.status === "FORMAT_ONLY")
+      .length,
     differs: results.filter((result) => result.status === "DIFFERS").length,
     localMissing: results.filter((result) => result.status === "LOCAL_MISSING")
       .length,
@@ -267,7 +323,13 @@ function printDetailedResult(result) {
 }
 
 function printGroupedResults(results) {
-  const groups = ["IN_SYNC", "DIFFERS", "LOCAL_MISSING", "REMOTE_MISSING"];
+  const groups = [
+    "IN_SYNC",
+    "FORMAT_ONLY",
+    "DIFFERS",
+    "LOCAL_MISSING",
+    "REMOTE_MISSING",
+  ];
 
   for (const status of groups) {
     const group = results.filter((result) => result.status === status);

@@ -278,11 +278,11 @@ shared Requests = let
         each true,
         type logical
     ),
-    #"From Value" = Table.FromValue(WithSkipContactCreation),
     #"Remove Columns" = Table.RemoveColumns(
-        #"From Value",
+        WithSkipContactCreation,
         Table.ColumnsOfType(
-            #"From Value", {type table, type record, type list, type nullable binary, type binary, type function}
+            WithSkipContactCreation,
+            {type table, type record, type list, type nullable binary, type binary, type function}
         )
     )
 in

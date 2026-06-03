@@ -86,12 +86,10 @@ shared new_stagecedarsystem = let
         Int64.Type
     ),
 
-    #"From Value" = Table.FromValue(#"Added Cedar State"),
-
     #"Remove Complex Columns" = Table.RemoveColumns(
-        #"From Value",
+        #"Added Cedar State",
         Table.ColumnsOfType(
-            #"From Value",
+            #"Added Cedar State",
             {type table, type record, type list, type nullable binary, type binary, type function}
         )
     )

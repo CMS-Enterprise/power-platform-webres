@@ -117,6 +117,7 @@ function parseArgs(argv) {
   return args;
 }
 
+function printHelp() {
   console.log(`Usage:
   node ./scripts/pull-dataflows.mjs
   node ./scripts/pull-dataflows.mjs 00-stage-system-intakes.m

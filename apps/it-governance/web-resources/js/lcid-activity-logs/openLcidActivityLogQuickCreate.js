@@ -10,6 +10,14 @@
     Confirm: 100000005, // not used yet
     UpdateRetirementDate: 100000006,
     ExpirationAlert: 100000007, // not used in this context
+    Edit: 100000008,
+  };
+
+  const LCID_EDIT_FIELD_MAPPINGS = {
+    cr3ee_costbaseline: "new_lcidcostbaseline",
+    cr3ee_scope: "new_lcidscope",
+    cr69a_lcidexpiresat: "new_lcidexpirationdate",
+    cr69a_retiresat: "new_lcidretiredate",
   };
 
   function getActivityTypeLabel(activityTypeValue) {
@@ -30,9 +38,27 @@
         return "Updated Retirement Date";
       case LCID_ACTIVITY_TYPES.ExpirationAlert:
         return "Expiration Alert";
+      case LCID_ACTIVITY_TYPES.Edit:
+        return "Edit";
       default:
         return "Activity";
     }
+  }
+
+  function getEditPrefillParameters(formContext) {
+    return Object.entries(LCID_EDIT_FIELD_MAPPINGS).reduce(
+      (parameters, [lcidField, activityLogField]) => {
+        const value = formContext.getAttribute(lcidField)?.getValue();
+
+        if (value !== null && value !== undefined) {
+          parameters[activityLogField] =
+            value instanceof Date ? value.toISOString() : value;
+        }
+
+        return parameters;
+      },
+      {},
+    );
   }
 
   async function openLCIDActivityLogQuickCreate(
@@ -121,6 +147,14 @@
     return openLCIDActivityLogQuickCreate(
       primaryControl,
       LCID_ACTIVITY_TYPES.Unretire,
+    );
+  };
+
+  window.ITGov_EditLCID = function (primaryControl) {
+    return openLCIDActivityLogQuickCreate(
+      primaryControl,
+      LCID_ACTIVITY_TYPES.Edit,
+      getEditPrefillParameters(primaryControl),
     );
   };
 })();

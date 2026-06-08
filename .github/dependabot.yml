@@ -1,0 +1,32 @@
+version: 2
+updates:
+  - "patch"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 1
+    groups:
+      other:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 1
+    groups:
+      major:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+      other:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"

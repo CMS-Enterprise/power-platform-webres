@@ -1,6 +1,5 @@
 version: 2
 updates:
-  - "patch"
   - package-ecosystem: "npm"
     directory: "/"
     schedule:

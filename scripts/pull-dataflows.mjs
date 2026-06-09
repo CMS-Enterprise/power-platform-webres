@@ -82,13 +82,21 @@ function parseArgs(argv) {
     const current = argv[index];
 
     if (current === "--manifest") {
-      args.manifest = argv[index + 1];
+      const value = argv[index + 1];
+      if (!value) {
+        throw new Error("--manifest requires a path.");
+      }
+      args.manifest = value;
       index += 1;
       continue;
     }
 
     if (current === "--file") {
-      args.files.push(normalizeRelativePath(argv[index + 1]));
+      const value = argv[index + 1];
+      if (!value) {
+        throw new Error("--file requires a relative file path.");
+      }
+      args.files.push(normalizeRelativePath(value));
       index += 1;
       continue;
     }
@@ -112,8 +120,8 @@ function parseArgs(argv) {
 function printHelp() {
   console.log(`Usage:
   node ./scripts/pull-dataflows.mjs
-  node ./scripts/pull-dataflows.mjs stageIntakes.m
-  node ./scripts/pull-dataflows.mjs --file stageIntakes.m
+  node ./scripts/pull-dataflows.mjs 00-stage-system-intakes.m
+  node ./scripts/pull-dataflows.mjs --file 00-stage-system-intakes.m
 
 Options:
   --file <relativePath>   Pull only one manifest entry. Repeatable.

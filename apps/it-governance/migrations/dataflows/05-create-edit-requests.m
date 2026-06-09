@@ -30,32 +30,6 @@ shared cr69a_systemintakestagingeditrequests =
                     t6 = Text.Replace(t5, "/", "_")
                 in
                     t6,
-        GetOptionalField = (row as record, fieldName as text) as any =>
-            if Record.HasFields(row, fieldName) then
-                Record.Field(row, fieldName)
-            else
-                null,
-        TargetFormTitle = (targetForm as any) as text =>
-            let
-                key = NormalizeChoiceKey(targetForm)
-            in
-                if key = null then
-                    "General Feedback"
-                else if key = "INTAKE_REQUEST" then
-                    "Intake Request"
-                else if key = "DRAFT_BUSINESS_CASE" then
-                    "Draft Business Case"
-                else if key = "FINAL_BUSINESS_CASE" then
-                    "Final Business Case"
-                else
-                    "General Feedback",
-        BuildEditRequestName = (row as record) as text =>
-            let
-                rawTargetForm = GetOptionalField(row, "cr69a_targetform_raw"),
-                targetForm = if rawTargetForm = null then GetOptionalField(row, "cr69a_targetform") else rawTargetForm,
-                formTitle = TargetFormTitle(targetForm)
-            in
-                "Edit Request - " & formTitle,
         EnableQA = false,
         // Apply all choice mappings starting from the actual table
         ApplyAll = List.Accumulate(
@@ -101,18 +75,14 @@ shared cr69a_systemintakestagingeditrequests =
                 in
                     WithChoice
         ),
-        #"Removed existing generated name" = Table.RemoveColumns(ApplyAll, {"cr69a_name"}, MissingField.Ignore),
-        #"Added generated name" = Table.AddColumn(
-            #"Removed existing generated name", "cr69a_name", each BuildEditRequestName(_), type text
-        ),
         // Return the transformed table
-        Custom = #"Added generated name",
+        Custom = ApplyAll,
         #"Filtered rows" = Table.SelectRows(Custom, each [cr69a_feedbacktype] = "REQUESTER"),
-        #"From Value" = Table.FromValue(#"Filtered rows"),
         #"Remove Columns" = Table.RemoveColumns(
-            #"From Value",
+            #"Filtered rows",
             Table.ColumnsOfType(
-                #"From Value", {type table, type record, type list, type nullable binary, type binary, type function}
+                #"Filtered rows",
+                {type table, type record, type list, type nullable binary, type binary, type function}
             )
         )
     in

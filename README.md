@@ -14,3 +14,7 @@ This repository contains source-controlled assets used by CMS Power Platform sol
 Code starts app-specific and becomes shared **only when reuse is proven**.
 
 This approach favors clarity, safety, and maintainability over premature abstraction.
+
+## Documentation
+
+- [Security Policy](./SECURITY.md)

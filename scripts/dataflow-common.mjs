@@ -201,7 +201,15 @@ export function normalizeMashupDocument(value) {
 }
 
 export function sanitizeGuid(id) {
-  return (id || "").replace(/[{}]/g, "");
+  const sanitized = (id || "").replace(/[{}]/g, "").trim();
+  if (
+    !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+      sanitized,
+    )
+  ) {
+    throw new Error(`Invalid GUID: ${id}`);
+  }
+  return sanitized;
 }
 
 export function resolveManifestPath(repoRoot, manifestPath) {

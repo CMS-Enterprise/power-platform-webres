@@ -14,8 +14,13 @@ shared LoadToFinal = let
 
   // Filter out rows with missing LCIDs
   #"Filtered Null LCIDs" = Table.SelectRows(Prev, each not IsNullishLCID([cr69a_lcid])),
-  #"From Value" = Table.FromValue(#"Filtered Null LCIDs"),
-  #"Remove Columns" = Table.RemoveColumns(#"From Value", Table.ColumnsOfType(#"From Value", {type table, type record, type list, type nullable binary, type binary, type function}))
+  #"Remove Columns" = Table.RemoveColumns(
+    #"Filtered Null LCIDs",
+    Table.ColumnsOfType(
+        #"Filtered Null LCIDs",
+        {type table, type record, type list, type nullable binary, type binary, type function}
+    )
+  )
 in
   #"Remove Columns";
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];

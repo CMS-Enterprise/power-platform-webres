@@ -18,6 +18,44 @@ Migration order is important, as various records rely on others existing, but it
 
 Data migration details can be found in the [IT Governance Intake Request Mapping Workbook](https://docs.google.com/spreadsheets/d/1-TfJrVtfF5lW-SKITZK1plbBq_KQsQMUslB9jk5Pwbo/edit?usp=sharing)
 
+## Dataflow source control
+
+Dataflow M documents can be pulled from Dataverse into `./dataflows` for
+source-control visibility. This tooling is intentionally read-only with respect
+to Dataverse; make dataflow changes in the Power Apps dataflow editor, then pull
+or check the local files.
+
+```bash
+npm run dataflows:list
+npm run dataflows:pull
+npm run dataflows:check
+```
+
+The dataflow manifest uses `dataflowId` values instead of names because some
+DEV dataflows currently have duplicate display names.
+
+Note: the committed `./dataflows/*.m` files are snapshots of what's currently in Dataverse,
+including default parameter values (e.g., Dataverse URLs / SharePoint paths). Review and
+update those parameters in the Power Apps dataflow editor when deploying to another
+environment.
+
+`dataflows:check` verifies the pulled `./dataflows` files match Dataverse.
+
+## Estimated Lifecycle Costs
+
+The EASI `estimated_lifecycle_costs` rows are migrated into fiscal-year cost
+fields on Business Case Solution records. The old EASI shape has one row per
+business case, solution, phase, and year; the Power Platform shape stores one
+currency value per solution fiscal year. Migration therefore sums all phases for
+the same business case, solution, and fiscal year.
+
+Costs are treated as dollar values, not cents. The FY target fields are
+Dataverse currency fields, so grouped values must stay within Dataverse's money
+range of +/- 922,337,203,685,477. The `06-create-estimated-lifecycle-costs.m`
+dataflow exposes `InvalidCostRows` and fails the final update query if any FY
+cost exceeds that limit. Do not write to `new_systemtotalcost`; it is a
+calculated field.
+
 TODO
 Review Data Migration - move required data from intake requests to Reviews.
 

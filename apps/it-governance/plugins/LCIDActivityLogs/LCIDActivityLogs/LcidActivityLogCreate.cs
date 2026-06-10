@@ -31,6 +31,9 @@ namespace LCIDActivityLogs
         private const int ActivityTypeUnretire = 100000001;
         private const int ActivityTypeEdit = 100000008;
 
+        private const int PreOperationStage = 20;
+        private const int SynchronousMode = 0;
+
         private const int LcidStatusIssued = 216640000;
         private const int LcidStatusRetired = 216640002;
 
@@ -64,6 +67,8 @@ namespace LCIDActivityLogs
                     tracing.Trace($"Unexpected entity: {target.LogicalName}");
                     return;
                 }
+
+                EnsureSynchronousPreOperation(context);
 
                 tracing.Trace("Processing LCID Activity Log create.");
 
@@ -182,6 +187,16 @@ namespace LCIDActivityLogs
             lcidUpdate[lcidField] = activityLog[activityLogNewField];
             tracing.Trace($"Snapshotting {lcidField} and copying {activityLogNewField} to the LCID.");
             return true;
+        }
+
+        private static void EnsureSynchronousPreOperation(IPluginExecutionContext context)
+        {
+            if (context.Stage == PreOperationStage && context.Mode == SynchronousMode)
+                return;
+
+            throw new InvalidPluginExecutionException(
+                "LCID Activity Log plugin must be registered as synchronous PreOperation on Create of new_lcidactivitylog."
+            );
         }
     }
 }

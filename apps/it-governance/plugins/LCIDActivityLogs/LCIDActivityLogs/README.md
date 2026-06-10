@@ -15,6 +15,8 @@ Register this plugin on:
 - Stage: Pre-operation
 - Mode: Synchronous
 
+The plugin actively enforces this registration. If it runs on `new_lcidactivitylog` Create outside synchronous Pre-operation, it throws before updating the related LCID so old-value audit fields cannot be silently lost.
+
 ## Supported activity types
 
 The plugin currently handles:
@@ -60,5 +62,5 @@ Activity Log Reason and Additional Information remain on the activity log and ar
 - Exits early if the execution depth is greater than 1.
 - Exits if the activity log does not reference an LCID.
 - Exits if the activity type is missing or unsupported.
-- Must run synchronously in Pre-operation so old values added to the activity log target are persisted.
+- Must run synchronously in Pre-operation so old values added to the activity log target are persisted; incorrect stage or mode is blocked at runtime.
 - Uses plugin tracing to record execution details and troubleshooting information.

@@ -102,6 +102,15 @@ namespace LCIDActivityLogs
                 }
                 else if (activityType.Value == ActivityTypeEdit)
                 {
+                    if (!target.Contains(ActivityLogLcidCostBaselineField) &&
+                        !target.Contains(ActivityLogLcidScopeField) &&
+                        !target.Contains(ActivityLogLcidExpirationDateField) &&
+                        !target.Contains(ActivityLogLcidRetireDateField))
+                    {
+                        tracing.Trace("Edit activity log contains no editable LCID fields. Exiting.");
+                        return;
+                    }
+
                     var currentLcid = service.Retrieve(
                         LcidEntity,
                         lcidRef.Id,
@@ -110,7 +119,6 @@ namespace LCIDActivityLogs
                             LcidScopeField,
                             LcidExpirationDateField,
                             LcidRetireDateField));
-
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
                         lcidUpdate,

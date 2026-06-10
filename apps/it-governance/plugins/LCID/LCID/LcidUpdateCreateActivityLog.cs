@@ -8,11 +8,21 @@ namespace LCIDActivityLogs
     {
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidActivityLogEntity = "new_lcidactivitylog";
+        private const string PreImageName = "PreImage";
 
         private const string LogLcidLookupField = "new_lcid";
         private const string LogAdditionalInformation = "new_additionalinformation";
         private const string LogActivityDescription = "new_action";
         private const string LogActivityType = "new_activitytype";
+        private const string LogReason = "new_reason";
+        private const string LogScopeField = "new_lcidscope";
+        private const string LogScopeOldField = "new_lcidscopeold";
+        private const string LogCostBaselineField = "new_lcidcostbaseline";
+        private const string LogCostBaselineOldField = "new_lcidcostbaselineold";
+        private const string LogRetiresAtField = "new_lcidretiredate";
+        private const string LogRetiresAtOldField = "new_lcidretiredateold";
+        private const string LogExpirationDateField = "new_lcidexpirationdate";
+        private const string LogExpirationDateOldField = "new_lcidexpirationdateold";
 
         private const int ActivityTypeUpdate = 100000002;
 
@@ -53,12 +63,26 @@ namespace LCIDActivityLogs
                     return;
                 }
 
-                var changes = new StringBuilder();
+                if (!ContainsTrackedField(target))
+                {
+                    tracing.Trace("No tracked LCID fields changed. Exiting.");
+                    return;
+                }
 
-                AppendIfPresent(target, changes, RetiresAtField, "Retires At");
-                AppendIfPresent(target, changes, ExpirationDateField, "Expiration Date");
-                AppendIfPresent(target, changes, ScopeField, "Scope");
-                AppendIfPresent(target, changes, CostBaseline, "Cost Baseline");
+                if (!context.PreEntityImages.Contains(PreImageName))
+                {
+                    throw new InvalidPluginExecutionException(
+                        $"The {PreImageName} pre-image is required for LCID update auditing.");
+                }
+
+                var preImage = context.PreEntityImages[PreImageName];
+                var changes = new StringBuilder();
+                var log = new Entity(LcidActivityLogEntity);
+
+                AppendChangeIfPresent(target, preImage, log, changes, RetiresAtField, LogRetiresAtField, LogRetiresAtOldField, "Retires At");
+                AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date");
+                AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope");
+                AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline");
 
                 if (changes.Length == 0)
                 {
@@ -66,10 +90,10 @@ namespace LCIDActivityLogs
                     return;
                 }
 
-                var log = new Entity(LcidActivityLogEntity);
                 log[LogLcidLookupField] = new EntityReference(LcidEntity, target.Id);
                 log[LogActivityType] = new OptionSetValue(ActivityTypeUpdate);
                 log[LogActivityDescription] = "Update";
+                log[LogReason] = "LCID fields updated directly.";
                 log[LogAdditionalInformation] = changes.ToString().Trim();
 
                 service.Create(log);
@@ -83,13 +107,56 @@ namespace LCIDActivityLogs
             }
         }
 
-        private static void AppendIfPresent(Entity target, StringBuilder changes, string fieldName, string label)
+        private static bool ContainsTrackedField(Entity target)
         {
-            if (!target.Contains(fieldName))
+            return target.Contains(RetiresAtField) ||
+                   target.Contains(ExpirationDateField) ||
+                   target.Contains(ScopeField) ||
+                   target.Contains(CostBaseline);
+        }
+
+        private static void AppendChangeIfPresent(
+            Entity target,
+            Entity preImage,
+            Entity log,
+            StringBuilder changes,
+            string lcidField,
+            string logNewField,
+            string logOldField,
+            string label)
+        {
+            if (!target.Contains(lcidField))
                 return;
 
-            var value = target[fieldName];
-            changes.AppendLine($"{label}: {FormatValue(value)}");
+            var oldValue = preImage.GetAttributeValue<object>(lcidField);
+            var newValue = target[lcidField];
+
+            if (ValuesEqual(oldValue, newValue))
+                return;
+
+            log[logOldField] = oldValue;
+            log[logNewField] = newValue;
+            changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
+        }
+
+        private static bool ValuesEqual(object oldValue, object newValue)
+        {
+            if (oldValue == null || newValue == null)
+                return oldValue == null && newValue == null;
+
+            if (oldValue is OptionSetValue oldOption && newValue is OptionSetValue newOption)
+                return oldOption.Value == newOption.Value;
+
+            if (oldValue is Money oldMoney && newValue is Money newMoney)
+                return oldMoney.Value == newMoney.Value;
+
+            if (oldValue is EntityReference oldReference && newValue is EntityReference newReference)
+            {
+                return oldReference.LogicalName == newReference.LogicalName &&
+                       oldReference.Id == newReference.Id;
+            }
+
+            return oldValue.Equals(newValue);
         }
 
         private static string FormatValue(object value)

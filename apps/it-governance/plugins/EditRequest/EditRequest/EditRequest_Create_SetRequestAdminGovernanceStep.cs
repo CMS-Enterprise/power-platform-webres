@@ -8,10 +8,23 @@ namespace EditRequest
     {
         private const string EditRequestEntity = "cr69a_editrequest";
         private const string FormNeedsEditsField = "cr69a_whichformneedsedits";
+        private const string WhatChangesAreNeededField = "cr3ee_changes_needed";
+        private const string AdditionalInformationField = "cr3ee_additionalinformation";
+        private const string AdminNoteField = "cr69a_adminnotes";
         private const string RequestLookupField = "cr69a_systemintake";
         private const string ReviewLookupField = "cr69a_systemintakeadmin";
-        private const string RequestStepField = "new_admingovernanceprocessstep";
-        private const string ReviewStepField = "new_admingovernancetasklist";
+        private const string ActivityLogEntity = "new_activitylogs";
+        private const string ActivityLogRequestLookupField = "new_systemintake";
+        private const string ActivityLogReviewLookupField = "new_adminreview";
+        private const string ActivityLogTargetStepField = "new_process_target_step";
+        private const string ActivityLogActivityTypeField = "cr3ee_activitytype";
+        private const string ActivityLogActivityField = "new_activity";
+        private const string ActivityLogActivityByField = "new_activityby";
+        private const string ActivityLogWhichFormNeedsEditsField = "new_whichformneedsedits";
+        private const string ActivityLogWhatChangesAreNeededField = "new_whatchangesareneeded";
+        private const string ActivityLogAdditionalInformationField = "new_additionalinformation";
+        private const string ActivityLogAdminNoteField = "new_adminnote";
+        private const string SystemUserEntity = "systemuser";
 
         private const int PostOperationStage = 40;
 
@@ -23,6 +36,7 @@ namespace EditRequest
         private const int ProcessStepIntakeRequest = 971270006;
         private const int ProcessStepDraftBusinessCase = 971270001;
         private const int ProcessStepFinalBusinessCase = 971270003;
+        private const int ActivityTypeEditRequest = 216640005;
 
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -64,11 +78,11 @@ namespace EditRequest
                     return;
                 }
 
-                int processStep;
-                if (!TryMapProcessStep(formNeedsEdits.Value, out processStep))
+                int targetStep;
+                if (!TryMapTargetStep(formNeedsEdits.Value, out targetStep))
                 {
                     tracing?.Trace(
-                        "EditRequest_Create_SetRequestAdminGovernanceStep: Form needs edits value {0} does not update process steps. Exiting.",
+                        "EditRequest_Create_SetRequestAdminGovernanceStep: Form needs edits value {0} does not create an Activity Log. Exiting.",
                         formNeedsEdits.Value.ToString(CultureInfo.InvariantCulture)
                     );
                     return;
@@ -81,12 +95,38 @@ namespace EditRequest
                 var reviewRef = GetRequiredReference(target, tracing, ReviewLookupField, "Review");
                 if (requestRef == null || reviewRef == null)
                 {
-                    tracing?.Trace("EditRequest_Create_SetRequestAdminGovernanceStep: Request and Review are both required to keep steps in sync. Exiting before updates.");
+                    tracing?.Trace("EditRequest_Create_SetRequestAdminGovernanceStep: Request and Review are both required to keep steps in sync. Exiting before Activity Log creation.");
                     return;
                 }
 
-                UpdateRelatedStep(requestRef, service, tracing, RequestStepField, "Request", processStep);
-                UpdateRelatedStep(reviewRef, service, tracing, ReviewStepField, "Review", processStep);
+                var activityLog = new Entity(ActivityLogEntity);
+                activityLog[ActivityLogRequestLookupField] = requestRef;
+                activityLog[ActivityLogReviewLookupField] = reviewRef;
+                activityLog[ActivityLogTargetStepField] = new OptionSetValue(targetStep);
+                activityLog[ActivityLogActivityTypeField] = new OptionSetValue(ActivityTypeEditRequest);
+                activityLog[ActivityLogActivityField] = BuildActivityLogNote(formNeedsEdits.Value, targetStep);
+                activityLog[ActivityLogWhichFormNeedsEditsField] = new OptionSetValue(formNeedsEdits.Value);
+                CopyIfPresent(target, activityLog, WhatChangesAreNeededField, ActivityLogWhatChangesAreNeededField);
+                CopyIfPresent(target, activityLog, AdditionalInformationField, ActivityLogAdditionalInformationField);
+                CopyIfPresent(target, activityLog, AdminNoteField, ActivityLogAdminNoteField);
+
+                var activityByRef = GetSubmittingUserReference(context);
+                if (activityByRef != null)
+                    activityLog[ActivityLogActivityByField] = activityByRef;
+
+                var activityLogId = service.Create(activityLog);
+
+                tracing?.Trace(
+                    "EditRequest_Create_SetRequestAdminGovernanceStep: Created Activity Log {0}. Request={1}:{2}, Review={3}:{4}, TargetStep={5}, ActivityType={6}, ActivityBy={7}",
+                    activityLogId,
+                    requestRef.LogicalName,
+                    requestRef.Id,
+                    reviewRef.LogicalName,
+                    reviewRef.Id,
+                    targetStep.ToString(CultureInfo.InvariantCulture),
+                    ActivityTypeEditRequest.ToString(CultureInfo.InvariantCulture),
+                    activityByRef != null ? activityByRef.Id.ToString() : "(null)"
+                );
             }
             catch (Exception ex)
             {
@@ -177,47 +217,80 @@ namespace EditRequest
             return relatedRef;
         }
 
-        private static void UpdateRelatedStep(
-            EntityReference relatedRef,
-            IOrganizationService service,
-            ITracingService tracing,
-            string stepField,
-            string relatedRecordName,
-            int processStep)
-        {
-            var relatedUpdate = new Entity(relatedRef.LogicalName, relatedRef.Id);
-            relatedUpdate[stepField] = new OptionSetValue(processStep);
-
-            service.Update(relatedUpdate);
-
-            tracing?.Trace(
-                "EditRequest_Create_SetRequestAdminGovernanceStep: Updated {0} {1}:{2}. {3}={4}",
-                relatedRecordName,
-                relatedRef.LogicalName,
-                relatedRef.Id,
-                stepField,
-                processStep.ToString(CultureInfo.InvariantCulture)
-            );
-        }
-
-        private static bool TryMapProcessStep(int formNeedsEdits, out int processStep)
+        private static bool TryMapTargetStep(int formNeedsEdits, out int targetStep)
         {
             switch (formNeedsEdits)
             {
                 case FormIntakeRequest:
-                    processStep = ProcessStepIntakeRequest;
+                    targetStep = ProcessStepIntakeRequest;
                     return true;
                 case FormDraftBusinessCase:
-                    processStep = ProcessStepDraftBusinessCase;
+                    targetStep = ProcessStepDraftBusinessCase;
                     return true;
                 case FormFinalBusinessCase:
-                    processStep = ProcessStepFinalBusinessCase;
+                    targetStep = ProcessStepFinalBusinessCase;
                     return true;
                 case FormNoTargetProvided:
                 default:
-                    processStep = 0;
+                    targetStep = 0;
                     return false;
             }
+        }
+
+        private static string BuildActivityLogNote(int formNeedsEdits, int targetStep)
+        {
+            return "Edit Request for " + GetFormNeedsEditsLabel(formNeedsEdits) +
+                ". Moving Request to " +
+                GetTargetStepLabel(targetStep) + ".";
+        }
+
+        private static string GetFormNeedsEditsLabel(int formNeedsEdits)
+        {
+            switch (formNeedsEdits)
+            {
+                case FormIntakeRequest:
+                    return "Intake Request Form";
+                case FormDraftBusinessCase:
+                    return "Draft Business Case";
+                case FormFinalBusinessCase:
+                    return "Final Business Case";
+                case FormNoTargetProvided:
+                    return "No Target Provided";
+                default:
+                    return "choice " + formNeedsEdits.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        private static string GetTargetStepLabel(int targetStep)
+        {
+            switch (targetStep)
+            {
+                case ProcessStepIntakeRequest:
+                    return "Intake Request Form";
+                case ProcessStepDraftBusinessCase:
+                    return "Draft Business Case";
+                case ProcessStepFinalBusinessCase:
+                    return "Final Business Case";
+                default:
+                    return "process step " + targetStep.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        private static EntityReference GetSubmittingUserReference(IPluginExecutionContext context)
+        {
+            var userId = context.InitiatingUserId != Guid.Empty
+                ? context.InitiatingUserId
+                : context.UserId;
+
+            return userId == Guid.Empty
+                ? null
+                : new EntityReference(SystemUserEntity, userId);
+        }
+
+        private static void CopyIfPresent(Entity source, Entity destination, string sourceField, string destinationField)
+        {
+            if (source.Attributes.Contains(sourceField))
+                destination[destinationField] = source[sourceField];
         }
     }
 }

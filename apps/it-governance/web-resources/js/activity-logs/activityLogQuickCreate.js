@@ -302,6 +302,9 @@ function updateLifecycleIdSelectionVisibility(formContext) {
 }
 
 function updateProcessTargetStepVisibility(formContext) {
+  const activityType = formContext
+    .getAttribute("cr3ee_activitytype")
+    ?.getValue();
   const stepValue = formContext
     .getAttribute("new_process_target_step")
     ?.getValue();
@@ -313,15 +316,25 @@ function updateProcessTargetStepVisibility(formContext) {
 
   setVisible(formContext, GRT_MEETING_DATE_FIELD, false);
   setVisible(formContext, GRB_REVIEW_MEETING_DATE_FIELD, false);
+  setRequired(formContext, GRT_MEETING_DATE_FIELD, false);
+  setRequired(formContext, GRB_REVIEW_MEETING_DATE_FIELD, false);
+
+  if (activityType !== ACTIVITY_TYPES.ProgressToNewStep) {
+    clearValue(formContext, GRT_MEETING_DATE_FIELD);
+    clearValue(formContext, GRB_REVIEW_MEETING_DATE_FIELD);
+    return;
+  }
 
   if (stepValue === PROCESS_TARGET_STEP_GRT_MEETING) {
     setVisible(formContext, GRT_MEETING_DATE_FIELD, true);
+    setRequired(formContext, GRT_MEETING_DATE_FIELD, true);
 
     if (grbReviewDateAttr) {
       grbReviewDateAttr.setValue(null);
     }
   } else if (stepValue === PROCESS_TARGET_STEP_GRB_REVIEW_MEETING) {
     setVisible(formContext, GRB_REVIEW_MEETING_DATE_FIELD, true);
+    setRequired(formContext, GRB_REVIEW_MEETING_DATE_FIELD, true);
 
     if (grtDateAttr) {
       grtDateAttr.setValue(null);

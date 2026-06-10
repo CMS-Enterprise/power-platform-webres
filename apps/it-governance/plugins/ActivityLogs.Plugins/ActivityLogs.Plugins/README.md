@@ -24,7 +24,7 @@ Activity Log behavior is routed by `new_activitylogs.cr3ee_activitytype`.
 | Not an IT Governance Request | `216640002` | Records the final decision, closes the Request, and marks the Admin Review complete. |
 | Not approved by GRB | `216640003` | Records the GRB rejection decision, closes the Request, and marks the Admin Review complete. |
 | Close Request | `216640004` | Records the close decision, closes the Request, and marks the Admin Review complete. |
-| Edit Request | `216640005` | Not used in this plugin context; plugin traces and exits. |
+| Edit Request | `216640005` | Syncs the target process step to the related Admin Review and Request. |
 | Re-open Request | `216640006` | Returns the Request and Admin Review to Draft and clears prior decision fields. |
 
 ---
@@ -43,7 +43,7 @@ Validates Activity Log actions before the Activity Log is created.
 - Mode: Synchronous
 
 **Behavior**
-- For Progress to a new Step:
+- For Progress to a new Step and Edit Request:
   - reads `new_process_target_step`
   - retrieves the current Admin Review step from `cr69a_systemintakeadmin.new_admingovernancetasklist`
   - blocks creation if the target step equals the current step
@@ -76,7 +76,7 @@ Applies Activity Log actions after the Activity Log is committed.
 - Stage: PostOperation (40)
 - Mode: Synchronous
 
-**Progress to a new Step behavior**
+**Progress to a new Step / Edit Request behavior**
 - Copies `new_process_target_step` to:
   - Review.`new_admingovernancetasklist`
   - Request.`new_admingovernanceprocessstep`
@@ -302,7 +302,7 @@ The related Admin Review (`cr69a_systemintakeadmin`) receives:
 
 ## Test Scenarios
 
-- Progress to Step:
+- Progress to Step and Edit Request:
   - different target step updates Review and Request
   - same target step is blocked
   - Ready for Review is cleared on both records

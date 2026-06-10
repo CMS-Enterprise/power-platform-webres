@@ -26,6 +26,7 @@ namespace SystemIntake.Plugins
         private const int ActivityTypeNotItGovernanceRequest = 216640002;
         private const int ActivityTypeNotApprovedByGrb = 216640003;
         private const int ActivityTypeCloseRequest = 216640004;
+        private const int ActivityTypeEditRequest = 216640005;
         private const int ActivityTypeReopenRequest = 216640006;
 
         private const int LifecycleIdModeCreateNew = 216640000;
@@ -77,6 +78,7 @@ namespace SystemIntake.Plugins
                 switch (activityType.Value)
                 {
                     case ActivityTypeProgressToStep:
+                    case ActivityTypeEditRequest:
                         ValidateProgressToStep(target, service, tracing);
                         break;
                     case ActivityTypeIssueLcid:

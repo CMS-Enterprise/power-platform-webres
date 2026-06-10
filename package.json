@@ -15,6 +15,11 @@
     "webres:manifest:sync": "node ./scripts/sync-webresources-manifest.mjs --manifest ./apps/it-governance/web-resources/webresources.manifest.json",
     "webres:plan:file": "node ./scripts/deploy-webresources.mjs --dry-run",
     "webres:publish:file": "node ./scripts/deploy-webresources.mjs",
+    "dataflows:list": "node ./scripts/list-dataflows.mjs",
+    "dataflows:check": "node ./scripts/check-dataflows.mjs",
+    "dataflows:check:file": "node ./scripts/check-dataflows.mjs",
+    "dataflows:pull": "node ./scripts/pull-dataflows.mjs",
+    "dataflows:pull:file": "node ./scripts/pull-dataflows.mjs",
     "cedar:clean": "node ./scripts/clean-cedar-systems-json.mjs",
     "intake:systems:clean": "node ./scripts/clean-system-intake-systems-csv.mjs"
   }

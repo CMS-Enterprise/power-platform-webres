@@ -1,10 +1,10 @@
 # LCID Activity Logs Plugin
 
-Dataverse plugin for applying LCID status changes when LCID Activity Log records are created.
+Dataverse plugin for applying LCID changes when LCID Activity Log records are created.
 
 ## Purpose
 
-This plugin listens for new LCID Activity Log records and updates the related LCID record when the activity log represents a retire or unretire action.
+This plugin listens for new LCID Activity Log records and updates the related LCID record when the activity log represents a retire, unretire, or edit action.
 
 ## Trigger
 
@@ -12,15 +12,18 @@ Register this plugin on:
 
 - Message: `Create`
 - Table: `new_lcidactivitylog`
-- Stage: Post-operation is recommended
-- Mode: Synchronous or asynchronous, depending on desired UX/logging behavior
+- Stage: Pre-operation
+- Mode: Synchronous
+
+The plugin actively enforces this registration. If it runs on `new_lcidactivitylog` Create outside synchronous Pre-operation, it throws before updating the related LCID so old-value audit fields cannot be silently lost.
 
 ## Supported activity types
 
 The plugin currently handles:
 
-- `100000000` — Retire
-- `100000001` — Unretire
+- `100000000` - Retire
+- `100000001` - Unretire
+- `100000008` - Edit
 
 ## Behavior
 
@@ -36,14 +39,28 @@ For **Unretire**, it updates the LCID with:
 - `cr3ee_lcidstatus` = Issued
 - `cr3ee_retiredat` = cleared
 
-It also copies these fields from the activity log back to the LCID when provided:
+For **Edit**, it copies fields present on the activity log to the LCID:
 
-- `new_reason`
-- `new_additionalinformation`
+- `new_lcidcostbaseline` to `cr3ee_costbaseline`
+- `new_lcidscope` to `cr3ee_scope`
+- `new_lcidexpirationdate` to `cr69a_lcidexpiresat`
+- `new_lcidretiredate` to `cr69a_retiresat`
+
+Before applying each Edit field, the plugin retrieves its current LCID value and stores it in the matching old-value field:
+
+- `new_lcidcostbaselineold`
+- `new_lcidscopeold`
+- `new_lcidexpirationdateold`
+- `new_lcidretiredateold`
+
+Only fields included in the Edit are given before/after values. Explicitly cleared Edit values are copied as null. Edit logs without any editable fields do not update the LCID.
+
+Activity Log Reason and Additional Information remain on the activity log and are never copied to the LCID.
 
 ## Notes
 
 - Exits early if the execution depth is greater than 1.
 - Exits if the activity log does not reference an LCID.
 - Exits if the activity type is missing or unsupported.
+- Must run synchronously in Pre-operation so old values added to the activity log target are persisted; incorrect stage or mode is blocked at runtime.
 - Uses plugin tracing to record execution details and troubleshooting information.

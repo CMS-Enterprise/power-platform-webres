@@ -131,6 +131,10 @@
       "name": "easi_system_intake_admin_review"
     },
     {
+      "file": "js/lcid-activity-logs/lcidActivityLogMainForm.js",
+      "name": "cr3ee_lcidActivityLogMainForm"
+    },
+    {
       "file": "js/lcid-activity-logs/lcidActivityLogQuickCreate.js",
       "name": "cr3ee_lcidActivityLogQuickCreate"
     },

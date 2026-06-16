@@ -1,12 +1,12 @@
 <!--
 REQUIRED
 - PR title must include relevant Jira ticket(s) if applicable.
-  Pattern: [EASI-1234] Title of PR
+  Pattern: [PPE-1234] Title of PR
   Use [NOREF] if no ticket exists.
 - If the change impacts a Dataverse Solution, name it explicitly below.
 -->
 
-# EASI-0000
+# PPE-0000
 
 ## Power Platform scope
 

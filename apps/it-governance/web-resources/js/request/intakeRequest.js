@@ -21,10 +21,19 @@ const REQUEST_STATUS = {
   CLOSED: 100000000,
 };
 
+const EDIT_REQUESTS_HELPER_SECTION = "section_edit_requests_helper";
+const EDIT_REQUESTS_HELPER_REFRESH_HOOK = "refreshEditRequestsHelper";
+const EDIT_REQUEST_ENTITY = "cr69a_editrequest";
+const EDIT_REQUEST_ID = "cr69a_editrequestid";
+const EDIT_REQUEST_COMPLETED = "new_completed";
+const EDIT_REQUEST_STATE = "statecode";
+const EDIT_REQUEST_REQUEST_LOOKUP = "_cr69a_systemintake_value";
+
 const ALL_SECTIONS = [
   "section_governance_process_steps",
   "section_request_type",
   "section_progress_tracker",
+  EDIT_REQUESTS_HELPER_SECTION,
   "section_linked_systems",
   "section_contact_details",
   "section_request_details",
@@ -126,6 +135,7 @@ function onLoad(executionContext) {
   }
   updateProgressTracker(formContext);
   updateRequestHelper(formContext);
+  updateEditRequestsHelper(formContext);
 }
 
 function onAdminGovTaskListChange(executionContext) {
@@ -133,6 +143,7 @@ function onAdminGovTaskListChange(executionContext) {
   showHideFields(formContext);
   updateProgressTracker(formContext);
   updateRequestHelper(formContext);
+  updateEditRequestsHelper(formContext);
 }
 
 function onSoftwareProductsChange(executionContext) {
@@ -413,6 +424,132 @@ function updateRequestHelper(formContext, attempt = 0) {
       setTimeout(() => updateRequestHelper(formContext, attempt + 1), 300);
     }
   });
+}
+
+function cleanGuid(value) {
+  return value ? String(value).replace(/[{}]/g, "") : "";
+}
+
+function getEditRequestsHelperSection(formContext) {
+  return formContext?.ui?.tabs
+    ?.get("General")
+    ?.sections?.get(EDIT_REQUESTS_HELPER_SECTION);
+}
+
+function setEditRequestsHelperSectionVisible(formContext, visible) {
+  const section = getEditRequestsHelperSection(formContext);
+  if (!section) {
+    console.warn(`Section not found: ${EDIT_REQUESTS_HELPER_SECTION}`);
+    return false;
+  }
+
+  section.setVisible(visible);
+  return true;
+}
+
+function buildOpenEditRequestsQuery(requestId) {
+  const filter =
+    `${EDIT_REQUEST_REQUEST_LOOKUP} eq ${requestId}` +
+    ` and ${EDIT_REQUEST_STATE} eq 0` +
+    ` and (${EDIT_REQUEST_COMPLETED} ne true or ${EDIT_REQUEST_COMPLETED} eq null)`;
+
+  return (
+    `?$select=${EDIT_REQUEST_ID}` +
+    `&$filter=${encodeURIComponent(filter)}` +
+    "&$top=1"
+  );
+}
+
+async function hasOpenEditRequests(formContext) {
+  const requestId = cleanGuid(formContext?.data?.entity?.getId?.());
+  const webApi = typeof Xrm !== "undefined" ? Xrm.WebApi : null;
+  if (!requestId || !webApi) {
+    return false;
+  }
+
+  const result = await webApi.retrieveMultipleRecords(
+    EDIT_REQUEST_ENTITY,
+    buildOpenEditRequestsQuery(requestId),
+  );
+
+  return (result?.entities || []).length > 0;
+}
+
+function refreshEditRequestsWebResource(formContext, attempt = 0) {
+  const controls = formContext?.ui?.controls;
+  if (!controls?.forEach) {
+    if (attempt < 20) {
+      setTimeout(
+        () => refreshEditRequestsWebResource(formContext, attempt + 1),
+        300,
+      );
+    }
+    return;
+  }
+
+  let foundRefreshHook = false;
+  const refreshTasks = [];
+
+  controls.forEach((control) => {
+    if (
+      !control ||
+      control.getControlType?.() !== "webresource" ||
+      typeof control.getContentWindow !== "function"
+    ) {
+      return;
+    }
+
+    refreshTasks.push(
+      control.getContentWindow().then(
+        (contentWindow) => {
+          if (
+            typeof contentWindow[EDIT_REQUESTS_HELPER_REFRESH_HOOK] ===
+            "function"
+          ) {
+            foundRefreshHook = true;
+            contentWindow[EDIT_REQUESTS_HELPER_REFRESH_HOOK]();
+          }
+        },
+        () => {
+          // Ignore inaccessible web resource windows during retries.
+        },
+      ),
+    );
+  });
+
+  Promise.allSettled(refreshTasks).then(() => {
+    if (!foundRefreshHook && attempt < 20) {
+      setTimeout(
+        () => refreshEditRequestsWebResource(formContext, attempt + 1),
+        300,
+      );
+    }
+  });
+}
+
+function updateEditRequestsHelper(formContext) {
+  hasOpenEditRequests(formContext)
+    .then((hasRecords) => {
+      const sectionFound = setEditRequestsHelperSectionVisible(
+        formContext,
+        hasRecords,
+      );
+
+      if (hasRecords && sectionFound) {
+        refreshEditRequestsWebResource(formContext);
+      }
+    })
+    .catch((error) => {
+      console.warn("Unable to update Edit Requests helper visibility.", error);
+      setEditRequestsHelperSectionVisible(formContext, false);
+    });
+}
+
+function refreshEditRequestsSectionVisibility() {
+  const formContext = typeof Xrm !== "undefined" ? Xrm.Page : null;
+  if (formContext) {
+    updateEditRequestsHelper(formContext);
+  }
 }
 
 function clearCustomNotificationsOnSave(executionContext) {

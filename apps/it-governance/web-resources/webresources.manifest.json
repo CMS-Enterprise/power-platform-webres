@@ -13,6 +13,9 @@
       "name": "cr69a_BusinessCaseSubmit"
     },
     {
+      "file": "html/edit-requests-helper.html"
+    },
+    {
       "file": "html/final-business-case-submit.html",
       "name": "cr69a_final_business_case_submit"
     },

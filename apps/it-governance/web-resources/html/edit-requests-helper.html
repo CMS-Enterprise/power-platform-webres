@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Requests Helper</title>
+    <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-muted: #605e5c;
+        --itgov-card-radius: 12px;
+        --itgov-card-border: rgba(0, 0, 0, 0.08);
+        --itgov-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --itgov-feedback-bg: #fff8e8;
+        --itgov-feedback-border: #d29200;
+        --itgov-primary: #0078d4;
+        --itgov-primary-hover: #106ebe;
+        --itgov-primary-text: #ffffff;
+        --itgov-button-bg: #ffffff;
+        --itgov-button-border: #8a8886;
+        --itgov-button-hover: #f3f2f1;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: transparent;
+        color: var(--itgov-text);
+      }
+
+      .edit-requests {
+        border: 1px solid var(--itgov-feedback-border);
+        border-radius: var(--itgov-card-radius);
+        background: var(--itgov-feedback-bg);
+        box-shadow: var(--itgov-card-shadow);
+        padding: 16px 18px;
+      }
+
+      .edit-requests[hidden] {
+        display: none;
+      }
+
+      .edit-requests-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .edit-requests-heading {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .edit-requests-subtitle {
+        margin: 4px 0 0 0;
+        color: var(--itgov-muted);
+        font-size: 14px;
+      }
+
+      .icon {
+        font-size: 22px;
+        line-height: 1;
+      }
+
+      .edit-request-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .edit-request-item {
+        border: 1px solid var(--itgov-card-border);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.78);
+        padding: 12px;
+      }
+
+      .edit-request-topline {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+
+      .edit-request-form {
+        color: var(--itgov-text);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .edit-request-created {
+        color: var(--itgov-muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .edit-request-section + .edit-request-section {
+        margin-top: 10px;
+      }
+
+      .edit-request-label {
+        margin: 0 0 4px 0;
+        color: var(--itgov-muted);
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      .edit-request-rich-text {
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .edit-request-rich-text p,
+      .edit-request-rich-text div {
+        margin: 0 0 8px 0;
+      }
+
+      .edit-request-rich-text p:last-child,
+      .edit-request-rich-text div:last-child,
+      .edit-request-rich-text ul:last-child,
+      .edit-request-rich-text ol:last-child {
+        margin-bottom: 0;
+      }
+
+      .edit-request-rich-text ul,
+      .edit-request-rich-text ol {
+        margin: 0 0 8px 20px;
+        padding: 0;
+      }
+
+      .edit-request-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .edit-request-button {
+        appearance: none;
+        border: 1px solid var(--itgov-button-border);
+        border-radius: 5px;
+        background: var(--itgov-button-bg);
+        color: var(--itgov-text);
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 400;
+        min-height: 34px;
+        padding: 7px 16px;
+        transition:
+          background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+
+      .edit-request-button:hover {
+        background: var(--itgov-button-hover);
+        border-color: var(--itgov-text);
+      }
+
+      .edit-request-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+
+      .edit-request-button--primary {
+        border-color: var(--itgov-primary);
+        background: var(--itgov-primary);
+        color: var(--itgov-primary-text);
+      }
+
+      .edit-request-button--primary:hover {
+        border-color: var(--itgov-primary-hover);
+        background: var(--itgov-primary-hover);
+      }
+
+      .edit-request-button--primary:focus {
+        outline: 1px solid var(--itgov-primary-text);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px var(--itgov-primary);
+      }
+
+      @media (max-width: 640px) {
+        .edit-request-topline {
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .edit-request-created {
+          white-space: normal;
+        }
+      }
+    </style>
+    <script>
+      const EDIT_REQUEST_ENTITY = "cr69a_editrequest";
+      const EDIT_REQUEST_ID = "cr69a_editrequestid";
+      const EDIT_REQUEST_CHANGES_NEEDED = "cr3ee_changes_needed";
+      const EDIT_REQUEST_ADDITIONAL_INFO = "cr3ee_additionalinformation";
+      const EDIT_REQUEST_TARGET_FORM = "cr69a_whichformneedsedits";
+      const EDIT_REQUEST_COMPLETED = "new_completed";
+      const EDIT_REQUEST_STATE = "statecode";
+      const EDIT_REQUEST_CREATED_ON = "createdon";
+      const EDIT_REQUEST_REQUEST_LOOKUP = "_cr69a_systemintake_value";
+      const EDIT_REQUESTS_HELPER_SECTION = "section_edit_requests_helper";
+      const MAX_WAIT_MS = 15000;
+      const WAIT_INTERVAL_MS = 250;
+      let editRequestActionListenersRegistered = false;
+      let editRequestsLoading = false;
+      let editRequestsRefreshQueued = false;
+
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function getParentXrm() {
+        return parent && parent.Xrm ? parent.Xrm : null;
+      }
+
+      function cleanGuid(value) {
+        return value ? String(value).replace(/[{}]/g, "") : "";
+      }
+
+      function getCurrentRequestId() {
+        const form = getParentForm();
+        return cleanGuid(form?.data?.entity?.getId?.());
+      }
+
+      function getFormattedValue(record, fieldName) {
+        return (
+          record?.[`${fieldName}@OData.Community.Display.V1.FormattedValue`] ||
+          ""
+        );
+      }
+
+      function formatShortDate(value) {
+        if (!value) return "";
+
+        const date = value instanceof Date ? value : new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "";
+        }
+
+        try {
+          return new Intl.DateTimeFormat(undefined, {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }).format(date);
+        } catch {
+          return date.toLocaleDateString();
+        }
+      }
+
+      function sanitizeRichText(value) {
+        if (!value) return "";
+
+        const template = document.createElement("template");
+        template.innerHTML = String(value);
+
+        const allowedTags = new Set([
+          "A",
+          "B",
+          "BR",
+          "DIV",
+          "EM",
+          "I",
+          "LI",
+          "OL",
+          "P",
+          "S",
+          "SPAN",
+          "STRONG",
+          "U",
+          "UL",
+        ]);
+
+        function cleanNode(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            return document.createTextNode(node.textContent || "");
+          }
+
+          if (node.nodeType !== Node.ELEMENT_NODE) {
+            return document.createDocumentFragment();
+          }
+
+          const tagName = node.tagName.toUpperCase();
+          const output = allowedTags.has(tagName)
+            ? document.createElement(tagName.toLowerCase())
+            : document.createDocumentFragment();
+
+          if (tagName === "A" && output.nodeType === Node.ELEMENT_NODE) {
+            const href = node.getAttribute("href") || "";
+            if (/^(https?:|mailto:)/i.test(href)) {
+              output.setAttribute("href", href);
+              output.setAttribute("target", "_blank");
+              output.setAttribute("rel", "noopener noreferrer");
+            }
+          }
+
+          Array.from(node.childNodes).forEach((child) => {
+            output.appendChild(cleanNode(child));
+          });
+
+          return output;
+        }
+
+        const result = document.createElement("div");
+        Array.from(template.content.childNodes).forEach((child) => {
+          result.appendChild(cleanNode(child));
+        });
+
+        return result.innerHTML.trim();
+      }
+
+      function getEditRequestCreatedDate(record) {
+        return (
+          getFormattedValue(record, EDIT_REQUEST_CREATED_ON) ||
+          formatShortDate(record?.[EDIT_REQUEST_CREATED_ON])
+        );
+      }
+
+      function getEditRequestTargetForm(record) {
+        const formatted = getFormattedValue(record, EDIT_REQUEST_TARGET_FORM);
+        if (formatted && formatted !== "No Target Provided") return formatted;
+
+        const targetForm = record?.[EDIT_REQUEST_TARGET_FORM];
+        if (targetForm === 971270000) return "Intake Request";
+        if (targetForm === 971270001) return "Draft Business Case";
+        if (targetForm === 971270002) return "Final Business Case";
+        return "";
+      }
+
+      function setParentSectionVisible(isVisible) {
+        const section = getParentForm()
+          ?.ui?.tabs?.get("General")
+          ?.sections?.get(EDIT_REQUESTS_HELPER_SECTION);
+        section?.setVisible?.(isVisible);
+      }
+
+      function notifyParentVisibilityChanged(hasEditRequests) {
+        if (
+          typeof parent?.refreshEditRequestsSectionVisibility === "function"
+        ) {
+          parent.refreshEditRequestsSectionVisibility();
+          return;
+        }
+
+        setParentSectionVisible(hasEditRequests);
+      }
+
+      function setEditRequestsBusy(isBusy) {
+        const buttons = document.querySelectorAll(".edit-request-button");
+        buttons.forEach((button) => {
+          button.disabled = isBusy;
+        });
+      }
+
+      function renderEditRequests(records) {
+        const panel = document.getElementById("editRequestsPanel");
+        const count = document.getElementById("editRequestsCount");
+        const list = document.getElementById("editRequestsList");
+
+        if (!panel || !count || !list) return 0;
+
+        list.innerHTML = "";
+
+        if (!records || records.length === 0) {
+          panel.hidden = true;
+          return 0;
+        }
+
+        count.textContent = String(records.length);
+        panel.hidden = false;
+
+        records.forEach((record) => {
+          const recordId = cleanGuid(record?.[EDIT_REQUEST_ID]);
+          const item = document.createElement("article");
+          item.className = "edit-request-item";
+          if (recordId) {
+            item.dataset.recordId = recordId;
+          }
+
+          const targetForm = getEditRequestTargetForm(record);
+          const created = getEditRequestCreatedDate(record);
+          if (targetForm || created) {
+            const topline = document.createElement("div");
+            topline.className = "edit-request-topline";
+
+            if (targetForm) {
+              const targetFormText = document.createElement("div");
+              targetFormText.className = "edit-request-form";
+              targetFormText.textContent = `Form to edit: ${targetForm}`;
+              topline.appendChild(targetFormText);
+            }
+
+            if (created) {
+              const createdText = document.createElement("div");
+              createdText.className = "edit-request-created";
+              createdText.textContent = created;
+              topline.appendChild(createdText);
+            }
+
+            item.appendChild(topline);
+          }
+
+          const changesHtml = sanitizeRichText(
+            record?.[EDIT_REQUEST_CHANGES_NEEDED],
+          );
+          const changesSection = document.createElement("div");
+          changesSection.className = "edit-request-section";
+          changesSection.innerHTML =
+            '<p class="edit-request-label">Changes needed</p>' +
+            '<div class="edit-request-rich-text">' +
+            (changesHtml || "<p>No requested changes were provided.</p>") +
+            "</div>";
+          item.appendChild(changesSection);
+
+          const additionalInfoHtml = sanitizeRichText(
+            record?.[EDIT_REQUEST_ADDITIONAL_INFO],
+          );
+          if (additionalInfoHtml) {
+            const infoSection = document.createElement("div");
+            infoSection.className = "edit-request-section";
+            infoSection.innerHTML =
+              '<p class="edit-request-label">Additional information</p>' +
+              '<div class="edit-request-rich-text">' +
+              additionalInfoHtml +
+              "</div>";
+            item.appendChild(infoSection);
+          }
+
+          if (recordId) {
+            const actions = document.createElement("div");
+            actions.className = "edit-request-actions";
+
+            const openButton = document.createElement("button");
+            openButton.type = "button";
+            openButton.className = "edit-request-button";
+            openButton.dataset.action = "open";
+            openButton.dataset.recordId = recordId;
+            openButton.textContent = "Open in new tab";
+            actions.appendChild(openButton);
+
+            const completeButton = document.createElement("button");
+            completeButton.type = "button";
+            completeButton.className =
+              "edit-request-button edit-request-button--primary";
+            completeButton.dataset.action = "complete";
+            completeButton.dataset.recordId = recordId;
+            completeButton.textContent = "Mark complete";
+            actions.appendChild(completeButton);
+
+            item.appendChild(actions);
+          }
+
+          list.appendChild(item);
+        });
+
+        return records.length;
+      }
+
+      function removeEditRequestFromDisplay(recordId) {
+        const panel = document.getElementById("editRequestsPanel");
+        const count = document.getElementById("editRequestsCount");
+        const item = document.querySelector(
+          `.edit-request-item[data-record-id="${recordId}"]`,
+        );
+
+        if (!panel || !count || !item) return;
+
+        item.remove();
+
+        const remainingItems = document.querySelectorAll(".edit-request-item");
+        count.textContent = String(remainingItems.length);
+        panel.hidden = remainingItems.length === 0;
+        setParentSectionVisible(remainingItems.length > 0);
+      }
+
+      function buildEditRequestsQuery() {
+        const selectFields = [
+          EDIT_REQUEST_ID,
+          EDIT_REQUEST_CHANGES_NEEDED,
+          EDIT_REQUEST_ADDITIONAL_INFO,
+          EDIT_REQUEST_TARGET_FORM,
+          EDIT_REQUEST_COMPLETED,
+          EDIT_REQUEST_STATE,
+          EDIT_REQUEST_CREATED_ON,
+        ].join(",");
+        const requestId = getCurrentRequestId();
+        const filter =
+          `${EDIT_REQUEST_REQUEST_LOOKUP} eq ${requestId}` +
+          ` and ${EDIT_REQUEST_STATE} eq 0` +
+          ` and (${EDIT_REQUEST_COMPLETED} ne true or ${EDIT_REQUEST_COMPLETED} eq null)`;
+
+        return (
+          `?$select=${selectFields}` +
+          `&$filter=${encodeURIComponent(filter)}` +
+          `&$orderby=${EDIT_REQUEST_CREATED_ON} desc`
+        );
+      }
+
+      async function loadEditRequests() {
+        const xrm = getParentXrm();
+        const requestId = getCurrentRequestId();
+
+        if (!xrm?.WebApi || !requestId) {
+          const renderedCount = renderEditRequests([]);
+          setParentSectionVisible(false);
+          return renderedCount;
+        }
+
+        if (editRequestsLoading) {
+          editRequestsRefreshQueued = true;
+          return null;
+        }
+
+        editRequestsLoading = true;
+
+        try {
+          const result = await xrm.WebApi.retrieveMultipleRecords(
+            EDIT_REQUEST_ENTITY,
+            buildEditRequestsQuery(),
+          );
+          const renderedCount = renderEditRequests(result?.entities || []);
+          setParentSectionVisible(renderedCount > 0);
+          return renderedCount;
+        } catch (error) {
+          console.warn(
+            "Edit Requests Helper: unable to load Edit Requests.",
+            error,
+          );
+          return null;
+        } finally {
+          editRequestsLoading = false;
+          if (editRequestsRefreshQueued) {
+            editRequestsRefreshQueued = false;
+            loadEditRequests();
+          }
+        }
+      }
+
+      async function getCurrentAppId() {
+        const globalContext = getParentXrm()?.Utility?.getGlobalContext?.();
+        const queryAppId = globalContext?.getQueryStringParameters?.()?.appid;
+        if (queryAppId) return queryAppId;
+
+        try {
+          const appProperties =
+            await globalContext?.getCurrentAppProperties?.();
+          return appProperties?.appId || "";
+        } catch {
+          return "";
+        }
+      }
+
+      async function buildEditRequestUrl(recordId) {
+        const globalContext = getParentXrm()?.Utility?.getGlobalContext?.();
+        const clientUrl = globalContext?.getClientUrl?.();
+        if (!clientUrl || !recordId) return "";
+
+        const appId = await getCurrentAppId();
+        const params = new URLSearchParams({
+          pagetype: "entityrecord",
+          etn: EDIT_REQUEST_ENTITY,
+          id: recordId,
+        });
+
+        if (appId) {
+          params.set("appid", appId);
+        }
+
+        return `${clientUrl}/main.aspx?${params.toString()}`;
+      }
+
+      async function openEditRequest(recordId, newWindow) {
+        const xrm = getParentXrm();
+
+        try {
+          const url = await buildEditRequestUrl(recordId);
+          if (newWindow && url) {
+            newWindow.opener = null;
+            newWindow.location.replace(url);
+            return;
+          }
+
+          if (url && window.open(url, "_blank")) {
+            return;
+          }
+        } catch (error) {
+          console.warn(
+            "Edit Requests Helper: unable to build record URL.",
+            error,
+          );
+        }
+
+        if (newWindow) {
+          newWindow.close();
+        }
+
+        if (xrm?.Navigation && recordId) {
+          await xrm.Navigation.openForm({
+            entityName: EDIT_REQUEST_ENTITY,
+            entityId: recordId,
+          });
+        }
+      }
+
+      async function completeEditRequest(recordId) {
+        const xrm = getParentXrm();
+        if (!xrm?.WebApi || !recordId) return;
+
+        setEditRequestsBusy(true);
+        try {
+          await xrm.WebApi.updateRecord(EDIT_REQUEST_ENTITY, recordId, {
+            [EDIT_REQUEST_COMPLETED]: true,
+          });
+          removeEditRequestFromDisplay(recordId);
+          await loadEditRequests();
+          notifyParentVisibilityChanged(
+            document.querySelectorAll(".edit-request-item").length > 0,
+          );
+        } catch (error) {
+          console.warn(
+            "Edit Requests Helper: unable to complete Edit Request.",
+            error,
+          );
+          if (xrm?.Navigation?.openAlertDialog) {
+            await xrm.Navigation.openAlertDialog({
+              text: "Something went wrong marking this Edit Request complete.",
+            });
+          }
+        } finally {
+          setEditRequestsBusy(false);
+        }
+      }
+
+      function registerEditRequestActions() {
+        if (editRequestActionListenersRegistered) return;
+
+        const panel = document.getElementById("editRequestsPanel");
+        if (!panel) return;
+
+        panel.addEventListener("click", function (event) {
+          const button = event.target?.closest?.(
+            "[data-action][data-record-id]",
+          );
+          if (!button) return;
+
+          const action = button.dataset.action;
+          const recordId = button.dataset.recordId;
+
+          if (action === "open") {
+            const newWindow = window.open("about:blank", "_blank");
+            openEditRequest(recordId, newWindow);
+            return;
+          }
+
+          if (action === "complete") {
+            completeEditRequest(recordId);
+          }
+        });
+
+        editRequestActionListenersRegistered = true;
+      }
+
+      function waitForFormData(startTime = Date.now()) {
+        if (Date.now() - startTime > MAX_WAIT_MS) {
+          loadEditRequests();
+          return;
+        }
+
+        if (!getParentForm() || !getCurrentRequestId()) {
+          window.setTimeout(() => waitForFormData(startTime), WAIT_INTERVAL_MS);
+          return;
+        }
+
+        loadEditRequests();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        registerEditRequestActions();
+        waitForFormData();
+      });
+
+      window.refreshEditRequestsHelper = loadEditRequests;
+    </script>
+  </head>
+
+  <body>
+    <div id="editRequestsPanel" class="edit-requests" hidden>
+      <div class="edit-requests-header">
+        <span class="icon">✏️</span>
+        <div>
+          <h2 class="edit-requests-heading">
+            Requested edits (<span id="editRequestsCount">0</span>)
+          </h2>
+          <p class="edit-requests-subtitle">
+            The Governance Admin Team requested these updates before this
+            request can proceed.
+          </p>
+        </div>
+      </div>
+      <div id="editRequestsList" class="edit-request-list"></div>
+    </div>
+  </body>
+</html>

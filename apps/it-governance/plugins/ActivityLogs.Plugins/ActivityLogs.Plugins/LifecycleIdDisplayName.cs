@@ -35,7 +35,7 @@ namespace SystemIntake.Plugins
                 return null;
 
             var parts = new List<string> { rawLcid.Trim() };
-            AddIfPresent(parts, NormalizeGenericSegment(GetDisplayText(values, ComponentField)));
+            AddIfPresent(parts, GetComponentAcronym(values));
             AddIfPresent(parts, NormalizeTypeSegment(GetDisplayText(values, TypeField)));
 
             if (GetBoolean(values, IsShortenedField))
@@ -126,6 +126,55 @@ namespace SystemIntake.Plugins
                 return boolean;
 
             return false;
+        }
+
+        private static string GetComponentAcronym(Entity values)
+        {
+            if (values == null || !values.Contains(ComponentField) || values[ComponentField] == null)
+                return null;
+
+            if (values[ComponentField] is OptionSetValue option)
+            {
+                switch (option.Value)
+                {
+                    case 971270000: return "CCSQ";
+                    case 971270001: return "CCIIO";
+                    case 971270002: return "CM";
+                    case 971270003: return "CMCS";
+                    case 971270004: return "CMMI";
+                    case 971270005: return "OFM";
+                    case 971270006: return "OIT";
+                    case 971270007: return "OL";
+                    case 971270008: return "CPI";
+                    case 971270009: return "CMS";
+                    case 971270010: return "EPRO";
+                    case 971270011: return "FCHCO";
+                    case 971270012: return "OAGM";
+                    case 971270013: return "OHEI";
+                    case 971270014: return "OC";
+                    case 971270015: return "OEDA";
+                    case 971270016: return "OEOCR";
+                    case 971270017: return "OHC";
+                    case 971270018: return "OMH";
+                    case 971270019: return "OPOLE";
+                    case 971270020: return "OSFLO";
+                    case 971270021: return "OSORA";
+                    case 971270022: return "OSPR";
+                    case 971270023: return "OACT";
+                    case 971270024: return "OA";
+                    case 971270025: return "OHI";
+                    case 971270026: return "OTHER";
+                    case 971270027: return "CMCH";
+                    case 971270028: return "CMHPO";
+                    case 971270029: return "OBRHI";
+                    case 971270030: return "OSSO";
+                    case 971270031:
+                    case 216640001:
+                        return null;
+                }
+            }
+
+            return NormalizeGenericSegment(GetDisplayText(values, ComponentField));
         }
 
         private static string NormalizeGenericSegment(string value)

@@ -8,6 +8,7 @@ namespace LCIDActivityLogs
     {
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidActivityLogEntity = "new_lcidactivitylog";
+        private const string PreImageName = "PreImage";
 
         private const string LogLcidLookupField = "new_lcid";
         private const string LogAdditionalInformation = "new_additionalinformation";
@@ -70,16 +71,30 @@ namespace LCIDActivityLogs
                     return;
                 }
 
-                var changes = new StringBuilder();
+                if (!ContainsTrackedField(target))
+                {
+                    tracing.Trace("No tracked LCID fields changed. Exiting.");
+                    return;
+                }
 
-                AppendChangeIfPresent(target, preImage, log, changes, RetiresAtField, LogRetiresAtField, LogRetiresAtOldField, "Retires At");
-                AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date");
-                AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope");
-                AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline");
-                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, "LCID Type");
-                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, "Low IT");
-                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, "Shortened");
-                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, "Component");
+                if (!context.PreEntityImages.Contains(PreImageName))
+                {
+                    throw new InvalidPluginExecutionException(
+                        $"The {PreImageName} pre-image is required for LCID update auditing.");
+                }
+
+                var preImage = context.PreEntityImages[PreImageName];
+                var changes = new StringBuilder();
+                var log = new Entity(LcidActivityLogEntity);
+
+                AppendChangeIfPresent(target, preImage, log, changes, RetiresAtField, LogRetiresAtField, LogRetiresAtOldField, "Retires At", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, "LCID Type", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, "Low IT", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, "Shortened", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, "Component", service, tracing);
 
                 if (changes.Length == 0)
                 {
@@ -87,10 +102,10 @@ namespace LCIDActivityLogs
                     return;
                 }
 
-                var log = new Entity(LcidActivityLogEntity);
                 log[LogLcidLookupField] = new EntityReference(LcidEntity, target.Id);
                 log[LogActivityType] = new OptionSetValue(ActivityTypeUpdate);
                 log[LogActivityDescription] = "Update";
+                log[LogReason] = "LCID fields updated directly.";
                 log[LogAdditionalInformation] = changes.ToString().Trim();
 
                 service.Create(log);
@@ -124,30 +139,9 @@ namespace LCIDActivityLogs
             string lcidField,
             string logNewField,
             string logOldField,
-            string label)
-        {
-            if (!target.Contains(fieldName))
-                return;
-
-            var oldValue = preImage.GetAttributeValue<object>(lcidField);
-            var newValue = target[lcidField];
-
-            if (ValuesEqual(oldValue, newValue))
-                return;
-
-            log[logOldField] = oldValue;
-            log[logNewField] = newValue;
-            changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
-        }
-
-        private static void AppendChangeIfPresent(
-            Entity target,
-            Entity preImage,
-            Entity log,
-            StringBuilder changes,
-            string lcidField,
-            string logNewField,
-            string label)
+            string label,
+            IOrganizationService service,
+            ITracingService tracing)
         {
             if (!target.Contains(lcidField))
                 return;
@@ -158,7 +152,32 @@ namespace LCIDActivityLogs
             if (ValuesEqual(oldValue, newValue))
                 return;
 
-            log[logNewField] = newValue;
+            log[logOldField] = ChoiceValueMapper.MapIfChoice(service, LcidEntity, lcidField, LcidActivityLogEntity, logOldField, oldValue, tracing);
+            log[logNewField] = ChoiceValueMapper.MapIfChoice(service, LcidEntity, lcidField, LcidActivityLogEntity, logNewField, newValue, tracing);
+            changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
+        }
+
+        private static void AppendChangeIfPresent(
+            Entity target,
+            Entity preImage,
+            Entity log,
+            StringBuilder changes,
+            string lcidField,
+            string logNewField,
+            string label,
+            IOrganizationService service,
+            ITracingService tracing)
+        {
+            if (!target.Contains(lcidField))
+                return;
+
+            var oldValue = preImage.GetAttributeValue<object>(lcidField);
+            var newValue = target[lcidField];
+
+            if (ValuesEqual(oldValue, newValue))
+                return;
+
+            log[logNewField] = ChoiceValueMapper.MapIfChoice(service, LcidEntity, lcidField, LcidActivityLogEntity, logNewField, newValue, tracing);
             changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
         }
 

@@ -96,9 +96,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivityLog_Create_ApplyActivityType.cs" />
+    <Compile Include="ActivityLog_Create_ValidateActivityType.cs" />
     <Compile Include="ActivityLog_Create_SyncTargetStepToReviewAndRequest.cs" />
     <Compile Include="ActivityLog_Update_BlockAll.cs" />
     <Compile Include="ActivityLog_Create_ValidateTargetStepNotCurrent.cs" />
+    <Compile Include="ChoiceValueMapper.cs" />
     <Compile Include="LifecycleIdDisplayName.cs" />
     <Compile Include="LifecycleId_SetDisplayName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

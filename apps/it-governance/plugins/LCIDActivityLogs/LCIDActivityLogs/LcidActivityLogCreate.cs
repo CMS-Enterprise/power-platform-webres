@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace LCIDActivityLogs
 {
@@ -13,6 +14,10 @@ namespace LCIDActivityLogs
         private const string ActivityLogLcidScopeField = "new_lcidscope";
         private const string ActivityLogLcidExpirationDateField = "new_lcidexpirationdate";
         private const string ActivityLogLcidRetireDateField = "new_lcidretiredate";
+        private const string ActivityLogLcidTypeField = "new_lcidtype";
+        private const string ActivityLogLcidIsLowItField = "new_lcidislowit";
+        private const string ActivityLogLcidIsShortenedField = "new_lcidisshortened";
+        private const string ActivityLogLcidComponentField = "new_lcidcomponent";
         private const string ActivityLogLcidCostBaselineOldField = "new_lcidcostbaselineold";
         private const string ActivityLogLcidScopeOldField = "new_lcidscopeold";
         private const string ActivityLogLcidExpirationDateOldField = "new_lcidexpirationdateold";
@@ -25,9 +30,17 @@ namespace LCIDActivityLogs
         private const string LcidScopeField = "cr3ee_scope";
         private const string LcidExpirationDateField = "cr69a_lcidexpiresat";
         private const string LcidRetireDateField = "cr69a_retiresat";
+        private const string LcidTypeField = "new_lcidtype";
+        private const string LcidIsLowItField = "new_lcidislowit";
+        private const string LcidIsShortenedField = "new_lcidisshortened";
+        private const string LcidComponentField = "new_lcidcomponent";
 
         private const int ActivityTypeRetire = 100000000;
         private const int ActivityTypeUnretire = 100000001;
+        private const int ActivityTypeEdit = 100000008;
+
+        private const int PreOperationStage = 20;
+        private const int SynchronousMode = 0;
 
         private const int LcidStatusIssued = 216640000;
         private const int LcidStatusRetired = 216640002;
@@ -62,6 +75,8 @@ namespace LCIDActivityLogs
                     tracing.Trace($"Unexpected entity: {target.LogicalName}");
                     return;
                 }
+
+                EnsureSynchronousPreOperation(context);
 
                 tracing.Trace("Processing LCID Activity Log create.");
 
@@ -116,6 +131,7 @@ namespace LCIDActivityLogs
                         ActivityLogLcidCostBaselineOldField,
                         LcidCostBaselineField,
                         currentLcid,
+                        service,
                         tracing);
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
@@ -124,6 +140,7 @@ namespace LCIDActivityLogs
                         ActivityLogLcidScopeOldField,
                         LcidScopeField,
                         currentLcid,
+                        service,
                         tracing);
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
@@ -132,6 +149,7 @@ namespace LCIDActivityLogs
                         ActivityLogLcidExpirationDateOldField,
                         LcidExpirationDateField,
                         currentLcid,
+                        service,
                         tracing);
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
@@ -140,28 +158,17 @@ namespace LCIDActivityLogs
                         ActivityLogLcidRetireDateOldField,
                         LcidRetireDateField,
                         currentLcid,
+                        service,
                         tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidTypeField, LcidTypeField, service, tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsLowItField, LcidIsLowItField, service, tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsShortenedField, LcidIsShortenedField, service, tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidComponentField, LcidComponentField, service, tracing);
                 }
                 else
                 {
                     tracing.Trace($"Activity type {activityType.Value} not handled. Exiting.");
                     return;
-                }
-
-                var reason = target.GetAttributeValue<string>(ActivityLogReasonField);
-                if (!string.IsNullOrWhiteSpace(reason))
-                {
-                    lcidUpdate[LcidReasonField] = reason;
-                    tracing.Trace("Copying reason from activity log to LCID.");
-                    shouldUpdate = true;
-                }
-
-                var additionalInformation = target.GetAttributeValue<string>(ActivityLogAdditionalInformationField);
-                if (!string.IsNullOrWhiteSpace(additionalInformation))
-                {
-                    lcidUpdate[LcidAdditionalInformationField] = additionalInformation;
-                    tracing.Trace("Copying additional information from activity log to LCID.");
-                    shouldUpdate = true;
                 }
 
                 if (!shouldUpdate)
@@ -187,14 +194,45 @@ namespace LCIDActivityLogs
             string activityLogOldField,
             string lcidField,
             Entity currentLcid,
+            IOrganizationService service,
             ITracingService tracing)
         {
             if (!activityLog.Contains(activityLogNewField))
                 return false;
 
             activityLog[activityLogOldField] = currentLcid.GetAttributeValue<object>(lcidField);
-            lcidUpdate[lcidField] = activityLog[activityLogNewField];
+            lcidUpdate[lcidField] = ChoiceValueMapper.MapIfChoice(
+                service,
+                LcidActivityLogEntity,
+                activityLogNewField,
+                LcidEntity,
+                lcidField,
+                activityLog[activityLogNewField],
+                tracing);
             tracing.Trace($"Snapshotting {lcidField} and copying {activityLogNewField} to the LCID.");
+            return true;
+        }
+
+        private static bool CopyFieldIfPresent(
+            Entity activityLog,
+            Entity lcidUpdate,
+            string activityLogField,
+            string lcidField,
+            IOrganizationService service,
+            ITracingService tracing)
+        {
+            if (!activityLog.Contains(activityLogField))
+                return false;
+
+            lcidUpdate[lcidField] = ChoiceValueMapper.MapIfChoice(
+                service,
+                LcidActivityLogEntity,
+                activityLogField,
+                LcidEntity,
+                lcidField,
+                activityLog[activityLogField],
+                tracing);
+            tracing.Trace($"Copying {activityLogField} to {lcidField} on the LCID.");
             return true;
         }
 

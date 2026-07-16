@@ -13,6 +13,19 @@ namespace LCIDActivityLogs
         private const string LogAdditionalInformation = "new_additionalinformation";
         private const string LogActivityDescription = "new_action";
         private const string LogActivityType = "new_activitytype";
+        private const string LogReason = "new_reason";
+        private const string LogScopeField = "new_lcidscope";
+        private const string LogScopeOldField = "new_lcidscopeold";
+        private const string LogCostBaselineField = "new_lcidcostbaseline";
+        private const string LogCostBaselineOldField = "new_lcidcostbaselineold";
+        private const string LogRetiresAtField = "new_lcidretiredate";
+        private const string LogRetiresAtOldField = "new_lcidretiredateold";
+        private const string LogExpirationDateField = "new_lcidexpirationdate";
+        private const string LogExpirationDateOldField = "new_lcidexpirationdateold";
+        private const string LogTypeField = "new_lcidtype";
+        private const string LogIsLowItField = "new_lcidislowit";
+        private const string LogIsShortenedField = "new_lcidisshortened";
+        private const string LogComponentField = "new_lcidcomponent";
 
         private const int ActivityTypeUpdate = 100000002;
 
@@ -21,6 +34,10 @@ namespace LCIDActivityLogs
 
         private const string RetiresAtField = "cr69a_retiresat";
         private const string ExpirationDateField = "cr69a_lcidexpiresat";
+        private const string TypeField = "new_lcidtype";
+        private const string IsLowItField = "new_lcidislowit";
+        private const string IsShortenedField = "new_lcidisshortened";
+        private const string ComponentField = "new_lcidcomponent";
 
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -55,10 +72,14 @@ namespace LCIDActivityLogs
 
                 var changes = new StringBuilder();
 
-                AppendIfPresent(target, changes, RetiresAtField, "Retires At");
-                AppendIfPresent(target, changes, ExpirationDateField, "Expiration Date");
-                AppendIfPresent(target, changes, ScopeField, "Scope");
-                AppendIfPresent(target, changes, CostBaseline, "Cost Baseline");
+                AppendChangeIfPresent(target, preImage, log, changes, RetiresAtField, LogRetiresAtField, LogRetiresAtOldField, "Retires At");
+                AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date");
+                AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope");
+                AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline");
+                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, "LCID Type");
+                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, "Low IT");
+                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, "Shortened");
+                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, "Component");
 
                 if (changes.Length == 0)
                 {
@@ -83,13 +104,82 @@ namespace LCIDActivityLogs
             }
         }
 
-        private static void AppendIfPresent(Entity target, StringBuilder changes, string fieldName, string label)
+        private static bool ContainsTrackedField(Entity target)
+        {
+            return target.Contains(RetiresAtField) ||
+                   target.Contains(ExpirationDateField) ||
+                   target.Contains(ScopeField) ||
+                   target.Contains(CostBaseline) ||
+                   target.Contains(TypeField) ||
+                   target.Contains(IsLowItField) ||
+                   target.Contains(IsShortenedField) ||
+                   target.Contains(ComponentField);
+        }
+
+        private static void AppendChangeIfPresent(
+            Entity target,
+            Entity preImage,
+            Entity log,
+            StringBuilder changes,
+            string lcidField,
+            string logNewField,
+            string logOldField,
+            string label)
         {
             if (!target.Contains(fieldName))
                 return;
 
-            var value = target[fieldName];
-            changes.AppendLine($"{label}: {FormatValue(value)}");
+            var oldValue = preImage.GetAttributeValue<object>(lcidField);
+            var newValue = target[lcidField];
+
+            if (ValuesEqual(oldValue, newValue))
+                return;
+
+            log[logOldField] = oldValue;
+            log[logNewField] = newValue;
+            changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
+        }
+
+        private static void AppendChangeIfPresent(
+            Entity target,
+            Entity preImage,
+            Entity log,
+            StringBuilder changes,
+            string lcidField,
+            string logNewField,
+            string label)
+        {
+            if (!target.Contains(lcidField))
+                return;
+
+            var oldValue = preImage.GetAttributeValue<object>(lcidField);
+            var newValue = target[lcidField];
+
+            if (ValuesEqual(oldValue, newValue))
+                return;
+
+            log[logNewField] = newValue;
+            changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
+        }
+
+        private static bool ValuesEqual(object oldValue, object newValue)
+        {
+            if (oldValue == null || newValue == null)
+                return oldValue == null && newValue == null;
+
+            if (oldValue is OptionSetValue oldOption && newValue is OptionSetValue newOption)
+                return oldOption.Value == newOption.Value;
+
+            if (oldValue is Money oldMoney && newValue is Money newMoney)
+                return oldMoney.Value == newMoney.Value;
+
+            if (oldValue is EntityReference oldReference && newValue is EntityReference newReference)
+            {
+                return oldReference.LogicalName == newReference.LogicalName &&
+                       oldReference.Id == newReference.Id;
+            }
+
+            return oldValue.Equals(newValue);
         }
 
         private static string FormatValue(object value)

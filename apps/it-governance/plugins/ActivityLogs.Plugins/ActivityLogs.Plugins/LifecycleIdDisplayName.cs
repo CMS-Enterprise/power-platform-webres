@@ -36,7 +36,7 @@ namespace SystemIntake.Plugins
 
             var parts = new List<string> { rawLcid.Trim() };
             AddIfPresent(parts, GetComponentAcronym(values));
-            AddIfPresent(parts, NormalizeTypeSegment(GetDisplayText(values, TypeField)));
+            AddIfPresent(parts, GetTypeAbbreviation(values));
 
             if (GetBoolean(values, IsShortenedField))
                 parts.Add("S");
@@ -125,6 +125,25 @@ namespace SystemIntake.Plugins
             if (values[field] is bool boolean)
                 return boolean;
 
+            if (values.FormattedValues.Contains(field))
+            {
+                var label = NormalizeGenericSegment(values.FormattedValues[field]);
+                if (string.Equals(label, "YES", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(label, "TRUE", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                if (string.Equals(label, "NO", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(label, "FALSE", StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            if (values[field] is OptionSetValue option)
+                return option.Value == 1 || option.Value == 100000000;
+
             return false;
         }
 
@@ -198,6 +217,23 @@ namespace SystemIntake.Plugins
                 return "RC";
 
             return normalized;
+        }
+
+        private static string GetTypeAbbreviation(Entity values)
+        {
+            if (values == null || !values.Contains(TypeField) || values[TypeField] == null)
+                return null;
+
+            if (values[TypeField] is OptionSetValue option)
+            {
+                switch (option.Value)
+                {
+                    case 100000000: return "NEW";
+                    case 100000001: return "RC";
+                }
+            }
+
+            return NormalizeTypeSegment(GetDisplayText(values, TypeField));
         }
     }
 }

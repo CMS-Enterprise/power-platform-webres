@@ -41,11 +41,6 @@ namespace LCIDActivityLogs
 
         private const int PreOperationStage = 20;
         private const int SynchronousMode = 0;
-        private const int ActivityTypeEdit = 100000008;
-
-        private const int PreOperationStage = 20;
-        private const int SynchronousMode = 0;
-
         private const int LcidStatusIssued = 216640000;
         private const int LcidStatusRetired = 216640002;
 
@@ -81,9 +76,6 @@ namespace LCIDActivityLogs
                 }
 
                 EnsureSynchronousPreOperation(context);
-
-                EnsureSynchronousPreOperation(context);
-
                 tracing.Trace("Processing LCID Activity Log create.");
 
                 var lcidRef = target.GetAttributeValue<EntityReference>(LcidLookupField);

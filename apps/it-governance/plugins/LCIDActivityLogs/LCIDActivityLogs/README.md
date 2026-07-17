@@ -46,24 +46,12 @@ For **Edit**, it copies fields present on the activity log to the LCID:
 - `new_lcidexpirationdate` to `cr69a_lcidexpiresat`
 - `new_lcidretiredate` to `cr69a_retiresat`
 
-Before applying each Edit field, the plugin retrieves its current LCID value and stores it in the matching old-value field:
-
-- `new_lcidcostbaseline` to `cr3ee_costbaseline`
-- `new_lcidscope` to `cr3ee_scope`
-- `new_lcidexpirationdate` to `cr69a_lcidexpiresat`
-- `new_lcidretiredate` to `cr69a_retiresat`
-- `new_lcidtype` to `new_lcidtype`
-- `new_lcidislowit` to `new_lcidislowit`
-- `new_lcidisshortened` to `new_lcidisshortened`
-- `new_lcidcomponent` to `new_lcidcomponent`
-
-Before applying each Edit field, the plugin retrieves its current LCID value and stores it in the matching old-value field:
+Before applying each Edit field that has an old-value field, the plugin retrieves its current LCID value and stores it in the matching old-value field:
 
 - `new_lcidcostbaselineold`
 - `new_lcidscopeold`
 - `new_lcidexpirationdateold`
 - `new_lcidretiredateold`
-
 Only fields included in the Edit are given before/after values when an old-value field exists. The LCID display metadata fields do not currently have old-value fields, so they are copied directly when present. Explicitly cleared Edit values are copied as null. Edit logs without any editable fields do not update the LCID.
 
 Activity Log Reason and Additional Information remain on the activity log and are never copied to the LCID.

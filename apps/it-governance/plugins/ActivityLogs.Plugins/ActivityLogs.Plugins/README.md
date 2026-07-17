@@ -93,23 +93,6 @@ Once an Activity Log is created, it may not be edited. Corrections must be made 
 
 ---
 
-### 4. LifecycleId_SetDisplayName
-
-**Purpose**
-Keeps the LCID primary name field formatted for admin-facing lookup display.
-
-**Trigger**
-
-- Entity: `cr69a_lifecycleids`
-- Message: `Create` and `Update`
-- Stage: PreOperation (20)
-- Mode: Synchronous
-
-**Behavior**
-
-- Throws an exception on any update attempt when enabled
-- Prevents UI edits, API updates, and automation-based changes
-
 ---
 
 ### 4. LifecycleId_SetDisplayName

@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Query;
 
 namespace LCIDActivityLogs

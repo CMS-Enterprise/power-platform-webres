@@ -9,8 +9,6 @@ namespace LCIDActivityLogs
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidActivityLogEntity = "new_lcidactivitylog";
         private const string PreImageName = "PreImage";
-        private const string PreImageName = "PreImage";
-
         private const string LogLcidLookupField = "new_lcid";
         private const string LogAdditionalInformation = "new_additionalinformation";
         private const string LogActivityDescription = "new_action";

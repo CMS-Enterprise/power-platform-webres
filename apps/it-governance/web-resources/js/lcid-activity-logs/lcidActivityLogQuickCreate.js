@@ -9,6 +9,10 @@ const LCID_ACTIVITY_TYPES = {
   ExpirationAlert: 100000007,
 };
 
+const ACTIVITY_TYPE_FIELD = "new_activitytype";
+const LCID_LOOKUP_FIELD = "new_lcid";
+const LCID_ENTITY_NAME = "cr69a_lifecycleids";
+
 const LCID_ACTIVITY_FORM_TITLES = {
   100000000: "Retire",
   100000001: "Un-retire",
@@ -32,7 +36,23 @@ const LCID_ACTIVITY_LOG_TITLES = {
 };
 
 // All fields managed by the quick create rules
-const ALL_FIELDS = [];
+const ALL_FIELDS = [
+  "new_lcidcostbaseline",
+  "new_lcidscope",
+  "new_lcidexpirationdate",
+  "new_lcidretiredate",
+  "new_lcidtype",
+  "new_lcidislowit",
+  "new_lcidisshortened",
+  "new_lcidcomponent",
+];
+
+const EDIT_LCID_PREFILL_FIELDS = [
+  "new_lcidtype",
+  "new_lcidislowit",
+  "new_lcidisshortened",
+  "new_lcidcomponent",
+];
 
 // Config per activity type - to be filled in
 const TYPE_RULES = {
@@ -45,8 +65,18 @@ const TYPE_RULES = {
 
 function onLoad(executionContext) {
   const formContext = executionContext.getFormContext();
+  const activityTypeAttribute = formContext.getAttribute(ACTIVITY_TYPE_FIELD);
+  const lcidAttribute = formContext.getAttribute(LCID_LOOKUP_FIELD);
 
   applyRules(formContext);
+  populateEditFieldsFromLcid(formContext);
+
+  activityTypeAttribute?.addOnChange(() => {
+    applyRules(formContext);
+    populateEditFieldsFromLcid(formContext);
+  });
+
+  lcidAttribute?.addOnChange(() => populateEditFieldsFromLcid(formContext));
 
   if (typeof updateLifecycleIdSelectionVisibility === "function") {
     updateLifecycleIdSelectionVisibility(formContext);
@@ -54,7 +84,7 @@ function onLoad(executionContext) {
 }
 
 function applyRules(formContext) {
-  const attr = formContext.getAttribute("new_activitytype");
+  const attr = formContext.getAttribute(ACTIVITY_TYPE_FIELD);
   const activityType = attr ? attr.getValue() : null;
   const rules = TYPE_RULES[activityType];
 
@@ -154,4 +184,52 @@ function setLCIDActivityLogTitleUnsafe(title) {
   };
 
   setTimeout(trySet, 50);
+}
+
+async function populateEditFieldsFromLcid(formContext) {
+  const activityType = formContext
+    .getAttribute(ACTIVITY_TYPE_FIELD)
+    ?.getValue();
+
+  if (activityType !== LCID_ACTIVITY_TYPES.Edit) return;
+
+  const lcidId = getLookupId(formContext, LCID_LOOKUP_FIELD);
+  if (!lcidId || typeof Xrm === "undefined" || !Xrm.WebApi?.retrieveRecord) {
+    return;
+  }
+
+  try {
+    const select = EDIT_LCID_PREFILL_FIELDS.join(",");
+    const lcid = await Xrm.WebApi.retrieveRecord(
+      LCID_ENTITY_NAME,
+      lcidId,
+      `?$select=${select}`,
+    );
+
+    EDIT_LCID_PREFILL_FIELDS.forEach((fieldName) => {
+      if (Object.prototype.hasOwnProperty.call(lcid, fieldName)) {
+        setAttributeValue(formContext, fieldName, lcid[fieldName] ?? null);
+      }
+    });
+  } catch (error) {
+    console.warn(
+      "[lcidActivityLogQuickCreate] Unable to prefill LCID edit fields.",
+      error,
+    );
+  }
+}
+
+function getLookupId(formContext, logicalName) {
+  const value = formContext.getAttribute(logicalName)?.getValue();
+  const first = Array.isArray(value) ? value[0] : null;
+  return first?.id ? String(first.id).replace(/[{}]/g, "") : null;
+}
+
+function setAttributeValue(formContext, logicalName, value) {
+  const attr = formContext.getAttribute(logicalName);
+
+  if (!attr || attr.getIsDirty?.() || attr.getValue() === value) return;
+
+  attr.setValue(value);
+  attr.fireOnChange?.();
 }

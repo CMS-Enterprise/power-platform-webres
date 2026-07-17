@@ -7,6 +7,7 @@ const LCID_ACTIVITY_TYPES = {
   Confirm: 100000005,
   UpdateRetirementDate: 100000006,
   ExpirationAlert: 100000007,
+  Edit: 100000008,
 };
 
 const ACTIVITY_TYPE_FIELD = "new_activitytype";
@@ -22,6 +23,7 @@ const LCID_ACTIVITY_FORM_TITLES = {
   100000005: "Confirm",
   100000006: "Update Retirement Date",
   100000007: "Expiration Alert",
+  100000008: "Edit",
 };
 
 const LCID_ACTIVITY_LOG_TITLES = {
@@ -33,6 +35,7 @@ const LCID_ACTIVITY_LOG_TITLES = {
   100000005: "Confirmed",
   100000006: "Retirement Date Updated",
   100000007: "Expiration Alert",
+  100000008: "Edited",
 };
 
 // All fields managed by the quick create rules
@@ -58,6 +61,11 @@ const EDIT_LCID_PREFILL_FIELDS = [
 const TYPE_RULES = {
   [LCID_ACTIVITY_TYPES.Retire]: {
     show: [],
+    hide: [],
+    require: [],
+  },
+  [LCID_ACTIVITY_TYPES.Edit]: {
+    show: ALL_FIELDS,
     hide: [],
     require: [],
   },

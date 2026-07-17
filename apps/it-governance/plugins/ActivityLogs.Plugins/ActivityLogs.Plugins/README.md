@@ -1,8 +1,9 @@
-﻿# Activity Log Governance Plugins
+# Activity Log Governance Plugins
 
 This folder contains Dataverse plugins that enforce **process governance, validation, and synchronization** when Activity Logs (`new_activitylogs`) are created as part of the System Intake workflow.
 
 These plugins ensure that:
+
 - process steps are updated consistently across Review and Request records
 - audit logs are immutable
 - invalid or no-op step changes are blocked server-side
@@ -16,20 +17,23 @@ All plugins are deployed as part of the same assembly (`ActivityLogs.Plugins.dll
 
 ### 1. ActivityLog_Create_SyncTargetStepToReviewAndRequest
 
-**Purpose**  
+**Purpose**
 Synchronizes the target process step from an Activity Log into the related:
+
 - Admin Review (`cr69a_systemintakeadmin`)
 - Request (`new_systemintake`)
 
 It also clears the **Ready for Review** flag on both records, indicating that admin review is no longer pending once an action has been taken.
 
 **Trigger**
+
 - Entity: `new_activitylogs`
 - Message: `Create`
 - Stage: **PostOperation (40)**
 - Mode: **Synchronous**
 
 **Behavior**
+
 - Copies `new_process_target_step` →
   - Review.`new_admingovernancetasklist`
   - Request.`new_admingovernanceprocessstep`
@@ -38,6 +42,7 @@ It also clears the **Ready for Review** flag on both records, indicating that ad
   - Request.`cr69a_readyforreview = false`
 
 **Issue a Lifecycle ID behavior**
+
 - If `cr3ee_lifecycleid = 216640000`, creates a new `cr69a_lifecycleids` record.
 - If `cr3ee_lifecycleid = 216640001`, retrieves the existing `cr3ee_lcid` lookup to confirm it exists.
 - Links the new or existing LCID to both the related Request and Admin Review.
@@ -46,6 +51,7 @@ It also clears the **Ready for Review** flag on both records, indicating that ad
 - Generated LCID names use the EASi raw 6-digit format `YYdddP`.
 
 **Final decision behavior**
+
 - Not an IT Governance Request, Not approved by GRB, and Close Request all:
   - move Request and Review to Finished
   - record the matching decision
@@ -55,6 +61,7 @@ It also clears the **Ready for Review** flag on both records, indicating that ad
   - mark the Admin Review complete
 
 **Re-open Request behavior**
+
 - Moves Request and Review back to Draft.
 - Clears prior Request decision date, decision, decision reason, and next steps.
 - Clears prior Admin Review decision and decision date.
@@ -67,18 +74,20 @@ This plugin replaces the old `ActivityLog_Create_SyncTargetStepToReviewAndReques
 
 ### 3. ActivityLog_Update_BlockAll
 
-**Purpose**  
+**Purpose**
 Enforces immutability of Activity Logs.
 
 Once an Activity Log is created, it may not be edited. Corrections must be made by creating a new Activity Log entry.
 
 **Trigger**
+
 - Entity: `new_activitylogs`
 - Message: `Update`
 - Stage: **PreOperation (20)**
 - Mode: **Synchronous**
 
 **Behavior**
+
 - Throws an exception on any update attempt
 - Prevents UI edits, API updates, and automation-based changes
 
@@ -86,16 +95,18 @@ Once an Activity Log is created, it may not be edited. Corrections must be made 
 
 ### 4. LifecycleId_SetDisplayName
 
-**Purpose**  
+**Purpose**
 Keeps the LCID primary name field formatted for admin-facing lookup display.
 
 **Trigger**
+
 - Entity: `cr69a_lifecycleids`
 - Message: `Create` and `Update`
 - Stage: PreOperation (20)
 - Mode: Synchronous
 
 **Behavior**
+
 - Throws an exception on any update attempt when enabled
 - Prevents UI edits, API updates, and automation-based changes
 
@@ -103,16 +114,18 @@ Keeps the LCID primary name field formatted for admin-facing lookup display.
 
 ### 4. LifecycleId_SetDisplayName
 
-**Purpose**  
+**Purpose**
 Keeps the LCID primary name field formatted for admin-facing lookup display.
 
 **Trigger**
+
 - Entity: `cr69a_lifecycleids`
 - Message: `Create` and `Update`
 - Stage: PreOperation (20)
 - Mode: Synchronous
 
 **Behavior**
+
 - Reads `cr3ee_rawlcid` plus LCID display metadata.
 - Sets `cr69a_lcid` to `rawLCID-component-type-shortened-lowIT`.
 - Omits missing metadata and false/blank booleans.
@@ -143,6 +156,7 @@ When the Activity Log says to create a new LCID:
 - Duplicate protection: configure a Dataverse alternate key on `cr69a_lifecycleids.cr3ee_rawlcid` so concurrent issuances cannot create duplicate raw LCIDs.
 
 The new LCID receives:
+
 - `cr3ee_rawlcid` = generated raw LCID
 - `cr69a_lcid` = display name built from raw LCID and metadata
 - `cr3ee_costbaseline` = Activity Log `cr3ee_projectcostbaseline`
@@ -156,6 +170,7 @@ The new LCID receives:
 - `new_lcidcomponent` = Activity Log `new_lcidcomponent`
 
 Display name format:
+
 - Base value is `cr3ee_rawlcid`.
 - `new_lcidcomponent` is appended when present.
 - `new_lcidtype` abbreviates `NEW_SYSTEM` to `NEW` and `RECOMPETE` to `RC`.
@@ -164,6 +179,7 @@ Display name format:
 - Example: `123456-OIT-NEW-S-L`.
 
 Ownership is best-effort:
+
 - Try to assign `ownerid` to the Team named `IT Governance Admin Team`.
 - If that team is not found, trace the missing team and let Dataverse default ownership to the calling user.
 - Missing team ownership should not block issuing the LCID.
@@ -171,6 +187,7 @@ Ownership is best-effort:
 ### Updating the Request
 
 The related Request (`new_systemintake`) receives:
+
 - `new_admingovernanceprocessstep = 971270009`
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270000`
@@ -182,6 +199,7 @@ The related Request (`new_systemintake`) receives:
 ### Updating the Admin Review
 
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
+
 - `new_admingovernancetasklist = 971270009`
 - `cr69a_decision = 971270000`
 - `cr69a_decisiondate = DateTime.UtcNow`
@@ -192,6 +210,7 @@ The related Admin Review (`cr69a_systemintakeadmin`) receives:
 ### Flow responsibilities that remain outside this plugin
 
 Power Automate can continue to handle:
+
 - email notification
 - LCID activity log creation
 
@@ -204,6 +223,7 @@ Those actions can remain asynchronous and do not need to block the Request/Revie
 ### Update the Request
 
 The related Request (`new_systemintake`) receives:
+
 - `new_admingovernanceprocessstep = 971270009`
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270001`
@@ -212,22 +232,22 @@ The related Request (`new_systemintake`) receives:
 - `cr69a_readyforreview = false`
 - `cr69a_status = 100000000`
 
-
 ### Update the Review
 
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
+
 - `new_admingovernancetasklist = 971270009`
 - `cr69a_decision = 971270001`
 - `cr69a_decisiondate = DateTime.UtcNow`
 - `cr69a_readyforreview = false`
 - `cr69a_systemintakecomplete = 971270000`
 
-
 ## Not approved by GRB Details
 
 ### Update the Request
 
 The related Request (`new_systemintake`) receives:
+
 - `new_admingovernanceprocessstep = 971270009`
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270002`
@@ -236,24 +256,22 @@ The related Request (`new_systemintake`) receives:
 - `cr69a_readyforreview = false`
 - `cr69a_status = 100000000`
 
-
 ### Update the Review
 
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
+
 - `new_admingovernancetasklist = 971270009`
 - `cr69a_decision = 971270002`
 - `cr69a_decisiondate = DateTime.UtcNow`
 - `cr69a_readyforreview = false`
 - `cr69a_systemintakecomplete = 971270000`
 
-
-
 ## Close Request Details
-
 
 ### Update the Request
 
 The related Request (`new_systemintake`) receives:
+
 - `new_admingovernanceprocessstep = 971270009`
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270003`
@@ -262,22 +280,22 @@ The related Request (`new_systemintake`) receives:
 - `cr69a_readyforreview = false`
 - `cr69a_status = 100000000`
 
-
 ### Update the Review
 
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
+
 - `new_admingovernancetasklist = 971270009`
 - `cr69a_decision = 971270003`
 - `cr69a_decisiondate = DateTime.UtcNow`
 - `cr69a_readyforreview = false`
 - `cr69a_systemintakecomplete = 971270000`
 
-
 ## Re-Open Request Details
 
 ### Update the Request
 
 The related Request (`new_systemintake`) receives:
+
 - `new_admingovernanceprocessstep = 971270006`
 - `cr3ee_decisiondate = null`
 - `easi_decision = null`
@@ -286,10 +304,10 @@ The related Request (`new_systemintake`) receives:
 - `cr69a_readyforreview = false`
 - `cr69a_status = 971270000`
 
-
 ### Update the Review
 
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
+
 - `new_admingovernancetasklist = 971270006`
 - `cr69a_decision = null`
 - `cr69a_decisiondate = null`
@@ -302,9 +320,9 @@ This ensures Activity Logs remain a reliable audit trail.
 
 ## Design Principles
 
-- **Server-side enforcement first**  
+- **Server-side enforcement first**
   Client-side JavaScript is used for UX, but plugins are the source of truth.
-- **Immutable audit records**  
+- **Immutable audit records**
   Activity Logs represent historical actions and should never change.
 - **Clear separation of concerns**
   - Validation (PreOperation)
@@ -344,4 +362,3 @@ This ensures Activity Logs remain a reliable audit trail.
 - Additional validation based on Activity Log type
 
 ---
-

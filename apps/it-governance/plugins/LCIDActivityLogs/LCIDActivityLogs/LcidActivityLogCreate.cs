@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace LCIDActivityLogs
 {
@@ -41,6 +42,10 @@ namespace LCIDActivityLogs
 
         private const int PreOperationStage = 20;
         private const int SynchronousMode = 0;
+        private const int ActivityTypeEdit = 100000008;
+
+        private const int PreOperationStage = 20;
+        private const int SynchronousMode = 0;
 
         private const int LcidStatusIssued = 216640000;
         private const int LcidStatusRetired = 216640002;
@@ -75,6 +80,8 @@ namespace LCIDActivityLogs
                     tracing.Trace($"Unexpected entity: {target.LogicalName}");
                     return;
                 }
+
+                EnsureSynchronousPreOperation(context);
 
                 EnsureSynchronousPreOperation(context);
 

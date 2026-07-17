@@ -43,9 +43,27 @@
         return "Updated Retirement Date";
       case LCID_ACTIVITY_TYPES.ExpirationAlert:
         return "Expiration Alert";
+      case LCID_ACTIVITY_TYPES.Edit:
+        return "Edit";
       default:
         return "Activity";
     }
+  }
+
+  function getEditPrefillParameters(formContext) {
+    return Object.entries(LCID_EDIT_FIELD_MAPPINGS).reduce(
+      (parameters, [lcidField, activityLogField]) => {
+        const value = formContext.getAttribute(lcidField)?.getValue();
+
+        if (value !== null && value !== undefined) {
+          parameters[activityLogField] =
+            value instanceof Date ? value.toISOString() : value;
+        }
+
+        return parameters;
+      },
+      {},
+    );
   }
 
   async function openLCIDActivityLogQuickCreate(
@@ -134,6 +152,14 @@
     return openLCIDActivityLogQuickCreate(
       primaryControl,
       LCID_ACTIVITY_TYPES.Unretire,
+    );
+  };
+
+  window.ITGov_EditLCID = function (primaryControl) {
+    return openLCIDActivityLogQuickCreate(
+      primaryControl,
+      LCID_ACTIVITY_TYPES.Edit,
+      getEditPrefillParameters(primaryControl),
     );
   };
 })();

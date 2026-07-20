@@ -55,6 +55,10 @@ const LIFECYCLE_ID_SELECTION_GENERATE_NEW = 216640000;
 const ALL_FIELDS = [
   "cr3ee_lifecycleid",
   "cr3ee_lcid",
+  "new_lcidtype",
+  "new_lcidcomponent",
+  "new_lcidisshortened",
+  "new_lcidislowit",
   "cr3ee_projectcostbaseline",
   "cr3ee_expirationdate",
   "cr3ee_scopeofthelifecycleid",
@@ -84,6 +88,10 @@ const TYPE_RULES = {
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",
+      "new_lcidtype",
+      "new_lcidcomponent",
+      "new_lcidisshortened",
+      "new_lcidislowit",
       "cr3ee_projectcostbaseline",
       "cr3ee_expirationdate",
       "cr3ee_scopeofthelifecycleid",
@@ -109,6 +117,10 @@ const TYPE_RULES = {
     ],
     hide: [
       "cr3ee_lcid",
+      "new_lcidtype",
+      "new_lcidislowit",
+      "new_lcidcomponent",
+      "new_lcidisshortened",
       "cr3ee_scopeofthelifecycleid",
       "cr3ee_expirationdate",
       "cr3ee_reason",
@@ -132,6 +144,10 @@ const TYPE_RULES = {
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",
+      "new_lcidtype",
+      "new_lcidcomponent",
+      "new_lcidisshortened",
+      "new_lcidislowit",
       "cr3ee_projectcostbaseline",
       "cr3ee_expirationdate",
       "cr3ee_scopeofthelifecycleid",
@@ -159,6 +175,10 @@ const TYPE_RULES = {
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",
+      "new_lcidtype",
+      "new_lcidcomponent",
+      "new_lcidisshortened",
+      "new_lcidislowit",
       "cr3ee_projectcostbaseline",
       "cr3ee_expirationdate",
       "cr3ee_scopeofthelifecycleid",
@@ -182,6 +202,10 @@ const TYPE_RULES = {
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",
+      "new_lcidtype",
+      "new_lcidcomponent",
+      "new_lcidisshortened",
+      "new_lcidislowit",
       "cr3ee_projectcostbaseline",
       "cr3ee_expirationdate",
       "cr3ee_scopeofthelifecycleid",
@@ -207,6 +231,10 @@ const TYPE_RULES = {
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",
+      "new_lcidtype",
+      "new_lcidcomponent",
+      "new_lcidisshortened",
+      "new_lcidislowit",
       "cr3ee_projectcostbaseline",
       "cr3ee_expirationdate",
       "cr3ee_scopeofthelifecycleid",
@@ -285,6 +313,14 @@ function updateLifecycleIdSelectionVisibility(formContext) {
 
     setVisible(formContext, "cr3ee_expirationdate", true);
     setRequired(formContext, "cr3ee_expirationdate", true);
+    setVisible(formContext, "new_lcidtype", true);
+    setRequired(formContext, "new_lcidtype", true);
+    setVisible(formContext, "new_lcidcomponent", true);
+    setRequired(formContext, "new_lcidcomponent", true);
+    setVisible(formContext, "new_lcidisshortened", true);
+    setRequired(formContext, "new_lcidisshortened", true);
+    setVisible(formContext, "new_lcidislowit", true);
+    setRequired(formContext, "new_lcidislowit", true);
 
     setVisible(formContext, "cr3ee_scopeofthelifecycleid", true);
   } else {

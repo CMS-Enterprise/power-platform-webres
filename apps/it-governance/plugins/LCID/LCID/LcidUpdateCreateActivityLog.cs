@@ -86,14 +86,14 @@ namespace LCIDActivityLogs
                 var changes = new StringBuilder();
                 var log = new Entity(LcidActivityLogEntity);
 
-                AppendChangeIfPresent(target, preImage, log, changes, RetiresAtField, LogRetiresAtField, LogRetiresAtOldField, "Retires At", service, tracing);
-                AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date", service, tracing);
-                AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope", service, tracing);
-                AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline", service, tracing);
-                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, "LCID Type", service, tracing);
-                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, "Low IT", service, tracing);
-                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, "Shortened", service, tracing);
-                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, "Component", service, tracing);
+                AppendChangeIfPresent(target, preImage, log, changes, RetiresAtField, LogRetiresAtField, LogRetiresAtOldField, "Retires At");
+                AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date");
+                AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope");
+                AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline");
+                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, "LCID Type");
+                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, "Low IT");
+                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, "Shortened");
+                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, "Component");
 
                 if (changes.Length == 0)
                 {
@@ -138,9 +138,7 @@ namespace LCIDActivityLogs
             string lcidField,
             string logNewField,
             string logOldField,
-            string label,
-            IOrganizationService service,
-            ITracingService tracing)
+            string label)
         {
             if (!target.Contains(lcidField))
                 return;
@@ -151,8 +149,8 @@ namespace LCIDActivityLogs
             if (ValuesEqual(oldValue, newValue))
                 return;
 
-            log[logOldField] = ChoiceValueMapper.MapIfChoice(service, LcidEntity, lcidField, LcidActivityLogEntity, logOldField, oldValue, tracing);
-            log[logNewField] = ChoiceValueMapper.MapIfChoice(service, LcidEntity, lcidField, LcidActivityLogEntity, logNewField, newValue, tracing);
+            log[logOldField] = oldValue;
+            log[logNewField] = newValue;
             changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
         }
 
@@ -163,9 +161,7 @@ namespace LCIDActivityLogs
             StringBuilder changes,
             string lcidField,
             string logNewField,
-            string label,
-            IOrganizationService service,
-            ITracingService tracing)
+            string label)
         {
             if (!target.Contains(lcidField))
                 return;
@@ -176,7 +172,7 @@ namespace LCIDActivityLogs
             if (ValuesEqual(oldValue, newValue))
                 return;
 
-            log[logNewField] = ChoiceValueMapper.MapIfChoice(service, LcidEntity, lcidField, LcidActivityLogEntity, logNewField, newValue, tracing);
+            log[logNewField] = newValue;
             changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
         }
 

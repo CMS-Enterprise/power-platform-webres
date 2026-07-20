@@ -129,7 +129,6 @@ namespace LCIDActivityLogs
                         ActivityLogLcidCostBaselineOldField,
                         LcidCostBaselineField,
                         currentLcid,
-                        service,
                         tracing);
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
@@ -138,7 +137,6 @@ namespace LCIDActivityLogs
                         ActivityLogLcidScopeOldField,
                         LcidScopeField,
                         currentLcid,
-                        service,
                         tracing);
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
@@ -147,7 +145,6 @@ namespace LCIDActivityLogs
                         ActivityLogLcidExpirationDateOldField,
                         LcidExpirationDateField,
                         currentLcid,
-                        service,
                         tracing);
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
@@ -156,12 +153,11 @@ namespace LCIDActivityLogs
                         ActivityLogLcidRetireDateOldField,
                         LcidRetireDateField,
                         currentLcid,
-                        service,
                         tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidTypeField, LcidTypeField, service, tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsLowItField, LcidIsLowItField, service, tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsShortenedField, LcidIsShortenedField, service, tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidComponentField, LcidComponentField, service, tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidTypeField, LcidTypeField, tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsLowItField, LcidIsLowItField, tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsShortenedField, LcidIsShortenedField, tracing);
+                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidComponentField, LcidComponentField, tracing);
                 }
                 else
                 {
@@ -192,21 +188,13 @@ namespace LCIDActivityLogs
             string activityLogOldField,
             string lcidField,
             Entity currentLcid,
-            IOrganizationService service,
             ITracingService tracing)
         {
             if (!activityLog.Contains(activityLogNewField))
                 return false;
 
             activityLog[activityLogOldField] = currentLcid.GetAttributeValue<object>(lcidField);
-            lcidUpdate[lcidField] = ChoiceValueMapper.MapIfChoice(
-                service,
-                LcidActivityLogEntity,
-                activityLogNewField,
-                LcidEntity,
-                lcidField,
-                activityLog[activityLogNewField],
-                tracing);
+            lcidUpdate[lcidField] = activityLog[activityLogNewField];
             tracing.Trace($"Snapshotting {lcidField} and copying {activityLogNewField} to the LCID.");
             return true;
         }
@@ -216,20 +204,12 @@ namespace LCIDActivityLogs
             Entity lcidUpdate,
             string activityLogField,
             string lcidField,
-            IOrganizationService service,
             ITracingService tracing)
         {
             if (!activityLog.Contains(activityLogField))
                 return false;
 
-            lcidUpdate[lcidField] = ChoiceValueMapper.MapIfChoice(
-                service,
-                LcidActivityLogEntity,
-                activityLogField,
-                LcidEntity,
-                lcidField,
-                activityLog[activityLogField],
-                tracing);
+            lcidUpdate[lcidField] = activityLog[activityLogField];
             tracing.Trace($"Copying {activityLogField} to {lcidField} on the LCID.");
             return true;
         }

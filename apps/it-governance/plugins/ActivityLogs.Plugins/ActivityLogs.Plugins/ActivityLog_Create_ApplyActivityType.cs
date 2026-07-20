@@ -388,15 +388,15 @@ namespace SystemIntake.Plugins
             var lcid = new Entity(LcidEntity);
 
             lcid[LcidRawLcidField] = rawLcid;
-            CopyIfPresent(activityLog, lcid, ProjectCostBaselineField, LcidCostBaselineField, service, tracing);
-            CopyIfPresent(activityLog, lcid, ExpirationDateField, LcidExpiresAtField, service, tracing);
+            CopyIfPresent(activityLog, lcid, ProjectCostBaselineField, LcidCostBaselineField);
+            CopyIfPresent(activityLog, lcid, ExpirationDateField, LcidExpiresAtField);
             lcid[LcidIssuedAtField] = DateTime.UtcNow;
             lcid[LcidStatusField] = new OptionSetValue(LcidStatusIssued);
-            CopyIfPresent(activityLog, lcid, ScopeField, LcidScopeField, service, tracing);
-            CopyIfPresent(activityLog, lcid, LcidTypeField, LcidTypeField, service, tracing);
-            CopyIfPresent(activityLog, lcid, LcidIsLowItField, LcidIsLowItField, service, tracing);
-            CopyIfPresent(activityLog, lcid, LcidIsShortenedField, LcidIsShortenedField, service, tracing);
-            CopyIfPresent(activityLog, lcid, LcidComponentField, LcidComponentField, service, tracing);
+            CopyIfPresent(activityLog, lcid, ScopeField, LcidScopeField);
+            CopyIfPresent(activityLog, lcid, LcidTypeField, LcidTypeField);
+            CopyIfPresent(activityLog, lcid, LcidIsLowItField, LcidIsLowItField);
+            CopyIfPresent(activityLog, lcid, LcidIsShortenedField, LcidIsShortenedField);
+            CopyIfPresent(activityLog, lcid, LcidComponentField, LcidComponentField);
             lcid[LcidNameField] = LifecycleIdDisplayName.Build(lcid) ?? rawLcid;
 
             var adminTeamRef = TryGetAdminTeam(service, tracing);
@@ -496,37 +496,6 @@ namespace SystemIntake.Plugins
 
             tracing?.Trace("ActivityLog_Create_ApplyActivityType: Admin team found: {0}.", teams.Entities[0].Id);
             return new EntityReference(TeamEntity, teams.Entities[0].Id);
-        }
-
-        private static void CopyIfPresent(
-            Entity source,
-            Entity destination,
-            string sourceField,
-            string destinationField,
-            IOrganizationService service,
-            ITracingService tracing)
-        {
-            if (source.Attributes.Contains(sourceField))
-            {
-                var mappedValue = ChoiceValueMapper.MapIfChoice(
-                    service,
-                    ActivityLogEntity,
-                    sourceField,
-                    LcidEntity,
-                    destinationField,
-                    source[sourceField],
-                    tracing);
-
-                destination[destinationField] = mappedValue;
-                if (source.FormattedValues.Contains(sourceField))
-                    destination.FormattedValues[destinationField] = source.FormattedValues[sourceField];
-                else
-                {
-                    var mappedLabel = ChoiceValueMapper.GetMappedChoiceLabel(service, LcidEntity, destinationField, mappedValue);
-                    if (!string.IsNullOrWhiteSpace(mappedLabel))
-                        destination.FormattedValues[destinationField] = mappedLabel;
-                }
-            }
         }
 
         private static void CopyIfPresent(Entity source, Entity destination, string sourceField, string destinationField)

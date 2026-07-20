@@ -40,8 +40,7 @@ The activity log includes:
 - Activity type: `100000002` / Update
 - Action: `Update`
 - Reason: `LCID fields updated directly.`
-- Structured before/after values in the matching `new_lcid*old` and `new_lcid*` fields
-- Display metadata fields are logged in the matching `new_lcid*` fields and summarized in additional information.
+- Structured before/after values in the matching old-value and new-value fields, including the `cr3ee_lcid*old` fields for LCID Type, Low IT, Shortened, and Component
 - Additional information: formatted list of actual changes from old value to new value
 
 ## Notes

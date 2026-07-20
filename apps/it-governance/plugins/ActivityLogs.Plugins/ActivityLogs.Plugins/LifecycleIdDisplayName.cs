@@ -29,10 +29,10 @@ namespace SystemIntake.Plugins
         {
             var rawLcid = GetText(values, RawLcidField);
             if (string.IsNullOrWhiteSpace(rawLcid))
-                rawLcid = GetText(values, NameField);
-
-            if (string.IsNullOrWhiteSpace(rawLcid))
-                return null;
+            {
+                var existingName = GetText(values, NameField);
+                return string.IsNullOrWhiteSpace(existingName) ? null : existingName.Trim();
+            }
 
             var parts = new List<string> { rawLcid.Trim() };
             AddIfPresent(parts, GetComponentAcronym(values));
@@ -61,7 +61,9 @@ namespace SystemIntake.Plugins
 
         internal static ColumnSet ColumnSet()
         {
-            return new ColumnSet(DisplaySourceFields);
+            var columns = new ColumnSet(DisplaySourceFields);
+            columns.AddColumn(NameField);
+            return columns;
         }
 
         private static void CopyValue(string field, Entity target, Entity existing, Entity values)

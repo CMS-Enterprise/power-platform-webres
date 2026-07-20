@@ -23,9 +23,13 @@ namespace LCIDActivityLogs
         private const string LogExpirationDateField = "new_lcidexpirationdate";
         private const string LogExpirationDateOldField = "new_lcidexpirationdateold";
         private const string LogTypeField = "new_lcidtype";
+        private const string LogTypeOldField = "cr3ee_lcidtypeold";
         private const string LogIsLowItField = "new_lcidislowit";
+        private const string LogIsLowItOldField = "cr3ee_lcidislowitold";
         private const string LogIsShortenedField = "new_lcidisshortened";
+        private const string LogIsShortenedOldField = "cr3ee_lcidisshortenedold";
         private const string LogComponentField = "new_lcidcomponent";
+        private const string LogComponentOldField = "cr3ee_lcidcomponentold";
 
         private const int ActivityTypeUpdate = 100000002;
 
@@ -90,10 +94,10 @@ namespace LCIDActivityLogs
                 AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date");
                 AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope");
                 AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline");
-                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, "LCID Type");
-                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, "Low IT");
-                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, "Shortened");
-                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, "Component");
+                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, LogTypeOldField, "LCID Type");
+                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, LogIsLowItOldField, "Low IT");
+                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, LogIsShortenedOldField, "Shortened");
+                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, LogComponentOldField, "Component");
 
                 if (changes.Length == 0)
                 {
@@ -150,28 +154,6 @@ namespace LCIDActivityLogs
                 return;
 
             log[logOldField] = oldValue;
-            log[logNewField] = newValue;
-            changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
-        }
-
-        private static void AppendChangeIfPresent(
-            Entity target,
-            Entity preImage,
-            Entity log,
-            StringBuilder changes,
-            string lcidField,
-            string logNewField,
-            string label)
-        {
-            if (!target.Contains(lcidField))
-                return;
-
-            var oldValue = preImage.GetAttributeValue<object>(lcidField);
-            var newValue = target[lcidField];
-
-            if (ValuesEqual(oldValue, newValue))
-                return;
-
             log[logNewField] = newValue;
             changes.AppendLine($"{label}: {FormatValue(oldValue)} -> {FormatValue(newValue)}");
         }

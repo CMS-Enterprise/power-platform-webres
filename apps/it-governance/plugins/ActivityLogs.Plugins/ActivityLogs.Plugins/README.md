@@ -113,6 +113,7 @@ Keeps the LCID primary name field formatted for admin-facing lookup display.
 - Sets `cr69a_lcid` to `rawLCID-component-type-shortened-lowIT`.
 - Omits missing metadata and false/blank booleans.
 - Falls back to the raw LCID when no metadata exists.
+- Preserves the existing primary name as-is when a legacy record has no raw LCID, preventing formatted segments from being appended twice.
 
 ---
 

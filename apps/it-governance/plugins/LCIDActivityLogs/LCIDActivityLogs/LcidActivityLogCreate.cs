@@ -22,6 +22,10 @@ namespace LCIDActivityLogs
         private const string ActivityLogLcidScopeOldField = "new_lcidscopeold";
         private const string ActivityLogLcidExpirationDateOldField = "new_lcidexpirationdateold";
         private const string ActivityLogLcidRetireDateOldField = "new_lcidretiredateold";
+        private const string ActivityLogLcidTypeOldField = "cr3ee_lcidtypeold";
+        private const string ActivityLogLcidIsLowItOldField = "cr3ee_lcidislowitold";
+        private const string ActivityLogLcidIsShortenedOldField = "cr3ee_lcidisshortenedold";
+        private const string ActivityLogLcidComponentOldField = "cr3ee_lcidcomponentold";
 
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidStatusField = "cr3ee_lcidstatus";
@@ -113,6 +117,12 @@ namespace LCIDActivityLogs
                 }
                 else if (activityType.Value == ActivityTypeEdit)
                 {
+                    if (!ContainsEditableField(target))
+                    {
+                        tracing.Trace("Edit activity log contains no editable LCID fields. Exiting.");
+                        return;
+                    }
+
                     var currentLcid = service.Retrieve(
                         LcidEntity,
                         lcidRef.Id,
@@ -120,7 +130,11 @@ namespace LCIDActivityLogs
                             LcidCostBaselineField,
                             LcidScopeField,
                             LcidExpirationDateField,
-                            LcidRetireDateField));
+                            LcidRetireDateField,
+                            LcidTypeField,
+                            LcidIsLowItField,
+                            LcidIsShortenedField,
+                            LcidComponentField));
 
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
@@ -154,10 +168,10 @@ namespace LCIDActivityLogs
                         LcidRetireDateField,
                         currentLcid,
                         tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidTypeField, LcidTypeField, tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsLowItField, LcidIsLowItField, tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsShortenedField, LcidIsShortenedField, tracing);
-                    shouldUpdate |= CopyFieldIfPresent(target, lcidUpdate, ActivityLogLcidComponentField, LcidComponentField, tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidTypeField, ActivityLogLcidTypeOldField, LcidTypeField, currentLcid, tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsLowItField, ActivityLogLcidIsLowItOldField, LcidIsLowItField, currentLcid, tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsShortenedField, ActivityLogLcidIsShortenedOldField, LcidIsShortenedField, currentLcid, tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidComponentField, ActivityLogLcidComponentOldField, LcidComponentField, currentLcid, tracing);
                 }
                 else
                 {
@@ -181,6 +195,18 @@ namespace LCIDActivityLogs
             }
         }
 
+        private static bool ContainsEditableField(Entity activityLog)
+        {
+            return activityLog.Contains(ActivityLogLcidCostBaselineField) ||
+                   activityLog.Contains(ActivityLogLcidScopeField) ||
+                   activityLog.Contains(ActivityLogLcidExpirationDateField) ||
+                   activityLog.Contains(ActivityLogLcidRetireDateField) ||
+                   activityLog.Contains(ActivityLogLcidTypeField) ||
+                   activityLog.Contains(ActivityLogLcidIsLowItField) ||
+                   activityLog.Contains(ActivityLogLcidIsShortenedField) ||
+                   activityLog.Contains(ActivityLogLcidComponentField);
+        }
+
         private static bool CopyEditFieldIfPresent(
             Entity activityLog,
             Entity lcidUpdate,
@@ -196,21 +222,6 @@ namespace LCIDActivityLogs
             activityLog[activityLogOldField] = currentLcid.GetAttributeValue<object>(lcidField);
             lcidUpdate[lcidField] = activityLog[activityLogNewField];
             tracing.Trace($"Snapshotting {lcidField} and copying {activityLogNewField} to the LCID.");
-            return true;
-        }
-
-        private static bool CopyFieldIfPresent(
-            Entity activityLog,
-            Entity lcidUpdate,
-            string activityLogField,
-            string lcidField,
-            ITracingService tracing)
-        {
-            if (!activityLog.Contains(activityLogField))
-                return false;
-
-            lcidUpdate[lcidField] = activityLog[activityLogField];
-            tracing.Trace($"Copying {activityLogField} to {lcidField} on the LCID.");
             return true;
         }
 

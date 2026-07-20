@@ -453,7 +453,7 @@ namespace SystemIntake.Plugins
                 throw new InvalidPluginExecutionException("The daily LCID limit has been reached. The EASi LCID format supports at most 10 generated LCIDs per Eastern calendar day.");
 
             var nextName = prefix + matchingLcidCount.ToString(CultureInfo.InvariantCulture);
-            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Generated next LCID name {0}.", nextName);
+            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Generated next raw LCID {0}.", nextName);
             return nextName;
         }
 

@@ -48,7 +48,7 @@ It also clears the **Ready for Review** flag on both records, indicating that ad
 - Links the new or existing LCID to both the related Request and Admin Review.
 - Records the issue decision on both records.
 - Marks the Request as closed with `cr69a_status = 100000000`.
-- Generated LCID names use the EASi raw 6-digit format `YYdddP`.
+- Generated LCID names use the EASi raw 7-digit format `YYdddPP`.
 
 **Final decision behavior**
 
@@ -126,17 +126,17 @@ When the Activity Log says to create a new LCID:
 - Entity: `cr69a_lifecycleids`
 - Primary name field: `cr69a_lcid`
 - Raw LCID field: `cr3ee_rawlcid`
-- Name format: `YYdddP`
+- Name format: `YYdddPP`
   - `YY` = last two digits of the Eastern calendar year
   - `ddd` = Eastern day-of-year, zero-padded to 3 digits
-  - `P` = count of existing generated LCIDs for that Eastern calendar day, `0` through `9`
+  - `PP` = count of existing generated LCIDs for that Eastern calendar day, zero-padded from `00` through `99`
 - Numbering strategy:
   - convert `DateTime.UtcNow` to Eastern time using `Eastern Standard Time`
   - build the 5-character prefix, such as `26166` for the 166th day of 2026
   - query existing `cr3ee_rawlcid` values that start with the current Eastern prefix
-  - append the count of matching records as the final sequence digit
-  - throw a clear plugin error if the count is greater than `9`
-- Daily limit: the EASi format supports at most 10 generated LCIDs per Eastern calendar day.
+  - append the zero-padded count of matching records as the final two sequence digits
+  - throw a clear plugin error if the count is greater than `99`
+- Daily limit: the EASi format supports at most 100 generated LCIDs per Eastern calendar day.
 - Duplicate protection: configure a Dataverse alternate key on `cr69a_lifecycleids.cr3ee_rawlcid` so concurrent issuances cannot create duplicate raw LCIDs.
 
 The new LCID receives:

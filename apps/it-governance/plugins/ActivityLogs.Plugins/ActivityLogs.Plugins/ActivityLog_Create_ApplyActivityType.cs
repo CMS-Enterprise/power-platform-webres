@@ -449,10 +449,10 @@ namespace SystemIntake.Plugins
                 pagingCookie = results.PagingCookie;
             }
 
-            if (matchingLcidCount > 9)
-                throw new InvalidPluginExecutionException("The daily LCID limit has been reached. The EASi LCID format supports at most 10 generated LCIDs per Eastern calendar day.");
+            if (matchingLcidCount > 99)
+                throw new InvalidPluginExecutionException("The daily LCID limit has been reached. The EASi LCID format supports at most 100 generated LCIDs per Eastern calendar day.");
 
-            var nextName = prefix + matchingLcidCount.ToString(CultureInfo.InvariantCulture);
+            var nextName = prefix + matchingLcidCount.ToString("00", CultureInfo.InvariantCulture);
             tracing?.Trace("ActivityLog_Create_ApplyActivityType: Generated next raw LCID {0}.", nextName);
             return nextName;
         }

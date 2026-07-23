@@ -41,11 +41,16 @@ namespace SystemIntake.Plugins
 
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidNameField = "cr69a_lcid";
+        private const string LcidRawLcidField = "cr3ee_rawlcid";
         private const string LcidCostBaselineField = "cr3ee_costbaseline";
         private const string LcidExpiresAtField = "cr69a_lcidexpiresat";
         private const string LcidIssuedAtField = "cr69a_issuedat";
         private const string LcidStatusField = "cr3ee_lcidstatus";
         private const string LcidScopeField = "cr3ee_scope";
+        private const string LcidTypeField = "new_lcidtype";
+        private const string LcidIsLowItField = "new_lcidislowit";
+        private const string LcidIsShortenedField = "new_lcidisshortened";
+        private const string LcidComponentField = "new_lcidcomponent";
 
         private const string TeamEntity = "team";
         private const string TeamNameField = "name";
@@ -379,22 +384,27 @@ namespace SystemIntake.Plugins
 
         private static EntityReference CreateLifecycleId(Entity activityLog, IOrganizationService service, ITracingService tracing)
         {
-            var lcidName = GenerateNextLifecycleIdName(service, tracing);
+            var rawLcid = GenerateNextLifecycleIdName(service, tracing);
             var lcid = new Entity(LcidEntity);
 
-            lcid[LcidNameField] = lcidName;
+            lcid[LcidRawLcidField] = rawLcid;
             CopyIfPresent(activityLog, lcid, ProjectCostBaselineField, LcidCostBaselineField);
             CopyIfPresent(activityLog, lcid, ExpirationDateField, LcidExpiresAtField);
             lcid[LcidIssuedAtField] = DateTime.UtcNow;
             lcid[LcidStatusField] = new OptionSetValue(LcidStatusIssued);
             CopyIfPresent(activityLog, lcid, ScopeField, LcidScopeField);
+            CopyIfPresent(activityLog, lcid, LcidTypeField, LcidTypeField);
+            CopyIfPresent(activityLog, lcid, LcidIsLowItField, LcidIsLowItField);
+            CopyIfPresent(activityLog, lcid, LcidIsShortenedField, LcidIsShortenedField);
+            CopyIfPresent(activityLog, lcid, LcidComponentField, LcidComponentField);
+            lcid[LcidNameField] = LifecycleIdDisplayName.Build(lcid) ?? rawLcid;
 
             var adminTeamRef = TryGetAdminTeam(service, tracing);
             if (adminTeamRef != null)
                 lcid["ownerid"] = adminTeamRef;
 
             var lcidId = service.Create(lcid);
-            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Created LCID {0} with name {1}.", lcidId, lcidName);
+            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Created LCID {0} with raw LCID {1}.", lcidId, rawLcid);
 
             return new EntityReference(LcidEntity, lcidId);
         }
@@ -412,17 +422,16 @@ namespace SystemIntake.Plugins
 
         private static string GenerateNextLifecycleIdName(IOrganizationService service, ITracingService tracing)
         {
-            var year = GetEasternNow().Year;
-            var prefix = "LC-" + year.ToString(CultureInfo.InvariantCulture) + "-";
-            var maxSequence = 0;
+            var prefix = GenerateLifecycleIdPrefix(GetEasternNow());
+            var matchingLcidCount = 0;
             var pageNumber = 1;
             var pagingCookie = string.Empty;
 
             while (true)
             {
                 var query = new QueryExpression(LcidEntity);
-                query.ColumnSet = new ColumnSet(LcidNameField);
-                query.Criteria.AddCondition(LcidNameField, ConditionOperator.Like, prefix + "%");
+                query.ColumnSet = new ColumnSet(LcidRawLcidField);
+                query.Criteria.AddCondition(LcidRawLcidField, ConditionOperator.Like, prefix + "%");
                 query.PageInfo = new PagingInfo
                 {
                     Count = 5000,
@@ -431,13 +440,7 @@ namespace SystemIntake.Plugins
                 };
 
                 var results = service.RetrieveMultiple(query);
-                foreach (var entity in results.Entities)
-                {
-                    var existingName = entity.GetAttributeValue<string>(LcidNameField);
-                    var sequence = ParseLifecycleIdSequence(existingName, prefix);
-                    if (sequence > maxSequence)
-                        maxSequence = sequence;
-                }
+                matchingLcidCount += results.Entities.Count;
 
                 if (!results.MoreRecords)
                     break;
@@ -446,9 +449,18 @@ namespace SystemIntake.Plugins
                 pagingCookie = results.PagingCookie;
             }
 
-            var nextName = prefix + (maxSequence + 1).ToString(CultureInfo.InvariantCulture);
-            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Generated next LCID name {0}.", nextName);
+            if (matchingLcidCount > 99)
+                throw new InvalidPluginExecutionException("The daily LCID limit has been reached. The EASi LCID format supports at most 100 generated LCIDs per Eastern calendar day.");
+
+            var nextName = prefix + matchingLcidCount.ToString("00", CultureInfo.InvariantCulture);
+            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Generated next raw LCID {0}.", nextName);
             return nextName;
+        }
+
+        private static string GenerateLifecycleIdPrefix(DateTime easternNow)
+        {
+            return easternNow.ToString("yy", CultureInfo.InvariantCulture)
+                + easternNow.DayOfYear.ToString("000", CultureInfo.InvariantCulture);
         }
 
         private static DateTime GetEasternNow()
@@ -466,16 +478,6 @@ namespace SystemIntake.Plugins
             {
                 return DateTime.UtcNow;
             }
-        }
-
-        private static int ParseLifecycleIdSequence(string existingName, string prefix)
-        {
-            if (string.IsNullOrWhiteSpace(existingName) || !existingName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                return 0;
-
-            var suffix = existingName.Substring(prefix.Length);
-            int sequence;
-            return int.TryParse(suffix, NumberStyles.Integer, CultureInfo.InvariantCulture, out sequence) ? sequence : 0;
         }
 
         private static EntityReference TryGetAdminTeam(IOrganizationService service, ITracingService tracing)

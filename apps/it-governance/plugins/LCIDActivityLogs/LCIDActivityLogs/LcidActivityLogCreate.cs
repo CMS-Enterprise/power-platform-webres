@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 
@@ -14,10 +14,18 @@ namespace LCIDActivityLogs
         private const string ActivityLogLcidScopeField = "new_lcidscope";
         private const string ActivityLogLcidExpirationDateField = "new_lcidexpirationdate";
         private const string ActivityLogLcidRetireDateField = "new_lcidretiredate";
+        private const string ActivityLogLcidTypeField = "new_lcidtype";
+        private const string ActivityLogLcidIsLowItField = "new_lcidislowit";
+        private const string ActivityLogLcidIsShortenedField = "new_lcidisshortened";
+        private const string ActivityLogLcidComponentField = "new_lcidcomponent";
         private const string ActivityLogLcidCostBaselineOldField = "new_lcidcostbaselineold";
         private const string ActivityLogLcidScopeOldField = "new_lcidscopeold";
         private const string ActivityLogLcidExpirationDateOldField = "new_lcidexpirationdateold";
         private const string ActivityLogLcidRetireDateOldField = "new_lcidretiredateold";
+        private const string ActivityLogLcidTypeOldField = "cr3ee_lcidtypeold";
+        private const string ActivityLogLcidIsLowItOldField = "cr3ee_lcidislowitold";
+        private const string ActivityLogLcidIsShortenedOldField = "cr3ee_lcidisshortenedold";
+        private const string ActivityLogLcidComponentOldField = "cr3ee_lcidcomponentold";
 
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidStatusField = "cr3ee_lcidstatus";
@@ -26,6 +34,10 @@ namespace LCIDActivityLogs
         private const string LcidScopeField = "cr3ee_scope";
         private const string LcidExpirationDateField = "cr69a_lcidexpiresat";
         private const string LcidRetireDateField = "cr69a_retiresat";
+        private const string LcidTypeField = "new_lcidtype";
+        private const string LcidIsLowItField = "new_lcidislowit";
+        private const string LcidIsShortenedField = "new_lcidisshortened";
+        private const string LcidComponentField = "new_lcidcomponent";
 
         private const int ActivityTypeRetire = 100000000;
         private const int ActivityTypeUnretire = 100000001;
@@ -33,7 +45,6 @@ namespace LCIDActivityLogs
 
         private const int PreOperationStage = 20;
         private const int SynchronousMode = 0;
-
         private const int LcidStatusIssued = 216640000;
         private const int LcidStatusRetired = 216640002;
 
@@ -69,7 +80,6 @@ namespace LCIDActivityLogs
                 }
 
                 EnsureSynchronousPreOperation(context);
-
                 tracing.Trace("Processing LCID Activity Log create.");
 
                 var lcidRef = target.GetAttributeValue<EntityReference>(LcidLookupField);
@@ -107,10 +117,7 @@ namespace LCIDActivityLogs
                 }
                 else if (activityType.Value == ActivityTypeEdit)
                 {
-                    if (!target.Contains(ActivityLogLcidCostBaselineField) &&
-                        !target.Contains(ActivityLogLcidScopeField) &&
-                        !target.Contains(ActivityLogLcidExpirationDateField) &&
-                        !target.Contains(ActivityLogLcidRetireDateField))
+                    if (!ContainsEditableField(target))
                     {
                         tracing.Trace("Edit activity log contains no editable LCID fields. Exiting.");
                         return;
@@ -123,7 +130,12 @@ namespace LCIDActivityLogs
                             LcidCostBaselineField,
                             LcidScopeField,
                             LcidExpirationDateField,
-                            LcidRetireDateField));
+                            LcidRetireDateField,
+                            LcidTypeField,
+                            LcidIsLowItField,
+                            LcidIsShortenedField,
+                            LcidComponentField));
+
                     shouldUpdate |= CopyEditFieldIfPresent(
                         target,
                         lcidUpdate,
@@ -156,6 +168,10 @@ namespace LCIDActivityLogs
                         LcidRetireDateField,
                         currentLcid,
                         tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidTypeField, ActivityLogLcidTypeOldField, LcidTypeField, currentLcid, tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsLowItField, ActivityLogLcidIsLowItOldField, LcidIsLowItField, currentLcid, tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidIsShortenedField, ActivityLogLcidIsShortenedOldField, LcidIsShortenedField, currentLcid, tracing);
+                    shouldUpdate |= CopyEditFieldIfPresent(target, lcidUpdate, ActivityLogLcidComponentField, ActivityLogLcidComponentOldField, LcidComponentField, currentLcid, tracing);
                 }
                 else
                 {
@@ -177,6 +193,18 @@ namespace LCIDActivityLogs
                 tracing.Trace("Plugin failed: " + ex);
                 throw new InvalidPluginExecutionException("Error in LCID Activity Log plugin.", ex);
             }
+        }
+
+        private static bool ContainsEditableField(Entity activityLog)
+        {
+            return activityLog.Contains(ActivityLogLcidCostBaselineField) ||
+                   activityLog.Contains(ActivityLogLcidScopeField) ||
+                   activityLog.Contains(ActivityLogLcidExpirationDateField) ||
+                   activityLog.Contains(ActivityLogLcidRetireDateField) ||
+                   activityLog.Contains(ActivityLogLcidTypeField) ||
+                   activityLog.Contains(ActivityLogLcidIsLowItField) ||
+                   activityLog.Contains(ActivityLogLcidIsShortenedField) ||
+                   activityLog.Contains(ActivityLogLcidComponentField);
         }
 
         private static bool CopyEditFieldIfPresent(

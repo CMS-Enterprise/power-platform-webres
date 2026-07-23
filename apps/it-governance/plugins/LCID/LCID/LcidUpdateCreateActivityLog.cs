@@ -9,7 +9,6 @@ namespace LCIDActivityLogs
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidActivityLogEntity = "new_lcidactivitylog";
         private const string PreImageName = "PreImage";
-
         private const string LogLcidLookupField = "new_lcid";
         private const string LogAdditionalInformation = "new_additionalinformation";
         private const string LogActivityDescription = "new_action";
@@ -23,6 +22,14 @@ namespace LCIDActivityLogs
         private const string LogRetiresAtOldField = "new_lcidretiredateold";
         private const string LogExpirationDateField = "new_lcidexpirationdate";
         private const string LogExpirationDateOldField = "new_lcidexpirationdateold";
+        private const string LogTypeField = "new_lcidtype";
+        private const string LogTypeOldField = "cr3ee_lcidtypeold";
+        private const string LogIsLowItField = "new_lcidislowit";
+        private const string LogIsLowItOldField = "cr3ee_lcidislowitold";
+        private const string LogIsShortenedField = "new_lcidisshortened";
+        private const string LogIsShortenedOldField = "cr3ee_lcidisshortenedold";
+        private const string LogComponentField = "new_lcidcomponent";
+        private const string LogComponentOldField = "cr3ee_lcidcomponentold";
 
         private const int ActivityTypeUpdate = 100000002;
 
@@ -31,6 +38,10 @@ namespace LCIDActivityLogs
 
         private const string RetiresAtField = "cr69a_retiresat";
         private const string ExpirationDateField = "cr69a_lcidexpiresat";
+        private const string TypeField = "new_lcidtype";
+        private const string IsLowItField = "new_lcidislowit";
+        private const string IsShortenedField = "new_lcidisshortened";
+        private const string ComponentField = "new_lcidcomponent";
 
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -83,6 +94,10 @@ namespace LCIDActivityLogs
                 AppendChangeIfPresent(target, preImage, log, changes, ExpirationDateField, LogExpirationDateField, LogExpirationDateOldField, "Expiration Date");
                 AppendChangeIfPresent(target, preImage, log, changes, ScopeField, LogScopeField, LogScopeOldField, "Scope");
                 AppendChangeIfPresent(target, preImage, log, changes, CostBaseline, LogCostBaselineField, LogCostBaselineOldField, "Cost Baseline");
+                AppendChangeIfPresent(target, preImage, log, changes, TypeField, LogTypeField, LogTypeOldField, "LCID Type");
+                AppendChangeIfPresent(target, preImage, log, changes, IsLowItField, LogIsLowItField, LogIsLowItOldField, "Low IT");
+                AppendChangeIfPresent(target, preImage, log, changes, IsShortenedField, LogIsShortenedField, LogIsShortenedOldField, "Shortened");
+                AppendChangeIfPresent(target, preImage, log, changes, ComponentField, LogComponentField, LogComponentOldField, "Component");
 
                 if (changes.Length == 0)
                 {
@@ -112,7 +127,11 @@ namespace LCIDActivityLogs
             return target.Contains(RetiresAtField) ||
                    target.Contains(ExpirationDateField) ||
                    target.Contains(ScopeField) ||
-                   target.Contains(CostBaseline);
+                   target.Contains(CostBaseline) ||
+                   target.Contains(TypeField) ||
+                   target.Contains(IsLowItField) ||
+                   target.Contains(IsShortenedField) ||
+                   target.Contains(ComponentField);
         }
 
         private static void AppendChangeIfPresent(

@@ -18,6 +18,11 @@
     cr3ee_scope: "new_lcidscope",
     cr69a_lcidexpiresat: "new_lcidexpirationdate",
     cr69a_retiresat: "new_lcidretiredate",
+    // new_lcidtype is fetched by the quick create form script because
+    // this opener uses new_lcidtype as the new_lcid lookup type parameter.
+    new_lcidislowit: "new_lcidislowit",
+    new_lcidisshortened: "new_lcidisshortened",
+    new_lcidcomponent: "new_lcidcomponent",
   };
 
   function getActivityTypeLabel(activityTypeValue) {

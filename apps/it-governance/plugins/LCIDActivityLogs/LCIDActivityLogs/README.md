@@ -52,6 +52,10 @@ Before applying each Edit field, the plugin retrieves its current LCID value and
 - `new_lcidscopeold`
 - `new_lcidexpirationdateold`
 - `new_lcidretiredateold`
+- `cr3ee_lcidtypeold`
+- `cr3ee_lcidislowitold`
+- `cr3ee_lcidisshortenedold`
+- `cr3ee_lcidcomponentold`
 
 Only fields included in the Edit are given before/after values. Explicitly cleared Edit values are copied as null. Edit logs without any editable fields do not update the LCID.
 
@@ -62,5 +66,6 @@ Activity Log Reason and Additional Information remain on the activity log and ar
 - Exits early if the execution depth is greater than 1.
 - Exits if the activity log does not reference an LCID.
 - Exits if the activity type is missing or unsupported.
+- Exits before retrieving the LCID when an Edit activity log contains none of the editable LCID fields.
 - Must run synchronously in Pre-operation so old values added to the activity log target are persisted; incorrect stage or mode is blocked at runtime.
 - Uses plugin tracing to record execution details and troubleshooting information.

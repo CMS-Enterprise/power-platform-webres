@@ -15,7 +15,7 @@ Register this plugin on:
 - Stage: Post-operation is recommended
 - Mode: Synchronous or asynchronous, depending on desired UX/logging behavior
 - Pre-image name: `PreImage`
-- Pre-image columns: `cr69a_retiresat`, `cr69a_lcidexpiresat`, `cr3ee_scope`, `cr3ee_costbaseline`
+- Pre-image columns: `cr69a_retiresat`, `cr69a_lcidexpiresat`, `cr3ee_scope`, `cr3ee_costbaseline`, `new_lcidtype`, `new_lcidislowit`, `new_lcidisshortened`, `new_lcidcomponent`
 
 ## Tracked fields
 
@@ -25,6 +25,10 @@ The plugin currently logs changes to:
 - `cr69a_lcidexpiresat` - Expiration Date
 - `cr3ee_scope` - Scope
 - `cr3ee_costbaseline` - Cost Baseline
+- `new_lcidtype` - LCID Type
+- `new_lcidislowit` - Low IT
+- `new_lcidisshortened` - Shortened
+- `new_lcidcomponent` - Component
 
 ## Behavior
 
@@ -36,7 +40,7 @@ The activity log includes:
 - Activity type: `100000002` / Update
 - Action: `Update`
 - Reason: `LCID fields updated directly.`
-- Structured before/after values in the matching `new_lcid*old` and `new_lcid*` fields
+- Structured before/after values in the matching old-value and new-value fields, including the `cr3ee_lcid*old` fields for LCID Type, Low IT, Shortened, and Component
 - Additional information: formatted list of actual changes from old value to new value
 
 ## Notes
@@ -44,6 +48,6 @@ The activity log includes:
 - Exits early if the execution depth is greater than 1.
 - Exits if no tracked fields are included in the update.
 - Ignores tracked fields included in the request when their values did not actually change.
-- Requires a pre-image named `PreImage` containing all four tracked fields.
+- Requires a pre-image named `PreImage` containing all tracked fields.
 - Formats dates, booleans, option sets, money values, strings, and null values for readability.
 - Long string values are truncated to 500 characters.

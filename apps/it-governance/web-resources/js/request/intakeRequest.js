@@ -74,6 +74,13 @@ const PAGES = {
   AWAITING_DECISION: ["section_progress_tracker", "section_awaiting_decision"],
   DECISION: ["section_progress_tracker", "section_decision"],
   FINISHED: [
+    "section_progress_tracker",
+    "section_linked_systems",
+    "section_contact_details",
+    "section_request_details",
+    "section_contract_details",
+    "section_additional_documentation",
+    "section_business_case",
     "section_decision",
     "section_intake_request_decision",
     "section_complete_lcid",

@@ -351,14 +351,12 @@ function updateProcessTargetStepVisibility(formContext) {
 
   if (stepValue === PROCESS_TARGET_STEP_GRT_MEETING) {
     setVisible(formContext, GRT_MEETING_DATE_FIELD, true);
-    setRequired(formContext, GRT_MEETING_DATE_FIELD, true);
 
     if (grbReviewDateAttr) {
       grbReviewDateAttr.setValue(null);
     }
   } else if (stepValue === PROCESS_TARGET_STEP_GRB_REVIEW_MEETING) {
     setVisible(formContext, GRB_REVIEW_MEETING_DATE_FIELD, true);
-    setRequired(formContext, GRB_REVIEW_MEETING_DATE_FIELD, true);
 
     if (grtDateAttr) {
       grtDateAttr.setValue(null);

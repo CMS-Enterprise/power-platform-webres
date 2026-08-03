@@ -136,11 +136,7 @@ const TYPE_RULES = {
   },
 
   [ACTIVITY_TYPES.NotAnITGovernanceRequest]: {
-    show: [
-      WHY_CLOSING_FIELD,
-      "new_additionalinformation",
-      "new_adminnote",
-    ],
+    show: [WHY_CLOSING_FIELD, "new_additionalinformation", "new_adminnote"],
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",
@@ -194,11 +190,7 @@ const TYPE_RULES = {
   },
 
   [ACTIVITY_TYPES.CloseRequest]: {
-    show: [
-      WHY_CLOSING_FIELD,
-      "new_additionalinformation",
-      "new_adminnote",
-    ],
+    show: [WHY_CLOSING_FIELD, "new_additionalinformation", "new_adminnote"],
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",
@@ -219,15 +211,11 @@ const TYPE_RULES = {
       GRT_MEETING_DATE_FIELD,
       GRB_REVIEW_MEETING_DATE_FIELD,
     ],
-    require: [],
+    require: [WHY_CLOSING_FIELD],
   },
 
   [ACTIVITY_TYPES.ReopenRequest]: {
-    show: [
-      WHY_REOPENING_FIELD,
-      "new_additionalinformation",
-      "new_adminnote",
-    ],
+    show: [WHY_REOPENING_FIELD, "new_additionalinformation", "new_adminnote"],
     hide: [
       "cr3ee_lifecycleid",
       "cr3ee_lcid",

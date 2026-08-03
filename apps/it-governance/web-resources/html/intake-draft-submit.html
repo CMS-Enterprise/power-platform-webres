@@ -145,6 +145,7 @@
         "cr69a_collaborators",
         "cr3ee_business_need_multi",
         "cr3ee_proposedsolution",
+        "new_organizationalpriorityalignment",
         "cr69a_current_process_status",
         "cr69a_enterprise_architecture_support",
         "cr69a_ai_technologies_used",
@@ -164,6 +165,7 @@
       const INTAKE_REQUEST_REVIEW = 971270000;
 
       const NOTIF_IDS = {
+        editRequests: "submit_open_edit_requests_warning",
         missingFields: "submit_missing_fields_warning",
         success: "submit_success_message",
         error: "submit_error_message",
@@ -228,6 +230,7 @@
       }
 
       function clearActionNotifications(formContext) {
+        formContext.ui.clearFormNotification(NOTIF_IDS.editRequests);
         formContext.ui.clearFormNotification(NOTIF_IDS.missingFields);
         formContext.ui.clearFormNotification(NOTIF_IDS.success);
         formContext.ui.clearFormNotification(NOTIF_IDS.error);
@@ -461,7 +464,7 @@
         };
       }
 
-      function submitIntakeRequestDraft() {
+      async function submitIntakeRequestDraft() {
         const form = getParentForm();
 
         if (!form) {
@@ -478,6 +481,34 @@
         );
         if (submitButton) {
           submitButton.disabled = true;
+        }
+
+        try {
+          if (typeof parent?.hasOpenEditRequests !== "function") {
+            throw new Error("Open Edit Requests check is unavailable.");
+          }
+
+          if (await parent.hasOpenEditRequests(form)) {
+            const message =
+              "Complete all Edit Requests before submitting your request.";
+            showFormNotification(
+              form,
+              message,
+              "WARNING",
+              NOTIF_IDS.editRequests,
+            );
+            showInlineMessage(message, "warning");
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+        } catch (error) {
+          console.error("Unable to check for open Edit Requests:", error);
+          showError(
+            form,
+            "Unable to confirm whether all Edit Requests are complete. Please try again or refresh the form.",
+          );
+          if (submitButton) submitButton.disabled = false;
+          return;
         }
 
         const validationResult = validateFields(form);

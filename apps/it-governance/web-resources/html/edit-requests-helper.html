@@ -205,11 +205,20 @@
       const EDIT_REQUEST_CREATED_ON = "createdon";
       const EDIT_REQUEST_REQUEST_LOOKUP = "_cr69a_systemintake_value";
       const EDIT_REQUESTS_HELPER_SECTION = "section_edit_requests_helper";
+      const CURRENT_PROCESS_STEP = "new_admingovernanceprocessstep";
+      const EDIT_SUBMISSION_REMINDER_PREFIX =
+        "itgov-edit-submission-required:";
       const MAX_WAIT_MS = 15000;
       const WAIT_INTERVAL_MS = 250;
       let editRequestActionListenersRegistered = false;
       let editRequestsLoading = false;
       let editRequestsRefreshQueued = false;
+
+      const SUBMITTABLE_PROCESS_STEPS = new Set([
+        971270006, // Intake Request draft
+        971270001, // Draft Business Case
+        971270003, // Final Business Case
+      ]);
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
@@ -226,6 +235,13 @@
       function getCurrentRequestId() {
         const form = getParentForm();
         return cleanGuid(form?.data?.entity?.getId?.());
+      }
+
+      function isCurrentStepSubmittable() {
+        const currentStep = getParentForm()
+          ?.getAttribute?.(CURRENT_PROCESS_STEP)
+          ?.getValue?.();
+        return SUBMITTABLE_PROCESS_STEPS.has(currentStep);
       }
 
       function getFormattedValue(record, fieldName) {
@@ -614,14 +630,41 @@
 
         setEditRequestsBusy(true);
         try {
+          const isLastEditRequest =
+            document.querySelectorAll(".edit-request-item").length === 1;
+
           await xrm.WebApi.updateRecord(EDIT_REQUEST_ENTITY, recordId, {
             [EDIT_REQUEST_COMPLETED]: true,
           });
+
+          const shouldRemindToSubmit =
+            isLastEditRequest && isCurrentStepSubmittable();
+
+          if (shouldRemindToSubmit) {
+            showPendingSubmissionReminder();
+          }
+
           removeEditRequestFromDisplay(recordId);
           await loadEditRequests();
           notifyParentVisibilityChanged(
             document.querySelectorAll(".edit-request-item").length > 0,
           );
+
+          if (isLastEditRequest && xrm?.Navigation?.openAlertDialog) {
+            try {
+              await xrm.Navigation.openAlertDialog({
+                title: "Edit Requests resolved",
+                text: shouldRemindToSubmit
+                  ? "You resolved all Edit Requests. Don't forget to submit the request so the Governance Admin Team is notified."
+                  : "All Edit Requests have been marked complete.",
+              });
+            } catch (dialogError) {
+              console.warn(
+                "Edit Requests Helper: unable to show submission reminder dialog.",
+                dialogError,
+              );
+            }
+          }
         } catch (error) {
           console.warn(
             "Edit Requests Helper: unable to complete Edit Request.",
@@ -634,6 +677,26 @@
           }
         } finally {
           setEditRequestsBusy(false);
+        }
+      }
+
+      function showPendingSubmissionReminder() {
+        const requestId = getCurrentRequestId();
+        if (requestId) {
+          try {
+            window.sessionStorage.setItem(
+              EDIT_SUBMISSION_REMINDER_PREFIX + requestId.toLowerCase(),
+              "true",
+            );
+          } catch {
+            console.warn(
+              "Edit Requests Helper: unable to persist submission reminder.",
+            );
+          }
+        }
+
+        if (typeof parent?.updateRequestHelper === "function") {
+          parent.updateRequestHelper(getParentForm());
         }
       }
 

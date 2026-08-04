@@ -458,8 +458,9 @@ function isRequestFinished(formContext) {
   const stage = formContext
     ?.getAttribute("new_admingovernanceprocessstep")
     ?.getValue();
+  const requestStatus = formContext?.getAttribute("cr69a_status")?.getValue();
 
-  return stage === BPF_STAGES.FINISHED;
+  return stage === BPF_STAGES.FINISHED || requestStatus === REQUEST_STATUS.CLOSED;
 }
 
 function buildOpenEditRequestsQuery(requestId) {

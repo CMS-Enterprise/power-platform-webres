@@ -11,7 +11,7 @@ These plugins ensure that:
 
 All plugins are deployed as part of the same assembly (`ActivityLogs.Plugins.dll`) but are registered as separate plugin steps.
 
-`ActivityLog_Create_ValidateActivityType` applies the current-step validation only to the explicit **Progress to step** activity type. **Edit Request** activity logs may target the current step so they can record the requested edits and clear Ready for Review without requiring an artificial process transition.
+`ActivityLog_Create_ValidateActivityType` applies the current-step validation only to the explicit **Progress to a New Step** activity type. **Edit Request** activity logs may target the current step so they can record the requested edits and clear Ready for Review without requiring an artificial process transition.
 
 ---
 

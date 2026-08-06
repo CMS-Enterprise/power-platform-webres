@@ -139,8 +139,17 @@
         display: inline-flex;
         align-items: center;
         gap: 10px;
+        padding: 0;
+        border: 0;
+        background: transparent;
         font-size: 14px;
+        font-family: inherit;
         color: var(--link);
+        cursor: pointer;
+      }
+
+      .toggle-link:hover {
+        text-decoration: underline;
       }
 
       .toggle-link:focus {
@@ -280,25 +289,21 @@
     </style>
 
     <script>
-      let isVisible = false;
-
       function toggleText() {
         const textElement = document.getElementById("hiddenText");
-        const buttonElement = document.getElementById("buttonText");
+        const buttonElement = document.getElementById("governanceToggle");
         const caretElement = document.getElementById("caret");
+        const isVisible =
+          buttonElement.getAttribute("aria-expanded") === "true";
 
         if (isVisible) {
-          // Hide the text
           textElement.classList.add("hidden");
           caretElement.classList.remove("open");
-          buttonElement.textContent = "Why does the governance process exist?";
-          isVisible = false;
+          buttonElement.setAttribute("aria-expanded", "false");
         } else {
-          // Show the text
           textElement.classList.remove("hidden");
           caretElement.classList.add("open");
-          buttonElement.textContent = "Why does the governance process exist?";
-          isVisible = true;
+          buttonElement.setAttribute("aria-expanded", "true");
         }
       }
     </script>
@@ -325,7 +330,7 @@
             <p>Working through this step-by-step process will help you:</p>
             <ul class="padding-left-205">
               <li class="margin-y-1">
-                work with Governance Review Team (GRT) Subject Matter Experts
+                Work with Governance Review Team (GRT) Subject Matter Experts
                 (SMEs) to refine your Business Case
               </li>
               <li class="margin-y-1">Justify your Business Case to the GRB</li>
@@ -334,14 +339,14 @@
                 GRB
               </li>
               <li class="margin-y-1">
-                get a Life Cycle ID (LCID) certifying compliance with HHS
+                Get a Life Cycle ID (LCID) certifying compliance with HHS
                 standards for IT investments to use on your acquisition
                 documentation
               </li>
             </ul>
             <p>
-              It may take up to 4 to 6 weeks to go through all the steps in the
-              IT Governance process and receive a decision from the GRB.
+              It may take 4–6 weeks to go through all the steps in the IT
+              Governance process and receive a decision from the GRB.
             </p>
           </div>
         </div>
@@ -350,31 +355,32 @@
             Steps in the governance process
           </h2>
           <div class="toggle-container">
-            <a
+            <button
+              id="governanceToggle"
+              type="button"
               class="toggle-link"
               onclick="toggleText()"
-              href="javascript:void(0);"
+              aria-expanded="false"
+              aria-controls="hiddenText"
             >
-              <span id="caret" class="caret">&#8250;</span>
+              <span id="caret" class="caret" aria-hidden="true">&#8250;</span>
               <span id="buttonText"
                 >Why does the governance process exist?</span
               >
-            </a>
+            </button>
 
             <div id="hiddenText" class="hidden-text hidden">
               <div
                 id="GovernanceOverview-WhyGovernanceExists"
                 class="easi-collapsable-link__content"
               >
-                These steps make sure
+                These steps help ensure:
                 <ul
                   class="margin-bottom-0 margin-top-1 padding-left-205 line-height-body-5"
                 >
-                  <li>your request fits into current CMS IT strategy</li>
-                  <li>
-                    to avoid duplicate solutions that already exists at CMS
-                  </li>
-                  <li>you have considered various solutions</li>
+                  <li>Your request aligns with the current CMS IT strategy</li>
+                  <li>CMS avoids duplicating existing solutions</li>
+                  <li>You have considered multiple solutions</li>
                   <li>CMS meets various policies and remains compliant</li>
                 </ul>
               </div>
@@ -386,7 +392,7 @@
                 data-testid="processListHeading"
                 class="usa-process-list__heading"
               >
-                Fill the Intake Request form
+                Fill out the Intake Request form
               </h3>
               <p class="margin-bottom-1">
                 Tell the Governance Admin Team about your project or idea and
@@ -401,9 +407,9 @@
                 Feedback from initial review
               </h3>
               <p class="margin-bottom-1">
-                The Governance admin team will review your Intake Request form
-                and decide if it it needs further governance. If it does,
-                they'll direct you to go through the remaining steps.
+                The Governance Admin Team will review your Intake Request form
+                and decide if it needs further governance. If it does, they'll
+                direct you to go through the remaining steps.
               </p>
             </li>
           </ol>

@@ -77,6 +77,8 @@
       const GRT_MEETING_DATE = "cr69a_grtmeetingdate";
       const GRB_REVIEW_MEETING_DATE = "cr69a_grbreviewmeetingdate";
       const DECISION = "easi_decision";
+      const EDIT_SUBMISSION_REMINDER_PREFIX =
+        "itgov-edit-submission-required:";
       const MAX_WAIT_MS = 15000;
       const WAIT_INTERVAL_MS = 250;
       let listenersRegistered = false;
@@ -102,12 +104,60 @@
         CLOSE_REQUEST: 971270003,
       };
 
+      const SUBMITTABLE_PROCESS_STEPS = new Set([
+        PROCESS_STEPS.DRAFT,
+        PROCESS_STEPS.DRAFT_BUSINESS_CASE,
+        PROCESS_STEPS.FINAL_BUSINESS_CASE,
+      ]);
+
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
       }
 
       function getAttr(form, schema) {
         return form ? form.getAttribute(schema) : null;
+      }
+
+      function cleanGuid(value) {
+        return value ? String(value).replace(/[{}]/g, "") : "";
+      }
+
+      function getCurrentRequestId() {
+        return cleanGuid(getParentForm()?.data?.entity?.getId?.());
+      }
+
+      function getEditSubmissionReminderKey() {
+        const requestId = getCurrentRequestId();
+        return requestId
+          ? EDIT_SUBMISSION_REMINDER_PREFIX + requestId.toLowerCase()
+          : "";
+      }
+
+      function hasPendingEditSubmissionReminder() {
+        const key = getEditSubmissionReminderKey();
+        if (!key) return false;
+
+        try {
+          return window.sessionStorage.getItem(key) === "true";
+        } catch {
+          return false;
+        }
+      }
+
+      function setPendingEditSubmissionReminder(isPending) {
+        const key = getEditSubmissionReminderKey();
+        if (!key) return false;
+
+        try {
+          if (isPending) {
+            window.sessionStorage.setItem(key, "true");
+          } else {
+            window.sessionStorage.removeItem(key);
+          }
+          return true;
+        } catch {
+          return false;
+        }
       }
 
       function formatMeetingDate(value) {
@@ -390,6 +440,21 @@
 
         if (currentStatus === null || currentStatus === undefined) {
           return false;
+        }
+
+        if (
+          readyForReview ||
+          !SUBMITTABLE_PROCESS_STEPS.has(currentStatus)
+        ) {
+          setPendingEditSubmissionReminder(false);
+        } else if (hasPendingEditSubmissionReminder()) {
+          setCardContent(
+            "helper-card--action",
+            "⚠️",
+            "Edits complete — submit your request",
+            "Your edits are marked complete, but the Governance Admin Team has not been notified. Complete any remaining required fields, then submit the request to send your changes for review.",
+          );
+          return true;
         }
 
         if (currentStatus === PROCESS_STEPS.DRAFT) {

@@ -454,6 +454,15 @@ function setEditRequestsHelperSectionVisible(formContext, visible) {
   return true;
 }
 
+function isRequestFinished(formContext) {
+  const stage = formContext
+    ?.getAttribute("new_admingovernanceprocessstep")
+    ?.getValue();
+  const requestStatus = formContext?.getAttribute("cr69a_status")?.getValue();
+
+  return stage === BPF_STAGES.FINISHED || requestStatus === REQUEST_STATUS.CLOSED;
+}
+
 function buildOpenEditRequestsQuery(requestId) {
   const filter =
     `${EDIT_REQUEST_REQUEST_LOOKUP} eq ${requestId}` +
@@ -535,6 +544,11 @@ function refreshEditRequestsWebResource(formContext, attempt = 0) {
 }
 
 function updateEditRequestsHelper(formContext) {
+  if (isRequestFinished(formContext)) {
+    setEditRequestsHelperSectionVisible(formContext, false);
+    return;
+  }
+
   hasOpenEditRequests(formContext)
     .then((hasRecords) => {
       const sectionFound = setEditRequestsHelperSectionVisible(

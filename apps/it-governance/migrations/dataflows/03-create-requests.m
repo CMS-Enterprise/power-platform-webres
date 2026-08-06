@@ -35,14 +35,41 @@ shared Requests = let
     FixedBools = Table.TransformColumns(Prev, Transformers),
     // 2) Helper: normalize enum text
     Normalize = (v as any) as nullable text => if v = null then null else Text.Upper(Text.Trim(Text.From(v))),
-    WithAdminTask = Table.AddColumn(
+    IsFinished = (r as record) as logical =>
+        let
+            state = Normalize(Record.FieldOrDefault(r, "cr69a_state", null)),
+            decision = Normalize(Record.FieldOrDefault(r, "cr69a_decision_state", null))
+        in
+            state = "CLOSED"
+                and List.Contains({"LCID_ISSUED", "NOT_APPROVED", "NOT_GOVERNANCE"}, decision),
+    IsReopenedFinal = (r as record) as logical =>
+        let
+            state = Normalize(Record.FieldOrDefault(r, "cr69a_state", null)),
+            step = Normalize(Record.FieldOrDefault(r, "cr69a_step", null)),
+            decision = Normalize(Record.FieldOrDefault(r, "cr69a_decision_state", null))
+        in
+            state = "OPEN"
+                and step = "DECISION_AND_NEXT_STEPS"
+                and List.Contains({"LCID_ISSUED", "NOT_APPROVED", "NOT_GOVERNANCE"}, decision),
+    ClearReopenedDecisionDates = Table.ReplaceValue(
         FixedBools,
+        each [cr69a_decided_at],
+        each if IsReopenedFinal(_) then null else [cr69a_decided_at],
+        Replacer.ReplaceValue,
+        {"cr69a_decided_at"}
+    ),
+    WithAdminTask = Table.AddColumn(
+        ClearReopenedDecisionDates,
         "cr69a_admingovernancetasklist",
         each
             let
                 step = Normalize([cr69a_step])
             in
-                if step = "INITIAL_REQUEST_FORM" then
+                if IsFinished(_) then
+                    971270009 // Finished
+                else if IsReopenedFinal(_) then
+                    971270006 // Draft (reopened after a final decision)
+                else if step = "INITIAL_REQUEST_FORM" then
                     971270000 // Intake Request Review
                 else if step = "DRAFT_BUSINESS_CASE" then
                     971270001 // Draft Business Case
@@ -226,7 +253,11 @@ shared Requests = let
                         let
                             v = Record.Field(_, src)
                         in
-                            if v = null then
+                            if src = "cr69a_step" and IsFinished(_) then
+                                971270009 // Finished
+                            else if src = "cr69a_step" and IsReopenedFinal(_) then
+                                971270006 // Draft (reopened after a final decision)
+                            else if v = null then
                                 null
                             else if Record.HasFields(map, v) then
                                 Record.Field(map, v)

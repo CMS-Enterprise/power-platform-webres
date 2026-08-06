@@ -220,12 +220,7 @@ shared Reviews = let
     // 2) Helper: normalize enum text
     Normalize = (v as any) as nullable text => if v = null then null else Text.Upper(Text.Trim(Text.From(v))),
     IsFinished = (r as record) as logical =>
-        let
-            state = Normalize(Record.FieldOrDefault(r, "cr69a_state", null)),
-            decision = Normalize(Record.FieldOrDefault(r, "cr69a_decision_state", null))
-        in
-            state = "CLOSED"
-                and List.Contains({"LCID_ISSUED", "NOT_APPROVED", "NOT_GOVERNANCE"}, decision),
+        Normalize(Record.FieldOrDefault(r, "cr69a_state", null)) = "CLOSED",
     IsReopenedFinal = (r as record) as logical =>
         let
             state = Normalize(Record.FieldOrDefault(r, "cr69a_state", null)),

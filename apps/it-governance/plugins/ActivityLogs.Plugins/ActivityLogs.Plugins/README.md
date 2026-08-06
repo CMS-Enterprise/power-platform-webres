@@ -6,10 +6,12 @@ These plugins ensure that:
 
 - process steps are updated consistently across Review and Request records
 - audit logs are immutable
-- invalid or no-op step changes are blocked server-side
+- invalid or no-op explicit process step changes are blocked server-side
 - review state flags are kept in sync
 
 All plugins are deployed as part of the same assembly (`ActivityLogs.Plugins.dll`) but are registered as separate plugin steps.
+
+`ActivityLog_Create_ValidateActivityType` applies the current-step validation only to the explicit **Progress to a New Step** activity type. **Edit Request** activity logs may target the current step so they can record the requested edits and clear Ready for Review without requiring an artificial process transition.
 
 ---
 
@@ -332,7 +334,8 @@ This ensures Activity Logs remain a reliable audit trail.
 
 ## Related UX Considerations
 
-- The Activity Log form disables selecting the current step to prevent no-op submissions
+- For explicit Progress to step actions, the Activity Log form disables selecting the current step to prevent no-op submissions
+- Edit Request activity logs may target the current step
 - Clear labels and helper text guide users through step changes
 - Server-side validation remains in place as a safety net
 

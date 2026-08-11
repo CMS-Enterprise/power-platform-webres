@@ -35,6 +35,17 @@ shared Requests = let
     FixedBools = Table.TransformColumns(Prev, Transformers),
     // 2) Helper: normalize enum text
     Normalize = (v as any) as nullable text => if v = null then null else Text.Upper(Text.Trim(Text.From(v))),
+    NormalizeDateTime = (v as any) as nullable datetime =>
+        if v = null then
+            null
+        else if Value.Is(v, type datetime) then
+            v
+        else if Value.Is(v, type datetimezone) then
+            DateTimeZone.RemoveZone(v)
+        else
+            try DateTimeZone.RemoveZone(DateTimeZone.FromText(Text.Trim(Text.From(v))))
+            otherwise try DateTime.FromText(Text.Trim(Text.From(v)))
+            otherwise null,
     IsFinished = (r as record) as logical =>
         Normalize(Record.FieldOrDefault(r, "cr69a_state", null)) = "CLOSED",
     IsReopenedFinal = (r as record) as logical =>
@@ -248,7 +259,9 @@ shared Requests = let
                         let
                             v = Record.Field(_, src)
                         in
-                            if src = "cr69a_step" and IsFinished(_) then
+                            if src = "cr69a_decision_state" and not IsFinished(_) then
+                                null // Current decision is only populated for finished requests
+                            else if src = "cr69a_step" and IsFinished(_) then
                                 971270009 // Finished
                             else if src = "cr69a_step" and IsReopenedFinal(_) then
                                 971270006 // Draft (reopened after a final decision)
@@ -263,14 +276,24 @@ shared Requests = let
             in
                 WithChoice
     ),
+    WithDecisionDate = Table.AddColumn(
+        ApplyAll,
+        "decision_date_dataverse_format",
+        each
+            if IsFinished(_) then
+                NormalizeDateTime(Record.FieldOrDefault(_, "cr69a_decided_at", null))
+            else
+                null,
+        type nullable datetime
+    ),
     // 4) Optional consolidated QA
     WithQA =
         if not EnableQA then
-            ApplyAll
+            WithDecisionDate
         else
             let
                 AddIssues = Table.AddColumn(
-                    ApplyAll,
+                    WithDecisionDate,
                     "UnmappedIssues",
                     (r) =>
                         let

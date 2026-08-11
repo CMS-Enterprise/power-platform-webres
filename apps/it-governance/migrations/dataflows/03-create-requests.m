@@ -286,14 +286,31 @@ shared Requests = let
                 null,
         type nullable datetime
     ),
+    WithDecisionReason = Table.AddColumn(
+        WithDecisionDate,
+        "decision_reason_dataverse_format",
+        each
+            if IsFinished(_) then
+                let
+                    value = Record.FieldOrDefault(_, "cr69a_rejection_reason", null),
+                    textValue = if value = null then null else Text.Trim(Text.From(value))
+                in
+                    if textValue = null or textValue = "" or Text.Upper(textValue) = "NULL" then
+                        null
+                    else
+                        textValue
+            else
+                null,
+        type nullable text
+    ),
     // 4) Optional consolidated QA
     WithQA =
         if not EnableQA then
-            WithDecisionDate
+            WithDecisionReason
         else
             let
                 AddIssues = Table.AddColumn(
-                    WithDecisionDate,
+                    WithDecisionReason,
                     "UnmappedIssues",
                     (r) =>
                         let

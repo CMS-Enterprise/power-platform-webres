@@ -303,14 +303,31 @@ shared Requests = let
                 null,
         type nullable text
     ),
+    WithNextSteps = Table.AddColumn(
+        WithDecisionReason,
+        "next_steps_dataverse_format",
+        each
+            if IsFinished(_) then
+                let
+                    value = Record.FieldOrDefault(_, "cr69a_decision_next_steps", null),
+                    textValue = if value = null then null else Text.Trim(Text.From(value))
+                in
+                    if textValue = null or textValue = "" or Text.Upper(textValue) = "NULL" then
+                        null
+                    else
+                        textValue
+            else
+                null,
+        type nullable text
+    ),
     // 4) Optional consolidated QA
     WithQA =
         if not EnableQA then
-            WithDecisionReason
+            WithNextSteps
         else
             let
                 AddIssues = Table.AddColumn(
-                    WithDecisionReason,
+                    WithNextSteps,
                     "UnmappedIssues",
                     (r) =>
                         let

@@ -87,8 +87,34 @@ shared cr69a_systemintakestagingdocument =
                 in
                     WithChoice
         ),
+        WithQA =
+            if not EnableQA then
+                ApplyAll
+            else
+                Table.AddColumn(
+                    ApplyAll,
+                    "UnmappedIssues",
+                    (r as record) =>
+                        let
+                            issues = List.Transform(
+                                ChoiceSpecs,
+                                (spec as record) =>
+                                    let
+                                        src = spec[source],
+                                        map = spec[map],
+                                        raw = Record.FieldOrDefault(r, src & "_raw", null),
+                                        key = NormalizeChoiceKey(raw),
+                                        bad = key <> null and not Record.HasFields(map, key)
+                                    in
+                                        if bad then src & "=" & Text.From(raw) else null
+                            ),
+                            filtered = List.RemoveNulls(issues)
+                        in
+                            if List.IsEmpty(filtered) then null else Text.Combine(filtered, "; "),
+                    type nullable text
+                ),
         // Return the transformed table
-        Custom = ApplyAll,
+        Custom = WithQA,
         #"Remove Columns" = Table.RemoveColumns(
             Custom,
             Table.ColumnsOfType(

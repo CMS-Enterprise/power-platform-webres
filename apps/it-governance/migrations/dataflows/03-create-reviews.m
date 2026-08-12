@@ -230,17 +230,26 @@ shared Reviews = let
             try DateTimeZone.RemoveZone(DateTimeZone.FromText(Text.Trim(Text.From(v))))
             otherwise try DateTime.FromText(Text.Trim(Text.From(v)))
             otherwise null,
+    HasPopulatedValue = (v as any) as logical =>
+        let
+            textValue = if v = null then null else Text.Trim(Text.From(v))
+        in
+            textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+    FinalDecisionStates = {"LCID_ISSUED", "NOT_APPROVED", "NOT_GOVERNANCE", "NO_DECISION"},
     IsFinished = (r as record) as logical =>
         Normalize(Record.FieldOrDefault(r, "cr69a_state", null)) = "CLOSED",
     IsReopenedFinal = (r as record) as logical =>
         let
             state = Normalize(Record.FieldOrDefault(r, "cr69a_state", null)),
             step = Normalize(Record.FieldOrDefault(r, "cr69a_step", null)),
-            decision = Normalize(Record.FieldOrDefault(r, "cr69a_decision_state", null))
+            decision = Normalize(Record.FieldOrDefault(r, "cr69a_decision_state", null)),
+            decidedAt = Record.FieldOrDefault(r, "cr69a_decided_at", null)
         in
             state = "OPEN"
                 and step = "DECISION_AND_NEXT_STEPS"
-                and List.Contains({"LCID_ISSUED", "NOT_APPROVED", "NOT_GOVERNANCE"}, decision),
+                and List.Contains(FinalDecisionStates, decision)
+                and HasPopulatedValue(decidedAt)
+                and NormalizeDateTime(decidedAt) <> null,
     ClearReopenedDecisionDates = Table.ReplaceValue(
         FixedYesNo,
         each [cr69a_decided_at],
@@ -325,7 +334,13 @@ shared Reviews = let
                                         else
                                             null
                             ),
-                            filtered = List.RemoveNulls(issues)
+                            decidedAt = Record.FieldOrDefault(r, "cr69a_decided_at", null),
+                            decisionDateIssue =
+                                if HasPopulatedValue(decidedAt) and NormalizeDateTime(decidedAt) = null then
+                                    "cr69a_decided_at=" & Text.From(decidedAt)
+                                else
+                                    null,
+                            filtered = List.RemoveNulls(List.Combine({issues, {decisionDateIssue}}))
                         in
                             if List.IsEmpty(filtered) then
                                 null

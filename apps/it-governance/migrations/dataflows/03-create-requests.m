@@ -225,18 +225,6 @@ shared Requests = let
             ]
         ],
         [
-            source = "cr69a_acquisition_methods",
-            //Maps to cr69a_howwillthesoftwarebeacquired
-            dest = "acquisition_methods_dataverse_format",
-            map = [
-                CONTRACTOR_FURNISHED = 971270000,
-                ELA_OR_INTERNAL = 971270001,
-                FED_FURNISHED = 971270002,
-                NOT_YET_DETERMINED = 971270003,
-                OTHER = 971270004
-            ]
-        ],
-        [
             source = "cr69a_existing_contract",
             dest = "cr3ee_contractstatus_dataverse_format",
             map = [

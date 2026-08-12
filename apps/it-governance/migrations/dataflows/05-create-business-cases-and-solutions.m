@@ -79,8 +79,40 @@ shared BusinessCases =
                 in
                     WithChoice
         ),
+        WithQA =
+            if not EnableQA then
+                ApplyAll
+            else
+                Table.AddColumn(
+                    ApplyAll,
+                    "UnmappedIssues",
+                    (r as record) =>
+                        let
+                            issues = List.Transform(
+                                ChoiceSpecs,
+                                (spec as record) =>
+                                    let
+                                        src = spec[source],
+                                        map = spec[map],
+                                        raw = Record.FieldOrDefault(r, src & "_raw", null),
+                                        key = NormalizeChoiceKey(raw),
+                                        bad = key <> null and not Record.HasFields(map, key)
+                                    in
+                                        if bad then
+                                            src & "=" & Text.From(raw)
+                                        else
+                                            null
+                            ),
+                            filtered = List.RemoveNulls(issues)
+                        in
+                            if List.IsEmpty(filtered) then
+                                null
+                            else
+                                Text.Combine(filtered, "; "),
+                    type nullable text
+                ),
         // Return the transformed table
-        Custom = ApplyAll,
+        Custom = WithQA,
         #"Remove Columns" = Table.RemoveColumns(
             Custom,
             Table.ColumnsOfType(
@@ -247,32 +279,31 @@ shared Query =
         // Convert TRUE/FALSE → 1/0
         Normalized = Table.TransformColumns(Combined, {{"Security Approved", each if _ = true then 1 else 0,
         Int64.Type}}),
-        PreviewOnly = Table.SelectColumns(
-            Normalized,
-            {
-                "Request ID",
-                "cr69a_id",
-                "Title",
-                "Summary",
-                "Acquisition Approach",
-                "Pros",
-                "Cons",
-                "Cost Savings",
-                "Hosting Type",
-                "Hosting Location",
-                "Hosting Cloud Service Type",
-                "Has UI",
-                "Security Approved",
-                "Security Currently Under Review",
-                "Contract Award Date",
-                "Target Completion Date",
-                "Zero Trust Alignment",
-                "Hosting Cloud Strategy",
-                "Workforce Training Requirements",
-                "SolutionType",
-                "Batch ID"
-            }
-        )
+        OutputColumns = {
+            "Request ID",
+            "cr69a_id",
+            "Title",
+            "Summary",
+            "Acquisition Approach",
+            "Pros",
+            "Cons",
+            "Cost Savings",
+            "Hosting Type",
+            "Hosting Location",
+            "Hosting Cloud Service Type",
+            "Has UI",
+            "Security Approved",
+            "Security Currently Under Review",
+            "Contract Award Date",
+            "Target Completion Date",
+            "Zero Trust Alignment",
+            "Hosting Cloud Strategy",
+            "Workforce Training Requirements",
+            "SolutionType",
+            "Batch ID",
+            "UnmappedIssues"
+        },
+        PreviewOnly = Table.SelectColumns(Normalized, OutputColumns, MissingField.UseNull)
     in
         PreviewOnly;
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [

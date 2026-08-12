@@ -68,6 +68,9 @@ shared cr69a_systemintakestaginglinkedsystems = let
             )
         in
             result,
+
+    EnableQA = false,
+
     // =========================================
     // Apply all choice mappings
     // - Adds <source>_raw column (original text)
@@ -103,10 +106,45 @@ shared cr69a_systemintakestaginglinkedsystems = let
             in
                 WithChoice
     ),
+    WithQA =
+        if not EnableQA then
+            ApplyAll
+        else
+            Table.AddColumn(
+                ApplyAll,
+                "UnmappedIssues",
+                (r as record) =>
+                    let
+                        issues = List.Transform(
+                            ChoiceSpecs,
+                            (spec as record) =>
+                                let
+                                    src = spec[source],
+                                    map = spec[map],
+                                    raw = Record.FieldOrDefault(r, src & "_raw", null),
+                                    labels = ParseMultiSelectLabels(raw),
+                                    unknownLabels = List.Select(
+                                        labels,
+                                        each
+                                            let key = NormalizeChoiceKey(_)
+                                            in key <> null and not Record.HasFields(map, key)
+                                    )
+                                in
+                                    if List.IsEmpty(unknownLabels) then
+                                        null
+                                    else
+                                        src & "=" & Text.Combine(unknownLabels, ",")
+                        ),
+                        filtered = List.RemoveNulls(issues)
+                    in
+                        if List.IsEmpty(filtered) then null else Text.Combine(filtered, "; "),
+                type nullable text
+            ),
+
     #"Remove Columns" = Table.RemoveColumns(
-        ApplyAll,
+        WithQA,
         Table.ColumnsOfType(
-            ApplyAll, {type table, type record, type list, type nullable binary, type binary, type function}
+            WithQA, {type table, type record, type list, type nullable binary, type binary, type function}
         )
     )
 in

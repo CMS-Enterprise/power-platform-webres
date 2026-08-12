@@ -133,7 +133,7 @@ shared cr69a_systemintakestagingcontact =
                 )
             in
                 result,
-        EnableQA = false,
+        EnableQA = true,
         // =========================================
         // Apply all choice mappings
         // =========================================

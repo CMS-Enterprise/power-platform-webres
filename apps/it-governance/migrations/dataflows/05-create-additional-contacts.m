@@ -11,6 +11,7 @@ shared cr69a_systemintakestagingcontact =
             [
                 source = "cr69a_roles",
                 dest = "roles_dataverse_format",
+                multiSelect = true,
                 map = [
                     BUSINESS_OWNER = 100000000,
                     PRODUCT_OWNER = 100000001,
@@ -31,6 +32,7 @@ shared cr69a_systemintakestagingcontact =
             [
                 source = "cr69a_component",
                 dest = "component_dataverse_format",
+                multiSelect = false,
                 map = [
                     CENTER_FOR_CLINICAL_STANDARDS_AND_QUALITY_CCSQ = 971270000,
                     CENTER_FOR_CONSUMER_INFORMATION_AND_INSURANCE_OVERSIGHT_CCIIO = 971270001,
@@ -133,6 +135,11 @@ shared cr69a_systemintakestagingcontact =
                 )
             in
                 result,
+        MapSingleSelectToDataverseValue = (raw as any, map as record) as nullable number =>
+            let
+                key = NormalizeChoiceKey(raw)
+            in
+                if key <> null and Record.HasFields(map, key) then Record.Field(map, key) else null,
         EnableQA = true,
         // =========================================
         // Apply all choice mappings
@@ -145,6 +152,7 @@ shared cr69a_systemintakestagingcontact =
                     src = spec[source],
                     dest = spec[dest],
                     map = spec[map],
+                    multiSelect = spec[multiSelect],
                     rawCol = src & "_raw",
                     WithRaw = Table.AddColumn(
                         state,
@@ -159,9 +167,21 @@ shared cr69a_systemintakestagingcontact =
                                     Text.From(original),
                         type text
                     ),
-                    WithChoice = Table.AddColumn(
-                        WithRaw, dest, each MapMultiSelectToDataverseString(Record.Field(_, rawCol), map), type text
-                    )
+                    WithChoice =
+                        if multiSelect then
+                            Table.AddColumn(
+                                WithRaw,
+                                dest,
+                                each MapMultiSelectToDataverseString(Record.Field(_, rawCol), map),
+                                type nullable text
+                            )
+                        else
+                            Table.AddColumn(
+                                WithRaw,
+                                dest,
+                                each MapSingleSelectToDataverseValue(Record.Field(_, rawCol), map),
+                                Int64.Type
+                            )
                 in
                     WithChoice
         ),
@@ -180,8 +200,15 @@ shared cr69a_systemintakestagingcontact =
                                     let
                                         src = spec[source],
                                         map = spec[map],
+                                        multiSelect = spec[multiSelect],
                                         raw = Record.FieldOrDefault(r, src & "_raw", null),
-                                        labels = ParseMultiSelectLabels(raw),
+                                        labels =
+                                            if multiSelect then
+                                                ParseMultiSelectLabels(raw)
+                                            else if raw = null or Text.Trim(Text.From(raw)) = "" then
+                                                {}
+                                            else
+                                                {Text.From(raw)},
                                         unknownLabels = List.Select(
                                             labels,
                                             each

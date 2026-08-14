@@ -2,21 +2,18 @@
 // powerapp-canvas-diff.mjs
 // Compares the solution currently in the environment against the
 // local unpacked copy, without modifying the local copy.
-// Run with: node scripts/powerapp-canvas-diff.mjs
+// Run with: npm run pac:diff  (or: node scripts/powerapp-canvas-diff.mjs)
 // ============================================================
 
 import { execSync } from "child_process";
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "fs";
 import { tmpdir } from "os";
-import { basename, join } from "path";
+import { basename, join, resolve } from "path";
 import { createInterface } from "readline";
 
-// ---- CONFIGURE THESE (keep in sync with export-solutions.mjs) ----
-const ENVIRONMENT_URL = "https://itgovernancedev.crm9.dynamics.com"; // Your environment URL
-const SOLUTION_NAME    = "InitialITGO";                              // Exact solution name (no spaces)
-const OUTPUT_FOLDER    = `./${SOLUTION_NAME}`;                       // Local unpacked copy to diff against
-const PACKAGE_TYPE     = "Unmanaged";                                // Unmanaged | Managed | Both
-const CANVAS_APPS_DIR  = "CanvasApps";                                // Sub-folder holding .msapp files
+// ---- LOCAL BEHAVIOR (safe to hardcode; not environment-specific) ----
+const PACKAGE_TYPE    = "Unmanaged";  // Unmanaged | Managed | Both
+const CANVAS_APPS_DIR = "CanvasApps"; // Sub-folder holding .msapp files
 // ---- END CONFIG ----
 
 
@@ -29,17 +26,48 @@ function step(msg) { console.log(cyan(`\n>> ${msg}`)); }
 function ok(msg)   { console.log(green(`   OK: ${msg}`)); }
 function fail(msg) { console.error(red(`   ERROR: ${msg}`)); process.exit(1); }
 
-// Resolve the pac executable — check PATH first, then the default .NET global tools location
+// Loads .env into process.env (without overriding anything already set),
+// matching the convention used by scripts/check-webresources.mjs.
+function loadEnv(envPath) {
+  const result = { ...process.env };
+  if (!existsSync(envPath)) return result;
+
+  const lines = readFileSync(envPath, "utf8").split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#")) continue;
+
+    const separatorIndex = line.indexOf("=");
+    if (separatorIndex === -1) continue;
+
+    const key = line.slice(0, separatorIndex).trim();
+    const rawValue = line.slice(separatorIndex + 1).trim();
+    if (!(key in result)) result[key] = stripWrappingQuotes(rawValue);
+  }
+  return result;
+}
+
+function stripWrappingQuotes(value) {
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
+
+// Resolve the pac executable — check PATH first, then the default .NET global tools location.
 function findPac() {
   try {
     execSync("pac help", { encoding: "utf8", stdio: "ignore" });
     return "pac";
   } catch {}
 
-  const dotnetToolsPath = join(process.env.USERPROFILE ?? process.env.HOME, ".dotnet", "tools", "pac.exe");
-  if (existsSync(dotnetToolsPath)) return `"${dotnetToolsPath}"`;
+  // The global tool is "pac.exe" on Windows and "pac" (no extension) on macOS/Linux.
+  const homeDir = process.env.USERPROFILE ?? process.env.HOME;
+  if (!homeDir) return null;
 
-  return null;
+  const candidates = [join(homeDir, ".dotnet", "tools", "pac.exe"), join(homeDir, ".dotnet", "tools", "pac")];
+  const found = candidates.find((candidate) => existsSync(candidate));
+  return found ? `"${found}"` : null;
 }
 
 // Solution/canvas diffs can easily exceed Node's default 1 MB exec buffer.
@@ -51,7 +79,7 @@ function run(cmd, errorMsg) {
     if (output?.trim()) console.log("  ", output.trim());
     return output;
   } catch (err) {
-    console.error(err.stderr || err.message);
+    console.error(err.stdout || err.stderr || err.message);
     fail(errorMsg);
   }
 }
@@ -182,7 +210,19 @@ const pacVersion = pacHelpOutput.match(/Version:\s*(\S+)/)?.[1] ?? "unknown";
 ok(`pac found: ${pacVersion}`);
 
 
-// ---- 2. AUTHENTICATE ----
+// ---- 2. RESOLVE ENVIRONMENT-SPECIFIC CONFIG FROM .env ----
+// Environment URL and solution name are environment-specific, so they come from
+// .env (see .env.example) instead of being hardcoded here.
+const env = loadEnv(resolve(".env"));
+const ENVIRONMENT_URL = env.DATAVERSE_URL;
+const SOLUTION_NAME = env.DATAVERSE_SOLUTION_UNIQUE_NAME;
+if (!ENVIRONMENT_URL || !SOLUTION_NAME) {
+  fail("Missing DATAVERSE_URL or DATAVERSE_SOLUTION_UNIQUE_NAME. Copy .env.example to .env and fill them in.");
+}
+const OUTPUT_FOLDER = `./${SOLUTION_NAME}`;
+
+
+// ---- 3. AUTHENTICATE ----
 step("Checking authentication...");
 const authList = execSync(`${PAC} auth list`, { encoding: "utf8" });
 if (authList.includes("No profiles")) {
@@ -194,13 +234,13 @@ if (authList.includes("No profiles")) {
 }
 
 
-// ---- 3. MAKE SURE THERE'S A LOCAL COPY TO COMPARE AGAINST ----
+// ---- 4. MAKE SURE THERE'S A LOCAL COPY TO COMPARE AGAINST ----
 if (!existsSync(OUTPUT_FOLDER)) {
-  fail(`No local copy found at ${OUTPUT_FOLDER}. Run export-solutions.mjs first to create a baseline.`);
+  fail(`No local copy found at ${OUTPUT_FOLDER}. Run 'npm run pac:export' first to create a baseline.`);
 }
 
 
-// ---- 4. EXPORT + UNPACK THE REMOTE SOLUTION INTO A TEMP WORKSPACE ----
+// ---- 5. EXPORT + UNPACK THE REMOTE SOLUTION INTO A TEMP WORKSPACE ----
 const tempRoot = mkdtempSync(join(tmpdir(), "pac-diff-"));
 const remoteZip = join(tempRoot, `${SOLUTION_NAME}.zip`);
 const remoteFolder = join(tempRoot, "remote");
@@ -209,9 +249,11 @@ const remoteCanvasSrcRoot = join(tempRoot, "remote-canvas-src");
 
 try {
   step(`Exporting solution '${SOLUTION_NAME}' from ${ENVIRONMENT_URL}...`);
-  const isManaged = PACKAGE_TYPE === "Managed";
+  // Only pass --managed when actually exporting a managed solution; omitting it
+  // otherwise avoids relying on how a given pac CLI version parses "--managed false".
+  const managedFlag = PACKAGE_TYPE === "Managed" ? " --managed true" : "";
   run(
-    `${PAC} solution export --name ${SOLUTION_NAME} --path "${remoteZip}" --managed ${isManaged}`,
+    `${PAC} solution export --name ${SOLUTION_NAME} --path "${remoteZip}"${managedFlag}`,
     "Export failed. Check the solution name and environment URL."
   );
   ok(`Exported to ${remoteZip}`);
@@ -223,11 +265,11 @@ try {
   );
   ok("Remote solution unpacked");
 
-  // ---- 5. UNPACK CANVAS APPS ON BOTH SIDES SO POWER FX IS READABLE ----
+  // ---- 6. UNPACK CANVAS APPS ON BOTH SIDES SO POWER FX IS READABLE ----
   unpackCanvasApps(PAC, join(OUTPUT_FOLDER, CANVAS_APPS_DIR), localCanvasSrcRoot, "local copy");
   unpackCanvasApps(PAC, join(remoteFolder, CANVAS_APPS_DIR), remoteCanvasSrcRoot, "environment");
 
-  // ---- 6. DIFF LOCAL VS. REMOTE (LOCAL COPY IS NEVER WRITTEN TO) ----
+  // ---- 7. DIFF LOCAL VS. REMOTE (LOCAL COPY IS NEVER WRITTEN TO) ----
   const solutionDiffers = await diffDirs(OUTPUT_FOLDER, remoteFolder, "solution files (entities, formulas, metadata, etc.)");
   const canvasDiffers = await diffDirs(localCanvasSrcRoot, remoteCanvasSrcRoot, "canvas app Power Fx source");
 

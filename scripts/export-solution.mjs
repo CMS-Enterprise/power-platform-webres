@@ -1,23 +1,18 @@
 // ============================================================
 // export-solution.mjs
 // Exports and unpacks a Power Platform solution for source control
-// Run with: node export-solution.mjs
+// Run with: npm run pac:export  (or: node scripts/export-solution.mjs)
 // ============================================================
 
 import { execSync } from "child_process";
-import { existsSync, mkdtempSync, rmSync, unlinkSync } from "fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join, resolve } from "path";
 import { createInterface } from "readline";
 
-// ---- CONFIGURE THESE ----
-const ENVIRONMENT_URL   = "https://itgovernancedev.crm9.dynamics.com"; // Your environment URL
-const SOLUTION_NAME     = "InitialITGO";                 // Exact solution name (no spaces)
-const OUTPUT_FOLDER     = `./${SOLUTION_NAME}`;               // Where to unpack files
-const ZIP_PATH          = `./${SOLUTION_NAME}.zip`;           // Temp zip location
-const PACKAGE_TYPE      = "Unmanaged";                        // Unmanaged | Managed | Both
-const COMMIT_TO_GIT     = false;                              // Set to true to auto-commit after unpack
-const GIT_COMMIT_MSG    = `chore: export ${SOLUTION_NAME} solution`;
+// ---- LOCAL BEHAVIOR (safe to hardcode; not environment-specific) ----
+const PACKAGE_TYPE    = "Unmanaged";                     // Unmanaged | Managed | Both
+const COMMIT_TO_GIT   = false;                            // Set to true to auto-commit after unpack
 // ---- END CONFIG ----
 
 
@@ -31,7 +26,35 @@ function step(msg) { console.log(cyan(`\n>> ${msg}`)); }
 function ok(msg)   { console.log(green(`   OK: ${msg}`)); }
 function fail(msg) { console.error(red(`   ERROR: ${msg}`)); process.exit(1); }
 
-// Resolve the pac executable — check PATH first, then the default .NET global tools location
+// Loads .env into process.env (without overriding anything already set),
+// matching the convention used by scripts/check-webresources.mjs.
+function loadEnv(envPath) {
+  const result = { ...process.env };
+  if (!existsSync(envPath)) return result;
+
+  const lines = readFileSync(envPath, "utf8").split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#")) continue;
+
+    const separatorIndex = line.indexOf("=");
+    if (separatorIndex === -1) continue;
+
+    const key = line.slice(0, separatorIndex).trim();
+    const rawValue = line.slice(separatorIndex + 1).trim();
+    if (!(key in result)) result[key] = stripWrappingQuotes(rawValue);
+  }
+  return result;
+}
+
+function stripWrappingQuotes(value) {
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
+
+// Resolve the pac executable — check PATH first, then the default .NET global tools location.
 function findPac() {
   // Try PATH first
   try {
@@ -39,11 +62,14 @@ function findPac() {
     return "pac";
   } catch {}
 
-  // Fall back to the default .NET global tools install location
-  const dotnetToolsPath = join(process.env.USERPROFILE ?? process.env.HOME, ".dotnet", "tools", "pac.exe");
-  if (existsSync(dotnetToolsPath)) return `"${dotnetToolsPath}"`;
+  // Fall back to the default .NET global tools install location. The global tool
+  // is "pac.exe" on Windows and "pac" (no extension) on macOS/Linux.
+  const homeDir = process.env.USERPROFILE ?? process.env.HOME;
+  if (!homeDir) return null;
 
-  return null;
+  const candidates = [join(homeDir, ".dotnet", "tools", "pac.exe"), join(homeDir, ".dotnet", "tools", "pac")];
+  const found = candidates.find((candidate) => existsSync(candidate));
+  return found ? `"${found}"` : null;
 }
 
 const EXEC_OPTS = { encoding: "utf8", stdio: ["inherit", "pipe", "pipe"], maxBuffer: 1024 * 1024 * 200 };
@@ -109,7 +135,7 @@ function askYesNo(promptText) {
 // WebResources files currently on disk (which may have local edits) against
 // what's actually in the solution we just pulled from the environment. If
 // they differ, show the diffs and require confirmation before overwriting.
-async function guardLocalWebResourceEdits(zipPath, outputFolder) {
+async function guardLocalWebResourceEdits(pac, zipPath, outputFolder, packageType) {
   const localWebResources = join(outputFolder, "WebResources");
   if (!existsSync(localWebResources)) return;
 
@@ -118,7 +144,7 @@ async function guardLocalWebResourceEdits(zipPath, outputFolder) {
   try {
     const remoteFolder = join(tempRoot, "remote");
     run(
-      `${PAC} solution unpack --zipfile ${zipPath} --folder "${remoteFolder}" --packagetype ${PACKAGE_TYPE}`,
+      `${pac} solution unpack --zipfile "${zipPath}" --folder "${remoteFolder}" --packagetype ${packageType}`,
       "Pre-check unpack failed."
     );
 
@@ -170,7 +196,21 @@ const pacVersion = pacHelpOutput.match(/Version:\s*(\S+)/)?.[1] ?? "unknown";
 ok(`pac found: ${pacVersion}`);
 
 
-// ---- 2. AUTHENTICATE ----
+// ---- 2. RESOLVE ENVIRONMENT-SPECIFIC CONFIG FROM .env ----
+// Environment URL and solution name are environment-specific, so they come from
+// .env (see .env.example) instead of being hardcoded here.
+const env = loadEnv(resolve(".env"));
+const ENVIRONMENT_URL = env.DATAVERSE_URL;
+const SOLUTION_NAME = env.DATAVERSE_SOLUTION_UNIQUE_NAME;
+if (!ENVIRONMENT_URL || !SOLUTION_NAME) {
+  fail("Missing DATAVERSE_URL or DATAVERSE_SOLUTION_UNIQUE_NAME. Copy .env.example to .env and fill them in.");
+}
+const OUTPUT_FOLDER = `./${SOLUTION_NAME}`;
+const ZIP_PATH = `./${SOLUTION_NAME}.zip`;
+const GIT_COMMIT_MSG = `chore: export ${SOLUTION_NAME} solution`;
+
+
+// ---- 3. AUTHENTICATE ----
 step("Checking authentication...");
 const authList = execSync(`${PAC} auth list`, { encoding: "utf8" });
 if (authList.includes("No profiles")) {
@@ -182,53 +222,55 @@ if (authList.includes("No profiles")) {
 }
 
 
-// ---- 3. EXPORT SOLUTION ----
+// ---- 4. EXPORT SOLUTION ----
 step(`Exporting solution '${SOLUTION_NAME}' from ${ENVIRONMENT_URL}...`);
 if (existsSync(ZIP_PATH)) {
   console.log(yellow(`   Removing leftover zip from a previous run: ${ZIP_PATH}`));
   unlinkSync(ZIP_PATH);
 }
-const isManaged = PACKAGE_TYPE === "Managed";
+// Only pass --managed when actually exporting a managed solution; omitting it
+// otherwise avoids relying on how a given pac CLI version parses "--managed false".
+const managedFlag = PACKAGE_TYPE === "Managed" ? " --managed true" : "";
 run(
-  `${PAC} solution export --name ${SOLUTION_NAME} --path ${ZIP_PATH} --managed ${isManaged}`,
+  `${PAC} solution export --name ${SOLUTION_NAME} --path "${ZIP_PATH}"${managedFlag}`,
   "Export failed. Check the solution name and environment URL."
 );
 ok(`Exported to ${ZIP_PATH}`);
 
 
-// ---- 4. GUARD AGAINST OVERWRITING LOCAL WEBRESOURCES EDITS ----
-await guardLocalWebResourceEdits(ZIP_PATH, OUTPUT_FOLDER);
+// ---- 5. GUARD AGAINST OVERWRITING LOCAL WEBRESOURCES EDITS ----
+await guardLocalWebResourceEdits(PAC, ZIP_PATH, OUTPUT_FOLDER, PACKAGE_TYPE);
 
 
-// ---- 5. CLEAN UP OLD UNPACK FOLDER ----
+// ---- 6. CLEAN UP OLD UNPACK FOLDER ----
 if (existsSync(OUTPUT_FOLDER)) {
   step("Removing existing unpack folder...");
   rmSync(resolve(OUTPUT_FOLDER), { recursive: true, force: true });
 }
 
 
-// ---- 6. UNPACK SOLUTION ----
+// ---- 7. UNPACK SOLUTION ----
 step(`Unpacking solution to ${OUTPUT_FOLDER}...`);
 run(
-  `${PAC} solution unpack --zipfile ${ZIP_PATH} --folder ${OUTPUT_FOLDER} --packagetype ${PACKAGE_TYPE}`,
+  `${PAC} solution unpack --zipfile "${ZIP_PATH}" --folder "${OUTPUT_FOLDER}" --packagetype ${PACKAGE_TYPE}`,
   "Unpack failed."
 );
 ok(`Unpacked to ${OUTPUT_FOLDER}`);
 
 
-// ---- 7. REMOVE ZIP ----
+// ---- 8. REMOVE ZIP ----
 step("Cleaning up zip file...");
 unlinkSync(ZIP_PATH);
 ok("Zip removed");
 
 
-// ---- 8. OPTIONAL GIT COMMIT ----
+// ---- 9. OPTIONAL GIT COMMIT ----
 if (COMMIT_TO_GIT) {
   step("Committing to Git...");
   try { execSync("git --version", { stdio: "ignore" }); }
   catch { fail("Git not found. Install git or set COMMIT_TO_GIT to false."); }
 
-  run(`git add ${OUTPUT_FOLDER}`, "git add failed.");
+  run(`git add -- "${OUTPUT_FOLDER}"`, "git add failed.");
   run(`git commit -m "${GIT_COMMIT_MSG}"`, "git commit failed.");
   ok(`Committed: ${GIT_COMMIT_MSG}`);
 }

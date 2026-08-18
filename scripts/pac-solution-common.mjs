@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 export function validateEnvironmentUrl(value) {
@@ -148,14 +148,72 @@ export function getWorkingTreeChanges(repoRoot, targetPath) {
 }
 
 export function getDirectoryChanges(pathA, pathB) {
-  try {
-    return execFileSync("git", ["diff", "--no-index", "--no-renames", "--name-status", "--", pathA, pathB], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-      maxBuffer: 1024 * 1024 * 200,
-    }).trim();
-  } catch (error) {
-    if (error.status === 1) return String(error.stdout ?? "").trim();
-    throw new Error(`Could not compare solution folders.\n${String(error.stderr || error.message).trim()}`);
+  const filesA = new Set(listRelativeFiles(pathA));
+  const filesB = new Set(listRelativeFiles(pathB));
+  const relativePaths = [...new Set([...filesA, ...filesB])].sort();
+  const changes = [];
+
+  for (const relativePath of relativePaths) {
+    if (!filesA.has(relativePath)) {
+      changes.push(`A\t${relativePath}`);
+      continue;
+    }
+    if (!filesB.has(relativePath)) {
+      changes.push(`D\t${relativePath}`);
+      continue;
+    }
+
+    const contentA = readFileSync(path.join(pathA, relativePath));
+    const contentB = readFileSync(path.join(pathB, relativePath));
+    if (contentA.equals(contentB)) continue;
+
+    const normalizedA = normalizeSolutionFile(relativePath, contentA.toString("utf8"));
+    const normalizedB = normalizeSolutionFile(relativePath, contentB.toString("utf8"));
+    if (normalizedA !== null && normalizedA === normalizedB) continue;
+    changes.push(`M\t${relativePath}`);
+  }
+
+  return changes.join("\n");
+}
+
+function listRelativeFiles(root, current = root) {
+  const files = [];
+  for (const entry of readdirSync(current, { withFileTypes: true })) {
+    const entryPath = path.join(current, entry.name);
+    if (entry.isDirectory()) files.push(...listRelativeFiles(root, entryPath));
+    else if (entry.isFile()) files.push(path.relative(root, entryPath).replaceAll(path.sep, "/"));
+  }
+  return files;
+}
+
+export function normalizeSolutionFile(relativePath, content) {
+  if (relativePath.endsWith(".cdsproj")) {
+    return content.replace(/(<ProjectGuid>)[^<]*(<\/ProjectGuid>)/g, "$1{GENERATED-PROJECT-GUID}$2");
+  }
+
+  if (!/(^|\/)CanvasApps\/[^/]+\.meta\.xml$/i.test(relativePath.replaceAll("\\", "/"))) return null;
+  return content.replace(
+    /(<ConnectionReferences>)([\s\S]*?)(<\/ConnectionReferences>)/g,
+    (element, openingTag, json, closingTag) => {
+      let references;
+      try {
+        references = JSON.parse(json);
+      } catch {
+        return element;
+      }
+
+      for (const reference of Object.values(references)) {
+        normalizeWorkflowName(reference?.parameterHints);
+        normalizeWorkflowName(reference?.parameterHintsV2);
+      }
+      return `${openingTag}${JSON.stringify(references)}${closingTag}`;
+    },
+  );
+}
+
+function normalizeWorkflowName(parameterHints) {
+  const value = parameterHints?.workflowName?.value;
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value ?? "")) {
+    parameterHints.workflowName.value = "{GENERATED-WORKFLOW-NAME}";
   }
 }

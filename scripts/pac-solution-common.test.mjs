@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import {
   compareVersions,
+  getDirectoryChanges,
   loadSolutionConfig,
+  normalizeSolutionFile,
   parsePacVersion,
   resolveContainedPath,
   validateEnvironmentUrl,
@@ -59,6 +61,53 @@ test("loadSolutionConfig reads a committed, reviewable source definition", () =>
       solutionName: "Example",
       outputFolder: path.join(root, "apps/example/solution"),
     });
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("solution normalization ignores only generated PAC identifiers", () => {
+  const projectA = "<Project><ProjectGuid>11111111-1111-4111-8111-111111111111</ProjectGuid><Name>Keep me</Name></Project>";
+  const projectB = "<Project><ProjectGuid>22222222-2222-4222-8222-222222222222</ProjectGuid><Name>Keep me</Name></Project>";
+  assert.equal(normalizeSolutionFile("Example.cdsproj", projectA), normalizeSolutionFile("Example.cdsproj", projectB));
+  assert.notEqual(
+    normalizeSolutionFile("Example.cdsproj", projectA),
+    normalizeSolutionFile("Example.cdsproj", projectB.replace("Keep me", "Changed")),
+  );
+
+  const connectionReferences = (workflowName, displayName = "Flow") =>
+    `<CanvasApp><ConnectionReferences>${JSON.stringify({
+      flow: {
+        parameterHints: { workflowName: { value: workflowName }, workflowEntityId: { value: "stable" } },
+        parameterHintsV2: { workflowName: { value: workflowName } },
+        displayName,
+      },
+    })}</ConnectionReferences></CanvasApp>`;
+  const canvasA = connectionReferences("11111111-1111-4111-8111-111111111111");
+  const canvasB = connectionReferences("22222222-2222-4222-8222-222222222222");
+  assert.equal(
+    normalizeSolutionFile("src/CanvasApps/App.meta.xml", canvasA),
+    normalizeSolutionFile("src/CanvasApps/App.meta.xml", canvasB),
+  );
+  assert.notEqual(
+    normalizeSolutionFile("src/CanvasApps/App.meta.xml", canvasA),
+    normalizeSolutionFile("src/CanvasApps/App.meta.xml", connectionReferences("22222222-2222-4222-8222-222222222222", "Changed")),
+  );
+});
+
+test("directory comparison keeps meaningful changes while filtering generated identifiers", () => {
+  const root = mkdtempSync(path.join(tmpdir(), "pac-directory-test-"));
+  const local = path.join(root, "local");
+  const remote = path.join(root, "remote");
+  try {
+    mkdirSync(path.join(local, "src", "Entities"), { recursive: true });
+    mkdirSync(path.join(remote, "src", "Entities"), { recursive: true });
+    writeFileSync(path.join(local, "Example.cdsproj"), "<ProjectGuid>11111111-1111-4111-8111-111111111111</ProjectGuid>");
+    writeFileSync(path.join(remote, "Example.cdsproj"), "<ProjectGuid>22222222-2222-4222-8222-222222222222</ProjectGuid>");
+    writeFileSync(path.join(local, "src", "Entities", "Entity.xml"), "<Description>Before</Description>");
+    writeFileSync(path.join(remote, "src", "Entities", "Entity.xml"), "<Description>After</Description>");
+
+    assert.equal(getDirectoryChanges(local, remote), "M\tsrc/Entities/Entity.xml");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

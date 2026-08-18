@@ -53,6 +53,12 @@ npm run pac:setup
 Do not globally downgrade PAC to 2.4.1. The scripts select the correct version
 for each operation automatically.
 
+Solution comparison normalizes two PAC-generated identifiers that change on
+otherwise identical clones: `<ProjectGuid>` in `.cdsproj` files and GUID-valued
+`workflowName` entries inside canvas-app `ConnectionReferences`. The files are
+still compared after normalization, so every other metadata or source change in
+those same files remains visible.
+
 ### Authentication
 
 Authenticate to the configured development environment before using the

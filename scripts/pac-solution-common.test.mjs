@@ -6,6 +6,7 @@ import test from "node:test";
 import {
   compareVersions,
   loadSolutionConfig,
+  parsePacVersion,
   resolveContainedPath,
   validateEnvironmentUrl,
   validateSolutionName,
@@ -15,6 +16,11 @@ test("PAC versions are compared numerically", () => {
   assert.equal(compareVersions("2.4.1", "2.4.1"), 0);
   assert.equal(compareVersions("2.10.0", "2.4.1"), 1);
   assert.equal(compareVersions("2.3.9", "2.4.1"), -1);
+});
+
+test("PAC versions are parsed from help output", () => {
+  assert.equal(parsePacVersion("Microsoft PowerPlatform CLI\nVersion: 2.10.1+g52c3983 (.NET 10.0.11)"), "2.10.1");
+  assert.equal(parsePacVersion("Version information unavailable"), null);
 });
 
 test("environment URLs must be plain HTTPS URLs", () => {

@@ -70,7 +70,7 @@ export function findPac(baseEnv = process.env) {
 
 export function requirePacVersion(pac, minimumVersion = "2.4.1") {
   const help = run(pac, ["help"], { errorMessage: "Could not determine the PAC CLI version." });
-  const installedVersion = help.match(/Version:\s*(\d+\.\d+\.\d+)/i)?.[1];
+  const installedVersion = parsePacVersion(help);
   if (!installedVersion) {
     throw new Error("Could not parse the PAC CLI version from 'pac help'.");
   }
@@ -78,6 +78,32 @@ export function requirePacVersion(pac, minimumVersion = "2.4.1") {
     throw new Error(`PAC CLI ${minimumVersion} or newer is required; found ${installedVersion}.`);
   }
   return installedVersion;
+}
+
+export function parsePacVersion(output) {
+  return output.match(/Version:\s*(\d+\.\d+\.\d+)/i)?.[1] ?? null;
+}
+
+export function requireCanvasPac(repoRoot, expectedVersion = "2.4.1") {
+  let help;
+  try {
+    help = run("dotnet", ["tool", "run", "pac", "--", "help"], {
+      cwd: repoRoot,
+      errorMessage: "The repository-local canvas PAC tool is unavailable.",
+    });
+  } catch (error) {
+    throw new Error(`${error.message}\nRun 'npm run pac:setup' from the repository root, then try again.`);
+  }
+
+  const installedVersion = parsePacVersion(help);
+  if (installedVersion !== expectedVersion) {
+    throw new Error(
+      `Canvas source comparison requires repository-local PAC CLI ${expectedVersion}; found ${installedVersion ?? "an unknown version"}. ` +
+      "Run 'npm run pac:setup' from the repository root.",
+    );
+  }
+
+  return { command: "dotnet", args: ["tool", "run", "pac", "--"] };
 }
 
 export function compareVersions(left, right) {

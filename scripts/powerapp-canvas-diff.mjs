@@ -9,20 +9,24 @@ import {
   findPac,
   getDirectoryChanges,
   loadSolutionConfig,
+  requireCanvasPac,
   requirePacVersion,
   run,
 } from "./pac-solution-common.mjs";
 
-function unpackCanvasApps(pac, solutionFolder, destinationRoot) {
+function unpackCanvasApps(canvasPac, repoRoot, solutionFolder, destinationRoot) {
   mkdirSync(destinationRoot, { recursive: true });
   for (const msappPath of findFiles(solutionFolder, ".msapp")) {
     const appName = path.basename(msappPath, ".msapp");
-    run(pac, [
+    run(canvasPac.command, [
+      ...canvasPac.args,
       "canvas", "unpack",
       "--msapp", msappPath,
       "--sources", path.join(destinationRoot, appName),
-      "--layout", "SourceCode",
-    ], { errorMessage: `Could not unpack canvas app '${appName}'.` });
+    ], {
+      cwd: repoRoot,
+      errorMessage: `Could not unpack canvas app '${appName}' with repository-local PAC CLI 2.4.1.`,
+    });
   }
 }
 
@@ -52,6 +56,7 @@ function main() {
   const pac = findPac();
   if (!pac) throw new Error("PAC CLI was not found. Install Microsoft.PowerApps.CLI.Tool before comparing solutions.");
   requirePacVersion(pac);
+  const canvasPac = requireCanvasPac(repoRoot);
 
   const stagingRoot = mkdtempSync(path.join(tmpdir(), "pac-solution-diff-"));
   const remoteFolder = path.join(stagingRoot, "remote");
@@ -65,8 +70,8 @@ function main() {
     const solutionChanges = getDirectoryChanges(outputFolder, remoteFolder);
     printChanges("Solution file differences", solutionChanges);
 
-    unpackCanvasApps(pac, outputFolder, localCanvasFolder);
-    unpackCanvasApps(pac, remoteFolder, remoteCanvasFolder);
+    unpackCanvasApps(canvasPac, repoRoot, outputFolder, localCanvasFolder);
+    unpackCanvasApps(canvasPac, repoRoot, remoteFolder, remoteCanvasFolder);
     const canvasChanges = getDirectoryChanges(localCanvasFolder, remoteCanvasFolder);
     printChanges("Canvas app source differences", canvasChanges);
 

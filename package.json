@@ -22,6 +22,7 @@
     "dataflows:pull:file": "node ./scripts/pull-dataflows.mjs",
     "cedar:clean": "node ./scripts/clean-cedar-systems-json.mjs",
     "intake:systems:clean": "node ./scripts/clean-system-intake-systems-csv.mjs",
+    "pac:setup": "dotnet tool restore",
     "pac:export": "node ./scripts/export-solution.mjs",
     "pac:diff": "node ./scripts/powerapp-canvas-diff.mjs",
     "test:pac": "node --test ./scripts/pac-solution-common.test.mjs"

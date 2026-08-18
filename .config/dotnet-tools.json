@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "microsoft.powerapps.cli.tool": {
+      "version": "2.4.1",
+      "commands": [
+        "pac"
+      ]
+    }
+  }
+}

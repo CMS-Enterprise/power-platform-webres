@@ -70,6 +70,8 @@ test("solution normalization ignores only generated PAC identifiers", () => {
   const projectA = "<Project><ProjectGuid>11111111-1111-4111-8111-111111111111</ProjectGuid><Name>Keep me</Name></Project>";
   const projectB = "<Project><ProjectGuid>22222222-2222-4222-8222-222222222222</ProjectGuid><Name>Keep me</Name></Project>";
   const projectWithBracedGuid = "<Project><ProjectGuid>{22222222-2222-4222-8222-222222222222}</ProjectGuid><Name>Keep me</Name></Project>";
+  const projectWithOpeningBraceOnly = "<Project><ProjectGuid>{22222222-2222-4222-8222-222222222222</ProjectGuid><Name>Keep me</Name></Project>";
+  const projectWithClosingBraceOnly = "<Project><ProjectGuid>22222222-2222-4222-8222-222222222222}</ProjectGuid><Name>Keep me</Name></Project>";
   const projectWithEmptyGuid = "<Project><ProjectGuid></ProjectGuid><Name>Keep me</Name></Project>";
   const projectWithInvalidGuid = "<Project><ProjectGuid>NOT-A-GUID</ProjectGuid><Name>Keep me</Name></Project>";
   assert.equal(normalizeSolutionFile("Example.cdsproj", projectA), normalizeSolutionFile("Example.cdsproj", projectB));
@@ -88,6 +90,14 @@ test("solution normalization ignores only generated PAC identifiers", () => {
   assert.equal(
     normalizeSolutionFile("Example.cdsproj", projectA),
     normalizeSolutionFile("Example.cdsproj", projectWithBracedGuid),
+  );
+  assert.notEqual(
+    normalizeSolutionFile("Example.cdsproj", projectA),
+    normalizeSolutionFile("Example.cdsproj", projectWithOpeningBraceOnly),
+  );
+  assert.notEqual(
+    normalizeSolutionFile("Example.cdsproj", projectA),
+    normalizeSolutionFile("Example.cdsproj", projectWithClosingBraceOnly),
   );
 
   const connectionReferences = (workflowName, displayName = "Flow") =>

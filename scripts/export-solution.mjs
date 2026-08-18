@@ -1,287 +1,84 @@
-// ============================================================
-// export-solution.mjs
-// Exports and unpacks a Power Platform solution for source control
-// Run with: npm run pac:export  (or: node scripts/export-solution.mjs)
-// ============================================================
+#!/usr/bin/env node
 
-import { execSync } from "child_process";
-import { existsSync, mkdtempSync, readFileSync, rmSync, unlinkSync } from "fs";
-import { tmpdir } from "os";
-import { join, resolve } from "path";
-import { createInterface } from "readline";
+import { existsSync, mkdtempSync, renameSync, rmSync } from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import { createInterface } from "node:readline/promises";
+import {
+  cloneSolution,
+  findPac,
+  getDirectoryChanges,
+  getWorkingTreeChanges,
+  loadSolutionConfig,
+  requirePacVersion,
+} from "./pac-solution-common.mjs";
 
-// ---- LOCAL BEHAVIOR (safe to hardcode; not environment-specific) ----
-const PACKAGE_TYPE    = "Unmanaged";                     // Unmanaged | Managed | Both
-const COMMIT_TO_GIT   = false;                            // Set to true to auto-commit after unpack
-// ---- END CONFIG ----
+async function main() {
+  const repoRoot = process.cwd();
+  const { environmentUrl, solutionName, outputFolder } = loadSolutionConfig(repoRoot);
+  const pac = findPac();
+  if (!pac) throw new Error("PAC CLI was not found. Install Microsoft.PowerApps.CLI.Tool before exporting.");
+  requirePacVersion(pac);
 
-
-// ---- HELPERS ----
-const cyan   = (s) => `\x1b[36m${s}\x1b[0m`;
-const green  = (s) => `\x1b[32m${s}\x1b[0m`;
-const yellow = (s) => `\x1b[33m${s}\x1b[0m`;
-const red    = (s) => `\x1b[31m${s}\x1b[0m`;
-
-function step(msg) { console.log(cyan(`\n>> ${msg}`)); }
-function ok(msg)   { console.log(green(`   OK: ${msg}`)); }
-function fail(msg) { console.error(red(`   ERROR: ${msg}`)); process.exit(1); }
-
-// Loads .env into process.env (without overriding anything already set),
-// matching the convention used by scripts/check-webresources.mjs.
-function loadEnv(envPath) {
-  const result = { ...process.env };
-  if (!existsSync(envPath)) return result;
-
-  const lines = readFileSync(envPath, "utf8").split(/\r?\n/);
-  for (const rawLine of lines) {
-    const line = rawLine.trim();
-    if (!line || line.startsWith("#")) continue;
-
-    const separatorIndex = line.indexOf("=");
-    if (separatorIndex === -1) continue;
-
-    const key = line.slice(0, separatorIndex).trim();
-    const rawValue = line.slice(separatorIndex + 1).trim();
-    if (!(key in result)) result[key] = stripWrappingQuotes(rawValue);
-  }
-  return result;
-}
-
-function stripWrappingQuotes(value) {
-  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-    return value.slice(1, -1);
-  }
-  return value;
-}
-
-// Resolve the pac executable — check PATH first, then the default .NET global tools location.
-function findPac() {
-  // Try PATH first
-  try {
-    execSync("pac help", { encoding: "utf8", stdio: "ignore" });
-    return "pac";
-  } catch {}
-
-  // Fall back to the default .NET global tools install location. The global tool
-  // is "pac.exe" on Windows and "pac" (no extension) on macOS/Linux.
-  const homeDir = process.env.USERPROFILE ?? process.env.HOME;
-  if (!homeDir) return null;
-
-  const candidates = [join(homeDir, ".dotnet", "tools", "pac.exe"), join(homeDir, ".dotnet", "tools", "pac")];
-  const found = candidates.find((candidate) => existsSync(candidate));
-  return found ? `"${found}"` : null;
-}
-
-const EXEC_OPTS = { encoding: "utf8", stdio: ["inherit", "pipe", "pipe"], maxBuffer: 1024 * 1024 * 200 };
-
-function run(cmd, errorMsg) {
-  try {
-    const output = execSync(cmd, EXEC_OPTS);
-    if (output?.trim()) console.log("  ", output.trim());
-    return output;
-  } catch (err) {
-    console.error(err.stdout || err.stderr || err.message);
-    fail(errorMsg);
-  }
-}
-
-function listChangedFiles(pathA, pathB) {
-  try {
-    const output = execSync(`git diff --no-index --no-renames --name-status -- "${pathA}" "${pathB}"`, EXEC_OPTS);
-    return parseNameStatus(output, pathA, pathB);
-  } catch (err) {
-    if (err.status === 1) return parseNameStatus(err.stdout || "", pathA, pathB);
-    console.error(err.stderr || err.message);
-    fail("Failed to list changed WebResources files.");
-  }
-}
-
-// git's --name-status echoes back the whole pathspec it matched against, not
-// a bare relative path: for M/D it's "<pathA>/<relPath>", for A (only found
-// under pathB) it's "<pathB>/<relPath>". Strip whichever root applies so we
-// get a clean relative path usable under both roots.
-function parseNameStatus(output, pathA, pathB) {
-  return output
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => {
-      const [status, ...rest] = line.split("\t");
-      const fullPath = rest.join("\t");
-      const root = status === "A" ? pathB : pathA;
-      return { status, path: stripRoot(fullPath, root) };
-    });
-}
-
-function stripRoot(fullPath, root) {
-  const normalizedRoot = root.replace(/\\/g, "/").replace(/\/+$/, "");
-  const normalizedFull = fullPath.replace(/\\/g, "/");
-  if (normalizedFull.startsWith(`${normalizedRoot}/`)) {
-    return normalizedFull.slice(normalizedRoot.length + 1);
-  }
-  return normalizedFull;
-}
-
-function askYesNo(promptText) {
-  return new Promise((resolve) => {
-    const rl = createInterface({ input: process.stdin, output: process.stdout });
-    rl.question(promptText, (answer) => {
-      rl.close();
-      resolve(/^y(es)?$/i.test(answer.trim()));
-    });
-  });
-}
-
-// Before the local unpack folder gets deleted and replaced, compare the
-// WebResources files currently on disk (which may have local edits) against
-// what's actually in the solution we just pulled from the environment. If
-// they differ, show the diffs and require confirmation before overwriting.
-async function guardLocalWebResourceEdits(pac, zipPath, outputFolder, packageType) {
-  const localWebResources = join(outputFolder, "WebResources");
-  if (!existsSync(localWebResources)) return;
-
-  step("Checking for local WebResources edits before overwrite...");
-  const tempRoot = mkdtempSync(join(tmpdir(), "export-solutions-check-"));
-  try {
-    const remoteFolder = join(tempRoot, "remote");
-    run(
-      `${pac} solution unpack --zipfile "${zipPath}" --folder "${remoteFolder}" --packagetype ${packageType}`,
-      "Pre-check unpack failed."
+  const localChanges = getWorkingTreeChanges(repoRoot, outputFolder);
+  if (localChanges) {
+    throw new Error(
+      `The solution folder has uncommitted or untracked changes. Commit, stash, or remove them before exporting:\n${localChanges}`,
     );
+  }
 
-    const remoteWebResources = join(remoteFolder, "WebResources");
-    const changes = listChangedFiles(localWebResources, remoteWebResources);
+  const parentFolder = path.dirname(outputFolder);
+  const stagingRoot = mkdtempSync(path.join(parentFolder, ".pac-export-"));
+  const unpackedFolder = path.join(stagingRoot, "unpacked");
+  const previousFolder = path.join(stagingRoot, "previous");
 
-    if (changes.length === 0) {
-      ok("No local WebResources changes would be overwritten.");
+  try {
+    console.log(`Exporting '${solutionName}' from ${environmentUrl}`);
+    cloneSolution({ pac, environmentUrl, solutionName, outputFolder: unpackedFolder });
+
+    if (existsSync(outputFolder)) {
+      const changes = getDirectoryChanges(outputFolder, unpackedFolder);
+      if (!changes) {
+        console.log("The checked-out solution already matches the environment. No files changed.");
+        return;
+      }
+      console.log("\nIncoming solution changes:\n");
+      console.log(changes);
+    } else {
+      console.log(`\nThis is the initial export to ${path.relative(repoRoot, outputFolder)}.`);
+    }
+
+    if (!(await confirm("\nReplace the checked-out solution with this export? (y/N) "))) {
+      console.log("Export cancelled. The checked-out solution was not changed.");
       return;
     }
 
-    console.log(yellow(`\n   ${changes.length} WebResources file(s) differ from what's about to be pulled:`));
-    for (const change of changes) console.log(`     ${change.status}  ${change.path}`);
-
-    for (const change of changes) {
-      console.log(cyan(`\n---- ${change.status}  ${change.path} ----`));
-      const fileA = change.status === "A" ? "/dev/null" : join(localWebResources, change.path);
-      const fileB = change.status === "D" ? "/dev/null" : join(remoteWebResources, change.path);
-      try {
-        execSync(
-          `git diff --no-index --ignore-space-at-eol --src-prefix="local/" --dst-prefix="environment/" --color=always -- "${fileA}" "${fileB}"`,
-          EXEC_OPTS
-        );
-      } catch (err) {
-        if (err.status === 1) console.log(err.stdout || "");
-        else console.error(err.stderr || err.message);
-      }
+    if (existsSync(outputFolder)) renameSync(outputFolder, previousFolder);
+    try {
+      renameSync(unpackedFolder, outputFolder);
+    } catch (error) {
+      if (existsSync(previousFolder)) renameSync(previousFolder, outputFolder);
+      throw error;
     }
 
-    const proceed = await askYesNo(yellow("\n   Continue and overwrite these local changes? (y/N) "));
-    if (!proceed) {
-      console.log(yellow("   Aborted. No local files were changed."));
-      process.exit(0);
-    }
+    console.log(`Solution updated at ${path.relative(repoRoot, outputFolder)}.`);
+    console.log("Review the complete Git diff before staging or committing it.");
   } finally {
-    rmSync(tempRoot, { recursive: true, force: true });
+    rmSync(stagingRoot, { recursive: true, force: true });
   }
 }
 
-
-// ---- 1. CHECK PAC IS INSTALLED ----
-step("Checking pac CLI...");
-const PAC = findPac();
-if (!PAC) {
-  fail("pac CLI not found. Install with: dotnet tool install --global Microsoft.PowerApps.CLI.Tool");
-}
-const pacHelpOutput = execSync(`${PAC} help`, { encoding: "utf8" });
-const pacVersion = pacHelpOutput.match(/Version:\s*(\S+)/)?.[1] ?? "unknown";
-ok(`pac found: ${pacVersion}`);
-
-
-// ---- 2. RESOLVE ENVIRONMENT-SPECIFIC CONFIG FROM .env ----
-// Environment URL and solution name are environment-specific, so they come from
-// .env (see .env.example) instead of being hardcoded here.
-const env = loadEnv(resolve(".env"));
-const ENVIRONMENT_URL = env.DATAVERSE_URL;
-const SOLUTION_NAME = env.DATAVERSE_SOLUTION_UNIQUE_NAME;
-if (!ENVIRONMENT_URL || !SOLUTION_NAME) {
-  fail("Missing DATAVERSE_URL or DATAVERSE_SOLUTION_UNIQUE_NAME. Copy .env.example to .env and fill them in.");
-}
-const OUTPUT_FOLDER = `./${SOLUTION_NAME}`;
-const ZIP_PATH = `./${SOLUTION_NAME}.zip`;
-const GIT_COMMIT_MSG = `chore: export ${SOLUTION_NAME} solution`;
-
-
-// ---- 3. AUTHENTICATE ----
-step("Checking authentication...");
-const authList = execSync(`${PAC} auth list`, { encoding: "utf8" });
-if (authList.includes("No profiles")) {
-  step("No auth profile found. Launching login...");
-  run(`${PAC} auth create --url ${ENVIRONMENT_URL}`, "Authentication failed.");
-} else {
-  console.log("   Using existing auth profile. Switch with: pac auth select");
-  console.log(authList.trim());
+async function confirm(prompt) {
+  if (!process.stdin.isTTY) return false;
+  const readline = createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    return /^y(es)?$/i.test((await readline.question(prompt)).trim());
+  } finally {
+    readline.close();
+  }
 }
 
-
-// ---- 4. EXPORT SOLUTION ----
-step(`Exporting solution '${SOLUTION_NAME}' from ${ENVIRONMENT_URL}...`);
-if (existsSync(ZIP_PATH)) {
-  console.log(yellow(`   Removing leftover zip from a previous run: ${ZIP_PATH}`));
-  unlinkSync(ZIP_PATH);
-}
-// Only pass --managed when actually exporting a managed solution; omitting it
-// otherwise avoids relying on how a given pac CLI version parses "--managed false".
-const managedFlag = PACKAGE_TYPE === "Managed" ? " --managed true" : "";
-run(
-  `${PAC} solution export --name ${SOLUTION_NAME} --path "${ZIP_PATH}"${managedFlag}`,
-  "Export failed. Check the solution name and environment URL."
-);
-ok(`Exported to ${ZIP_PATH}`);
-
-
-// ---- 5. GUARD AGAINST OVERWRITING LOCAL WEBRESOURCES EDITS ----
-await guardLocalWebResourceEdits(PAC, ZIP_PATH, OUTPUT_FOLDER, PACKAGE_TYPE);
-
-
-// ---- 6. CLEAN UP OLD UNPACK FOLDER ----
-if (existsSync(OUTPUT_FOLDER)) {
-  step("Removing existing unpack folder...");
-  rmSync(resolve(OUTPUT_FOLDER), { recursive: true, force: true });
-}
-
-
-// ---- 7. UNPACK SOLUTION ----
-step(`Unpacking solution to ${OUTPUT_FOLDER}...`);
-run(
-  `${PAC} solution unpack --zipfile "${ZIP_PATH}" --folder "${OUTPUT_FOLDER}" --packagetype ${PACKAGE_TYPE}`,
-  "Unpack failed."
-);
-ok(`Unpacked to ${OUTPUT_FOLDER}`);
-
-
-// ---- 8. REMOVE ZIP ----
-step("Cleaning up zip file...");
-unlinkSync(ZIP_PATH);
-ok("Zip removed");
-
-
-// ---- 9. OPTIONAL GIT COMMIT ----
-if (COMMIT_TO_GIT) {
-  step("Committing to Git...");
-  try { execSync("git --version", { stdio: "ignore" }); }
-  catch { fail("Git not found. Install git or set COMMIT_TO_GIT to false."); }
-
-  run(`git add -- "${OUTPUT_FOLDER}"`, "git add failed.");
-  run(`git commit -m "${GIT_COMMIT_MSG}"`, "git commit failed.");
-  ok(`Committed: ${GIT_COMMIT_MSG}`);
-}
-
-
-// ---- DONE ----
-console.log(green("\n============================================================"));
-console.log(green(`  Done! Solution unpacked to: ${OUTPUT_FOLDER}`));
-if (COMMIT_TO_GIT) {
-  console.log(green(`  Committed to Git: ${GIT_COMMIT_MSG}`));
-} else {
-  console.log(yellow("  Tip: Set COMMIT_TO_GIT = true to auto-commit after export."));
-}
-console.log(green("============================================================\n"));
+main().catch((error) => {
+  console.error(`ERROR: ${error.message}`);
+  process.exitCode = 1;
+});

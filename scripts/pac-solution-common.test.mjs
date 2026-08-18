@@ -69,10 +69,25 @@ test("loadSolutionConfig reads a committed, reviewable source definition", () =>
 test("solution normalization ignores only generated PAC identifiers", () => {
   const projectA = "<Project><ProjectGuid>11111111-1111-4111-8111-111111111111</ProjectGuid><Name>Keep me</Name></Project>";
   const projectB = "<Project><ProjectGuid>22222222-2222-4222-8222-222222222222</ProjectGuid><Name>Keep me</Name></Project>";
+  const projectWithBracedGuid = "<Project><ProjectGuid>{22222222-2222-4222-8222-222222222222}</ProjectGuid><Name>Keep me</Name></Project>";
+  const projectWithEmptyGuid = "<Project><ProjectGuid></ProjectGuid><Name>Keep me</Name></Project>";
+  const projectWithInvalidGuid = "<Project><ProjectGuid>NOT-A-GUID</ProjectGuid><Name>Keep me</Name></Project>";
   assert.equal(normalizeSolutionFile("Example.cdsproj", projectA), normalizeSolutionFile("Example.cdsproj", projectB));
   assert.notEqual(
     normalizeSolutionFile("Example.cdsproj", projectA),
     normalizeSolutionFile("Example.cdsproj", projectB.replace("Keep me", "Changed")),
+  );
+  assert.notEqual(
+    normalizeSolutionFile("Example.cdsproj", projectA),
+    normalizeSolutionFile("Example.cdsproj", projectWithEmptyGuid),
+  );
+  assert.notEqual(
+    normalizeSolutionFile("Example.cdsproj", projectA),
+    normalizeSolutionFile("Example.cdsproj", projectWithInvalidGuid),
+  );
+  assert.equal(
+    normalizeSolutionFile("Example.cdsproj", projectA),
+    normalizeSolutionFile("Example.cdsproj", projectWithBracedGuid),
   );
 
   const connectionReferences = (workflowName, displayName = "Flow") =>

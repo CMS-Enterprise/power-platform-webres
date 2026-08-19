@@ -38,6 +38,8 @@ namespace SystemIntake.Plugins
         private const string RequestLcidField = "cr69a_lcid";
         private const string RequestNextStepsField = "cr3ee_nextsteps";
         private const string RequestStatusField = "cr69a_status";
+        private const string RequestFinalBusinessCaseSubmittedField = "cr69a_finalbusinesscasesubmitted";
+        private const string RequestFinalBusinessCaseSubmittedDateField = "cr69a_finalbusinesscasesubmitteddate";
 
         private const string LcidEntity = "cr69a_lifecycleids";
         private const string LcidNameField = "cr69a_lcid";
@@ -69,6 +71,9 @@ namespace SystemIntake.Plugins
 
         private const int FinishedStep = 971270009;
         private const int DraftStep = 971270006;
+        private const int IntakeRequestReviewStep = 971270000;
+        private const int DraftBusinessCaseStep = 971270001;
+        private const int GrtMeetingStep = 971270002;
         private const int IssueLifecycleIdDecision = 971270000;
         private const int NotItGovernanceRequestDecision = 971270001;
         private const int NotApprovedByGrbDecision = 971270002;
@@ -257,7 +262,18 @@ namespace SystemIntake.Plugins
             {
                 var requestUpdate = new Entity(RequestEntity, requestRef.Id);
                 if (step != null)
+                {
                     requestUpdate[RequestStepField] = new OptionSetValue(step.Value);
+
+                    if (IsBeforeFinalBusinessCase(step.Value))
+                    {
+                        requestUpdate[RequestFinalBusinessCaseSubmittedField] = false;
+                        requestUpdate[RequestFinalBusinessCaseSubmittedDateField] = null;
+                        tracing?.Trace(
+                            "ActivityLog_Create_ApplyActivityType: Progress target is before Final Business Case; submission flag and date cleared."
+                        );
+                    }
+                }
 
                 requestUpdate[RequestReadyForReviewField] = false;
                 service.Update(requestUpdate);
@@ -266,6 +282,20 @@ namespace SystemIntake.Plugins
             else
             {
                 tracing?.Trace("ActivityLog_Create_ApplyActivityType: Progress Request lookup missing; skipping Request update.");
+            }
+        }
+
+        private static bool IsBeforeFinalBusinessCase(int step)
+        {
+            switch (step)
+            {
+                case DraftStep:
+                case IntakeRequestReviewStep:
+                case DraftBusinessCaseStep:
+                case GrtMeetingStep:
+                    return true;
+                default:
+                    return false;
             }
         }
 

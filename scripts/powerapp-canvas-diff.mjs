@@ -25,7 +25,7 @@ function unpackCanvasApps(canvasPac, repoRoot, solutionFolder, destinationRoot) 
       "--sources", path.join(destinationRoot, appName),
     ], {
       cwd: repoRoot,
-      errorMessage: `Could not unpack canvas app '${appName}' with repository-local PAC CLI 2.4.1.`,
+      errorMessage: `Could not unpack canvas app '${appName}' with repository-local PAC CLI ${canvasPac.version}.`,
     });
   }
 }

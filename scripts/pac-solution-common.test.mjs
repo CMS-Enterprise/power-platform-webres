@@ -6,6 +6,7 @@ import test from "node:test";
 import {
   compareVersions,
   getDirectoryChanges,
+  isNormalizableSolutionFile,
   loadSolutionConfig,
   normalizeSolutionFile,
   parsePacVersion,
@@ -23,6 +24,14 @@ test("PAC versions are compared numerically", () => {
 test("PAC versions are parsed from help output", () => {
   assert.equal(parsePacVersion("Microsoft PowerPlatform CLI\nVersion: 2.10.1+g52c3983 (.NET 10.0.11)"), "2.10.1");
   assert.equal(parsePacVersion("Version information unavailable"), null);
+});
+
+test("only supported text solution files are eligible for normalization", () => {
+  assert.equal(isNormalizableSolutionFile("Example.cdsproj"), true);
+  assert.equal(isNormalizableSolutionFile("src/CanvasApps/App.meta.xml"), true);
+  assert.equal(isNormalizableSolutionFile("src\\CanvasApps\\App.meta.xml"), true);
+  assert.equal(isNormalizableSolutionFile("src/CanvasApps/App.msapp"), false);
+  assert.equal(isNormalizableSolutionFile("src/Entities/Entity.xml"), false);
 });
 
 test("environment URLs must be plain HTTPS URLs", () => {

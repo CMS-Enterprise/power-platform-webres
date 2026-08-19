@@ -103,7 +103,11 @@ export function requireCanvasPac(repoRoot, expectedVersion = "2.4.1") {
     );
   }
 
-  return { command: "dotnet", args: ["tool", "run", "pac", "--"] };
+  return {
+    command: "dotnet",
+    args: ["tool", "run", "pac", "--"],
+    version: expectedVersion,
+  };
 }
 
 export function compareVersions(left, right) {
@@ -167,9 +171,14 @@ export function getDirectoryChanges(pathA, pathB) {
     const contentB = readFileSync(path.join(pathB, relativePath));
     if (contentA.equals(contentB)) continue;
 
+    if (!isNormalizableSolutionFile(relativePath)) {
+      changes.push(`M\t${relativePath}`);
+      continue;
+    }
+
     const normalizedA = normalizeSolutionFile(relativePath, contentA.toString("utf8"));
     const normalizedB = normalizeSolutionFile(relativePath, contentB.toString("utf8"));
-    if (normalizedA !== null && normalizedA === normalizedB) continue;
+    if (normalizedA === normalizedB) continue;
     changes.push(`M\t${relativePath}`);
   }
 
@@ -194,7 +203,7 @@ export function normalizeSolutionFile(relativePath, content) {
     );
   }
 
-  if (!/(^|\/)CanvasApps\/[^/]+\.meta\.xml$/i.test(relativePath.replaceAll("\\", "/"))) return null;
+  if (!isNormalizableSolutionFile(relativePath)) return null;
   return content.replace(
     /(<ConnectionReferences>)([\s\S]*?)(<\/ConnectionReferences>)/g,
     (element, openingTag, json, closingTag) => {
@@ -212,6 +221,11 @@ export function normalizeSolutionFile(relativePath, content) {
       return `${openingTag}${JSON.stringify(references)}${closingTag}`;
     },
   );
+}
+
+export function isNormalizableSolutionFile(relativePath) {
+  if (relativePath.endsWith(".cdsproj")) return true;
+  return /(^|\/)CanvasApps\/[^/]+\.meta\.xml$/i.test(relativePath.replaceAll("\\", "/"));
 }
 
 function normalizeWorkflowName(parameterHints) {

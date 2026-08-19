@@ -1,0 +1,5 @@
+{
+  "environmentUrl": "https://itgovernancedev.crm9.dynamics.com",
+  "solutionUniqueName": "InitialITGO",
+  "outputPath": "apps/it-governance/solution"
+}

@@ -28,16 +28,16 @@ Synchronizes the target process step from an Activity Log into the related:
 It also clears the **Ready for Review** flag on both records, indicating that admin review is no longer pending once an action has been taken.
 
 When Progress to a New Step targets Draft Intake, Intake Request Review, Draft
-Business Case, or GRT Meeting, it also clears the Request's Final Business Case
-submission state:
+Business Case, GRT Meeting, or Final Business Case, it also clears the Request's
+Final Business Case submission state:
 
 - `cr69a_finalbusinesscasesubmitted = false`
 - `cr69a_finalbusinesscasesubmitteddate = null`
 
-This prevents a Request moved backward in the process from retaining stale
-Final Business Case submission state. The same consistency rule applies when an
-Edit Request activity targets one of those earlier steps because both activity
-types use the shared progress handler.
+This prevents a Request moved backward in the process, or returned for Final
+Business Case edits, from retaining stale Final Business Case submission state.
+The same consistency rule applies to Edit Request activities because both
+activity types use the shared progress handler.
 
 **Trigger**
 

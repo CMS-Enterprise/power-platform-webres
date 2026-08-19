@@ -74,6 +74,7 @@ namespace SystemIntake.Plugins
         private const int IntakeRequestReviewStep = 971270000;
         private const int DraftBusinessCaseStep = 971270001;
         private const int GrtMeetingStep = 971270002;
+        private const int FinalBusinessCaseStep = 971270003;
         private const int IssueLifecycleIdDecision = 971270000;
         private const int NotItGovernanceRequestDecision = 971270001;
         private const int NotApprovedByGrbDecision = 971270002;
@@ -265,12 +266,12 @@ namespace SystemIntake.Plugins
                 {
                     requestUpdate[RequestStepField] = new OptionSetValue(step.Value);
 
-                    if (IsBeforeFinalBusinessCase(step.Value))
+                    if (ShouldClearFinalBusinessCaseSubmission(step.Value))
                     {
                         requestUpdate[RequestFinalBusinessCaseSubmittedField] = false;
                         requestUpdate[RequestFinalBusinessCaseSubmittedDateField] = null;
                         tracing?.Trace(
-                            "ActivityLog_Create_ApplyActivityType: Progress target is before Final Business Case; submission flag and date cleared."
+                            "ActivityLog_Create_ApplyActivityType: Progress target requires Final Business Case resubmission; submission flag and date cleared."
                         );
                     }
                 }
@@ -285,7 +286,7 @@ namespace SystemIntake.Plugins
             }
         }
 
-        private static bool IsBeforeFinalBusinessCase(int step)
+        private static bool ShouldClearFinalBusinessCaseSubmission(int step)
         {
             switch (step)
             {
@@ -293,6 +294,7 @@ namespace SystemIntake.Plugins
                 case IntakeRequestReviewStep:
                 case DraftBusinessCaseStep:
                 case GrtMeetingStep:
+                case FinalBusinessCaseStep:
                     return true;
                 default:
                     return false;

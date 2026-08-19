@@ -63,6 +63,16 @@ namespace Request.Plugins
                     return;
                 }
 
+                if (!string.Equals(reviewRef.LogicalName, ReviewEntity, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidPluginExecutionException(
+                        string.Format(
+                            "Request Ready for Review synchronization received an unexpected Review entity type: {0}.",
+                            reviewRef.LogicalName ?? "(null)"
+                        )
+                    );
+                }
+
                 var requestedValue = target.GetAttributeValue<bool>(ReadyForReviewField);
                 var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
                 var service = serviceFactory.CreateOrganizationService(context.UserId);
@@ -116,5 +126,4 @@ namespace Request.Plugins
         }
     }
 }
-
 

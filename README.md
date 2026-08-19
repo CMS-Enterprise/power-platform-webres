@@ -53,6 +53,10 @@ npm run pac:setup
 Do not globally downgrade PAC to 2.4.1. The scripts select the correct version
 for each operation automatically.
 
+Solution cloning has been validated with global PAC CLI 2.10.1. Newer global
+versions are permitted, while canvas source expansion remains pinned to the
+repository-local PAC CLI 2.4.1 compatibility version.
+
 Solution comparison normalizes two PAC-generated identifiers that change on
 otherwise identical clones: `<ProjectGuid>` in `.cdsproj` files and GUID-valued
 `workflowName` entries inside canvas-app `ConnectionReferences`. The files are

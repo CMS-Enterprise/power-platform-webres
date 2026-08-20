@@ -72,11 +72,13 @@ namespace EditRequest
                 if (target == null)
                     return;
 
-                if (target.Attributes.Contains(BatchIdField) && target[BatchIdField] != null)
+                if (target.Attributes.TryGetValue(BatchIdField, out var batchIdObj)
+                    && batchIdObj != null
+                    && !(batchIdObj is string batchIdText && string.IsNullOrWhiteSpace(batchIdText)))
                 {
                     tracing?.Trace(
-                        "EditRequest_Create_SetRequestAdminGovernanceStep: Batch ID ({0}) is populated; this is migrated data. Exiting.",
-                        BatchIdField
+                        "EditRequest_Create_SetRequestAdminGovernanceStep: Batch ID value ({0}) is populated; this is migrated data. Exiting.",
+                        batchIdObj
                     );
                     return;
                 }

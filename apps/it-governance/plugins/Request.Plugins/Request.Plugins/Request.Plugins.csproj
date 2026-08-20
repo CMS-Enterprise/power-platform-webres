@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>5871eb84-fe05-4739-b395-c5c0ba38d36c</ProjectGuid>
+    <ProjectGuid>{5871EB84-FE05-4739-B395-C5C0BA38D36C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Request.Plugins</RootNamespace>

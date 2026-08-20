@@ -4,7 +4,7 @@ shared DataverseEnvironmentUrl = let
 in
   DataverseEnvironmentUrl;
 shared SharePointSiteUrl = let
-  SharePointSiteUrl = "https://cmsgovonline-my.sharepoint.com/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text]
+  SharePointSiteUrl = "https://cmsgovonline.sharepoint.com/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text]
 in
   SharePointSiteUrl;
 shared FileName = let
@@ -12,7 +12,7 @@ shared FileName = let
 in
   FileName;
 shared FolderPath = let
-  FolderPath = "personal/cooper_heinrichs_cms_hhs_gov/Documents/Apps/IT_Governance/Data_Migrations/Dev/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text]
+  FolderPath = "sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20migration/Development/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text]
 in
   FolderPath;
 shared Query1 = let

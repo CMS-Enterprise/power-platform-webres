@@ -7,6 +7,7 @@ namespace EditRequest
     public class EditRequest_Create_SetRequestAdminGovernanceStep : IPlugin
     {
         private const string EditRequestEntity = "cr69a_editrequest";
+        private const string BatchIdField = "cr69a_batchid";
         private const string FormNeedsEditsField = "cr69a_whichformneedsedits";
         private const string WhatChangesAreNeededField = "cr3ee_changes_needed";
         private const string AdditionalInformationField = "cr3ee_additionalinformation";
@@ -70,6 +71,17 @@ namespace EditRequest
                 var target = GetTarget(context, tracing);
                 if (target == null)
                     return;
+
+                if (target.Attributes.TryGetValue(BatchIdField, out var batchIdObj)
+                    && batchIdObj != null
+                    && !(batchIdObj is string batchIdText && string.IsNullOrWhiteSpace(batchIdText)))
+                {
+                    tracing?.Trace(
+                        "EditRequest_Create_SetRequestAdminGovernanceStep: Batch ID value ({0}) is populated; this is migrated data. Exiting.",
+                        batchIdObj
+                    );
+                    return;
+                }
 
                 var formNeedsEdits = target.GetAttributeValue<OptionSetValue>(FormNeedsEditsField);
                 if (formNeedsEdits == null)

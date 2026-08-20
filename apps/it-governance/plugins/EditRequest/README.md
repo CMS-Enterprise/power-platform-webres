@@ -24,9 +24,12 @@ The class name is retained for registration compatibility, but the plugin no lon
 
 The plugin reads these fields from the Edit Request Target:
 
+- `cr69a_batchid`
 - `cr69a_whichformneedsedits`
 - `cr69a_systemintake`
 - `cr69a_systemintakeadmin`
+
+If `cr69a_batchid` is populated, the Edit Request was created by a data migration. The plugin exits without creating an Activity Log or changing related Request and Review state.
 
 Both Request and Review lookups are required. If either lookup is missing or has an empty ID, the plugin exits before creating an Activity Log so the related records cannot drift out of sync.
 
@@ -79,6 +82,7 @@ EditRequest\EditRequest\bin\Release\EditRequest.dll
 
 ## Manual Test Checklist
 
+- A migrated Edit Request with `cr69a_batchid` populated creates no Activity Log and changes no related state.
 - Intake Request Form creates an Edit Request Activity Log targeting `971270006`.
 - Draft Business Case creates an Edit Request Activity Log targeting `971270001`.
 - Final Business Case creates an Edit Request Activity Log targeting `971270003`.

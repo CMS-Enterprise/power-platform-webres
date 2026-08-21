@@ -1,5 +1,8 @@
 # Data Migration Guide
 
+For the current end-to-end migration, validation, cutover, and rollback plan, see
+[`data-migration-plan.md`](./data-migration-plan.md).
+
 Migrating data between EASI and the IT Governance Power App should be handled by the following power automate flows.
 
 1. Intake - Stage All Data

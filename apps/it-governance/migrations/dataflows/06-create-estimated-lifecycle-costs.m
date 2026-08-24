@@ -7,8 +7,8 @@ shared NormalizeLegacyBusinessCaseId = (value as any) as nullable text =>
       let
           normalized = Text.Upper(Text.Trim(Text.From(value)))
       in
-          if normalized = "" then null else normalized;
-shared EstimatedLifecycleCosts = let
+          if normalized = "" or normalized = "NULL" then null else normalized;
+shared EstimatedLifecycleCostPreparation = let
     Source = CommonDataService.Database(DataverseEnvironmentUrl),
     StagingRaw = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingestimatedlifecycleco"]}[Data],
 
@@ -33,6 +33,12 @@ shared EstimatedLifecycleCosts = let
         B = 971270002
     ],
 
+    HasPopulatedValue = (value as any) as logical =>
+        let
+            textValue = if value = null then null else Text.Trim(Text.From(value))
+        in
+            textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
     WithKeys =
         Table.AddColumn(
             StagingRaw,
@@ -53,15 +59,15 @@ shared EstimatedLifecycleCosts = let
                         null
                     else
                         Record.Field(SolutionTypeMap, key),
-            Int64.Type
+            type nullable number
         ),
 
     WithCost =
         Table.AddColumn(
             WithSolutionType,
             "CostValue",
-            each try Number.From([cr69a_cost]) otherwise 0,
-            Currency.Type
+            each try Number.From([cr69a_cost]) otherwise null,
+            type nullable number
         ),
 
     WithYear =
@@ -69,24 +75,82 @@ shared EstimatedLifecycleCosts = let
             WithCost,
             "YearNumber",
             each try Number.From([cr69a_year]) otherwise null,
-            Int64.Type
+            type nullable number
         ),
+
+    WithValidationIssues =
+        Table.AddColumn(
+            WithYear,
+            "InvalidSourceIssues",
+            (row as record) =>
+                let
+                    rawBusinessCaseId = Record.FieldOrDefault(row, "cr69a_businesscase", null),
+                    rawSolution = Record.FieldOrDefault(row, "cr69a_solution", null),
+                    rawYear = Record.FieldOrDefault(row, "cr69a_year", null),
+                    rawCost = Record.FieldOrDefault(row, "cr69a_cost", null),
+                    solutionKey = NormalizeChoiceKey(rawSolution),
+                    issues = List.RemoveNulls(
+                        {
+                            if Record.Field(row, "LegacyBusinessCaseId") = null then
+                                "cr69a_businesscase is blank"
+                            else
+                                null,
+                            if not HasPopulatedValue(rawSolution) then
+                                "cr69a_solution is blank"
+                            else if solutionKey = null or not Record.HasFields(SolutionTypeMap, solutionKey) then
+                                "cr69a_solution=" & Text.From(rawSolution)
+                            else
+                                null,
+                            if not HasPopulatedValue(rawYear) then
+                                "cr69a_year is blank"
+                            else if Record.Field(row, "YearNumber") = null or
+                                not List.Contains({1, 2, 3, 4, 5}, Record.Field(row, "YearNumber")) then
+                                "cr69a_year=" & Text.From(rawYear)
+                            else
+                                null,
+                            if not HasPopulatedValue(rawCost) then
+                                "cr69a_cost is blank"
+                            else if Record.Field(row, "CostValue") = null then
+                                "cr69a_cost=" & Text.From(rawCost)
+                            else
+                                null
+                        }
+                    )
+                in
+                    if List.IsEmpty(issues) then null else Text.Combine(issues, "; "),
+            type nullable text
+        )
+in
+    WithValidationIssues;
+shared InvalidSourceRows = let
+    InvalidRows = Table.SelectRows(EstimatedLifecycleCostPreparation, each [InvalidSourceIssues] <> null),
+    SelectedColumns = Table.SelectColumns(
+        InvalidRows,
+        {
+            "cr69a_id",
+            "cr69a_businesscase",
+            "cr69a_solution",
+            "cr69a_year",
+            "cr69a_cost",
+            "InvalidSourceIssues"
+        },
+        MissingField.UseNull
+    )
+in
+    SelectedColumns;
+shared EstimatedLifecycleCosts = let
 
     ValidRows =
         Table.SelectRows(
-            WithYear,
-            each
-                [LegacyBusinessCaseId] <> null and
-                [LegacyBusinessCaseId] <> "" and
-                [solution_type_dataverse] <> null and
-                List.Contains({1, 2, 3, 4, 5}, [YearNumber])
+            EstimatedLifecycleCostPreparation,
+            each [InvalidSourceIssues] = null
         ),
 
     Grouped =
         Table.Group(
             ValidRows,
             {"LegacyBusinessCaseId", "solution_type_dataverse", "YearNumber"},
-            {{"YearCost", each List.Sum([CostValue]), Currency.Type}}
+            {{"YearCost", each List.Sum([CostValue]), type number}}
         ),
 
     WithYearColumn =
@@ -136,7 +200,7 @@ shared EstimatedLifecycleCosts = let
                 if Table.HasColumns(state, columnName) then
                     state
                 else
-                    Table.AddColumn(state, columnName, each 0, Currency.Type)
+                    Table.AddColumn(state, columnName, each 0, type number)
         ),
 
     WithMissingYearDefaults =
@@ -144,7 +208,7 @@ shared EstimatedLifecycleCosts = let
             WithMissingYearColumns,
             List.Transform(
                 YearCostColumns,
-                each {_, each if _ = null then 0 else _, Currency.Type}
+                each {_, each if _ = null then 0 else _, type number}
             )
         )
 in
@@ -309,7 +373,10 @@ in
     MissingSolutions;
 shared Query = let
     ValidatedEstimatedLifecycleCosts =
-        if Table.RowCount(InvalidCostRows) > 0 then
+        if Table.RowCount(InvalidSourceRows) > 0 then
+            error
+                "One or more lifecycle cost source rows has an invalid business case ID, solution, year, or cost. Review InvalidSourceRows before loading solution costs."
+        else if Table.RowCount(InvalidCostRows) > 0 then
             error
                 "One or more grouped fiscal year costs exceeds the Dataverse currency maximum. Review InvalidCostRows before loading solution costs."
         else if Table.RowCount(DuplicateRequestLegacyBusinessCaseIds) > 0 then
@@ -335,7 +402,17 @@ shared Query = let
             "new_fy4costperyear",
             "new_fy5costperyear"
         }
+    ),
+    WithCurrencyTypes = Table.TransformColumnTypes(
+        UpdateColumns,
+        {
+            {"new_fy1costperyear", Currency.Type},
+            {"new_fy2costperyear", Currency.Type},
+            {"new_fy3costperyear", Currency.Type},
+            {"new_fy4costperyear", Currency.Type},
+            {"new_fy5costperyear", Currency.Type}
+        }
     )
 in
-    UpdateColumns;
+    WithCurrencyTypes;
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];

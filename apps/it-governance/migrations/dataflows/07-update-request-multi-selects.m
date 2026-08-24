@@ -1,7 +1,5 @@
 section Section1;
-
-shared RequestMultiSelectPreparation =
-    let
+shared RequestMultiSelectPreparation = let
         Source = CommonDataService.Database(DataverseEnvironmentUrl),
         StagingRaw = Source{[Schema = "dbo", Item = "cr69a_intakestaging"]}[Data],
         EnableQA = true,
@@ -56,7 +54,10 @@ shared RequestMultiSelectPreparation =
             }
         ),
         WithRequestId = Table.AddColumn(
-            WithNormalizedRequestId, "new_systemintakeid", each [cr69a_id], type nullable text
+            WithNormalizedRequestId,
+            "new_systemintakeid",
+            each [cr69a_id],
+            type nullable text
         ),
         WithAcquisitionMethods = Table.AddColumn(
             WithRequestId,
@@ -99,32 +100,26 @@ shared RequestMultiSelectPreparation =
         RowsWithAcquisitionMethods = Table.SelectRows(WithQA, each HasPopulatedValue([cr69a_acquisition_methods])),
         Output = Table.SelectColumns(
             RowsWithAcquisitionMethods,
-            {"new_systemintakeid", "cr69a_id", "acquisition_methods_dataverse_format", "UnmappedIssues"},
+            {
+                "new_systemintakeid",
+                "cr69a_id",
+                "acquisition_methods_dataverse_format",
+                "UnmappedIssues"
+            },
             MissingField.UseNull
         )
     in
         Output;
-
-shared RequestMultiSelects =
-    let
-        ValidRows = Table.SelectRows(
-            RequestMultiSelectPreparation, each [new_systemintakeid] <> null and [UnmappedIssues] = null
-        ),
-        Output = Table.SelectColumns(
-            ValidRows, {"new_systemintakeid", "cr69a_id", "acquisition_methods_dataverse_format"}, MissingField.Error
-        )
-    in
-        Output;
-
-shared RequestMultiSelectQA =
-    let
-        Issues = Table.SelectRows(RequestMultiSelectPreparation, each [UnmappedIssues] <> null),
-        Output = Table.SelectColumns(Issues, {"cr69a_id", "UnmappedIssues"}, MissingField.Error)
-    in
-        Output;
-
-shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [
-    IsParameterQuery = true,
-    IsParameterQueryRequired = false,
-    Type = type text
-];
+shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+shared RequestMultiSelects = let
+    ValidRows = Table.SelectRows(RequestMultiSelectPreparation, each [new_systemintakeid] <> null and [UnmappedIssues] = null),
+    Output = Table.SelectColumns(
+        ValidRows, {"new_systemintakeid", "cr69a_id", "acquisition_methods_dataverse_format"}, MissingField.Error
+    )
+in
+    Output;
+shared RequestMultiSelectQA = let
+    Issues = Table.SelectRows(RequestMultiSelectPreparation, each [UnmappedIssues] <> null),
+    Output = Table.SelectColumns(Issues, {"cr69a_id", "UnmappedIssues"}, MissingField.Error)
+in
+    Output;

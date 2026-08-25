@@ -10,7 +10,8 @@ shared #"system_intake_contacts 1" = let
         [
             Delimiter = ",",
             Columns = 10,
-            QuoteStyle = QuoteStyle.None
+            // Roles can contain comma-separated values inside a quoted CSV field.
+            QuoteStyle = QuoteStyle.Csv
         ]
     ),
     #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),

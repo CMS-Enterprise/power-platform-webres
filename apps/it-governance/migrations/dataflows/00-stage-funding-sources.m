@@ -10,7 +10,7 @@ shared #"system_intake_funding_sources 4" = let
         [
             Delimiter = ",",
             Columns = 5,
-            QuoteStyle = QuoteStyle.None
+            QuoteStyle = QuoteStyle.Csv
         ]
     ),
     #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
@@ -23,7 +23,7 @@ shared #"system_intake_funding_sources 4" = let
             {"id", type text},
             {"system_intake_id", type text},
             {"investment", type text},
-            {"project_number", Int64.Type},
+            {"project_number", type text},
             {"created_at", type datetime}
         }
     ),

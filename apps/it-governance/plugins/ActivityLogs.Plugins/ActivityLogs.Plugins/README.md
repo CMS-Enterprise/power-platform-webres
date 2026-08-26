@@ -13,6 +13,10 @@ All plugins are deployed as part of the same assembly (`ActivityLogs.Plugins.dll
 
 `ActivityLog_Create_ValidateActivityType` applies the current-step validation only to the explicit **Progress to a New Step** activity type. **Edit Request** activity logs may target the current step so they can record the requested edits and clear Ready for Review without requiring an artificial process transition.
 
+## Data migration bypass
+
+When an Activity Log is created with `cr69a_batchid` populated, all Activity Log create handlers exit before validation, related-record retrieval, LCID creation, or Request/Review updates. This allows historical Activity Logs to be migrated without replaying the governance actions they describe. A null, missing, or whitespace-only Batch ID does not bypass normal processing.
+
 ---
 
 ## Plugin Overview

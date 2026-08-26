@@ -7,6 +7,7 @@ namespace SystemIntake.Plugins
     public class ActivityLog_Create_ValidateTargetStepNotCurrent : IPlugin
     {
         private const string ActivityLogEntity = "new_activitylogs";
+        private const string BatchIdField = "cr69a_batchid";
         private const int PreOperationStage = 20;
 
         // Activity Log fields
@@ -81,6 +82,15 @@ namespace SystemIntake.Plugins
                     target.LogicalName,
                     target.Id
                 );
+
+                object batchId;
+                if (target.Attributes.TryGetValue(BatchIdField, out batchId)
+                    && batchId != null
+                    && (!(batchId is string) || !string.IsNullOrWhiteSpace((string)batchId)))
+                {
+                    tracing?.Trace("ActivityLog_Create_ValidateTargetStepNotCurrent: Batch ID is populated; bypassing validation for migrated data.");
+                    return;
+                }
 
                 var step = target.GetAttributeValue<OptionSetValue>(TargetStepField);
                 if (step == null)

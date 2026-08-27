@@ -8,7 +8,7 @@ namespace SystemIntake.Plugins
     public class ActivityLog_Create_ApplyActivityType : IPlugin
     {
         private const string ActivityLogEntity = "new_activitylogs";
-        private const string BatchIdField = "cr69a_batchid";
+        private const string BatchIdField = "cr3ee_batchid";
         private const int PostOperationStage = 40;
 
         private const string ActivityTypeField = "cr3ee_activitytype";

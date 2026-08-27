@@ -6,7 +6,7 @@ namespace SystemIntake.Plugins
     public class ActivityLog_Create_SyncTargetStepToReviewAndRequest : IPlugin
     {
         private const string ActivityLogEntity = "new_activitylogs";
-        private const string BatchIdField = "cr69a_batchid";
+        private const string BatchIdField = "cr3ee_batchid";
 
         // Activity Log fields
         private const string TargetStepField = "new_process_target_step"; // Choice (global)

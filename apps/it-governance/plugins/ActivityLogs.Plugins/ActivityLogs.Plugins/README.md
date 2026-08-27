@@ -15,7 +15,7 @@ All plugins are deployed as part of the same assembly (`ActivityLogs.Plugins.dll
 
 ## Data migration bypass
 
-When an Activity Log is created with `cr69a_batchid` populated, all Activity Log create handlers exit before validation, related-record retrieval, LCID creation, or Request/Review updates. This allows historical Activity Logs to be migrated without replaying the governance actions they describe. A null, missing, or whitespace-only Batch ID does not bypass normal processing.
+When an Activity Log is created with `cr3ee_batchid` populated, all Activity Log create handlers exit before validation, related-record retrieval, LCID creation, or Request/Review updates. This allows historical Activity Logs to be migrated without replaying the governance actions they describe. A null, missing, or whitespace-only Batch ID does not bypass normal processing.
 
 ---
 

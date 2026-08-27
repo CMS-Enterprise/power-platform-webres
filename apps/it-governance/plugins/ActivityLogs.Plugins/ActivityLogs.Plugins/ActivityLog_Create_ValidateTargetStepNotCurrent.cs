@@ -7,7 +7,7 @@ namespace SystemIntake.Plugins
     public class ActivityLog_Create_ValidateTargetStepNotCurrent : IPlugin
     {
         private const string ActivityLogEntity = "new_activitylogs";
-        private const string BatchIdField = "cr69a_batchid";
+        private const string BatchIdField = "cr3ee_batchid";
         private const int PreOperationStage = 20;
 
         // Activity Log fields

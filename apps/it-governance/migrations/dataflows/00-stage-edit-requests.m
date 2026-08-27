@@ -10,7 +10,7 @@ shared #"governance_request_feedback 2" = let
         [
             Delimiter = ",",
             Columns = 10,
-            QuoteStyle = QuoteStyle.None
+            QuoteStyle = QuoteStyle.Csv
         ]
     ),
     #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
@@ -52,7 +52,6 @@ shared #"governance_request_feedback 2" = let
         else error "No Running MigrationRun found – check MigrationRun table.",
 
     // --- ADD BATCH ID TO OUTPUT ---
-    #"Added Batch Id" = Table.AddColumn(#"Changed column type", "migrate_batch_id", each BatchId, type text),
-    #"Filtered rows" = Table.SelectRows(#"Added Batch Id", each ([type] = "REQUESTER"))
+    #"Added Batch Id" = Table.AddColumn(#"Changed column type", "migrate_batch_id", each BatchId, type text)
 in
-    #"Filtered rows";
+    #"Added Batch Id";

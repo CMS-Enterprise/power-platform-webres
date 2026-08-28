@@ -33,7 +33,10 @@ async function main() {
     const mashupSettings = dataflow.msdyn_mashupsettings || "";
 
     console.log(dataflow.msdyn_name || "(unnamed dataflow)");
-    console.log(`  id: ${dataflow.msdyn_dataflowid}`);
+    console.log(`  Dataverse record id: ${dataflow.msdyn_dataflowid}`);
+    console.log(
+      `  Power Automate dataflow id: ${dataflow.msdyn_originaldataflowid || "unknown"}`,
+    );
     console.log(`  created: ${formatDate(dataflow.createdon)}`);
     console.log(`  modified: ${formatDate(dataflow.modifiedon)}`);
     const modifiedBy = getModifiedBy(dataflow);

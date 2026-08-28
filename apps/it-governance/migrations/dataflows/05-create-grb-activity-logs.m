@@ -31,57 +31,6 @@ shared HistoricalGrbActivityLogPreparation =
                 textValue = NormalizeText(value)
             in
                 if textValue = null then null else Text.Lower(textValue),
-        NormalizeLookupId = (value as any) as nullable text =>
-            let
-                rawId =
-                    if value = null then
-                        null
-                    else if Value.Is(value, type table) then
-                        if Table.RowCount(value) = 0 then
-                            null
-                        else
-                            let
-                                firstRow = value{0}
-                            in
-                                Record.FieldOrDefault(
-                                    firstRow,
-                                    "cr69a_systemintakeadminid",
-                                    Record.FieldOrDefault(
-                                        firstRow,
-                                    "new_systemintakeid",
-                                    Record.FieldOrDefault(
-                                        firstRow,
-                                        "cr69a_systemintakeid",
-                                        Record.FieldOrDefault(
-                                            firstRow,
-                                            "Id",
-                                            Record.FieldOrDefault(firstRow, "id", null)
-                                        )
-                                    )
-                                    )
-                                )
-                    else if Value.Is(value, type record) then
-                        Record.FieldOrDefault(
-                            value,
-                            "cr69a_systemintakeadminid",
-                            Record.FieldOrDefault(
-                                value,
-                            "Id",
-                            Record.FieldOrDefault(
-                                value,
-                                "id",
-                                Record.FieldOrDefault(
-                                    value,
-                                    "new_systemintakeid",
-                                    Record.FieldOrDefault(value, "cr69a_systemintakeid", null)
-                                )
-                            )
-                            )
-                        )
-                    else
-                        value
-            in
-                NormalizeId(rawId),
         ResolveColumn = (columns as list, candidates as list, label as text) as text =>
             let
                 found = List.First(List.Select(candidates, each List.Contains(columns, _)), null)
@@ -92,6 +41,12 @@ shared HistoricalGrbActivityLogPreparation =
             GRT_MEETING = 971270002,
             FINAL_BUSINESS_CASE = 971270003,
             GRB_MEETING = 971270004
+        ],
+        TargetFormMap = [
+            INTAKE_REQUEST = 971270000,
+            DRAFT_BUSINESS_CASE = 971270001,
+            FINAL_BUSINESS_CASE = 971270002,
+            NO_TARGET_PROVIDED = 971270003
         ],
         StagingColumns = Table.ColumnNames(StagingRaw),
         IdColumn = ResolveColumn(
@@ -114,6 +69,12 @@ shared HistoricalGrbActivityLogPreparation =
         ),
         FeedbackTypeColumn = ResolveColumn(
             StagingColumns, {"cr69a_feedbacktype", "cr69a_type", "type"}, "staging feedback-type column"
+        ),
+        TargetFormColumn = ResolveColumn(
+            StagingColumns, {"cr69a_targetform", "target_form"}, "staging target-form column"
+        ),
+        CreatedByColumn = ResolveColumn(
+            StagingColumns, {"cr69a_createdby", "created_by"}, "staging created-by column"
         ),
         BatchColumn = ResolveColumn(StagingColumns, {"migrate_batch_id", "cr69a_batchid"}, "staging batch-ID column"),
         CreatedAtColumn = ResolveColumn(
@@ -149,7 +110,20 @@ shared HistoricalGrbActivityLogPreparation =
                 in if value = null then null else Text.Upper(value),
             type nullable text
         ),
-        GrbRows = Table.SelectRows(WithNormalizedFields, each [feedback_type_key] = "GRB"),
+        WithHistoricalFields = Table.AddColumn(
+            Table.AddColumn(
+                WithNormalizedFields,
+                "target_form_key",
+                each
+                    let value = NormalizeText(Record.FieldOrDefault(_, TargetFormColumn, null))
+                    in if value = null then null else Text.Upper(value),
+                type nullable text
+            ),
+            "legacy_created_by",
+            each NormalizeText(Record.FieldOrDefault(_, CreatedByColumn, null)),
+            type nullable text
+        ),
+        GrbRows = Table.SelectRows(WithHistoricalFields, each [feedback_type_key] = "GRB"),
         WithBatchId =
             if BatchColumn = "cr69a_batchid" then
                 Table.TransformColumns(
@@ -222,71 +196,59 @@ shared HistoricalGrbActivityLogPreparation =
         WithRecommendation = Table.AddColumn(
             WithActivityFields, "new_recommendationsforthegrb", each [feedback_text], type nullable text
         ),
+        WithFormNeedsEdits = Table.AddColumn(
+            WithRecommendation,
+            "new_whichformneedsedits",
+            each
+                let key = [target_form_key]
+                in if key <> null and Record.HasFields(TargetFormMap, key) then Record.Field(TargetFormMap, key) else null,
+            Int64.Type
+        ),
+        WithAdditionalInformation = Table.AddColumn(
+            WithFormNeedsEdits,
+            "new_additionalinformation",
+            each if [legacy_created_by] = null then null else "Legacy created by: " & [legacy_created_by],
+            type nullable text
+        ),
         WithDestinationBatchId = Table.AddColumn(
-            WithRecommendation, "cr3ee_batchid", each [cr69a_batchid], type nullable text
+            WithAdditionalInformation, "cr3ee_batchid", each [cr69a_batchid], type nullable text
         ),
         Dataverse = CommonDataService.Database(DataverseEnvironmentUrl),
         RequestsRaw = Dataverse{[Schema = "dbo", Item = "new_systemintake"]}[Data],
         ReviewsRaw = Dataverse{[Schema = "dbo", Item = "cr69a_systemintakeadmin"]}[Data],
-        RequestReviewColumn = ResolveColumn(
-            Table.ColumnNames(RequestsRaw),
-            {
-                "cr69a_systemintakereviewid",
-                "_cr69a_systemintakereview_value",
-                "cr69a_systemintakereview",
-                "cr69a_SystemIntakeReview"
-            },
-            "Request Review lookup column"
-        ),
-        RequestLinks = Table.Distinct(
-            Table.SelectColumns(
-                Table.AddColumn(
-                    Table.TransformColumns(
-                        Table.SelectColumns(
-                            RequestsRaw,
-                            {"new_systemintakeid", RequestReviewColumn},
-                            MissingField.Error
-                        ),
-                        {{"new_systemintakeid", each NormalizeId(_), type nullable text}}
-                    ),
-                    "cr69a_systemintakeadminid",
-                    each NormalizeLookupId(Record.FieldOrDefault(_, RequestReviewColumn, null)),
-                    type nullable text
-                ),
-                {"new_systemintakeid", "cr69a_systemintakeadminid"},
-                MissingField.Error
+        RequestExternalIds = Table.Distinct(
+            Table.TransformColumns(
+                Table.SelectColumns(RequestsRaw, {"easi_external_id"}, MissingField.Error),
+                {{"easi_external_id", each NormalizeId(_), type nullable text}}
             )
         ),
-        ReviewIds = Table.Distinct(
+        ReviewExternalIds = Table.Distinct(
             Table.TransformColumns(
-                Table.SelectColumns(ReviewsRaw, {"cr69a_systemintakeadminid"}, MissingField.Error),
-                {{"cr69a_systemintakeadminid", each NormalizeId(_), type nullable text}}
+                Table.SelectColumns(ReviewsRaw, {"cr3ee_external_id"}, MissingField.Error),
+                {{"cr3ee_external_id", each NormalizeId(_), type nullable text}}
             )
         ),
         WithRequestMatch = Table.NestedJoin(
             WithDestinationBatchId,
             {"legacy_intake_id"},
-            RequestLinks,
-            {"new_systemintakeid"},
+            RequestExternalIds,
+            {"easi_external_id"},
             "RequestMatch",
             JoinKind.LeftOuter
         ),
         ExpandedRequest = Table.ExpandTableColumn(
-            WithRequestMatch,
-            "RequestMatch",
-            {"new_systemintakeid", "cr69a_systemintakeadminid"},
-            {"new_systemintakeid", "cr69a_systemintakeadminid"}
+            WithRequestMatch, "RequestMatch", {"easi_external_id"}, {"easi_external_id"}
         ),
         WithReviewMatch = Table.NestedJoin(
             ExpandedRequest,
-            {"cr69a_systemintakeadminid"},
-            ReviewIds,
-            {"cr69a_systemintakeadminid"},
+            {"legacy_intake_id"},
+            ReviewExternalIds,
+            {"cr3ee_external_id"},
             "ReviewMatch",
             JoinKind.LeftOuter
         ),
         ExpandedReview = Table.ExpandTableColumn(
-            WithReviewMatch, "ReviewMatch", {"cr69a_systemintakeadminid"}, {"matched_review_id"}
+            WithReviewMatch, "ReviewMatch", {"cr3ee_external_id"}, {"cr3ee_external_id"}
         ),
         IdCounts = Table.Group(
             ExpandedReview,
@@ -318,6 +280,10 @@ shared HistoricalGrbActivityLogPreparation =
                             "source_action=" & (if [source_action_key] = null then "<blank>" else [source_action_key])
                         else
                             null,
+                        if [target_form_key] = null or not Record.HasFields(TargetFormMap, [target_form_key]) then
+                            "target_form=" & (if [target_form_key] = null then "<blank>" else [target_form_key])
+                        else
+                            null,
                         if [target_step_source_token] = null then
                             "missing progress target in feedback"
                         else if [new_process_target_step] = null then
@@ -326,13 +292,8 @@ shared HistoricalGrbActivityLogPreparation =
                             null,
                         if [cr3ee_batchid] = null then "blank migration batch ID" else null,
                         if [overriddencreatedon] = null then "invalid created-at timestamp" else null,
-                        if [new_systemintakeid] = null then "unmatched Request=" & Text.From([legacy_intake_id]) else null,
-                        if [cr69a_systemintakeadminid] = null then
-                            "Request has no Review lookup=" & Text.From([legacy_intake_id])
-                        else if [matched_review_id] = null then
-                            "unmatched Review=" & Text.From([cr69a_systemintakeadminid])
-                        else
-                            null
+                        if [easi_external_id] = null then "unmatched Request external ID=" & Text.From([legacy_intake_id]) else null,
+                        if [cr3ee_external_id] = null then "unmatched Review external ID=" & Text.From([legacy_intake_id]) else null
                     }),
                     "; "
                 ),
@@ -350,8 +311,10 @@ shared HistoricalGrbActivityLogQA =
                 "legacy_feedback_id",
                 "legacy_intake_id",
                 "source_action_key",
+                "target_form_key",
                 "target_step_source_token",
                 "feedback_text",
+                "legacy_created_by",
                 "UnmappedIssues"
             },
             MissingField.Error
@@ -378,12 +341,14 @@ shared HistoricalGrbActivityLogs =
             ValidRows,
             {
                 "new_activitylogsid",
-                "new_systemintakeid",
-                "cr69a_systemintakeadminid",
+                "easi_external_id",
+                "cr3ee_external_id",
                 "cr3ee_activitytype",
                 "new_process_target_step",
                 "new_activity",
                 "new_recommendationsforthegrb",
+                "new_whichformneedsedits",
+                "new_additionalinformation",
                 "cr3ee_batchid",
                 "overriddencreatedon"
             },

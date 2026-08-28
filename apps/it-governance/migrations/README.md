@@ -34,6 +34,19 @@ npm run dataflows:check
 The dataflow manifest uses `dataflowId` values instead of names because some
 DEV dataflows currently have duplicate display names.
 
+### Dataflow IDs used by Power Automate
+
+Dataverse stores more than one identifier for a dataflow. The Power Automate
+dataflow refresh action requires the dataflow's `msdyn_originaldataflowid`; it
+does not accept the `msdyn_dataflowid` of the corresponding Dataverse record.
+Using `msdyn_dataflowid` causes the refresh action to fail with `Not Found` even
+when the dataflow exists and can be refreshed manually.
+
+`npm run dataflows:list` labels both values. Use **Power Automate dataflow id**
+when configuring migration orchestration environment variables. Use
+**Dataverse record id** only for the source-control manifest and direct queries
+against the `msdyn_dataflows` Dataverse table.
+
 Note: the committed `./dataflows/*.m` files are snapshots of what's currently in Dataverse,
 including default parameter values (e.g., Dataverse URLs / SharePoint paths). Review and
 update those parameters in the Power Apps dataflow editor when deploying to another

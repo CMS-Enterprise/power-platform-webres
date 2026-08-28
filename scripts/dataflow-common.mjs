@@ -131,7 +131,7 @@ export async function dataverseRequest({
 export async function listDataflows({ dataverseUrl, token }) {
   const requestPath = [
     "/api/data/v9.2/msdyn_dataflows",
-    "?$select=msdyn_dataflowid,msdyn_name,createdon,modifiedon,_modifiedby_value,",
+    "?$select=msdyn_dataflowid,msdyn_originaldataflowid,msdyn_name,createdon,modifiedon,_modifiedby_value,",
     "msdyn_mashupdocument,msdyn_mashupsettings,statecode,statuscode",
     ",componentstate,ismanaged",
     "&$orderby=msdyn_name asc",
@@ -150,7 +150,7 @@ export async function findDataflow({ dataverseUrl, token, dataflowId, name }) {
   if (dataflowId) {
     const requestPath = [
       `/api/data/v9.2/msdyn_dataflows(${sanitizeGuid(dataflowId)})`,
-      "?$select=msdyn_dataflowid,msdyn_name,createdon,modifiedon,_modifiedby_value,",
+      "?$select=msdyn_dataflowid,msdyn_originaldataflowid,msdyn_name,createdon,modifiedon,_modifiedby_value,",
       "msdyn_mashupdocument,msdyn_mashupsettings,statecode,statuscode",
       ",componentstate,ismanaged",
     ].join("");
@@ -167,7 +167,7 @@ export async function findDataflow({ dataverseUrl, token, dataflowId, name }) {
   );
   const requestPath = [
     "/api/data/v9.2/msdyn_dataflows",
-    "?$select=msdyn_dataflowid,msdyn_name,createdon,modifiedon,_modifiedby_value,",
+    "?$select=msdyn_dataflowid,msdyn_originaldataflowid,msdyn_name,createdon,modifiedon,_modifiedby_value,",
     "msdyn_mashupdocument,msdyn_mashupsettings,statecode,statuscode",
     ",componentstate,ismanaged",
     `&$filter=${filter}`,

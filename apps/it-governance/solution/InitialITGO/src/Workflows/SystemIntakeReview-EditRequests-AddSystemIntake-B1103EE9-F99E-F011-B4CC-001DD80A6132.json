@@ -1,0 +1,255 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7c24c"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_f4415"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "OrgBaseUrl (new_OrgBaseUrl)": {
+          "defaultValue": "https://icpg-dev.crm9.dynamics.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_OrgBaseUrl",
+            "description": "The base URL for the current environment"
+          }
+        },
+        "AppId (new_AppId)": {
+          "defaultValue": "bc878d88-0468-f011-bec2-001dd8062d4a",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_AppId",
+            "description": "Current Application ID"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "51595894-a06e-4356-acfd-89a3d7dc60f8"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "cr69a_editrequest",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "3270d7b5-14ee-4a28-9059-9eab2c9ba2dc"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body']"
+        },
+        "Get_a_row_by_ID": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "33cc944c-45e6-4585-a4d9-f94d45f7510e"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_systemintakeadmins",
+              "recordId": "@triggerOutputs()?['body/_cr69a_systemintakeadmin_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Get_a_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4e6f01d7-de8d-4672-a55a-1e5cfe5286f6"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_a_row_by_ID')"
+        },
+        "Update_a_row": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0c78ab9b-009b-4f7c-9f07-616b5ef56b75"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_editrequests",
+              "recordId": "@triggerOutputs()?['body/cr69a_editrequestid']",
+              "item/cr69a_editrequest": "@concat('Edit Request - ', outputs('Get_a_row_by_ID')?['body/cr69a_title'])",
+              "item/cr69a_SystemIntake@odata.bind": "@concat(\n  '/new_systemintakes(',\n  outputs('Get_a_row_by_ID')?['body/_cr69a_systemintake_value'],\n  ')'\n)\n"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "GetSystemIntakeRequest": {
+          "runAfter": {
+            "Update_a_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a0c6dca9-416e-40ce-9c7f-0c222c5f5a56"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "recordId": "@outputs('Get_a_row_by_ID')?['body/_cr69a_systemintake_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_3": {
+          "runAfter": {
+            "GetSystemIntakeRequest": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "28fa7f4d-88a6-4683-996c-01cc98ca9c6d"
+          },
+          "type": "Compose",
+          "inputs": "@body('GetSystemIntakeRequest')"
+        },
+        "Get_a_row_by_ID_3": {
+          "runAfter": {
+            "Compose_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f935357b-df5d-4cc0-bee6-99b5e7dc582d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "systemusers",
+              "recordId": "@outputs('GetSystemIntakeRequest')?['body/_cr69a_requester_value']",
+              "$select": "internalemailaddress"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_4": {
+          "runAfter": {
+            "Get_a_row_by_ID_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1eeff545-1b8e-4bd9-aa60-a94a1938e63f"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_a_row_by_ID_3')"
+        },
+        "Send_an_email_(V2)": {
+          "runAfter": {
+            "SystemIntakeRequestLink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "352d284c-25e4-4407-8404-20e6dc085b4d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_a_row_by_ID_3')?['body/internalemailaddress']",
+              "emailMessage/Subject": "System Intake - Edit Request Received",
+              "emailMessage/Body": "<p>An Edit has been requested on your System Intake form. Please review your System Intake Request and make any changes deemed necessary in the Edit Request.<br>\n</p>\n<p>\nPlease follow this link to view the System Intake Request and view pertinent information:&nbsp;<a href=\"@{outputs('SystemIntakeRequestLink')}\">System Intake Request</a></p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "SystemIntakeRequestLink": {
+          "runAfter": {
+            "Compose_4": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b7e1be3e-8618-419f-900d-e330fb918225"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=new_systemintake',\n  '&id=', outputs('GetSystemIntakeRequest')?['body/new_systemintakeid']\n)"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

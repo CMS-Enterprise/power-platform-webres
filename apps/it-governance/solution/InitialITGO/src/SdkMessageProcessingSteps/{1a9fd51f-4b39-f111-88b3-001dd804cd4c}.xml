@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="LCIDActivityLogs.LcidUpdateCreateActivityLog: Update of cr69a_lifecycleids" SdkMessageProcessingStepId="{1a9fd51f-4b39-f111-88b3-001dd804cd4c}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+  <PluginTypeName>LCIDActivityLogs.LcidUpdateCreateActivityLog, LCID, Version=1.0.4.0, Culture=neutral, PublicKeyToken=01150a5768a57460</PluginTypeName>
+  <PluginTypeId>e913b321-7bfc-4ca9-baf7-53f1f1b49872</PluginTypeId>
+  <PrimaryEntity>cr69a_lifecycleids</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes>cr3ee_costbaseline,cr3ee_scope,cr69a_lcidexpiresat,cr69a_retiresat</FilteringAttributes>
+  <InvocationSource>1</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages>
+    <SdkMessageProcessingStepImage Name="PreImage">
+      <SdkMessageProcessingStepImageId>{3f016ecc-3560-f111-bec6-001dd804d309}</SdkMessageProcessingStepImageId>
+      <Attributes>cr3ee_costbaseline,cr3ee_scope,cr69a_lcidexpiresat,cr69a_retiresat,new_lcidcomponent,new_lcidislowit,new_lcidisshortened,new_lcidtype</Attributes>
+      <EntityAlias>PreImage</EntityAlias>
+      <ImageType>0</ImageType>
+      <MessagePropertyName>Target</MessagePropertyName>
+      <IsCustomizable>1</IsCustomizable>
+    </SdkMessageProcessingStepImage>
+  </SdkMessageProcessingStepImages>
+</SdkMessageProcessingStep>

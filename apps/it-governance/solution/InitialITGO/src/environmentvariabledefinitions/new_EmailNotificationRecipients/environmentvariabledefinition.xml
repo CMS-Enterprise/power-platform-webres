@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_EmailNotificationRecipients">
+  <description default="The emails in this list will receive emails triggered by It Governance Request submissions and changes">
+    <label description="The emails in this list will receive emails triggered by It Governance Request submissions and changes" languagecode="1033" />
+  </description>
+  <displayname default="Email Notification Recipients">
+    <label description="Email Notification Recipients" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.73</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

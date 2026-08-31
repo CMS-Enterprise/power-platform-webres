@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="LCIDActivityLogs.LcidActivityLogCreate: Create of new_lcidactivitylog" SdkMessageProcessingStepId="{de834ca3-1839-f111-88b3-001dd804cd4c}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>9ebdbb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+  <PluginTypeName>LCIDActivityLogs.LcidActivityLogCreate, LCIDActivityLogs, Version=1.0.4.0, Culture=neutral, PublicKeyToken=5699adf05e650ed4</PluginTypeName>
+  <PluginTypeId>fd53e7f8-9c1a-4d47-94f6-1dfaf22b2913</PluginTypeId>
+  <PrimaryEntity>new_lcidactivitylog</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes></FilteringAttributes>
+  <InvocationSource>1</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>20</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

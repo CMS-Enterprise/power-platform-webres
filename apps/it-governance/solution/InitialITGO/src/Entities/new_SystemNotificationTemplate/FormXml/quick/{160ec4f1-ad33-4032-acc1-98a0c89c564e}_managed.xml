@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{160ec4f1-ad33-4032-acc1-98a0c89c564e}</formid>
+    <IntroducedVersion>1.0.0.69</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{d5e29d93-f7ef-4787-a0a3-fb849e36e8e4}" IsUserDefined="1">
+          <labels>
+            <label description="" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{1a525a55-6c4a-4da6-9ac5-33dcd9e7ed48}">
+                  <labels>
+                    <label description="GENERAL" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{d00a2259-110b-4f2b-abb1-9b70bd58b8d1}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_templatename" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="new_templatename" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{cc731c24-ee5f-4be3-9464-37c4c2a88230}" locklevel="0" rowspan="1" colspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_isactive" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="new_isactive" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{12d07388-77b4-46ea-ab57-34be19676c95}" locklevel="0" rowspan="1" colspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_subject" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_subject" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3bb9932f-f7c5-4b91-9590-65802bb55f84}" locklevel="0" rowspan="1" colspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_body" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_body" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e419a498-91ab-413c-b72b-a5b710a61970}" locklevel="0" rowspan="1" colspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_notes" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_notes" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e1656f05-aaa7-4112-8ace-1635730182e8}" locklevel="0" rowspan="1" colspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_templatekey" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_templatekey" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{093e6e43-1a93-43a0-b7a8-69e79ab0e40f}" locklevel="0" rowspan="1" colspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_version" classid="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}" datafieldname="new_version" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{547b6c9c-84f5-4092-b50e-36508911336a}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{9a40bbb2-0816-450a-8c0b-99fe422080dd}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{422f436f-672f-4f24-bb56-27e314e447e9}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{bc78d8f8-ef48-4cdc-a6c9-2fe4391129c4}">
+                        <labels>
+                          <label description="Solution Title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_solutiontitle" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_solutiontitle" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{eb31b312-baa4-43db-bb6d-456dd5b18d02}" visible="false">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{80c7e4f0-3ff6-49ba-840f-7eec4e29a610}">
+                        <labels>
+                          <label description="Summary" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_sumary" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_sumary" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{42bc39f4-4180-427e-a659-cbe1526ec226}">
+                        <labels>
+                          <label description="Target Contract Award" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_targetcontractaward" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_targetcontractaward" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d623d5ac-5b21-40eb-8673-bc94f93d1a45}">
+                        <labels>
+                          <label description="Target Completion of Development Work" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_targetcompletionofdevelopmentwork" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_targetcompletionofdevelopmentwork" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8061ed5f-c37e-4d7f-9ccf-071e0032a766}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Acquisition Approach" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_acquisitionapproachmulti" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_acquisitionapproachmulti" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c1c9c932-fe69-44df-9097-06fab9c6a387}">
+                        <labels>
+                          <label description="Approved by IT Security for use at CMS?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_approvedforuseatcms" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_approvedforuseatcms" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e0650235-8971-4e42-a8c1-bb54fb4cfe44}">
+                        <labels>
+                          <label description="Describe alignment with Zero Trust Principles" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_zerotrustprinciplealignment" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_zerotrustprinciplealignment" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{be85590a-5fc4-4e54-8940-1a8a31c03c3e}">
+                        <labels>
+                          <label description="Do you need to host your solution?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_doyouneedtohostyoursolution" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_doyouneedtohostyoursolution" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0dba27c4-a852-4f25-88f1-d3bd1607cd0e}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Will this have a user interface, be public facing, or involve outside customers?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_hasui" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="cr69a_hasui" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{65757ff5-975f-4211-a891-8aca06465dfd}">
+                        <labels>
+                          <label description="Will there be workforce training requirements?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_workforcetrainingrequirements" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_workforcetrainingrequirements" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{cebf1c28-eb32-4515-a9f6-b01884863e8e}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Pros of this solution" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_prosmulti" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_prosmulti" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{406e4504-8411-4070-9dfe-1eb5806a5553}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Cons of this solution" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_consmulti" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_consmulti" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b5d5f87a-1127-4806-9846-feb9a93879c5}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="FY1 Cost Per Year" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy1costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy1costperyear" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4567e310-833e-4c55-87f0-b5374a122636}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="FY2 Cost Per Year" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy2costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy2costperyear" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{32eda66c-59c6-40cf-83cc-7da262059d50}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="FY3 Cost Per Year" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy3costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy3costperyear" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bf2c08a0-2f27-4232-8a7d-8e93ad024c50}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="FY4 Cost Per Year" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy4costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy4costperyear" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{687de889-532f-4d4d-afde-ebd9db072971}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="FY5 Cost Per Year" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy5costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy5costperyear" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d96ed54a-2506-4971-9fc6-a02ea6863b2e}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Solution Total Cost" languagecode="1033" />
+                        </labels>
+                        <control id="new_systemtotalcost" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_systemtotalcost" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6913cce4-a26d-4fec-9f9f-0935950523d8}">
+                        <labels>
+                          <label description="What is the cost savings or cost avoidance?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_costimpact" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_costimpact" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{0da41c97-0dcc-4753-bcf2-28a15e38ae2c}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{9eb26fe4-52d5-4869-9c20-35224e81c31b}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{056ab093-1675-41d4-be27-fe7eb20952eb}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{1cee3376-b687-4c79-9526-044e270695ea}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{4c48d413-9364-45c1-87f2-f12cfee136d1}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{5a7fd42d-a021-46c0-8aa0-4840a8e30003}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{c77bd6c0-0c6c-47fd-8ce2-01a27a8e2102}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{18f044bd-3550-44fd-93ce-63f46d5f3a65}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

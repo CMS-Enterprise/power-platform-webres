@@ -1,0 +1,465 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{e3b9ec84-65e9-499a-b62d-0c6e7ddeb8c3}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighReadOnlyValues" shownavigationbar="false">
+      <tabs>
+        <tab verticallayout="true" id="{b7de75f5-03f0-47cd-8a01-40750b3e947c}" IsUserDefined="1" name="tab_request_home">
+          <labels>
+            <label description="Home" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{64e74054-8ab3-431e-b464-25b5840c99c1}" name="section_ownership" columns="11">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{604a6977-8c31-410c-9b88-4380c333c5e6}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Owner / Admin Lead" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="false" />
+                      </cell>
+                      <cell id="{501b8ed8-b2d0-40a8-b0f3-a3bf10cf3b2f}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Admin Lead" languagecode="1033" />
+                        </labels>
+                        <control id="new_adminlead" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_adminlead" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="tab_request_home_section_10" id="bde48fcd-6989-4825-b4b4-95110072aa20" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="3" id="{9e6cc372-7101-4a72-a5c2-1bac90b5cd38}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Review - Ready for Review" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_new_5" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_review_ready_for_review</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{bbfbb8df-6413-f111-8407-001dd8099ed4}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row>
+                      <cell id="{2a729bad-42e2-4523-b80f-2c44872bdee9}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Ready For Review" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_readyforreview" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="cr69a_readyforreview" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_progress_tracker" id="85760bb0-8393-44b3-8360-283ddc190aec" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Progress Tracker" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="3" id="{b623a71f-5e32-47e4-a7cd-d0088eec83d5}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Review - Progress Tracker" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_progress_tracker" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_review_progress_tracker</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{3fff947e-9c06-f111-8407-001dd8099ed4}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="null_section_4" id="66b0b2a3-5fa0-46e2-aa2a-6bfd4581c270" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="11" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Request Summary" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell locklevel="0" id="{25262deb-747f-4fce-9325-4670da83acbb}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                      <cell locklevel="0" id="{75af79f3-d625-48b4-a625-8ac83c5edada}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{848a5c36-6a8e-407f-b34b-a8fae2244ac7}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                      <cell id="{9d7ee808-27fb-4f9f-bc3a-b03790d906f9}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Request Process Step" languagecode="1033" />
+                        </labels>
+                        <control id="new_admingovernancetasklist" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_admingovernancetasklist" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{22ca0f2e-597e-44a8-ac60-a9c81ed75a39}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Request" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintake" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_grt" id="4a22170f-623a-4eaa-9615-6b511c66fd13" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="GRT" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{7af74304-d24d-41ed-9c80-e7f70140f6bd}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="GRT Meeting Date (ET)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_grtmeetingdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_grtmeetingdate" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_grb" id="927a9bd7-2f27-457a-8cde-539c556d6d07" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="GRB" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{dca569e9-a2e1-4d98-b043-eee6a86ad509}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="GRB Review Meeting Date (ET)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_grbreviewmeetingdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_grbreviewmeetingdate" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_decision" id="dc948188-6339-4f17-bb88-d66d7e13f125" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="true">
+                  <labels>
+                    <label description="Decision" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{5c3cd00c-cc1b-4ab2-9012-4a908a018dc7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Decision" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_decision" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_decision" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ebbee686-d4ff-4253-b752-bd7ff545ddba}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Decision Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_decisiondate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_decisiondate" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_lifecycle_id" id="bf8df10c-3599-4089-a455-7a9484115135" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Life Cycle ID" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{ff11cdcf-ce76-40a9-a319-93454afafada}" locklevel="0" colspan="1" rowspan="1" visible="true">
+                        <labels>
+                          <label description="LCID" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lcid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_lcid" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="tab_feedback" id="a0173d8d-27a6-4b92-8661-18b65ffbb067" IsUserDefined="0" locklevel="0" showlabel="true">
+          <labels>
+            <label description="Feedback" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section name="tab_2_section_1" id="0a6f8a95-e44c-468c-a1a4-61fa7d2f750c" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{dcd820f9-50fb-4dc0-bf35-bf3338f97af8}" rowspan="4" colspan="1" auto="false" showlabel="true">
+                        <labels>
+                          <label description="Edit Requests" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="subgrid_edit_requests" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>cr69a_editrequest_SystemIntakeAdmin_cr69a_systemintakeadmin</RelationshipName>
+                            <TargetEntityType>cr69a_editrequest</TargetEntityType>
+                            <ViewId>{62E2A810-70C9-48FF-9367-66C7CD7E65EB}</ViewId>
+                            <ViewIds>{62E2A810-70C9-48FF-9367-66C7CD7E65EB}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="tab_history" id="741d89ba-57f3-4203-9089-47b5d18a1d51" IsUserDefined="0" locklevel="0" showlabel="true">
+          <labels>
+            <label description="History" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section name="tab_13_section_1" id="5109f20c-d4ae-49c8-acee-41d9b1af9b6f" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="section_activity_logs" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{368baa59-1801-467f-a2bc-3142acb64069}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="Activity History" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="Subgrid_new_3" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>10</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>new_activitylogs_AdminReview_cr69a_systemintakeadmin</RelationshipName>
+                            <TargetEntityType>new_activitylogs</TargetEntityType>
+                            <ViewId>{5EAD48BD-8B83-4DD0-B3C8-DD390E089536}</ViewId>
+                            <ViewIds>{5EAD48BD-8B83-4DD0-B3C8-DD390E089536}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="tab_meeting_minutes" id="c0568330-14de-4eb7-8077-e24e0069aff2" IsUserDefined="0" locklevel="0" showlabel="true">
+          <labels>
+            <label description="Meeting Minutes" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section name="tab_5_section_1" id="88fbf25a-8a6e-495f-885c-05437c42b967" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Meeting Minutes Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{b21de57d-f11a-4490-806a-7f288831be0f}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="GRT Meeting Minutes" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_grtmeetingminutes" classid="{71716B6C-711E-476C-8AB8-5D11542BFB47}" datafieldname="cr3ee_grtmeetingminutes" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6c28c4c3-d8ff-4419-bd12-d2bf45bb38c5}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="GRB Meeting Minutes" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_grbmeetingminutes" classid="{71716B6C-711E-476C-8AB8-5D11542BFB47}" datafieldname="cr3ee_grbmeetingminutes" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="tab_7" id="2d5316b7-b0a4-4297-b4f9-f121ca4ff57d" IsUserDefined="0" locklevel="0" showlabel="true">
+          <labels>
+            <label description="Admin Team Notes" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section name="tab_7_section_1" id="68e144e9-5d19-4d13-867d-4a99ff970815" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{32135bd6-fff7-439d-a4bb-ffac6e96bee1}" rowspan="15" colspan="1">
+                        <labels>
+                          <label description="Note Text" languagecode="1033" />
+                        </labels>
+                        <control id="notescontrol" classid="{06375649-C143-495E-A496-C962E5B4488E}" disabled="false">
+                          <parameters>
+                            <UClientShowTimelineLabel>false</UClientShowTimelineLabel>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{09b6052b-7401-4b9d-8912-895c3353b86c}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{29236118-5f32-49d2-9749-8ce69a9d5c14}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{bdf1bf3f-d3b9-45b1-af34-72e4dff54d8f}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{f538f28b-d466-4e22-a2be-b5dde8eab075}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{7345db43-b88d-403c-a1b7-38b91f0d44f2}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{e711e744-1e1a-41ed-8457-9815618253bd}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{8d092db0-faa3-43ca-bf04-b42a125f7419}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{6033bf5e-45dc-4db7-b78e-7c3d0eabc700}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr69a_showEnvironmentBanner" libraryUniqueId="{5098ff4b-b2ab-4733-91b4-3ab05fe777f6}" />
+        <Library name="easi_system_intake_admin_review" libraryUniqueId="{0bb2d499-f4d3-4c39-aa31-409be03fe435}" />
+        <Library name="cr3ee_ActivityLogQuickCreate_HelperFunction" libraryUniqueId="{2b0d45fd-5f17-45e0-8249-dd7a13603cb0}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="showEnvironmentBanner" libraryName="cr69a_showEnvironmentBanner" handlerUniqueId="{9283a063-265a-4641-ae87-be8170688b8b}" enabled="true" parameters="" passExecutionContext="true" />
+            <Handler functionName="onLoad" libraryName="easi_system_intake_admin_review" handlerUniqueId="{e09bb77a-0855-48cb-9ffb-defaffb7d80f}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onchange" application="false" active="false" attribute="cr69a_decision">
+          <Handlers>
+            <Handler functionName="onDecisionChange" libraryName="easi_system_intake_admin_review" handlerUniqueId="{4ccf1bb6-196a-4d2c-8d4d-2161f75c505b}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+      <controlDescriptions />
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

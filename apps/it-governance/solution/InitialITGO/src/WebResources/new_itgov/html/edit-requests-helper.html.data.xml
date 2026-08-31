@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{942c99e9-c05e-f111-bec6-001dd8055bb1}</WebResourceId>
+  <Name>new_itgov/html/edit-requests-helper.html</Name>
+  <DisplayName>edit-requests-helper</DisplayName>
+  <Description>Managed from html/edit-requests-helper.html in source control.</Description>
+  <WebResourceType>1</WebResourceType>
+  <IntroducedVersion>1.0.0.103</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/new_itgovhtmledit-requests-helperhtml942C99E9-C05E-F111-BEC6-001DD8055BB1</FileName>
+</WebResource>

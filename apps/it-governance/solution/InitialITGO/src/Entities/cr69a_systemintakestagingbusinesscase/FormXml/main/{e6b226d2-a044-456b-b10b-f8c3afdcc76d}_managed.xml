@@ -1,0 +1,645 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{e6b226d2-a044-456b-b10b-f8c3afdcc76d}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{7b7b455b-8f95-4f28-90d3-ee718844b69c}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{b3c37430-898f-40ca-b27b-5d62f0ff291c}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{751b8ea4-e635-4762-ab9e-c7f3a0bf20f4}">
+                        <labels>
+                          <label description="id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_id" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_id" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9dec1d95-9584-41e4-bc69-ac0ebb528576}">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d245661a-50ff-4935-8271-f8cf7ca6cf5b}">
+                        <labels>
+                          <label description="eua_user_id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_eua_user_id" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_eua_user_id" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{abf72e65-efd4-443e-8c3e-8bba5f2a4e0a}">
+                        <labels>
+                          <label description="project_name" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_project_name" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_project_name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b81a53d9-3def-44c3-8c7a-015d9399868e}">
+                        <labels>
+                          <label description="requester" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requester" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_requester" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bf4782ca-6290-4dc8-98dd-06a90508e764}">
+                        <labels>
+                          <label description="requester_phone_number" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requester_phone_number" classid="{0d2c745a-e5a8-4c8f-ba63-c6d3bb604660}" datafieldname="cr69a_requester_phone_number" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9fcd9493-2b52-47c2-ad2e-60562efc80f4}">
+                        <labels>
+                          <label description="business_owner" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_business_owner" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_business_owner" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{86ca4436-3cb5-44e2-9706-869b1ab06469}">
+                        <labels>
+                          <label description="business_need - Deprecated" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_business_need" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_business_need" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7abc530a-a17c-41f8-a93f-72064a1d145a}">
+                        <labels>
+                          <label description="cms_benefit (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cms_benefit" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_cms_benefit" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d1b0c2ca-e8af-4477-9517-be02ea8a206b}">
+                        <labels>
+                          <label description="priority_alignment" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_priority_alignment" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_priority_alignment" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ef85405e-9e63-45eb-a8e1-64c817114896}">
+                        <labels>
+                          <label description="success_indicators" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_success_indicators" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_success_indicators" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{03ed059a-b162-4ea6-9510-6202837339d8}">
+                        <labels>
+                          <label description="current_solution_summary" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_current_solution_summary" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_current_solution_summary" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c3e20d8f-7e8c-469d-bb99-18c5ad009c9c}">
+                        <labels>
+                          <label description="preferred_title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_title" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_title" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8fbc5794-d51e-4de5-9121-f55953b54b38}">
+                        <labels>
+                          <label description="preferred_summary" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_summary" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_summary" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3f562e3f-ab51-483a-84a8-9b54a966d6ad}">
+                        <labels>
+                          <label description="preferred_acquisition_approach (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_acquisition_approach" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_acquisition_approach" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b256fe82-eae9-44d5-a434-91a6ea478c04}">
+                        <labels>
+                          <label description="preferred_pros (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_pros" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_pros" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7fbe14dd-d3e9-48b6-91c0-72acadc76fad}">
+                        <labels>
+                          <label description="preferred_cons (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_cons" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_cons" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ea65de0c-91f0-45d5-b002-916a63932bdf}">
+                        <labels>
+                          <label description="preferred_cost_savings" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_cost_savings" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_cost_savings" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{832fc8bb-b0bd-4b44-9933-ecda2228e2d0}">
+                        <labels>
+                          <label description="alternative_a_title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_title" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_title" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e72eaa00-e4a8-43b6-bad9-cdd917e2ce11}">
+                        <labels>
+                          <label description="alternative_a_summary" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_summary" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_summary" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a0f44d8f-aef3-4461-8a70-705bd8ca9a67}">
+                        <labels>
+                          <label description="alternative_a_acquisition_approach (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_acquisition_approach" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_acquisition_approach" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{62b3eab2-1d2a-45f8-a241-8d05ee5a61cb}">
+                        <labels>
+                          <label description="alternative_a_pros (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_pros" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_pros" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{eb2ef578-2328-4265-bfa6-adb77ab5cd74}">
+                        <labels>
+                          <label description="alternative_a_cons (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_cons" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_cons" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{74d0c77a-3adf-46ce-a380-027307019ade}">
+                        <labels>
+                          <label description="alternative_a_cost_savings" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_cost_savings" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_cost_savings" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{89df0d0a-334c-4d5b-b57f-18496c7a8000}">
+                        <labels>
+                          <label description="alternative_b_title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_title" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_title" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{cafef8af-7783-4573-8a13-b4e3b4d0a7d5}">
+                        <labels>
+                          <label description="alternative_b_summary" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_summary" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_summary" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5491a89a-14c3-48e1-ab48-f9733aa942c9}">
+                        <labels>
+                          <label description="alternative_b_acquisition_approach (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_acquisition_approach" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_acquisition_approach" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6ca155da-3cd6-4ba4-98b3-7b4c30a447bd}">
+                        <labels>
+                          <label description="alternative_b_pros (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_pros" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_pros" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{14ace266-2e61-4911-a61d-57cbb9e217ae}">
+                        <labels>
+                          <label description="alternative_b_cons (Deprecated)" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_cons" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_cons" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e0ac197c-0655-49fa-90fe-e2d94fdc711e}">
+                        <labels>
+                          <label description="alternative_b_cost_savings" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_cost_savings" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_cost_savings" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d8b175ce-3756-4b63-8df1-5319bc4c88a8}">
+                        <labels>
+                          <label description="system_intake" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_system_intake" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_system_intake" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{af0f9815-85cf-4ceb-84b9-d765365ca02e}">
+                        <labels>
+                          <label description="created_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_created_at" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_created_at" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{01e26be0-ab40-4ac1-9561-161791f2cba3}">
+                        <labels>
+                          <label description="updated_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_updated_at" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_updated_at" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6aba1669-d0cc-479b-ab19-baa2c4977171}">
+                        <labels>
+                          <label description="status" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_status" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_status" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{dbe84a1a-561f-4db0-826c-a3c046696dad}">
+                        <labels>
+                          <label description="preferred_hosting_type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_hosting_type" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_hosting_type" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7ba7aded-8c1a-4e9b-bf1d-c51cbcd78299}">
+                        <labels>
+                          <label description="preferred_hosting_location" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_hosting_location" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_hosting_location" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8f3c3ead-a755-4e42-8f8b-6d61aa8bc37b}">
+                        <labels>
+                          <label description="preferred_hosting_cloud_service_type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_hosting_cloud_service_type" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_hosting_cloud_service_type" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{402c6352-e53d-42ab-8613-cfc38aedf593}">
+                        <labels>
+                          <label description="preferred_has_ui" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_has_ui" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_has_ui" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{78fc6990-35ec-48ab-971f-cd98e574d585}">
+                        <labels>
+                          <label description="alternative_a_hosting_type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_hosting_type" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_hosting_type" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fe84a02b-462b-4602-8fb6-88a450307666}">
+                        <labels>
+                          <label description="alternative_a_hosting_location" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_hosting_location" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_hosting_location" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d6641fd2-cb1c-4e0f-9c4e-3d5cd2bf1e9d}">
+                        <labels>
+                          <label description="alternative_a_hosting_cloud_service_type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_hosting_cloud_service_typ" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_hosting_cloud_service_typ" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a67ef607-bd2b-4023-a292-06f42bb6662b}">
+                        <labels>
+                          <label description="alternative_a_has_ui" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_has_ui" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_has_ui" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fbfe0962-8d74-4b57-aa33-0c3b3d617a77}">
+                        <labels>
+                          <label description="alternative_b_hosting_type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_hosting_type" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_hosting_type" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{86dedda9-e7a3-42cd-a5ae-cabfe61d4365}">
+                        <labels>
+                          <label description="alternative_b_hosting_location" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_hosting_location" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_hosting_location" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c38a105a-7a36-4ba9-b038-cfc823250d4e}">
+                        <labels>
+                          <label description="alternative_b_hosting_cloud_service_type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_hosting_cloud_service_typ" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_hosting_cloud_service_typ" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5549cd23-eea5-483d-a3fb-bd06f521d374}">
+                        <labels>
+                          <label description="alternative_b_has_ui" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_has_ui" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_has_ui" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0eb17847-dae6-4d80-a161-da97e7b843ed}">
+                        <labels>
+                          <label description="initial_submitted_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_initial_submitted_at" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_initial_submitted_at" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{024b235a-26ed-490d-8d72-67dea6350f4d}">
+                        <labels>
+                          <label description="last_submitted_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_last_submitted_at" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_last_submitted_at" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{76c399d9-0bd1-4ce8-a003-5c3115c89bc3}">
+                        <labels>
+                          <label description="archived_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_archived_at" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_archived_at" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{39774020-935f-4f93-9086-0ab2e1e0c948}">
+                        <labels>
+                          <label description="preferred_security_is_approved" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_security_is_approved" classid="{67fac785-cd58-4f9f-abb3-4b7ddc6ed5ed}" datafieldname="cr69a_preferred_security_is_approved" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d7813bdf-70b5-4b83-9d3b-b0f938bf8695}">
+                        <labels>
+                          <label description="preferred_security_is_being_reviewed" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_security_is_being_reviewed" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_security_is_being_reviewed" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3abc41f3-a081-4112-b08d-79c0050f71bf}">
+                        <labels>
+                          <label description="alternative_a_security_is_approved" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_security_is_approved" classid="{67fac785-cd58-4f9f-abb3-4b7ddc6ed5ed}" datafieldname="cr69a_alternative_a_security_is_approved" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e1aeed38-0d7f-4f34-969f-0cc2d230f8f4}">
+                        <labels>
+                          <label description="alternative_a_security_is_being_reviewed" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_security_is_being_reviewe" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_security_is_being_reviewe" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{582f52f7-83f4-43e7-a2aa-38617e3df510}">
+                        <labels>
+                          <label description="alternative_b_security_is_being_reviewed" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_security_is_being_reviewe" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_security_is_being_reviewe" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9042334c-4599-4db2-b17a-64b5c646b3db}">
+                        <labels>
+                          <label description="collaboration_needed" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_collaboration_needed" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_collaboration_needed" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d4c602f6-d52e-4389-8fe1-6d600f00e80b}">
+                        <labels>
+                          <label description="project_acronym" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_project_acronym" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_project_acronym" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{69c8561c-b70e-40bf-904d-8daf1425e09d}">
+                        <labels>
+                          <label description="response_to_grt_feedback" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_response_to_grt_feedback" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_response_to_grt_feedback" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e74924e4-6aae-45ba-893b-68ea6cc54b39}">
+                        <labels>
+                          <label description="preferred_target_contract_award_date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_target_contract_award_date" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_preferred_target_contract_award_date" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ebaa0d44-867e-4ecf-b248-d4685afbba2b}">
+                        <labels>
+                          <label description="preferred_target_completion_date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_target_completion_date" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_preferred_target_completion_date" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fb452fc7-0159-4ea2-8ac0-19f59805b51e}">
+                        <labels>
+                          <label description="preferred_zero_trust_alignment" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_zero_trust_alignment" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_zero_trust_alignment" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4f537b21-221d-4f41-8604-0cb385f6d4c3}">
+                        <labels>
+                          <label description="preferred_hosting_cloud_strategy" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_hosting_cloud_strategy" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_hosting_cloud_strategy" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{84a7c4a4-ceb3-4316-9c4b-8e2f34e4cde4}">
+                        <labels>
+                          <label description="preferred_workforce_training_reqs" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferred_workforce_training_reqs" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_preferred_workforce_training_reqs" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fd639282-2f38-4787-8503-1a66819f5fea}">
+                        <labels>
+                          <label description="alternative_a_target_contract_award_date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_target_contract_award_dat" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_alternative_a_target_contract_award_dat" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{709861ec-7e7c-4817-96ad-1b1a756f689b}">
+                        <labels>
+                          <label description="alternative_a_target_completion_date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_target_completion_date" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_alternative_a_target_completion_date" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7aeb204c-26db-446a-a3b1-b13f1fbcaeeb}">
+                        <labels>
+                          <label description="alternative_a_zero_trust_alignment" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_zero_trust_alignment" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_zero_trust_alignment" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1af17ea0-6a36-4da6-bb33-e2df60e1064d}">
+                        <labels>
+                          <label description="alternative_a_hosting_cloud_strategy" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_hosting_cloud_strategy" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_hosting_cloud_strategy" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3ee21c79-53be-4c2f-bdd1-92f5f7656eb0}">
+                        <labels>
+                          <label description="alternative_a_workforce_training_reqs" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_a_workforce_training_reqs" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_a_workforce_training_reqs" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3c524d1f-8230-4c6d-b505-499083a736b6}">
+                        <labels>
+                          <label description="alternative_b_target_contract_award_date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_target_contract_award_dat" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_alternative_b_target_contract_award_dat" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e1cce275-2fc2-450f-b726-be49bb2e22e4}">
+                        <labels>
+                          <label description="alternative_b_target_completion_date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_target_completion_date" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_alternative_b_target_completion_date" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{267c6385-282a-499c-9609-b25b96387425}">
+                        <labels>
+                          <label description="alternative_b_zero_trust_alignment" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_zero_trust_alignment" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_zero_trust_alignment" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{946de385-fe2c-46d7-8778-d5fc0ec9a018}">
+                        <labels>
+                          <label description="alternative_b_hosting_cloud_strategy" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_hosting_cloud_strategy" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_hosting_cloud_strategy" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b1ade9bd-8067-4065-820b-94f8630ec51f}">
+                        <labels>
+                          <label description="alternative_b_workforce_training_reqs" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternative_b_workforce_training_reqs" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alternative_b_workforce_training_reqs" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <Navigation>
+        <NavBar></NavBar>
+        <NavBarAreas>
+          <NavBarArea Id="Info">
+            <Titles>
+              <Title LCID="1033" Text="Common" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="Sales">
+            <Titles>
+              <Title LCID="1033" Text="Sales" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="Service">
+            <Titles>
+              <Title LCID="1033" Text="Service" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="Marketing">
+            <Titles>
+              <Title LCID="1033" Text="Marketing" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="ProcessCenter">
+            <Titles>
+              <Title LCID="1033" Text="Process Sessions" />
+            </Titles>
+          </NavBarArea>
+        </NavBarAreas>
+      </Navigation>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

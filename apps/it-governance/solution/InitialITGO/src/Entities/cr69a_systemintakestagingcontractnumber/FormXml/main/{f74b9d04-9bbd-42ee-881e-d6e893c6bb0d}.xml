@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{f74b9d04-9bbd-42ee-881e-d6e893c6bb0d}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{c845afbb-2058-4514-9ce9-b5358ee815fc}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{61b4246b-acde-47e7-b51a-ee1303573932}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{722205a7-383a-48c7-bc04-66001b3d9d26}">
+                        <labels>
+                          <label description="id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_recordid" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_recordid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c16395a4-3cc8-4326-b3cb-f1ccdb17cf0e}">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{cc25f352-0888-43fd-8dc0-f7452d1184e2}">
+                        <labels>
+                          <label description="system_intake_id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintakeid" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_systemintakeid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f6cbe010-2641-4935-b61a-43b6d6761825}">
+                        <labels>
+                          <label description="contract_number" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_contractnumber" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_contractnumber" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{981d8835-47da-473e-9439-523cb1c31e7d}">
+                        <labels>
+                          <label description="created_by" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_createdby" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_createdby" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b572b547-7f55-4b49-97cc-f14e0e297be0}">
+                        <labels>
+                          <label description="created_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_createdat" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_createdat" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c534b7b7-d9f1-49b8-a62d-f8f340c502ee}">
+                        <labels>
+                          <label description="modified_by" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_modifiedby" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_modifiedby" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1ddb4210-d38f-4f04-a50c-7150dd2c9ea6}">
+                        <labels>
+                          <label description="modified_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_modifiedat" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_modifiedat" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

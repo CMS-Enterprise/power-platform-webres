@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{62e2a810-70c9-48ff-9367-66c7cd7e65eb}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_editrequest" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_editrequestid">
+          <cell name="cr69a_whichformneedsedits" width="180" />
+          <cell name="cr3ee_changes_needed" width="183" />
+          <cell name="cr3ee_additionalinformation" width="171" />
+          <cell name="new_completed" width="102" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_editrequest">
+          <attribute name="cr69a_editrequestid" />
+          <attribute name="createdon" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <order attribute="createdon" descending="true" />
+          <attribute name="cr3ee_additionalinformation" />
+          <attribute name="cr3ee_changes_needed" />
+          <attribute name="new_completed" />
+          <attribute name="cr69a_whichformneedsedits" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Edit Requests" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

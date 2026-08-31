@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{f053d5e2-a348-f111-88b4-001dd8055bb1}</WebResourceId>
+  <Name>cr3ee_upload_files_helper_text</Name>
+  <DisplayName>upload-files-helper-text</DisplayName>
+  <Description>Managed from html/upload-files-helper-text.html in source control.</Description>
+  <WebResourceType>1</WebResourceType>
+  <IntroducedVersion>1.0.0.102</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/cr3ee_upload_files_helper_textF053D5E2-A348-F111-88B4-001DD8055BB1</FileName>
+</WebResource>

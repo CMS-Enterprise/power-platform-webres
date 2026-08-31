@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{8abd5034-4b4e-f111-bec6-001dd804cd4c}</WebResourceId>
+  <Name>new_itgov/js/business-case/solutionQuickCreateZeroTrustInfo.js</Name>
+  <DisplayName>solutionQuickCreateZeroTrustInfo</DisplayName>
+  <Description>Managed from js/business-case/solutionQuickCreateZeroTrustInfo.js in source control.</Description>
+  <WebResourceType>3</WebResourceType>
+  <IntroducedVersion>1.0.0.102</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/new_itgovjsbusiness-casesolutionQuickCreateZeroTru8ABD5034-4B4E-F111-BEC6-001DD804CD4C</FileName>
+</WebResource>

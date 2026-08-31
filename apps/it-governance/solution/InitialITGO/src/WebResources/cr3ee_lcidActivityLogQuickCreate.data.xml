@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{aeb6f22c-3b34-f111-88b3-001dd804cd4c}</WebResourceId>
+  <Name>cr3ee_lcidActivityLogQuickCreate</Name>
+  <DisplayName>Intake LCID - Activity Log Quick Create</DisplayName>
+  <LanguageCode>0</LanguageCode>
+  <WebResourceType>3</WebResourceType>
+  <IntroducedVersion>1.0.0.1</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/cr3ee_lcidActivityLogQuickCreateAEB6F22C-3B34-F111-88B3-001DD804CD4C</FileName>
+</WebResource>

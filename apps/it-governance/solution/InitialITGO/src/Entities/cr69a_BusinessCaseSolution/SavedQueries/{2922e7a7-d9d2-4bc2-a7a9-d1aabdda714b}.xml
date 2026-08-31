@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{2922e7a7-d9d2-4bc2-a7a9-d1aabdda714b}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_solutiontitle" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_businesscasesolutionid">
+          <cell name="cr69a_solutiontitle" width="300" />
+          <cell name="cr69a_batchid" width="100" />
+          <cell name="new_request" width="100" />
+          <cell name="new_fy1costperyear" width="146" />
+          <cell name="new_fy2costperyear" width="146" />
+          <cell name="new_fy3costperyear" width="146" />
+          <cell name="new_fy4costperyear" width="146" />
+          <cell name="new_fy5costperyear" width="146" />
+          <cell name="new_systemtotalcost" width="136" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_businesscasesolution">
+          <attribute name="cr69a_businesscasesolutionid" />
+          <attribute name="cr69a_solutiontitle" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_solutiontitle" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="new_systemtotalcost" />
+          <attribute name="cr69a_batchid" />
+          <attribute name="new_request" />
+          <attribute name="new_fy1costperyear" />
+          <attribute name="new_fy2costperyear" />
+          <attribute name="new_fy3costperyear" />
+          <attribute name="new_fy4costperyear" />
+          <attribute name="new_fy5costperyear" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Business Case Solutions" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

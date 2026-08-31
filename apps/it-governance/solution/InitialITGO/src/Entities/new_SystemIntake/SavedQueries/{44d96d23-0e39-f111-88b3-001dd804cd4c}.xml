@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{44d96d23-0e39-f111-88b3-001dd804cd4c}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="new_name" select="1" icon="1" preview="1">
+        <row name="result" id="new_systemintakeid">
+          <cell name="new_name" width="200" />
+          <cell name="cr69a_grtmeetingdate" width="148" />
+          <cell name="cr69a_grbreviewmeetingdate" width="196" />
+          <cell name="new_admingovernanceprocessstep" width="225" />
+          <cell name="cr69a_status" width="123" />
+          <cell name="ownerid" width="100" />
+          <cell name="createdon" width="105" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" output-format="xml-platform" mapping="logical">
+        <entity name="new_systemintake">
+          <attribute name="new_name" />
+          <attribute name="new_systemintakeid" />
+          <attribute name="createdon" />
+          <attribute name="ownerid" />
+          <attribute name="new_admingovernanceprocessstep" />
+          <attribute name="cr69a_status" />
+          <attribute name="cr69a_grbreviewmeetingdate" />
+          <attribute name="cr69a_grtmeetingdate" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.96</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="All Requests View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

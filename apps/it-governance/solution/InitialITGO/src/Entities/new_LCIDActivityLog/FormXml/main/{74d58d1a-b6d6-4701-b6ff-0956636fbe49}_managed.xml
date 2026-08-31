@@ -1,0 +1,397 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{74d58d1a-b6d6-4701-b6ff-0956636fbe49}</formid>
+    <IntroducedVersion>1.0.0.74</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{88c091e4-4bb9-4d48-98c6-df77563b681e}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section name="null_section_general" id="ffd098c4-a160-4c50-a9db-02334579eea5" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{a852d67e-8541-495b-a3c0-718b6602d8ed}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_action" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="new_action" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{98dcf482-2f09-4ed5-90de-0c58e4c810f7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="createdby" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="createdby" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7cc2e827-af6e-4cf3-b544-fadd31eb8c61}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_lcid" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ecbe3755-370e-4721-8fc7-4b01c32501d3}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_activitytype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_activitytype" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9d67bbc0-7f7c-492b-9fea-aafe4883502a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="createdon" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="createdon" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4683a5cc-9dab-46e5-a822-49ee308b011b}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_activityby" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_activityby" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_5_background" id="0fd69bc7-9654-4489-a101-e51cb5d5db6a" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Background" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{fa85080e-5730-45dc-b4c6-f604d6376906}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_reason" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_reason" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{485b11b4-6d0a-4d51-b3be-a20b0b58bf5e}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_additionalinformation" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_additionalinformation" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section showlabel="true" showbar="false" IsUserDefined="0" id="{06dddf27-2b06-42d6-ba33-b64791111f2c}" name="section_change_history">
+                  <labels>
+                    <label description="Change History" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{d8d90088-1949-4dfa-a09d-45db9edc5d8b}" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4973dcaa-985d-453d-aaa0-4f9f10777ead}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_lcidtypeold" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr3ee_lcidtypeold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5ea54d0a-5c51-404a-b40f-a449327d1f58}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidtype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidtype" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0b12a849-0e2f-48ea-ad75-959b1ceb5899}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{08bdb191-f4b6-40ee-83c8-739dda50329d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_lcidislowitold" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr3ee_lcidislowitold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b9fd6b88-a176-453f-9ab3-f85ec7d9ee53}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidislowit" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidislowit" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6024a0b2-5be5-44df-9300-79bde13f14ac}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b904c683-222c-4e26-975e-9759d9aaa6bc}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_lcidisshortenedold" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr3ee_lcidisshortenedold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{23d6a851-3c16-4f8e-9d14-480328eefde7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidisshortened" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidisshortened" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9ab7084d-0830-4417-9216-79a8acda93ce}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fa971dbf-d1b4-4809-82c7-8e120deab50a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_lcidcomponentold" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr3ee_lcidcomponentold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e616562b-b7e0-4b0d-a089-6be2e387cb60}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidcomponent" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidcomponent" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fcaf4fd9-f911-47ee-9814-a03b1465f166}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9919859d-b116-4faa-a4b7-7d7b7109cd01}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidscopeold" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_lcidscopeold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0fc5dae9-e0e1-4341-b8a1-cbeaa5e3bf3a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidscope" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_lcidscope" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d139bff1-8885-4654-8b26-455a0e4b24ab}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{534e706e-e962-4492-89a4-61010c34ae74}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidexpirationdateold" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="new_lcidexpirationdateold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{070aaa51-1296-47d8-8d0b-c3291225a213}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidexpirationdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="new_lcidexpirationdate" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{df944ce2-9288-4b40-af2e-7d654664473d}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3ecb51cb-b3d4-4943-9811-62bd857fef23}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidretiredateold" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="new_lcidretiredateold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b3a30617-cd2b-4648-a272-fb14b845d1a4}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidretiredate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="new_lcidretiredate" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c099d0c8-c910-4d44-bcde-bf354b6c7f43}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2d253d1c-8d70-4bdb-b9b6-15dd3309f2c5}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidcostbaselineold" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_lcidcostbaselineold" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b699269e-fc54-481d-b500-75973c0f3700}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidcostbaseline" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_lcidcostbaseline" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{1e3c3ac0-4f89-4839-a60c-7ab917116212}" rowspan="15" colspan="1">
+                        <labels>
+                          <label description="Note Text" languagecode="1033" />
+                        </labels>
+                        <control id="notescontrol" classid="{06375649-C143-495E-A496-C962E5B4488E}" disabled="false" />
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="null_section_4" id="e0354c8a-b74c-440c-83c4-df15169b93ea" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{cf448f66-f0cd-4023-8fc0-d58ccc67a98c}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_error" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_error" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{cd3c7cf8-454f-47bf-9fbb-ee2f576fa9a2}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{a3eca943-69a2-4dd4-90c5-cc4cfa7a9027}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{c1618624-eb57-4bf8-9cee-624cb6497a1a}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{9b930eb2-2808-4b72-a37b-0f3e654fc85a}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{f93d19ab-1583-4736-8545-fb0fc136347a}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{f3cf2c35-dc71-4cc3-a8e2-549914c89a25}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{4aa7e338-0ae1-4f4b-928d-78e10a99cb15}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{e472f903-77de-4bdc-998c-e10df2472b95}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr3ee_lcidActivityLogMainForm" libraryUniqueId="{1bae96b6-df3d-4e52-b6e1-e30e81d90d18}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="ITGov.LcidActivityLogMainForm.onLoad" libraryName="cr3ee_lcidActivityLogMainForm" handlerUniqueId="{3f0ea80b-9e37-4363-954c-2be41608d91b}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

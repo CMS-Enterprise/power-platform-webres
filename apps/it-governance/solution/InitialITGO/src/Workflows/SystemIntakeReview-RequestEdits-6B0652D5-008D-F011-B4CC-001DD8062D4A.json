@@ -1,0 +1,179 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7c24c"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_f4415"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "76ee4cb9-7f4f-4cb0-bf83-98d828e7e84d"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "cr69a_editrequest",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filterexpression": "cr69a_batchid eq null"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1b9935d7-5136-4288-94d2-b64bd259aa39"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body']"
+        },
+        "Get_a_row_by_ID": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ac6e8fad-44a8-493c-9201-6a9516d571fe"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "recordId": "@triggerOutputs()?['body/cr69a_system_intake_guid_text']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "25607da2-7db8-495b-b931-e8cbb4066f20"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body/cr69a_system_intake_guid_text']"
+        },
+        "Compose_3": {
+          "runAfter": {
+            "Get_a_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bf2468a7-df42-4b12-bb3a-39e0763a400f"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_a_row_by_ID')"
+        },
+        "Get_a_row_by_ID_2": {
+          "runAfter": {
+            "Compose_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6f17ec8a-267b-495e-a9af-1f1bc0e31d8c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "systemusers",
+              "recordId": "@outputs('Get_a_row_by_ID')?['body/_cr69a_requester_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_4": {
+          "runAfter": {
+            "Get_a_row_by_ID_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6f8b14c7-e6ca-44b7-a555-b5b241a2b9e9"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_a_row_by_ID_2')"
+        },
+        "Send_an_email_(V2)": {
+          "runAfter": {
+            "Compose_4": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "22c68ba4-aebf-4b81-921e-1d0da8e0deb1"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_a_row_by_ID_2')?['body/internalemailaddress']",
+              "emailMessage/Subject": "System Intake - Edits Requested",
+              "emailMessage/Body": "<p>Edits have been requested on your system intake.<br>\n<br>\nWhich form needs edits?<br>\n@{triggerOutputs()?['body/_cr69a_whichformneedsedits_label']}<br>\n<br>\nWhat changes are needed?<br>\n@{triggerOutputs()?['body/cr69a_whatchangesareneeded']}<br>\n<br>\nAdditional Information:<br>\n@{triggerOutputs()?['body/cr69a_additionalinformation']}<br>\n<br>\n</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.AccessChecker.OpenDialog.cr69a_lifecycleids.Button.Hide" Location="AccessChecker.OpenDialog.cr69a_lifecycleids.Button" />
+    <HideCustomAction HideActionId="new.AIBuilder.cr69a_lifecycleids.Flyout.Hide" Location="AIBuilder.cr69a_lifecycleids.Flyout" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_lifecycleids.Assign.Hide" Location="Mscrm.Form.cr69a_lifecycleids.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_lifecycleids.Delete.Hide" Location="Mscrm.Form.cr69a_lifecycleids.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_lifecycleids.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.Form.cr69a_lifecycleids.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_lifecycleids.Flows.RefreshCommandBar.Hide" Location="Mscrm.Form.cr69a_lifecycleids.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_lifecycleids.Reports.Hide" Location="Mscrm.Form.cr69a_lifecycleids.Reports" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_lifecycleids.WordTemplate.Hide" Location="Mscrm.Form.cr69a_lifecycleids.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Activate.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.BulkDelete.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.BulkDelete" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Chart.Assign.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Chart.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Chart.Share.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Chart.Share" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Deactivate.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Delete.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.DeleteMenu.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.DeleteMenu" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.DocumentTemplate.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.ExportTemplate.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.ExportTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.ExportToExcel.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Flows.RefreshCommandBar.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Import.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Import" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.ImportData.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.ImportData" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.ImportDataFromExcel.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.ImportDataFromExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.MainTab.QuickPowerBI.Button.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.MainTab.QuickPowerBI.Button" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.NewRecord.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.NewRecordForBPFEntity.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.NewRecordForBPFEntity" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.RunReport.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.Send.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.Send" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_lifecycleids.WordTemplate.Hide" Location="Mscrm.HomepageGrid.cr69a_lifecycleids.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.AddExistingStandard.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.AddNewStandard.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.AddNewStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.DocumentTemplate.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.Edit.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.Edit" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.ExportToExcel.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.FolderTracking.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.FolderTracking" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.NewRecord.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.OpenAssociatedGridViewStandard.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.OpenAssociatedGridViewStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.RefreshButton.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_lifecycleids.RunReport.Hide" Location="Mscrm.SubGrid.cr69a_lifecycleids.RunReport" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

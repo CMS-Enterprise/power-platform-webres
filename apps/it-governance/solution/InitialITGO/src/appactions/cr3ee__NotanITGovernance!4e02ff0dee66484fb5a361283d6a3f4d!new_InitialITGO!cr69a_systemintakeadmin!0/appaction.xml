@@ -1,0 +1,34 @@
+<appaction uniquename="cr3ee__NotanITGovernance!4e02ff0dee66484fb5a361283d6a3f4d!new_InitialITGO!cr69a_systemintakeadmin!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Not an IT Governance Request">
+    <label description="Not an IT Governance Request" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>cr69a_systemintakeadmin</logicalname>
+  </contextentity>
+  <contextvalue>cr69a_systemintakeadmin</contextvalue>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>NotanITGovernance!4e02ff0dee66484fb5a361283d6a3f4d</name>
+  <onclickeventjavascriptfunctionname>window.ITGov_NotAnITGovernanceRequest</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":5}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>3b891b34-e9e0-4340-a73f-e2f9cca220e5</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>cr3ee__IssueADecision!21f0059623fc4930b1c15ef8fa20bb91!new_InitialITGO!cr69a_systemintakeadmin!0</uniquename>
+  </parentappactionid>
+  <sequence>20000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

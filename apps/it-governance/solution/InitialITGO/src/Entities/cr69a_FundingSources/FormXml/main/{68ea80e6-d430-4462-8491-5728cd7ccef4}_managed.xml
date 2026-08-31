@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{68ea80e6-d430-4462-8491-5728cd7ccef4}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{d34eba46-260a-4da6-b1cf-559704e97a4a}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{b443fc61-6b38-43d6-8809-ae91301707ec}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{542b9c10-1746-4bea-b9b9-513be2fa00ba}">
+                        <labels>
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{76896795-6bbc-4c14-8e87-13b6945cdda0}">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{421024a3-9033-48d4-813b-2d2c797e1848}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Funding Number" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_fundingnumbertext" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="cr3ee_fundingnumbertext" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5785ef08-00c8-4af6-8402-f816fc60ee92}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Investment" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_investment" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_investment" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{529707ab-a806-4097-aced-0f145a0cd645}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Investment (Raw Import)" languagecode="1033" />
+                        </labels>
+                        <control id="easi_investmentrawimport" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="easi_investmentrawimport" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bbac61d7-419f-488e-b9b6-58c23827dff5}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="System Intake" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintake" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2049440d-3fce-4bf7-a230-449962050d69}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="External ID" languagecode="1033" />
+                        </labels>
+                        <control id="easi_external_id" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="easi_external_id" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{72375258-1bd0-4abd-bd4e-87be56ca4f40}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{c3cf42d9-2607-4c41-a1b5-00115b9255ad}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{9dc2aed9-96e4-4882-b554-5ca1c1dbbba4}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{3f5154a7-e69a-47e9-b5ae-d8860a2a35a8}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{4cc83e02-ec1b-4b80-97d5-aa5ba537cdc1}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{687fb5d5-fc7a-45e1-afd1-38c76ed128f5}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{1cebccd6-0646-4ad6-b07f-d3f93fb08da9}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{4fc826db-af46-4ca4-9918-c9f3b0d3d922}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr3ee_validateFundingNumberField" libraryUniqueId="{9c36175e-3857-4cfd-b9dd-83b3fcc37ec6}" />
+      </formLibraries>
+      <events>
+        <event name="onchange" application="false" active="false" attribute="cr3ee_fundingnumbertext">
+          <Handlers>
+            <Handler functionName="validateNumberField" libraryName="cr3ee_validateFundingNumberField" handlerUniqueId="{f7753137-1ba0-4cdd-99d6-9a8f96fa720d}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

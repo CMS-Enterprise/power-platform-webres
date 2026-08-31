@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{f50c5ac6-93ea-40e7-a71f-ba0d804faaaa}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_newcolumn" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakeadministratorid">
+          <cell name="cr69a_newcolumn" width="300" />
+          <cell name="cr69a_user" width="100" />
+          <cell name="cr69a_active" width="100" />
+          <cell name="createdby" width="104" />
+          <cell name="createdon" width="105" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakeadministrator">
+          <attribute name="cr69a_systemintakeadministratorid" />
+          <attribute name="cr69a_newcolumn" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_newcolumn" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="cr69a_active" />
+          <attribute name="cr69a_user" />
+          <attribute name="createdby" />
+          <attribute name="createdon" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active System Intake Administrators" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

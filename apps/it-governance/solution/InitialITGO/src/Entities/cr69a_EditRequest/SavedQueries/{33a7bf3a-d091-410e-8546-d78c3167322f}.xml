@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{33a7bf3a-d091-410e-8546-d78c3167322f}</savedqueryid>
+    <layoutxml>
+      <grid name="cr69a_editrequests" jump="cr69a_editrequest" select="1" icon="1" preview="1">
+        <row name="cr69a_editrequest" id="cr69a_editrequestid">
+          <cell name="cr69a_editrequest" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>2</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_editrequest">
+          <attribute name="cr69a_editrequestid" />
+          <attribute name="cr69a_editrequest" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_editrequest" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Edit Request Associated View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

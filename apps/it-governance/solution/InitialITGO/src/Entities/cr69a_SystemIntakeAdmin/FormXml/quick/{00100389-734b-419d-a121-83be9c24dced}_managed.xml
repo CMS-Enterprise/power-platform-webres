@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{00100389-734b-419d-a121-83be9c24dced}</formid>
+    <IntroducedVersion>1.0.0.7</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form maxWidth="400">
+      <tabs>
+        <tab id="{9f372395-0e86-4870-ba51-9d4acb5da3bb}" name="tab_1" showlabel="false">
+          <labels>
+            <label description="Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section id="{5e8a1b04-2e75-459c-ae47-934541b43e60}" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{e8723299-8638-b2c6-04dc-40c75b008adc}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Life Cycle ID" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lifecycleid" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="cr69a_lifecycleid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{75601893-7d08-ba53-367a-2d2e552d00ce}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Expiration Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lcidexpirationdate" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="cr69a_lcidexpirationdate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8c70e562-8267-9c02-d260-c489cdb255d0}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Scope of Life Cycle ID" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_scopeoflifecycleid" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_scopeoflifecycleid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ee73856e-48e2-8949-5bb0-225ee91a8bd3}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Next Steps" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lcidnextsteps" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_lcidnextsteps" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bd589ce6-210c-4d46-6d78-2ba7a14534d4}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Should this team consult with the TRB?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_shouldthisteamconsultwiththetrb" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="cr69a_shouldthisteamconsultwiththetrb" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{60b58304-a259-086d-8968-1eee1a93d9a5}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Project Cost Baseline" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lcidprojectcostbaseline" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_lcidprojectcostbaseline" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b7a7336c-6b82-20a9-0ebb-91302e175dc6}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Additional Information" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_additionalinformation" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_additionalinformation" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="3">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Life Cycle ID" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

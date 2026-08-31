@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{90530ed7-c52d-f111-8341-001dd804cd4c}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_title" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakeadminid">
+          <cell name="cr69a_title" width="200" />
+          <cell name="new_admingovernancetasklist" width="225" />
+          <cell name="cr69a_grtmeetingdate" width="148" />
+          <cell name="cr69a_grbreviewmeetingdate" width="226" />
+          <cell name="new_adminlead" width="111" />
+          <cell name="cr69a_readyforreview" width="145" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="true">
+        <entity name="cr69a_systemintakeadmin">
+          <attribute name="cr69a_title" />
+          <attribute name="cr69a_systemintakeadminid" />
+          <attribute name="new_admingovernancetasklist" />
+          <attribute name="cr69a_grtmeetingdate" />
+          <attribute name="new_adminlead" />
+          <attribute name="cr69a_readyforreview" />
+          <filter type="and">
+            <condition attribute="cr69a_readyforreview" operator="eq" value="1" />
+          </filter>
+          <attribute name="cr69a_grbreviewmeetingdate" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.85</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Ready for Review" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Next Steps</title>
+    <style>
+      :root {
+        --text: #323130;
+        --muted: #5e5e5e;
+        --border: #e6e6e6;
+        --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        --link: #0f6cbd;
+        --card-bg: #ffffff;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text);
+        background: transparent;
+        line-height: 1.5;
+        margin: 0;
+      }
+
+      .wrap {
+        max-width: 920px;
+      }
+
+      .stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .content-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 2px;
+        box-shadow: var(--card-shadow);
+        padding: 20px 20px 16px;
+      }
+
+      h2 {
+        font-size: 1.18rem;
+        font-weight: 650;
+        color: var(--text);
+        margin: 0 0 8px 0;
+      }
+
+      p {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      ul {
+        margin: 8px 0 12px 18px;
+        padding: 0 0 0 12px;
+      }
+
+      li {
+        margin-bottom: 4px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      a {
+        color: var(--link);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      a:focus {
+        outline: 1px solid var(--link);
+        outline-offset: 2px;
+      }
+
+      .cta-link {
+        display: inline-block;
+        margin-top: 4px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="stack">
+        <section class="content-card">
+          <h2>Consult with the TRB</h2>
+          <p>
+            The Technical Review Board (TRB) can offer a variety of advice and
+            guidance about your system and proposed technical solutions. As part
+            of your next steps, the Governance Team strongly recommends a TRB
+            consultation.
+          </p>
+          <p>
+            <a
+              class="cta-link"
+              href="https://easi.cms.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Start a TRB request →
+            </a>
+          </p>
+        </section>
+
+        <section class="content-card">
+          <h2>Update your System Profile</h2>
+          <p>
+            Keeping your System Profile up-to-date allows CMS to maintain
+            current and accurate information about its systems, as required by
+            legislation and department policy.
+          </p>
+
+          <p>
+            <a
+              class="cta-link"
+              href="https://easi.cms.gov/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View your System Profile in EASi →
+            </a>
+          </p>
+
+          <p>You can keep your System Profile updated by:</p>
+
+          <ul>
+            <li>Completing the yearly CMS System Census.</li>
+            <li>
+              Emailing Enterprise Architecture at
+              <a href="mailto:EnterpriseArchitecture@cms.hhs.gov">
+                EnterpriseArchitecture@cms.hhs.gov
+              </a>
+              if you notice any incorrect information.
+            </li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<appaction uniquename="easi__Re-OpenRequest!63cdaf1a6a7143888315719beea819eb!new_InitialITGO!new_systemintake!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Re-Open Request">
+    <label description="Re-Open Request" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>new_systemintake</logicalname>
+  </contextentity>
+  <contextvalue>new_systemintake</contextvalue>
+  <fonticon>Sync</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>Re-OpenRequest!63cdaf1a6a7143888315719beea819eb</name>
+  <onclickeventformulacomponentlibraryid>
+    <name>cr69a_initialitgodefaultcommandlibrary_86e7a</name>
+  </onclickeventformulacomponentlibraryid>
+  <onclickeventformulacomponentname>44eb3cb76c824fdca8472ca8c08f88ea</onclickeventformulacomponentname>
+  <onclickeventformulafunctionname>OnSelect</onclickeventformulafunctionname>
+  <onclickeventtype>1</onclickeventtype>
+  <origin>0</origin>
+  <sequence>100100046.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilityformulacomponentlibraryid>
+    <name>cr69a_initialitgodefaultcommandlibrary_86e7a</name>
+  </visibilityformulacomponentlibraryid>
+  <visibilityformulacomponentname>44eb3cb76c824fdca8472ca8c08f88ea</visibilityformulacomponentname>
+  <visibilityformulafunctionname>Visible</visibilityformulafunctionname>
+  <visibilitytype>1</visibilitytype>
+</appaction>

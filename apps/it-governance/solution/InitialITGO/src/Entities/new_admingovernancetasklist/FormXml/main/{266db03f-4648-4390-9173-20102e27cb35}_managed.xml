@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{266db03f-4648-4390-9173-20102e27cb35}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{03453179-fd92-4999-982e-0fc525b86a0e}" name="StageStep3" locklevel="0" expanded="true" visible="false" labelid="{8b323f6d-86ec-40e2-ab0a-7a789086d57a}">
+          <labels>
+            <label description="Intake Request Review" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{26912348-d924-b7d3-d2b1-2cead90e9b04}" name="StageStep3_section1" labelid="{04e412eb-2e94-4da2-9d90-25a9a62a6908}">
+                  <labels>
+                    <label description="Intake Request Review" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{ce06a27d-b4bc-4ac8-b892-12c84ce203c6}" showlabel="true" visible="true" labelid="{cd4bb5e8-10c6-4a93-b619-a8a2093318fd}">
+                        <labels>
+                          <label description="Intake Review Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_intakereviewcomplete" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_intakereviewcomplete" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{0c3db864-35f9-49ce-a7e1-e265e540deb0}" name="StageStep7" locklevel="0" expanded="true" visible="false" labelid="{bdbe4e5a-0e0a-4d92-a6d3-0a9f20ad814d}">
+          <labels>
+            <label description="Draft Business Case Review" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{939307df-7683-884d-7ea4-20155392ab08}" name="StageStep7_section1" labelid="{2dd5f1f3-5f76-478d-9229-14dd7091a93e}">
+                  <labels>
+                    <label description="Draft Business Case Review" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{50f95b8d-c29c-4ba8-8a7c-c27f4fea8824}" showlabel="true" visible="true" labelid="{95127eb1-f7e2-47cf-a886-2cc25e12e061}">
+                        <labels>
+                          <label description="Business Case Draft Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_readyfordraftbusinesscase" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_readyfordraftbusinesscase" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0b761350-6b97-4e0d-b436-43612e39e3a2}" showlabel="true" visible="true" labelid="{c8dfe8f9-251c-4499-995a-2b38262af448}">
+                        <labels>
+                          <label description="Feedback for the requester" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_feedbackfortherequesterdraftbusinesscase" classid="{e0dece4b-6fc8-4a8f-a065-082708572369}" datafieldname="cr69a_feedbackfortherequesterdraftbusinesscase" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{c355d998-96cd-4873-85ff-3d1052c4f4be}" name="StageStep13" locklevel="0" expanded="true" visible="false" labelid="{af6c2403-3b67-4501-8b47-6c49e086368a}">
+          <labels>
+            <label description="Schedule GRT Meeting Date" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{ebc5c899-5f83-6af7-0174-7fb03a75d9b6}" name="StageStep13_section1" labelid="{a2155141-d18f-44c5-bdf1-8969f1d81c46}">
+                  <labels>
+                    <label description="Schedule GRT Meeting Date" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{7d150770-d5e6-47c9-a8b1-856715f4dc5d}" showlabel="true" visible="true" labelid="{f427c4cb-b5da-4a4b-9a67-2b0cc150c921}">
+                        <labels>
+                          <label description="GRT Meeting Date" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_grtmeetingdate" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_grtmeetingdate" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{be335059-40b9-462e-a23d-95230ffdcf62}" name="StageStep17" locklevel="0" expanded="true" visible="false" labelid="{1cef289a-2e45-42a7-b7ba-d6fe84511b37}">
+          <labels>
+            <label description="GRT Meeting" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{41c15b09-8661-6879-528c-120a3b3bf16e}" name="StageStep17_section1" labelid="{b1a06e83-b258-46ed-9a21-49bfbb3d03ad}">
+                  <labels>
+                    <label description="GRT Meeting" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{3b45f4d3-d666-4ce6-9513-075ee2b685f5}" showlabel="true" visible="true" labelid="{78c32681-f61f-4d5b-8a62-9b64f0dbf3ae}">
+                        <labels>
+                          <label description="GRT Meeting Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_grtmeetingcomplete" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_grtmeetingcomplete" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{718e0607-8a6e-49ba-9a4a-49206872a6b2}" name="StageStep21" locklevel="0" expanded="true" visible="false" labelid="{4a209ec4-1469-458f-849f-e7c0a9622e34}">
+          <labels>
+            <label description="Final Business Case Review" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{31688e15-f0a5-ec2e-d92a-79b1d778a782}" name="StageStep21_section1" labelid="{b40dd639-77fc-4704-b38c-d86d074544cc}">
+                  <labels>
+                    <label description="Final Business Case Review" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{a0591841-8a91-49a1-96a9-b2cea1ab36d9}" showlabel="true" visible="true" labelid="{cd3472ef-81c8-481d-aa4e-981c393675bd}">
+                        <labels>
+                          <label description="Final Business Case Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_finalbusinesscasecomplete" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_finalbusinesscasecomplete" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d0c6f13f-d9c2-4856-89de-84ba072015d3}" showlabel="true" visible="true" labelid="{906407b9-c421-4885-9a27-54ba9d28fed1}">
+                        <labels>
+                          <label description="Feedback for requester" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_feedbackfortherequesterfinalbusinesscase" classid="{e0dece4b-6fc8-4a8f-a065-082708572369}" datafieldname="cr69a_feedbackfortherequesterfinalbusinesscase" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{d4e16d87-9627-4f8d-884e-77ffde02e6f2}" name="StageStep27" locklevel="0" expanded="true" visible="false" labelid="{ca2689dd-3e87-498a-930e-8caa8b730b12}">
+          <labels>
+            <label description="Schedule GRB Review" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{77f93511-31c9-076e-fe8c-ec9d6da90d12}" name="StageStep27_section1" labelid="{a35dfec3-2811-4345-9263-fcdb3aef46bb}">
+                  <labels>
+                    <label description="Schedule GRB Review" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row></row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{c378d655-6ae8-41db-ab7f-03ebae9b20ab}" name="StageStep31" locklevel="0" expanded="true" visible="false" labelid="{52eab0e4-6c28-45f8-b70a-ca1e9c84d30c}">
+          <labels>
+            <label description="GRB Review" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{c107e087-9107-be76-1a71-7fd6fef37eeb}" name="StageStep31_section1" labelid="{a48c0dd4-3841-470e-8319-26cef0b5aa6f}">
+                  <labels>
+                    <label description="GRB Review" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{db53e86d-5497-4188-b007-30cd2a67e64f}" showlabel="true" visible="true" labelid="{7de38e5a-91c7-46ca-a858-b0e79fb8d225}">
+                        <labels>
+                          <label description="GRB Review Meeting Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_grbreviewcomplete" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_grbreviewcomplete" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{e1f9ea62-9f11-4f11-953d-678fd2efde2e}" name="StageStep35" locklevel="0" expanded="true" visible="false" labelid="{29a7e471-af02-471d-913d-1d864ee96106}">
+          <labels>
+            <label description="Decision" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{32778110-da0b-908a-2d50-01258c9e8b39}" name="StageStep35_section1" labelid="{53109e18-5984-4c42-8d5a-0dc45c7ddc2b}">
+                  <labels>
+                    <label description="Decision" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{7790964f-dd13-4273-a98a-9aa878c2d6f4}" showlabel="true" visible="true" labelid="{d3efc1d5-5e98-420a-ac38-04b28023db38}">
+                        <labels>
+                          <label description="Decision" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_decision" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_decision" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{475078e5-28c2-4eb2-abc0-c7854f35959a}" name="StageStep39" locklevel="0" expanded="true" visible="false" labelid="{c228f4ff-ae76-4dca-b0b8-02e743ff8db5}">
+          <labels>
+            <label description="Issue LCID" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{37ae33ff-9d7c-ed27-ec73-71d87b7feb5d}" name="StageStep39_section1" labelid="{5719f66f-c400-495e-a558-830bb9565c8a}">
+                  <labels>
+                    <label description="Issue LCID" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{e92a1e3b-d6a5-4475-b60b-1135e78868b8}" showlabel="true" visible="true" labelid="{48d130ee-2165-4fcd-a8a7-87af8523d6b5}">
+                        <labels>
+                          <label description="Life Cycle ID" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_lifecycleid" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_lifecycleid" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9e5d0be2-5fa8-47e1-84d4-b77c8cf8fb87}" showlabel="true" visible="true" labelid="{2784c44a-6b64-4f6f-b713-007d33adae64}">
+                        <labels>
+                          <label description="Issue LCID" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_lcidrequested" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_lcidrequested" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5dcc85ef-4dc2-41fb-b3b9-ac95fa63d3f0}" showlabel="true" visible="true" labelid="{3afce956-b525-4150-bac3-a34ce2fc73b7}">
+                        <labels>
+                          <label description="Expiration Date" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_lcidexpirationdate" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_lcidexpirationdate" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{84f11081-b38c-4f8a-b8d8-fdfda931fef6}" showlabel="true" visible="true" labelid="{fd682433-af1b-4a49-8311-9c9d101efe01}">
+                        <labels>
+                          <label description="Scope of Life Cycle ID" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_scopeoflifecycleid" classid="{e0dece4b-6fc8-4a8f-a065-082708572369}" datafieldname="cr69a_scopeoflifecycleid" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{11d19247-9a31-490c-a8f1-6097f0838cfe}" name="StageStep49" locklevel="0" expanded="true" visible="false" labelid="{cb2d42bc-1416-4521-ae77-9829fe36803d}">
+          <labels>
+            <label description="Finish" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{7b92dcdf-bff6-c391-b13f-37a0512beb11}" name="StageStep49_section1" labelid="{e95ed1b5-d0ed-4c2a-878c-47ebe3c093e8}">
+                  <labels>
+                    <label description="Finish" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{20da22da-ebd9-4c6e-a341-13716a6af4a9}" showlabel="true" visible="true" labelid="{32542cca-8e2b-4041-83a8-efb1b94d8f15}">
+                        <labels>
+                          <label description="System Intake Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_systemintakecomplete" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_systemintakecomplete" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{1449829b-eddb-415c-9f7e-14cccb994e84}" name="StageStep53" locklevel="0" expanded="true" visible="false" labelid="{cc8f812d-a279-4438-a807-0a687cbc6fac}">
+          <labels>
+            <label description="Close Request" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{ec2d6ca3-03ac-f230-5b8e-7f4069a69f6e}" name="StageStep53_section1" labelid="{850e4fa5-18b4-4d41-a746-1eaadc6494a9}">
+                  <labels>
+                    <label description="Close Request" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{13e87186-4637-4f09-b2e5-0dae59878fc8}" showlabel="true" visible="true" labelid="{51febe37-f857-42e9-a750-342e888a91f6}">
+                        <labels>
+                          <label description="Decision" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_decision" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_decision" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{31146337-1df1-4b88-805b-b63d97da8755}" name="StageStep57" locklevel="0" expanded="true" visible="false" labelid="{c710a4c9-e934-4420-8c5f-6c692f88ff3b}">
+          <labels>
+            <label description="Finish" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{60012c22-ec57-4ab2-ad31-eee88bf8899f}" name="StageStep57_section1" labelid="{24b368f0-3db7-4fae-95f3-a310bd1e77e5}">
+                  <labels>
+                    <label description="Finish" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{47d3a683-676c-4086-811f-6cdbc93fef11}" showlabel="true" visible="true" labelid="{1ad9514a-7404-4ccf-8d60-2ff9958dadd8}">
+                        <labels>
+                          <label description="System Intake Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist:cr69a_systemintakecomplete" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_systemintakecomplete" disabled="false" relationship="bpf_cr69a_systemintakeadmin_new_admingovernancetasklist" isrequired="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

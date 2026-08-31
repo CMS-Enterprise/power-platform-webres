@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{db367e49-958d-4353-982c-b81576f4d164}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_filename" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_documentid">
+          <cell name="cr3ee_displayfilename" width="140" />
+          <cell name="cr69a_file" width="150" />
+          <cell name="cr69a_documenttype" width="130" />
+          <cell name="new_documentversion" width="145" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_document">
+          <attribute name="cr69a_documentid" />
+          <attribute name="createdon" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="cr69a_file" />
+          <attribute name="cr69a_documenttype" />
+          <attribute name="new_documentversion" />
+          <attribute name="cr3ee_displayfilename" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Documents" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

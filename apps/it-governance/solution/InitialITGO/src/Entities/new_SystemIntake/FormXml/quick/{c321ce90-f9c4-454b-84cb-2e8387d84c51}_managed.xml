@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{c321ce90-f9c4-454b-84cb-2e8387d84c51}</formid>
+    <IntroducedVersion>1.0.0.3</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form maxWidth="400">
+      <tabs>
+        <tab id="{d6ecae5d-dc33-458b-91db-5c939c566575}" name="tab_1" showlabel="false">
+          <labels>
+            <label description="Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section id="{0b9640bd-f098-4838-9a4c-2bca33c6eff7}" name="tab_1_column_1_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" locklevel="0" labelwidth="130" celllabelalignment="Left" celllabelposition="Left">
+                  <labels>
+                    <label description="Contact Details" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{4764dad4-6a9b-1932-ebea-bb0c78c58792}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Requester" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requester" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_requester" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ac6c2811-5e18-7c0e-7c41-50394bb1726b}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Requester Component" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requestercomponent" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_requestercomponent" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3294cedc-b8bd-6013-5a15-88e656285e86}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="CMS Business Owner Name" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cmsbusinessownername" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_cmsbusinessownername" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{54c5e552-81bd-3704-797e-7415299ad7d7}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="CMS Business Owner Component" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cmsbusinessownercomponent" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_cmsbusinessownercomponent" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a240a4e7-e5a0-0431-d3b2-0b68a03b984d}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Initial Business Case" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_businesscase" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_businesscase" disabled="false" uniqueid="{31170d9e-91e6-a0eb-5c46-80900235ad78}">
+                          <parameters>
+                            <AutoResolve>true</AutoResolve>
+                            <DisableMru>false</DisableMru>
+                            <DisableQuickFind>false</DisableQuickFind>
+                            <DisableViewPicker>false</DisableViewPicker>
+                            <DefaultViewId>{90B900B7-304F-4E99-BB37-AD0498D3E547}</DefaultViewId>
+                            <AllowFilterOff>false</AllowFilterOff>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ebde53cb-6780-d9a6-48b0-45eb39055831}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Final Business Case" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_finalbusinesscase" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_finalbusinesscase" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="1">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="System Intake Preview" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

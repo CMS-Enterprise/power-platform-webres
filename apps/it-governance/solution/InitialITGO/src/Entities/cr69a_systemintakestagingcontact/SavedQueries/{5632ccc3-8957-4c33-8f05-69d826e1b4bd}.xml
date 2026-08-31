@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{5632ccc3-8957-4c33-8f05-69d826e1b4bd}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_recordid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestagingcontactid">
+          <cell name="cr69a_recordid" width="300" />
+          <cell name="cr69a_systemintakeid" width="150" />
+          <cell name="cr69a_component" width="150" />
+          <cell name="cr69a_createdat" width="150" />
+          <cell name="cr69a_modifiedat" width="150" />
+          <cell name="cr69a_userid" width="150" />
+          <cell name="cr69a_roles" width="150" />
+          <cell name="cr69a_isrequester" width="150" />
+          <cell name="cr69a_createdby" width="150" />
+          <cell name="cr69a_modifiedby" width="150" />
+          <cell name="cr69a_batchid" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestagingcontact">
+          <attribute name="cr69a_systemintakestagingcontactid" />
+          <attribute name="cr69a_recordid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_recordid" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="cr69a_systemintakeid" />
+          <attribute name="cr69a_component" />
+          <attribute name="cr69a_createdat" />
+          <attribute name="cr69a_modifiedat" />
+          <attribute name="cr69a_userid" />
+          <attribute name="cr69a_roles" />
+          <attribute name="cr69a_isrequester" />
+          <attribute name="cr69a_createdby" />
+          <attribute name="cr69a_modifiedby" />
+          <attribute name="cr69a_batchid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active System Intake - Staging Contacts" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

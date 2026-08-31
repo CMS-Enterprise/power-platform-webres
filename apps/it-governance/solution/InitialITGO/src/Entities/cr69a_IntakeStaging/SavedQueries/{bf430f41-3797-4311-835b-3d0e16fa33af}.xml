@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{bf430f41-3797-4311-835b-3d0e16fa33af}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_id" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_intakestagingid">
+          <cell name="cr69a_id" width="300" />
+          <cell name="cr69a_eua_user_id" width="150" />
+          <cell name="cr69a_requester" width="150" />
+          <cell name="cr69a_component" width="150" />
+          <cell name="cr69a_business_owner" width="150" />
+          <cell name="cr69a_business_owner_component" width="150" />
+          <cell name="cr69a_product_manager" width="150" />
+          <cell name="cr69a_product_manager_component" width="150" />
+          <cell name="cr69a_isso" width="150" />
+          <cell name="cr69a_trb_collaborator" width="150" />
+          <cell name="cr69a_oit_security_collaborator" width="150" />
+          <cell name="cr69a_ea_collaborator" width="150" />
+          <cell name="cr69a_project_name" width="150" />
+          <cell name="cr69a_existing_funding" width="150" />
+          <cell name="cr69a_funding_source" width="150" />
+          <cell name="cr69a_business_need" width="150" />
+          <cell name="cr69a_solution" width="150" />
+          <cell name="cr69a_process_status" width="150" />
+          <cell name="cr69a_ea_support_request" width="150" />
+          <cell name="cr69a_existing_contract" width="150" />
+          <cell name="cr69a_updated_at" width="150" />
+          <cell name="cr69a_submitted_at" width="150" />
+          <cell name="cr69a_alfabet_id" width="150" />
+          <cell name="cr69a_created_at" width="150" />
+          <cell name="cr69a_grt_review_email_body" width="150" />
+          <cell name="cr69a_requester_email_address" width="150" />
+          <cell name="cr69a_decided_at" width="150" />
+          <cell name="cr69a_archived_at" width="150" />
+          <cell name="cr69a_cost_increase" width="150" />
+          <cell name="cr69a_cost_increase_amount" width="150" />
+          <cell name="cr69a_lcid" width="150" />
+          <cell name="cr69a_lcid_expires_at" width="150" />
+          <cell name="cr69a_lcid_scope" width="150" />
+          <cell name="cr69a_contractor" width="150" />
+          <cell name="cr69a_contract_vehicle" width="150" />
+          <cell name="cr69a_contract_start_month" width="150" />
+          <cell name="cr69a_contract_start_year" width="150" />
+          <cell name="cr69a_contract_end_month" width="150" />
+          <cell name="cr69a_contract_end_year" width="150" />
+          <cell name="cr69a_funding_number" width="150" />
+          <cell name="cr69a_request_type" width="150" />
+          <cell name="cr69a_project_acronym" width="150" />
+          <cell name="cr69a_grt_date" width="150" />
+          <cell name="cr69a_grb_date" width="150" />
+          <cell name="cr69a_rejection_reason" width="150" />
+          <cell name="cr69a_decision_next_steps" width="150" />
+          <cell name="cr69a_isso_name" width="150" />
+          <cell name="cr69a_trb_collaborator_name" width="150" />
+          <cell name="cr69a_oit_security_collaborator_name" width="150" />
+          <cell name="cr69a_ea_collaborator_name" width="150" />
+          <cell name="cr69a_admin_lead" width="150" />
+          <cell name="cr69a_contract_start_date" width="150" />
+          <cell name="cr69a_contract_end_date" width="150" />
+          <cell name="cr69a_lcid_cost_baseline" width="150" />
+          <cell name="cr69a_cedar_system_id" width="150" />
+          <cell name="cr69a_lcid_expiration_alert_ts" width="150" />
+          <cell name="cr69a_has_ui_changes" width="150" />
+          <cell name="cr69a_request_form_state" width="150" />
+          <cell name="cr69a_draft_business_case_state" width="150" />
+          <cell name="cr69a_final_business_case_state" width="150" />
+          <cell name="cr69a_decision_state" width="150" />
+          <cell name="cr69a_step" width="150" />
+          <cell name="cr69a_state" width="150" />
+          <cell name="cr69a_current_annual_spending" width="150" />
+          <cell name="cr69a_planned_year_one_spending" width="150" />
+          <cell name="cr69a_trb_follow_up_recommendation" width="150" />
+          <cell name="cr69a_lcid_retires_at" width="150" />
+          <cell name="cr69a_lcid_issued_at" width="150" />
+          <cell name="cr69a_contract_name" width="150" />
+          <cell name="cr69a_current_annual_spending_it_portion" width="150" />
+          <cell name="cr69a_planned_year_one_spending_it_portion" width="150" />
+          <cell name="cr69a_system_relation_type" width="150" />
+          <cell name="cr69a_uses_ai_tech" width="150" />
+          <cell name="cr69a_grb_review_started_at" width="150" />
+          <cell name="cr69a_using_software" width="150" />
+          <cell name="cr69a_acquisition_methods" width="150" />
+          <cell name="cr69a_grb_review_type" width="150" />
+          <cell name="cr69a_grb_review_async_reporting_date" width="150" />
+          <cell name="cr69a_grb_review_async_recording_time" width="150" />
+          <cell name="cr69a_grb_review_async_end_date" width="150" />
+          <cell name="cr69a_grb_presentation_deck_requester_reminde" width="150" />
+          <cell name="cr69a_grb_review_async_manual_end_date" width="150" />
+          <cell name="cr69a_grb_review_reminder_last_sent" width="150" />
+          <cell name="cr69a_collaborator_508" width="150" />
+          <cell name="cr69a_collaborator_name_508" width="150" />
+          <cell name="cr69a_does_not_support_systems" width="150" />
+          <cell name="cr69a_governance_teams_is_present" width="150" />
+          <cell name="cr69a_batchid" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_intakestaging">
+          <attribute name="cr69a_intakestagingid" />
+          <attribute name="cr69a_id" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_id" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="cr69a_eua_user_id" />
+          <attribute name="cr69a_requester" />
+          <attribute name="cr69a_component" />
+          <attribute name="cr69a_business_owner" />
+          <attribute name="cr69a_business_owner_component" />
+          <attribute name="cr69a_product_manager" />
+          <attribute name="cr69a_product_manager_component" />
+          <attribute name="cr69a_isso" />
+          <attribute name="cr69a_trb_collaborator" />
+          <attribute name="cr69a_oit_security_collaborator" />
+          <attribute name="cr69a_ea_collaborator" />
+          <attribute name="cr69a_project_name" />
+          <attribute name="cr69a_existing_funding" />
+          <attribute name="cr69a_funding_source" />
+          <attribute name="cr69a_business_need" />
+          <attribute name="cr69a_solution" />
+          <attribute name="cr69a_process_status" />
+          <attribute name="cr69a_ea_support_request" />
+          <attribute name="cr69a_existing_contract" />
+          <attribute name="cr69a_updated_at" />
+          <attribute name="cr69a_submitted_at" />
+          <attribute name="cr69a_alfabet_id" />
+          <attribute name="cr69a_created_at" />
+          <attribute name="cr69a_grt_review_email_body" />
+          <attribute name="cr69a_requester_email_address" />
+          <attribute name="cr69a_decided_at" />
+          <attribute name="cr69a_archived_at" />
+          <attribute name="cr69a_cost_increase" />
+          <attribute name="cr69a_cost_increase_amount" />
+          <attribute name="cr69a_lcid" />
+          <attribute name="cr69a_lcid_expires_at" />
+          <attribute name="cr69a_lcid_scope" />
+          <attribute name="cr69a_contractor" />
+          <attribute name="cr69a_contract_vehicle" />
+          <attribute name="cr69a_contract_start_month" />
+          <attribute name="cr69a_contract_start_year" />
+          <attribute name="cr69a_contract_end_month" />
+          <attribute name="cr69a_contract_end_year" />
+          <attribute name="cr69a_funding_number" />
+          <attribute name="cr69a_request_type" />
+          <attribute name="cr69a_project_acronym" />
+          <attribute name="cr69a_grt_date" />
+          <attribute name="cr69a_grb_date" />
+          <attribute name="cr69a_rejection_reason" />
+          <attribute name="cr69a_decision_next_steps" />
+          <attribute name="cr69a_isso_name" />
+          <attribute name="cr69a_trb_collaborator_name" />
+          <attribute name="cr69a_oit_security_collaborator_name" />
+          <attribute name="cr69a_ea_collaborator_name" />
+          <attribute name="cr69a_admin_lead" />
+          <attribute name="cr69a_contract_start_date" />
+          <attribute name="cr69a_contract_end_date" />
+          <attribute name="cr69a_lcid_cost_baseline" />
+          <attribute name="cr69a_cedar_system_id" />
+          <attribute name="cr69a_lcid_expiration_alert_ts" />
+          <attribute name="cr69a_has_ui_changes" />
+          <attribute name="cr69a_request_form_state" />
+          <attribute name="cr69a_draft_business_case_state" />
+          <attribute name="cr69a_final_business_case_state" />
+          <attribute name="cr69a_decision_state" />
+          <attribute name="cr69a_step" />
+          <attribute name="cr69a_state" />
+          <attribute name="cr69a_current_annual_spending" />
+          <attribute name="cr69a_planned_year_one_spending" />
+          <attribute name="cr69a_trb_follow_up_recommendation" />
+          <attribute name="cr69a_lcid_retires_at" />
+          <attribute name="cr69a_lcid_issued_at" />
+          <attribute name="cr69a_contract_name" />
+          <attribute name="cr69a_current_annual_spending_it_portion" />
+          <attribute name="cr69a_planned_year_one_spending_it_portion" />
+          <attribute name="cr69a_system_relation_type" />
+          <attribute name="cr69a_uses_ai_tech" />
+          <attribute name="cr69a_grb_review_started_at" />
+          <attribute name="cr69a_using_software" />
+          <attribute name="cr69a_acquisition_methods" />
+          <attribute name="cr69a_grb_review_type" />
+          <attribute name="cr69a_grb_review_async_reporting_date" />
+          <attribute name="cr69a_grb_review_async_recording_time" />
+          <attribute name="cr69a_grb_review_async_end_date" />
+          <attribute name="cr69a_grb_presentation_deck_requester_reminde" />
+          <attribute name="cr69a_grb_review_async_manual_end_date" />
+          <attribute name="cr69a_grb_review_reminder_last_sent" />
+          <attribute name="cr69a_collaborator_508" />
+          <attribute name="cr69a_collaborator_name_508" />
+          <attribute name="cr69a_does_not_support_systems" />
+          <attribute name="cr69a_governance_teams_is_present" />
+          <attribute name="cr69a_batchid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Intake Stagings" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

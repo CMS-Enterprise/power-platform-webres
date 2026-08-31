@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{f6ec1995-db4f-f111-bec6-001dd8055bb1}</WebResourceId>
+  <Name>new_itgov/js/example-test.js</Name>
+  <DisplayName>example-test</DisplayName>
+  <Description>Managed from js/example-test.js in source control.</Description>
+  <WebResourceType>3</WebResourceType>
+  <IntroducedVersion>1.0.0.102</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/new_itgovjsexample-testjsF6EC1995-DB4F-F111-BEC6-001DD8055BB1</FileName>
+</WebResource>

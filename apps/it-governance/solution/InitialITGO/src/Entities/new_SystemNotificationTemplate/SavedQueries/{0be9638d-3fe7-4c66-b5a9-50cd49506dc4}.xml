@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{0be9638d-3fe7-4c66-b5a9-50cd49506dc4}</savedqueryid>
+    <layoutxml>
+      <grid name="new_systemnotificationtemplates" jump="new_templatename" select="1" icon="1" preview="1">
+        <row name="new_systemnotificationtemplate" id="new_systemnotificationtemplateid">
+          <cell name="new_templatename" width="300" />
+          <cell name="createdon" width="125" />
+          <cell name="new_isactive" width="100" />
+          <cell name="new_subject" width="100" />
+          <cell name="new_body" width="100" />
+          <cell name="new_notes" width="100" />
+          <cell name="new_templatekey" width="119" />
+          <cell name="new_version" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>2</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="new_systemnotificationtemplate">
+          <attribute name="new_systemnotificationtemplateid" />
+          <attribute name="new_templatename" />
+          <attribute name="createdon" />
+          <order attribute="new_templatename" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="new_isactive" />
+          <attribute name="new_subject" />
+          <attribute name="new_body" />
+          <attribute name="new_notes" />
+          <attribute name="new_templatekey" />
+          <attribute name="new_version" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.69</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="System Notification Template Associated View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

@@ -2,7 +2,15 @@
 
 This folder contains all application-specific resources for the IT Governance Power Platform solution.
 
-The goal is to keep **everything needed to understand, modify, and deploy this app** in one place.
+The goal is to keep the application components that are useful for code review and change tracking in one place.
+
+## Solution snapshot
+
+`solution/` is a reviewable snapshot exported from Power Platform. It improves visibility into app changes, but it is intentionally not a complete, repackable solution and is not the deployment source of truth.
+
+The export process excludes `InitialITGO/src/Other/Customizations.xml`. That monolithic, environment-generated file contains opaque runtime metadata such as dataflow refresh history, which can embed temporary bearer credentials in diagnostic URLs. Useful extracted components—such as entities, workflows, web resources, app modules, option sets, roles, and plug-in metadata—remain available for review.
+
+Power Platform remains the deployment source. Before committing a refreshed snapshot, review the complete diff and run the repository's approved secret-scanning controls. Exported workflows must not contain presigned URLs, SAS URLs, access tokens, passwords, or other credentials.
 
 ## Structure
 

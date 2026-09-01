@@ -3,9 +3,6 @@ name: Check for Secrets
 on:
   pull_request:
   merge_group:
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -45,13 +42,3 @@ jobs:
             ghcr.io/gitleaks/gitleaks:v8.30.1 \
             git --redact --verbose \
             --log-opts="${{ github.event.merge_group.base_sha }}..${{ github.event.merge_group.head_sha }}"
-
-      - name: Scan commits pushed to main
-        if: github.event_name == 'push'
-        run: |
-          docker run --rm \
-            --volume "$GITHUB_WORKSPACE:/repo:ro" \
-            --workdir /repo \
-            ghcr.io/gitleaks/gitleaks:v8.30.1 \
-            git --redact --verbose \
-            --log-opts="${{ github.event.before }}..${{ github.sha }}"

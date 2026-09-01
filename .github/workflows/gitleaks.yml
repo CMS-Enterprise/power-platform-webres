@@ -18,6 +18,7 @@ jobs:
   scan-for-secrets:
     name: Run Gitleaks
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Check out repository history
@@ -25,10 +26,32 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Scan repository history
+      - name: Scan pull request commits
+        if: github.event_name == 'pull_request'
         run: |
           docker run --rm \
             --volume "$GITHUB_WORKSPACE:/repo:ro" \
             --workdir /repo \
             ghcr.io/gitleaks/gitleaks:v8.30.1 \
-            git --redact --verbose
+            git --redact --verbose \
+            --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+
+      - name: Scan merge group commits
+        if: github.event_name == 'merge_group'
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/repo:ro" \
+            --workdir /repo \
+            ghcr.io/gitleaks/gitleaks:v8.30.1 \
+            git --redact --verbose \
+            --log-opts="${{ github.event.merge_group.base_sha }}..${{ github.event.merge_group.head_sha }}"
+
+      - name: Scan commits pushed to main
+        if: github.event_name == 'push'
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/repo:ro" \
+            --workdir /repo \
+            ghcr.io/gitleaks/gitleaks:v8.30.1 \
+            git --redact --verbose \
+            --log-opts="${{ github.event.before }}..${{ github.sha }}"

@@ -122,6 +122,11 @@
       "dataflowId": "4349e4ab-96c1-f011-bbd3-001dd8062d4a"
     },
     {
+      "file": "05-create-grb-activity-logs.m",
+      "name": "System Intake - 5 Create GRB Activity Logs",
+      "dataflowId": "54159790-bba1-f111-b8dc-001dd804cd4c"
+    },
+    {
       "file": "05-create-system-links.m",
       "name": "System Intake - 5 Create System Links",
       "dataflowId": "94c90179-2ae0-f011-8544-001dd80a6132"

@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdtempSync, renameSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+} from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { createInterface } from "node:readline/promises";
@@ -56,6 +62,40 @@ async function main() {
       "Customizations.xml",
     );
     rmSync(customizationsPath, { force: true });
+
+    // Environment-variable definitions are useful review metadata, but their
+    // runtime values are environment-specific and may contain sensitive data.
+    const environmentVariableDefinitionsPath = path.join(
+      unpackedFolder,
+      solutionName,
+      "src",
+      "environmentvariabledefinitions",
+    );
+    if (existsSync(environmentVariableDefinitionsPath)) {
+      for (const entry of readdirSync(environmentVariableDefinitionsPath, {
+        withFileTypes: true,
+      })) {
+        if (!entry.isDirectory()) continue;
+        rmSync(
+          path.join(
+            environmentVariableDefinitionsPath,
+            entry.name,
+            "environmentvariablevalues.json",
+          ),
+          { force: true },
+        );
+      }
+
+      // This definition embeds a complete environment-specific dataflow map in
+      // its default value, so retain it in deployment configuration instead.
+      rmSync(
+        path.join(
+          environmentVariableDefinitionsPath,
+          "new_DataflowConfiguration",
+        ),
+        { recursive: true, force: true },
+      );
+    }
 
     if (existsSync(outputFolder)) {
       const changes = getDirectoryChanges(outputFolder, unpackedFolder);

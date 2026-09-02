@@ -7,6 +7,7 @@ namespace SystemIntake.Plugins
     public class ActivityLog_Create_ValidateActivityType : IPlugin
     {
         private const string ActivityLogEntity = "new_activitylogs";
+        private const string BatchIdField = "cr3ee_batchid";
         private const int PreOperationStage = 20;
 
         private const string ActivityTypeField = "cr3ee_activitytype";
@@ -62,6 +63,9 @@ namespace SystemIntake.Plugins
 
                 var target = GetTarget(context, tracing);
                 if (target == null)
+                    return;
+
+                if (HasBatchId(target, tracing))
                     return;
 
                 var activityType = target.GetAttributeValue<OptionSetValue>(ActivityTypeField);
@@ -156,6 +160,18 @@ namespace SystemIntake.Plugins
 
             tracing?.Trace("ActivityLog_Create_ValidateActivityType: Target received. LogicalName={0}, Id={1}", target.LogicalName, target.Id);
             return target;
+        }
+
+        private static bool HasBatchId(Entity target, ITracingService tracing)
+        {
+            object batchId;
+            if (!target.Attributes.TryGetValue(BatchIdField, out batchId)
+                || batchId == null
+                || (batchId is string && string.IsNullOrWhiteSpace((string)batchId)))
+                return false;
+
+            tracing?.Trace("ActivityLog_Create_ValidateActivityType: Batch ID is populated; bypassing validation for migrated data.");
+            return true;
         }
 
         private static void ValidateProgressToStep(Entity activityLog, IOrganizationService service, ITracingService tracing)

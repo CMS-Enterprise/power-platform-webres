@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{9f7af44e-989a-4f01-a5f9-91186c1b0818}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_feedbackid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestagingeditrequestsid">
+          <cell name="cr69a_feedbackid" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>1</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestagingeditrequests">
+          <attribute name="cr69a_systemintakestagingeditrequestsid" />
+          <attribute name="cr69a_feedbackid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_feedbackid" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="System Intake - Staging Edit Requests Advanced Find View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

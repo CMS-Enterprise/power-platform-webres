@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.AddExistingStandard.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.AddNewStandard.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.AddNewStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.BulkDelete.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.BulkDelete" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.Delete.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.DocumentTemplate.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.ExportToExcel.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.FolderTracking.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.FolderTracking" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.NewRecord.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.RefreshButton.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.Remove.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.Remove" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.RunReport.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_lcidactivitylog.WordTemplate.Hide" Location="Mscrm.SubGrid.new_lcidactivitylog.WordTemplate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

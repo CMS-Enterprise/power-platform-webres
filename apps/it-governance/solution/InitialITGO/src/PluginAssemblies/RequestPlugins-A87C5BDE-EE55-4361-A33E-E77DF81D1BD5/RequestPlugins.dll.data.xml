@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="Request.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2456637744afbea" PluginAssemblyId="a87c5bde-ee55-4361-a33e-e77df81d1bd5" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0.0.118</IntroducedVersion>
+  <FileName>/PluginAssemblies/RequestPlugins-A87C5BDE-EE55-4361-A33E-E77DF81D1BD5/RequestPlugins.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="Request.Plugins.Request_Update_SyncReadyForReviewToReview, Request.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2456637744afbea" PluginTypeId="7d8d762f-28bb-4063-9e30-b03b25abfb6d" Name="Request.Plugins.Request_Update_SyncReadyForReviewToReview">
+      <FriendlyName>b67ec70e-46c9-4d28-bde6-ca9471245eba</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

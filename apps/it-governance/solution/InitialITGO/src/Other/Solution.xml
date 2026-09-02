@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.26071.172" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26071.172" OrganizationSchemaType="Full" CRMServerServiceabilityVersion="9.2.26071.00172">
+  <SolutionManifest>
+    <UniqueName>InitialITGO</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="Initial ITGO" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions />
+    <Version>1.0.0.118</Version>
+    <Managed>2</Managed>
+    <Publisher>
+      <UniqueName>DefaultPublisherorg389e8766</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Default Publisher for org389e8766" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Default publisher for this organization" languagecode="1033" />
+      </Descriptions>
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>new</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>10000</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode xsi:nil="true"></AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode xsi:nil="true"></ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode xsi:nil="true"></AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode xsi:nil="true"></ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="cr69a_additionalcontact" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_businesscase" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_businesscasesolution" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_closerequest" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_document" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_editrequest" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_estimatedlifecyclecost" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_flowtrigger" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_fundingsources" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_intakestaging" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_lifecycleids" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakeadmin" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakeadministrator" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestagingbusinesscase" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestagingcontact" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestagingcontractnumber" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestagingdocument" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestagingeditrequests" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestagingestimatedlifecycleco" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestagingfundingsource" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestaginggrbdiscussion" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestaginggrbpresentationlinks" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestaginggrbreviewer" behavior="0" />
+      <RootComponent type="1" schemaName="cr69a_systemintakestaginglinkedsystems" behavior="0" />
+      <RootComponent type="1" schemaName="easi_contractnumber" behavior="0" />
+      <RootComponent type="1" schemaName="easi_migrationrun" behavior="0" />
+      <RootComponent type="1" schemaName="new_activitylogs" behavior="0" />
+      <RootComponent type="1" schemaName="new_admingovernancetasklist" behavior="0" />
+      <RootComponent type="1" schemaName="new_cedarsystem" behavior="0" />
+      <RootComponent type="1" schemaName="new_governancetasklist" behavior="0" />
+      <RootComponent type="1" schemaName="new_grbpresentationlink" behavior="0" />
+      <RootComponent type="1" schemaName="new_lcidactivitylog" behavior="0" />
+      <RootComponent type="1" schemaName="new_stagecedarsystem" behavior="0" />
+      <RootComponent type="1" schemaName="new_systemintake" behavior="0" />
+      <RootComponent type="1" schemaName="new_systemlink" behavior="0" />
+      <RootComponent type="1" schemaName="new_systemnotificationtemplate" behavior="0" />
+      <RootComponent type="1" schemaName="systemuser" behavior="1" />
+      <RootComponent type="20" id="{4622b038-2217-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="20" id="{978e919b-d08c-f011-b4cc-001dd80a6132}" behavior="0" />
+      <RootComponent type="20" id="{ec800ef9-792f-f111-8341-001dd8055bb1}" behavior="0" />
+      <RootComponent type="20" id="{f81f8960-f17d-f011-b4cc-001dd8062d4a}" behavior="0" />
+      <RootComponent type="29" id="{0a9a56bf-1d18-f111-8407-001dd8099ed4}" behavior="0" />
+      <RootComponent type="29" id="{198c070f-f526-f111-8341-001dd8055bb1}" behavior="0" />
+      <RootComponent type="29" id="{1f74f9d2-9207-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="29" id="{289e66f1-a465-f111-a824-001dd8055bb1}" behavior="0" />
+      <RootComponent type="29" id="{2b367ac4-cd39-f111-88b3-001dd8055bb1}" behavior="0" />
+      <RootComponent type="29" id="{2d36cc39-3d72-f011-bec3-001dd80a6132}" behavior="0" />
+      <RootComponent type="29" id="{2df9cdb6-77ed-f011-8407-001dd806c7d4}" behavior="0" />
+      <RootComponent type="29" id="{2e7c4ac0-1d18-f111-8407-001dd809c7de}" behavior="0" />
+      <RootComponent type="29" id="{2fb06ac0-e505-f111-8407-001dd8099ed4}" behavior="0" />
+      <RootComponent type="29" id="{390d38a8-07f0-f011-8407-001dd809c74f}" behavior="0" />
+      <RootComponent type="29" id="{3b0d38a8-07f0-f011-8407-001dd809c74f}" behavior="0" />
+      <RootComponent type="29" id="{3c0d38a8-07f0-f011-8407-001dd809c74f}" behavior="0" />
+      <RootComponent type="29" id="{4798d2fa-53af-f011-bbd3-001dd80a6132}" behavior="0" />
+      <RootComponent type="29" id="{486597ca-b59f-f011-b41c-001dd80a6132}" behavior="0" />
+      <RootComponent type="29" id="{4fd7e5b1-792f-f111-8341-001dd804d309}" behavior="0" />
+      <RootComponent type="29" id="{55e1ce81-cb3d-f111-88b3-001dd804d309}" behavior="0" />
+      <RootComponent type="29" id="{574e9e7e-a80e-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="29" id="{5b5e5add-6e07-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="29" id="{68104748-982f-f111-8341-001dd804d309}" behavior="0" />
+      <RootComponent type="29" id="{692fdf0d-0a14-f111-8407-001dd8099ed4}" behavior="0" />
+      <RootComponent type="29" id="{69c5e4c4-1d18-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="29" id="{6ac5e4c4-1d18-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="29" id="{6b0652d5-008d-f011-b4cc-001dd8062d4a}" behavior="0" />
+      <RootComponent type="29" id="{6bbde6f1-7c3a-f111-88b3-001dd8055bb1}" behavior="0" />
+      <RootComponent type="29" id="{6bc5e4c4-1d18-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="29" id="{6cc5e4c4-1d18-f111-8407-001dd809993d}" behavior="0" />
+      <RootComponent type="29" id="{8703d9a8-07f0-f011-8407-001dd806c7d4}" behavior="0" />
+      <RootComponent type="29" id="{8803d9a8-07f0-f011-8407-001dd806c7d4}" behavior="0" />
+      <RootComponent type="29" id="{a6cd0906-7fe3-40c1-afd5-991cb6a6527c}" behavior="0" />
+      <RootComponent type="29" id="{b1103ee9-f99e-f011-b4cc-001dd80a6132}" behavior="0" />
+      <RootComponent type="29" id="{bfa38fa0-6f9e-f011-b4cc-001dd8062d4a}" behavior="0" />
+      <RootComponent type="29" id="{c4cca3fe-960e-f111-8407-001dd8099ed4}" behavior="0" />
+      <RootComponent type="29" id="{c4d38586-cb3d-f111-88b3-001dd8055bb1}" behavior="0" />
+      <RootComponent type="29" id="{c5d38586-cb3d-f111-88b3-001dd8055bb1}" behavior="0" />
+      <RootComponent type="29" id="{d308391a-ee17-f111-8407-001dd8099ed4}" behavior="0" />
+      <RootComponent type="29" id="{df85a6fd-5e9d-f011-b4cc-001dd80b1717}" behavior="0" />
+      <RootComponent type="29" id="{eb674eac-7869-f011-bec3-001dd80a6132}" behavior="0" />
+      <RootComponent type="29" id="{f941c151-e0b7-44b0-894e-3cae2df70447}" behavior="0" />
+      <RootComponent type="300" schemaName="cr3ee_home_04010" behavior="0" />
+      <RootComponent type="300" schemaName="cr69a_initialitgodefaultcommandlibrary_86e7a" behavior="0" />
+      <RootComponent type="300" schemaName="cr69a_systemintakeadmintools_0f36a" behavior="0" />
+      <RootComponent type="300" schemaName="new_cprequestedits_ecb9f" behavior="0" />
+      <RootComponent type="300" schemaName="new_intakefileupload_e1db9" behavior="0" />
+      <RootComponent type="60" id="{28a7541b-0853-f111-bec6-001dd8055bb1}" behavior="0" />
+      <RootComponent type="60" id="{55854c7e-ff52-f111-bec6-001dd8055bb1}" behavior="0" />
+      <RootComponent type="61" schemaName="accessChecker_openDialog.js" behavior="0" />
+      <RootComponent type="61" schemaName="Auditing.svg" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_activity_log_quick_create_script" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_ActivityLogQuickCreate_HelperFunction" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_business_case_form_script" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_intake_business_case_help" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_intakeRequestAdminView" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_intakeRequestUploadDocumentsButton" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_lcidActivityLogMainForm" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_lcidActivityLogQuickCreate" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_open_edit_requests_quick_create" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_open_progress_to_new_step_modal" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_open_request_edits_modal" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_openLcidActivityLogQuickCreate" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_system_link_script" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_upload_files_helper_text" behavior="0" />
+      <RootComponent type="61" schemaName="cr3ee_validateFundingNumberField" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_admin_tools_icon" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_BusinessCaseSubmit" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_cedar_icon" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_conditional_helper_text" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_final_business_case_submit" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_intake_request_draft_submit" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_lifecycle_ids_script" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_openAdminTools" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_showEnvironmentBanner" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_system_intake_progress_tracker" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_system_intake_svg" behavior="0" />
+      <RootComponent type="61" schemaName="cr69a_systemIntakeRequestCompleteHeader" behavior="0" />
+      <RootComponent type="61" schemaName="DataManagement.svg" behavior="0" />
+      <RootComponent type="61" schemaName="easi_BusinessCaseHeader" behavior="0" />
+      <RootComponent type="61" schemaName="easi_common" behavior="0" />
+      <RootComponent type="61" schemaName="easi_editRequestQuickCreate" behavior="0" />
+      <RootComponent type="61" schemaName="easi_reopenRequest" behavior="0" />
+      <RootComponent type="61" schemaName="easi_requestTypeHtml" behavior="0" />
+      <RootComponent type="61" schemaName="easi_system_intake_admin_review" behavior="0" />
+      <RootComponent type="61" schemaName="easi_SystemIntakeRequestGetStartedSubmit" behavior="0" />
+      <RootComponent type="61" schemaName="new_activity_log_main_form" behavior="0" />
+      <RootComponent type="61" schemaName="new_awaiting_decision_header" behavior="0" />
+      <RootComponent type="61" schemaName="new_decision_header" behavior="0" />
+      <RootComponent type="61" schemaName="new_editRequest" behavior="0" />
+      <RootComponent type="61" schemaName="new_final_business_case_review_header" behavior="0" />
+      <RootComponent type="61" schemaName="new_governanceProcessSteps" behavior="0" />
+      <RootComponent type="61" schemaName="new_grb_review_header" behavior="0" />
+      <RootComponent type="61" schemaName="new_grt_meeting_header" behavior="0" />
+      <RootComponent type="61" schemaName="new_intake_upload_files" behavior="0" />
+      <RootComponent type="61" schemaName="new_itgov/html/edit-requests-helper.html" behavior="0" />
+      <RootComponent type="61" schemaName="new_itgov/html/request-helper.html" behavior="0" />
+      <RootComponent type="61" schemaName="new_itgov/js/business-case/solutionQuickCreateZeroTrustInfo.js" behavior="0" />
+      <RootComponent type="61" schemaName="new_itgov/js/example-test.js" behavior="0" />
+      <RootComponent type="61" schemaName="new_itgov/js/review/openRelatedRequestAdminForm.js" behavior="0" />
+      <RootComponent type="61" schemaName="new_newSystemWarning" behavior="0" />
+      <RootComponent type="61" schemaName="new_request_completed_further_info" behavior="0" />
+      <RootComponent type="61" schemaName="new_request_completed_next_steps" behavior="0" />
+      <RootComponent type="61" schemaName="new_request_questions_about_decision" behavior="0" />
+      <RootComponent type="61" schemaName="new_review_action_back" behavior="0" />
+      <RootComponent type="61" schemaName="new_review_action_center" behavior="0" />
+      <RootComponent type="61" schemaName="new_review_progress_tracker" behavior="0" />
+      <RootComponent type="61" schemaName="new_review_ready_for_review" behavior="0" />
+      <RootComponent type="61" schemaName="new_review-action-submit" behavior="0" />
+      <RootComponent type="61" schemaName="new_systemIntake" behavior="0" />
+      <RootComponent type="61" schemaName="new_WhatIsAMajorChange" behavior="0" />
+      <RootComponent type="61" schemaName="new_whyDoesTheGovernanceProcessExist" behavior="0" />
+      <RootComponent type="62" schemaName="new_InitialITGO" behavior="0" />
+      <RootComponent type="70" id="{bebc1005-9069-f111-a824-001dd804cd4c}" behavior="0" />
+      <RootComponent type="80" schemaName="new_InitialITGO" behavior="0" />
+      <RootComponent type="9" schemaName="cr3ee_activitytype" behavior="0" />
+      <RootComponent type="9" schemaName="cr3ee_cedaroastatus" behavior="0" />
+      <RootComponent type="9" schemaName="cr3ee_contractstatus" behavior="0" />
+      <RootComponent type="9" schemaName="cr3ee_lcidstatus" behavior="0" />
+      <RootComponent type="9" schemaName="cr3ee_requeststatus" behavior="0" />
+      <RootComponent type="9" schemaName="cr69a_cmscomponent" behavior="0" />
+      <RootComponent type="9" schemaName="cr69a_requesttype" behavior="0" />
+      <RootComponent type="9" schemaName="cr69a_systemlinkchoice" behavior="0" />
+      <RootComponent type="9" schemaName="easi_systemintakeformstate" behavior="0" />
+      <RootComponent type="9" schemaName="new_admingovernanceprocessstep" behavior="0" />
+      <RootComponent type="9" schemaName="new_cmscomponent" behavior="0" />
+      <RootComponent type="9" schemaName="new_lcidactivitytype" behavior="0" />
+      <RootComponent type="9" schemaName="new_lcidtype" behavior="0" />
+      <RootComponent type="9" schemaName="new_roles" behavior="0" />
+      <RootComponent type="91" id="{61539fc7-d5e8-406b-ba9f-96754216727e}" schemaName="ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" behavior="0" />
+      <RootComponent type="91" id="{2f8efe77-66b9-4aff-853f-b18851d2bc42}" schemaName="EditRequest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2456637744afbea" behavior="0" />
+      <RootComponent type="91" id="{38c8453e-11b3-4c19-804b-c49c76b2f516}" schemaName="LCID, Version=1.0.4.0, Culture=neutral, PublicKeyToken=01150a5768a57460" behavior="0" />
+      <RootComponent type="91" id="{64c089dd-e3aa-4808-8a5a-4db0dd6a341b}" schemaName="LCIDActivityLogs, Version=1.0.4.0, Culture=neutral, PublicKeyToken=5699adf05e650ed4" behavior="0" />
+      <RootComponent type="91" id="{a87c5bde-ee55-4361-a33e-e77df81d1bd5}" schemaName="Request.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2456637744afbea" behavior="0" />
+      <RootComponent type="92" id="{1a9fd51f-4b39-f111-88b3-001dd804cd4c}" behavior="0" />
+      <RootComponent type="92" id="{3e7497e7-3681-f111-ab0f-001dd804cd4c}" behavior="0" />
+      <RootComponent type="92" id="{84ead907-2c55-f111-bec6-001dd804cd4c}" behavior="0" />
+      <RootComponent type="92" id="{bfa240f4-2b55-f111-bec6-001dd804cd4c}" behavior="0" />
+      <RootComponent type="92" id="{de834ca3-1839-f111-88b3-001dd804cd4c}" behavior="0" />
+      <RootComponent type="92" id="{e51248b9-f39b-f111-8077-001dd804cd4c}" behavior="0" />
+      <RootComponent type="92" id="{f5556847-3781-f111-ab0f-001dd8055bb1}" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="environmentvariabledefinition" displayName="Environment Variable Definition" solution="EnvironmentVariables (1.0.2406.4)">
+          <package appName="EnvironmentVariables" version="1.0.2406.4">EnvironmentVariablesSolutionAnchor (1.0.2406.4)</package>
+        </Required>
+        <Dependent type="300" schemaName="cr3ee_home_04010" displayName="Home" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="environmentvariablevalue" displayName="Environment Variable Value" solution="EnvironmentVariables (1.0.2406.4)">
+          <package appName="EnvironmentVariables" version="1.0.2406.4">EnvironmentVariablesSolutionAnchor (1.0.2406.4)</package>
+        </Required>
+        <Dependent type="300" schemaName="cr3ee_home_04010" displayName="Home" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="accessChecker_openDialog.js" displayName="accessChecker_openDialog.js" solution="msft_AccessCheckerExtension (1.1.0.4)">
+          <package appName="PowerAppsUnifiedClientExtensionApp Package" version="1.0.0.62">msft_PowerAppsUnifiedClientInfraExtensions (1.0.0.62)</package>
+          <package appName="PowerAppsUnifiedClientExtensionApp Package" version="1.0.0.103">PowerAppsUnifiedClientExtensionApp_Anchor (1.0.0.103)</package>
+        </Required>
+        <Dependent type="61" schemaName="accessChecker_openDialog.js" displayName="accessChecker_openDialog.js" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="Auditing.svg" displayName="Auditing.svg" solution="PowerPlatformEnvironmentSettings (2.2.3468.1)">
+          <package appName="PowerPlatformEnvironmentSettingsApp" version="2.2.3468.1">PowerPlatformEnvironmentSettingsApp_Anchor (2.2.3468.1)</package>
+        </Required>
+        <Dependent type="1" schemaName="new_systemintake" displayName="Request" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="Auditing.svg" displayName="Auditing.svg" solution="PowerPlatformEnvironmentSettings (2.2.3468.1)">
+          <package appName="PowerPlatformEnvironmentSettingsApp" version="2.2.3468.1">PowerPlatformEnvironmentSettingsApp_Anchor (2.2.3468.1)</package>
+        </Required>
+        <Dependent type="61" schemaName="Auditing.svg" displayName="Auditing.svg" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="DataManagement.svg" displayName="DataManagement.svg" solution="PowerPlatformEnvironmentSettings (2.2.3468.1)">
+          <package appName="PowerPlatformEnvironmentSettingsApp" version="2.2.3468.1">PowerPlatformEnvironmentSettingsApp_Anchor (2.2.3468.1)</package>
+        </Required>
+        <Dependent type="1" schemaName="cr69a_systemintakeadmin" displayName="Review" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="DataManagement.svg" displayName="DataManagement.svg" solution="PowerPlatformEnvironmentSettings (2.2.3468.1)">
+          <package appName="PowerPlatformEnvironmentSettingsApp" version="2.2.3468.1">PowerPlatformEnvironmentSettingsApp_Anchor (2.2.3468.1)</package>
+        </Required>
+        <Dependent type="61" schemaName="DataManagement.svg" displayName="DataManagement.svg" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="61" schemaName="msfp_surveyinvite_32" displayName="msfp_surveyinvite_32" solution="MicrosoftFormsPro (3.0.3440.1)">
+          <package appName="D365CustomerVoice" version="3.0.0.108">MicrosoftFormsPro (3.0.0.108)</package>
+          <package appName="D365CustomerVoice" version="3.0.3440.1">msfp_D365CustomerVoicePreprodAppUser (3.0.3440.1)</package>
+        </Required>
+        <Dependent type="1" schemaName="new_systemintake" displayName="Request" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="AppChannel" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.18)" id.uniquename="AppChannel">
+          <package appName="PowerAppsAppFramework Package" version="1.0.0.25">PowerAppsAppFramework_Anchor (1.0.0.25)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=new_InitialITGO,settingdefinitionid.uniquename=AppChannel" id.parentappmoduleid.uniquename="new_InitialITGO" id.settingdefinitionid.uniquename="AppChannel" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="appcopilotenabled" solution="msdyn_AppCopilotAppInfraSettings (9.2.2026052.260501061)" id.uniquename="appcopilotenabled">
+          <package appName="PowerAppsAppCopilotApp Package" version="1.0.0.2">msdyn_SuggestedAction (1.0.0.2)</package>
+          <package appName="PowerAppsAppCopilotApp Package" version="9.2.0.5">msdyn_M365CopilotAppInfraSettings (9.2.0.5)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=new_InitialITGO,settingdefinitionid.uniquename=appcopilotenabled" id.parentappmoduleid.uniquename="new_InitialITGO" id.settingdefinitionid.uniquename="appcopilotenabled" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="SettingDefinition" displayName="MobileCommandingImprovements2022Tablet" solution="msdyn_CommandingSettings (1.0.0.2)" id.uniquename="MobileCommandingImprovements2022Tablet">
+          <package appName="PowerAppsCommandingApp Package" version="1.0.0.6">PowerAppsCommandingApp_Anchor (1.0.0.6)</package>
+        </Required>
+        <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=new_InitialITGO,settingdefinitionid.uniquename=MobileCommandingImprovements2022Tablet" id.parentappmoduleid.uniquename="new_InitialITGO" id.settingdefinitionid.uniquename="MobileCommandingImprovements2022Tablet" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

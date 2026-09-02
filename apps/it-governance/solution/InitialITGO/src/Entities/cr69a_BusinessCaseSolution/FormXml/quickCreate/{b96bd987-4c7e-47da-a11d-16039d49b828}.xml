@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{b96bd987-4c7e-47da-a11d-16039d49b828}</formid>
+    <IntroducedVersion>1.0.0.7</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="{3708082d-4582-4d37-8f5c-9b562c236b21}" name="tab_1" showlabel="false">
+          <labels>
+            <label description="Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="33%">
+              <sections>
+                <section id="{6266e4a5-c4f4-4b28-bcf7-27a45755c3cc}" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{35409b87-6b73-5ec2-283a-cb7dcb9a3396}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Solution Title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_solutiontitle" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_solutiontitle" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{26b4dcb5-ee52-a2bd-adc4-0a32a9e5ca1b}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Summary" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_sumary" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_sumary" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8c3d1ec9-58e9-3c13-3091-47daabb8775e}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Target Contract Award" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_targetcontractaward" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="cr69a_targetcontractaward" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{64667744-8668-106b-6368-371c184914ec}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Target Completion of Development Work" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_targetcompletionofdevelopmentwork" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="cr69a_targetcompletionofdevelopmentwork" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{12b33daa-0f97-48b7-b93f-eb3a379657d8}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Describe the acquisition approach" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_acquisitionapproachmulti" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_acquisitionapproachmulti" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1b81d9ad-3621-4d98-8e26-b3bd5a7916e5}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Approved by IT Security for use at CMS?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_approvedforuseatcms" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="cr69a_approvedforuseatcms" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{42150158-dd79-718d-051e-3bb9d000d32b}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Describe alignment with Zero Trust Principles" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_zerotrustprinciplealignment" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_zerotrustprinciplealignment" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bb29e4da-16b1-c97e-4b14-eb599d116609}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Do you need to host your solution?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_doyouneedtohostyoursolution" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="cr69a_doyouneedtohostyoursolution" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{de0d0af0-affa-45e5-acbe-17ae345afafc}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Will this have a user interface, be public facing, or involve outside customers?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_hasui" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="cr69a_hasui" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{23dc556a-5242-a7d4-cecc-2deb780054d3}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Will there be workforce training requirements?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_workforcetrainingrequirements" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_workforcetrainingrequirements" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="{58591441-836b-4eff-8cfc-59578cab23ee}" name="tab_1_column_2_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{30c45b14-9834-3404-7d9c-c6e3375a1c94}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Pros of this solution" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_pros" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_pros" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{de83d954-1d75-9b48-3617-9da9a80a3576}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Cons of this solution" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cons" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_cons" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f38c15ee-c1a8-41a1-9564-ddd61d84e515}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Fiscal Year 1 Cost" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy1costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy1costperyear" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ebe51b5c-98e1-4a0e-ba5a-8c2a3eaf6060}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Fiscal Year 2 Cost" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy2costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy2costperyear" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0c31ac42-16e9-4019-a5bd-08fa3b047ea7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Fiscal Year 3 Cost" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy3costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy3costperyear" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ae952054-05ca-4e80-ac84-1ffc01cb2521}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Fiscal Year 4 Cost" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy4costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy4costperyear" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{405d1ea3-f673-46d1-943d-c5d7fa68ac68}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Fiscal Year 5 Cost" languagecode="1033" />
+                        </labels>
+                        <control id="new_fy5costperyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="new_fy5costperyear" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b3cd4183-e59b-4c88-8a76-9d91e814990c}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="What is the cost savings or cost avoidance?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_costimpact" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_costimpact" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="{7943aaca-df32-4980-a040-66bf75337bbe}" name="tab_1_column_3_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{d188dc01-4ab5-4fa5-8a58-d748f3bfc5f9}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="1">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="new_itgov/js/business-case/solutionQuickCreateZeroTrustInfo.js" libraryUniqueId="{ccb97159-b872-483e-b8ee-5ba9982f16af}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="window.ITGov_SolutionQuickCreateZeroTrustInfoOnLoad" libraryName="new_itgov/js/business-case/solutionQuickCreateZeroTrustInfo.js" handlerUniqueId="{8a502565-cff7-4c45-994e-8b27dd64c446}" enabled="true" parameters="" passExecutionContext="false" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Solution Quick Create" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

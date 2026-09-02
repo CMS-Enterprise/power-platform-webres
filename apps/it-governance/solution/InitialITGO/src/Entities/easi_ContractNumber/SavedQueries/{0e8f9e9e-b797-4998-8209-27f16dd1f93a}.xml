@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{0e8f9e9e-b797-4998-8209-27f16dd1f93a}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="easi_name" select="1" icon="1" preview="1">
+        <row name="result" id="easi_contractnumberid">
+          <cell name="easi_name" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>1</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="easi_contractnumber">
+          <attribute name="easi_contractnumberid" />
+          <attribute name="easi_name" />
+          <attribute name="createdon" />
+          <order attribute="easi_name" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.36</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Contract Number Advanced Find View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

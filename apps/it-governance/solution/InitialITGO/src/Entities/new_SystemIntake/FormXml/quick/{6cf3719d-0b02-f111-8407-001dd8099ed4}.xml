@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{6cf3719d-0b02-f111-8407-001dd8099ed4}</formid>
+    <IntroducedVersion>1.0.0.49</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="ACBA75B7-97B6-4116-AA55-51312992B721" name="tab_1" showlabel="false" labelid="{3393956b-4d1d-4ae5-a534-8f182a597707}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section id="AD49B5BF-256F-46A8-9C75-947146172EB9" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{8b33d1d3-00cf-46a5-9e17-b0e1af011620}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="C0550AC7-0F44-45A4-8EF5-D2911C0689D9" labelid="{550c632d-a127-4a23-b661-db5e77328296}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{0e8d8378-8301-42ad-a74f-b76b0d25ad26}" rowspan="4" colspan="1" auto="false" showlabel="false" labelid="{98cbf008-9b87-4981-b89d-3517fd91a3f4}">
+                        <labels>
+                          <label description="Additional Contacts" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="subgrid_additional_contacts" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>cr69a_additionalcontact_SystemIntake_new_systemintake</RelationshipName>
+                            <TargetEntityType>cr69a_additionalcontact</TargetEntityType>
+                            <ViewId>{4548FE96-C837-48EA-89B2-0BE2F930C8A6}</ViewId>
+                            <ViewIds>{4548FE96-C837-48EA-89B2-0BE2F930C8A6}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell id="{401698f0-aca3-4e87-b8a6-dadfd5f95a1b}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="For this request, I have started consulting with:" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_collaborators" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_collaborators" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="9" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Request - Contact Details" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

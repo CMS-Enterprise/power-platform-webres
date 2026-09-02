@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.AccessChecker.OpenDialog.new_systemlink.Button.Hide" Location="AccessChecker.OpenDialog.new_systemlink.Button" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.Activate.Hide" Location="Mscrm.Form.new_systemlink.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.Assign.Hide" Location="Mscrm.Form.new_systemlink.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.Deactivate.Hide" Location="Mscrm.Form.new_systemlink.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.Delete.Hide" Location="Mscrm.Form.new_systemlink.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.Form.new_systemlink.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.Flows.RefreshCommandBar.Hide" Location="Mscrm.Form.new_systemlink.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.NewRecord.Hide" Location="Mscrm.Form.new_systemlink.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.NewRecordForBPFEntity.Hide" Location="Mscrm.Form.new_systemlink.NewRecordForBPFEntity" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.RefreshModernButton.Hide" Location="Mscrm.Form.new_systemlink.RefreshModernButton" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.Reports.Hide" Location="Mscrm.Form.new_systemlink.Reports" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.SaveAndNew.Hide" Location="Mscrm.Form.new_systemlink.SaveAndNew" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemlink.WordTemplate.Hide" Location="Mscrm.Form.new_systemlink.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.Activate.Hide" Location="Mscrm.SubGrid.new_systemlink.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.new_systemlink.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.AddExistingStandard.Hide" Location="Mscrm.SubGrid.new_systemlink.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.Deactivate.Hide" Location="Mscrm.SubGrid.new_systemlink.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.Delete.Hide" Location="Mscrm.SubGrid.new_systemlink.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.DocumentTemplate.Hide" Location="Mscrm.SubGrid.new_systemlink.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.ExportToExcel.Hide" Location="Mscrm.SubGrid.new_systemlink.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.new_systemlink.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.RefreshButton.Hide" Location="Mscrm.SubGrid.new_systemlink.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemlink.RunReport.Hide" Location="Mscrm.SubGrid.new_systemlink.RunReport" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

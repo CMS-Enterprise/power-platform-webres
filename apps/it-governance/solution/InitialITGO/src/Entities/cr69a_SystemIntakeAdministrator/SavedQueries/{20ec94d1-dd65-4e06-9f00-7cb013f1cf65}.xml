@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>1</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{20ec94d1-dd65-4e06-9f00-7cb013f1cf65}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_newcolumn" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakeadministratorid">
+          <cell name="cr69a_newcolumn" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>4</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakeadministrator">
+          <attribute name="cr69a_systemintakeadministratorid" />
+          <attribute name="cr69a_newcolumn" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_newcolumn" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <filter type="or" isquickfindfields="1">
+            <condition attribute="cr69a_newcolumn" operator="like" value="{0}" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Quick Find Active System Intake Administrators" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

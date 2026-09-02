@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{f09d8b92-cdae-427e-bdb8-6219289f62c5}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{40bd09f5-0a93-40d5-921a-2c29ffa928e1}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{653fbccd-1de8-49f7-937c-40d6dc6713c0}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{8f85a47b-058f-4619-b50e-4ec9da6299f4}" visible="false">
+                        <labels>
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="new_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="new_name" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{93b42def-2aa5-488a-8cad-b51ba62dcaeb}" visible="false">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0f303e4d-27b5-43d8-a48d-ff9fa56b9ade}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="System Intake" languagecode="1033" />
+                        </labels>
+                        <control id="new_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_systemintake" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{32e5d273-2c2b-494b-9e5c-6d7bc291edca}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="System" languagecode="1033" />
+                        </labels>
+                        <control id="new_cedarsystem" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_cedarsystem" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4c8640c6-9a12-4056-9d38-704d579675d9}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="System Relationship Type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemrelationshiptypemulti" classid="{4AA28AB7-9C13-4F57-A73D-AD894D048B5F}" datafieldname="cr69a_systemrelationshiptypemulti" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{174460c9-12ca-4a17-adeb-bdffb13158dc}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{59edf3b9-54cd-4438-92ef-663b92cd6980}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{0e0452eb-951d-4b53-95a1-f366ec77be61}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{2830b628-4b16-4892-bb4a-85a96b9b1c8e}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{019d2d59-9db2-436e-a427-9096abe4f329}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{7212f5a0-aa88-4a22-8aef-21ba76bb2199}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{d93d6a63-6345-4893-bede-965034f4f689}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{c0521730-a237-428f-92a3-bc3f17810a91}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr69a_showEnvironmentBanner" libraryUniqueId="{c81fee32-f050-4a40-a6ea-45907aca5d91}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="showEnvironmentBanner" libraryName="cr69a_showEnvironmentBanner" handlerUniqueId="{e135ced9-f2b0-4c89-b199-d9368c2fd30c}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

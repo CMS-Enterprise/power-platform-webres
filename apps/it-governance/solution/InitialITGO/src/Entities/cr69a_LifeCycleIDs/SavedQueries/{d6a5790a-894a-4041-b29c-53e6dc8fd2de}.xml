@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>1</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{d6a5790a-894a-4041-b29c-53e6dc8fd2de}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_lcid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_lifecycleidsid">
+          <cell name="cr69a_lcid" width="300" />
+          <cell name="createdon" width="125" />
+          <cell name="cr69a_lcidexpiresat" width="100" />
+          <cell name="cr69a_lcidscope" width="100" />
+          <cell name="ownerid" width="100" />
+          <cell name="overriddencreatedon" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>4</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_lifecycleids">
+          <attribute name="cr69a_lcid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_lcid" descending="false" />
+          <filter type="or" isquickfindfields="1">
+            <condition attribute="cr69a_lcid" operator="like" value="{0}" />
+            <condition attribute="cr69a_lcidscope" operator="like" value="{0}" />
+          </filter>
+          <attribute name="overriddencreatedon" />
+          <attribute name="ownerid" />
+          <attribute name="cr69a_lcidscope" />
+          <attribute name="cr69a_lcidexpiresat" />
+          <attribute name="cr69a_lifecycleidsid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Quick Find Active Life Cycle IDs" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

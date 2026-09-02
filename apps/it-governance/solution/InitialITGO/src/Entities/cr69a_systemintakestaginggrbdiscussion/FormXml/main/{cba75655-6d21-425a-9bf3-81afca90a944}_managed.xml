@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{cba75655-6d21-425a-9bf3-81afca90a944}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{f0b1c742-9d39-46e2-94fc-dbe7bb1686c2}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{f6a21e3c-5736-4df3-b01b-0bacdb03edf6}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{d8e95ff2-375b-4f30-a4c6-91b4d73b5cce}">
+                        <labels>
+                          <label description="id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_entryid" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_entryid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2c0b3afc-5ba1-40e9-bc03-51cf679aa7e6}">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d041c92c-3c6f-4645-8a60-7db938102bd0}">
+                        <labels>
+                          <label description="content" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_content" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_content" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5bef2c40-e196-4f62-9aa1-b098474850e6}">
+                        <labels>
+                          <label description="voting_role" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_votingrole" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_votingrole" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{dd9b3ef0-a5f5-4892-ad56-519e6e02ff48}">
+                        <labels>
+                          <label description="grb_role" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_grbrole" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_grbrole" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ea98ef37-af5d-48c3-a762-5ecc9bb254f4}">
+                        <labels>
+                          <label description="system_intake_id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintakeid" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_systemintakeid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{64c61c73-8a70-4e08-aa1d-cea4b38da7e0}">
+                        <labels>
+                          <label description="reply_to_id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_replytoid" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_replytoid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{12743030-dfd0-4cd6-99da-d123f433c400}">
+                        <labels>
+                          <label description="created_by" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_createdby" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_createdby" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c68eff98-cd69-4831-88fd-3ed5cae4a5ff}">
+                        <labels>
+                          <label description="created_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_creationdate" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_creationdate" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6a129e0d-5e57-40e9-a386-5993a08633f5}">
+                        <labels>
+                          <label description="modified_by" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_modifiedby" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_modifiedby" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{63c6284b-370e-4f65-aa90-857be986d209}">
+                        <labels>
+                          <label description="modified_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_modificationdate" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_modificationdate" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1f2d5c05-d8d8-4baf-b6eb-96a91b22ee11}">
+                        <labels>
+                          <label description="discussion_board_type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_discussionboardtype" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_discussionboardtype" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

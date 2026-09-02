@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="Request.Plugins.Request_Update_SyncReadyForReviewToReview: Update of new_systemintake" SdkMessageProcessingStepId="{e51248b9-f39b-f111-8077-001dd804cd4c}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+  <PluginTypeName>Request.Plugins.Request_Update_SyncReadyForReviewToReview, Request.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2456637744afbea</PluginTypeName>
+  <PluginTypeId>7d8d762f-28bb-4063-9e30-b03b25abfb6d</PluginTypeId>
+  <PrimaryEntity>new_systemintake</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes>cr69a_readyforreview</FilteringAttributes>
+  <ImpersonatingUserIdName># CMS PP-SVC-IT-Governance-Prod</ImpersonatingUserIdName>
+  <InvocationSource>1</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>40</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0.0.118</IntroducedVersion>
+  <SdkMessageProcessingStepImages>
+    <SdkMessageProcessingStepImage Name="PostImage">
+      <SdkMessageProcessingStepImageId>{9e6e0625-f49b-f111-8077-001dd8055bb1}</SdkMessageProcessingStepImageId>
+      <Attributes>cr69a_systemintakereview</Attributes>
+      <EntityAlias>PostImage</EntityAlias>
+      <ImageType>1</ImageType>
+      <MessagePropertyName>Target</MessagePropertyName>
+      <IsCustomizable>1</IsCustomizable>
+    </SdkMessageProcessingStepImage>
+  </SdkMessageProcessingStepImages>
+</SdkMessageProcessingStep>

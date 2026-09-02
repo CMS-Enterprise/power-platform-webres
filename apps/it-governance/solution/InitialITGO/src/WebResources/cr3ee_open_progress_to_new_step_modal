@@ -1,0 +1,18 @@
+closeRequest = function action_ProgressToNewStep(primaryControl) {
+  if (!window.ITGov) {
+    console.log("Unable to find ITGov javascript package");
+    return;
+  }
+  if (!window.ITGov.ActivityLog) {
+    console.error("Connot find Activity Log Javascript package");
+    return;
+  }
+  if (!window.ITGov.ActivityLog.ACTIVITY_TYPES) {
+    console.error("Activity Types is not defined");
+    return;
+  }
+  return window.ITGov.ActivityLog.openActivityLogQuickCreate(
+    primaryControl,
+    window.ITGov.ActivityLog.ACTIVITY_TYPES.ProgressToNewStep,
+  );
+};

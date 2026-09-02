@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>new_intakefileupload_e1db9</Name>
+  <AppVersion>2026-08-03T22:06:06Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>3.26073.9.0</CreatedByClientVersion>
+  <MinClientVersion>3.26073.9.0</MinClientVersion>
+  <Tags>{"primaryDeviceWidth":"1719","primaryDeviceHeight":"1186","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Tablet","showStatusBar":"false","publisherVersion":"3.26073.9","minimumRequiredApiVersion":"2.2.0","hasComponent":"false","hasUnlockedComponent":"false","isUnifiedRootApp":"false","sienaVersion":"20260408T144512Z-3.26034.12.0","m365CopilotSettingValue":"0"}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>RGBA(0,176,240,1)</BackgroundColor>
+  <DisplayName>Intake - File Upload</DisplayName>
+  <Description xsi:nil="true"></Description>
+  <CommitMessage xsi:nil="true"></CommitMessage>
+  <Publisher xsi:nil="true"></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{"a497dcaa-0fc8-49e3-a88e-fa73bc51948a":{"id":"/providers/microsoft.powerapps/apis/shared_logicflows","displayName":"Logic flows","iconUri":"https://connectorsiconsfairfax.z5.web.core.usgovcloudapi.net/v1.0.1774/1.0.1774.4397/logicflows/icon.png","dataSources":["IntakeRequest-UploadDocument"],"dependencies":["b622e920-7641-406f-b659-c41d230c7630"],"dependents":[],"parameterHints":{"workflowName":{"value":"4722edeb-c20f-43dc-a144-53a634aad8f6"},"workflowEntityId":{"value":"1f74f9d2-9207-f111-8407-001dd809993d"},"workflowDisplayName":{"value":"Intake Request - Upload Document"},"b622e920-7641-406f-b659-c41d230c7630":{"value":"shared_commondataserviceforapps"}},"parameterHintsV2":{"workflowName":{"value":"4722edeb-c20f-43dc-a144-53a634aad8f6"},"workflowEntityId":{"value":"1f74f9d2-9207-f111-8407-001dd809993d"},"workflowDisplayName":{"value":"Intake Request - Upload Document"},"shared_commondataserviceforapps":{"value":"b622e920-7641-406f-b659-c41d230c7630"}},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Standard","actions":["Run"]},"b622e920-7641-406f-b659-c41d230c7630":{"id":"/providers/microsoft.powerapps/apis/shared_commondataserviceforapps","displayName":"Microsoft Dataverse","iconUri":"https://gov.static.powerapps.us/resource/ppcr/releases/v1.0.1814/1.0.1814.4760/commondataserviceforapps/icon.png","dataSources":[],"dependencies":[],"dependents":["a497dcaa-0fc8-49e3-a88e-fa73bc51948a"],"parameterHints":{},"parameterHintsV2":{},"isOnPremiseConnection":false,"bypassConsent":false,"dataSets":{},"apiTier":"Premium"}}</ConnectionReferences>
+  <DatabaseReferences>{"default.cds":{"databaseDetails":{"referenceType":"Environmental","environmentName":"default.cds","overrideValues":{"status":"NotSpecified","environmentVariableName":""}},"dataSources":{"Documents":{"entitySetName":"cr69a_documents","logicalName":"cr69a_document"}}}}</DatabaseReferences>
+  <AppComponents>[]</AppComponents>
+  <AppComponentDependencies>[]</AppComponentDependencies>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>2</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <AdminControlBypassConsent>0</AdminControlBypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[{"dependencyid":"1f74f9d2-9207-f111-8407-001dd809993d","componenttype":29,"componenttypeplatformname":"Workflow"},{"logicalname":"cr69a_document","componenttype":1}]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <BackgroundImageUri>/CanvasApps/new_intakefileupload_e1db9_BackgroundImageUri</BackgroundImageUri>
+  <DocumentUri>/CanvasApps/new_intakefileupload_e1db9_DocumentUri.msapp</DocumentUri>
+  <AdditionalUris>
+    <AdditionalUri>/CanvasApps/new_intakefileupload_e1db9_AdditionalUris0_identity.json</AdditionalUri>
+  </AdditionalUris>
+</CanvasApp>

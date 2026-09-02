@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.AccessChecker.OpenDialog.easi_contractnumber.Button.Hide" Location="AccessChecker.OpenDialog.easi_contractnumber.Button" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.Activate.Hide" Location="Mscrm.Form.easi_contractnumber.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.Assign.Hide" Location="Mscrm.Form.easi_contractnumber.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.Deactivate.Hide" Location="Mscrm.Form.easi_contractnumber.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.Delete.Hide" Location="Mscrm.Form.easi_contractnumber.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.Form.easi_contractnumber.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.Flows.RefreshCommandBar.Hide" Location="Mscrm.Form.easi_contractnumber.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.NewRecord.Hide" Location="Mscrm.Form.easi_contractnumber.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.NewRecordForBPFEntity.Hide" Location="Mscrm.Form.easi_contractnumber.NewRecordForBPFEntity" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.RefreshModernButton.Hide" Location="Mscrm.Form.easi_contractnumber.RefreshModernButton" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.Reports.Hide" Location="Mscrm.Form.easi_contractnumber.Reports" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.easi_contractnumber.WordTemplate.Hide" Location="Mscrm.Form.easi_contractnumber.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.easi_contractnumber.MBPF.ConvertTo.Hide" Location="Mscrm.HomepageGrid.easi_contractnumber.MBPF.ConvertTo" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.Activate.Hide" Location="Mscrm.SubGrid.easi_contractnumber.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.easi_contractnumber.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.AddExistingStandard.Hide" Location="Mscrm.SubGrid.easi_contractnumber.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.Deactivate.Hide" Location="Mscrm.SubGrid.easi_contractnumber.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.Delete.Hide" Location="Mscrm.SubGrid.easi_contractnumber.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.DocumentTemplate.Hide" Location="Mscrm.SubGrid.easi_contractnumber.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.ExportToExcel.Hide" Location="Mscrm.SubGrid.easi_contractnumber.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.easi_contractnumber.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.RefreshButton.Hide" Location="Mscrm.SubGrid.easi_contractnumber.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.RunReport.Hide" Location="Mscrm.SubGrid.easi_contractnumber.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.easi_contractnumber.WordTemplate.Hide" Location="Mscrm.SubGrid.easi_contractnumber.WordTemplate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

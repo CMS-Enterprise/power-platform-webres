@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="cr69a_cmscomponent" localizedName="CMS Component" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="CMS Component" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="" languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="971270000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Center for Clinical Standards and Quality (CCSQ)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270001" IsHidden="0">
+      <labels>
+        <label description="Center for Consumer Information and Insurance Oversight (CCIIO)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270002" IsHidden="0">
+      <labels>
+        <label description="Center for Medicare (CM)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270003" IsHidden="0">
+      <labels>
+        <label description="Center for Medicaid and CHIP Services (CMCS)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270004" IsHidden="0">
+      <labels>
+        <label description="Center for Medicare and Medicaid Innovation (CMMI)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270005" IsHidden="0">
+      <labels>
+        <label description="Office of Financial Management (OFM)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270006" IsHidden="0">
+      <labels>
+        <label description="Office of Information Technology (OIT)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270007" IsHidden="0">
+      <labels>
+        <label description="Office of Legislation (OL)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270008" IsHidden="0">
+      <labels>
+        <label description="Center for Program Integrity (CPI)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270009" IsHidden="0">
+      <labels>
+        <label description="CMS Wide" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270010" IsHidden="0">
+      <labels>
+        <label description="Emergency Preparedness and Response Operations (EPRO)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270011" IsHidden="0">
+      <labels>
+        <label description="Federal Coordinated Health Care Office" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270012" IsHidden="0">
+      <labels>
+        <label description="Office of Acquisition and Grants Management (OAGM)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270013" IsHidden="0">
+      <labels>
+        <label description="Office of Healthcare Experience and Interoperability" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270014" IsHidden="0">
+      <labels>
+        <label description="Office of Communications (OC)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270015" IsHidden="0">
+      <labels>
+        <label description="Office of Enterprise Data and Analytics (OEDA)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270016" IsHidden="0">
+      <labels>
+        <label description="Office of Equal Opportunity and Civil Rights" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270017" IsHidden="0">
+      <labels>
+        <label description="Office of Human Capital" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270018" IsHidden="0">
+      <labels>
+        <label description="Office of Minority Health (OMH)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270019" IsHidden="0">
+      <labels>
+        <label description="Office of Program Operations and Local Engagement (OPOLE)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270020" IsHidden="0">
+      <labels>
+        <label description="Office of Security, Facilities, and Logistics Operations (OSFLO)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270021" IsHidden="0">
+      <labels>
+        <label description="Office of Strategic Operations and Regulatory Affairs (OSORA)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270022" IsHidden="0">
+      <labels>
+        <label description="Office of Strategy, Performance, and Results (OSPR)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270023" IsHidden="0">
+      <labels>
+        <label description="Office of the Actuary (OACT)" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270024" IsHidden="0">
+      <labels>
+        <label description="Office of the Administrator" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270025" IsHidden="0">
+      <labels>
+        <label description="Offices of Hearings and Inquiries" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270026" IsHidden="0">
+      <labels>
+        <label description="Other" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270027" IsHidden="0">
+      <labels>
+        <label description="Consortium for Medicaid and Children’s Health" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270028" IsHidden="0">
+      <labels>
+        <label description="Consortium for Medicare Health Plans Operations" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270029" IsHidden="0">
+      <labels>
+        <label description="Office of Burden Reduction and Health Informatics" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270030" IsHidden="0">
+      <labels>
+        <label description="Office of Support Services and Operations" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="971270031" IsHidden="0">
+      <labels>
+        <label description="Place Holder" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="216640001" IsHidden="0">
+      <labels>
+        <label description="None Specified" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

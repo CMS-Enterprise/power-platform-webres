@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{e36f31c6-10b5-48e3-8822-73ebcd190e10}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{379305e3-5da2-418f-a74e-e60ceed65bc8}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{2c7a1cb0-8cc2-4635-941f-0e798c50740b}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{39c708a4-e7ee-4303-b6b7-fc2899ae356c}" visible="false">
+                        <labels>
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_editrequest" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_editrequest" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{02ccef90-2d63-4c60-8da4-8c99c784a6ff}" visible="false">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ae9d3ed5-fa06-471e-a072-1221f32f00bb}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_completed" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="new_completed" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5dec8717-10f3-4414-b951-d246d81542ee}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Which form needs edits?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_whichformneedsedits" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_whichformneedsedits" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{73bbbdf2-a84f-441c-8e46-b75ab8675200}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_changes_needed" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_changes_needed" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{722878a2-d1f5-46ec-81ff-710b63bcbcf1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_additionalinformation" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_additionalinformation" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2f42237b-750d-4348-aa17-d692e189e9cb}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Admin Notes" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_adminnotes" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_adminnotes" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="null_section_3" id="d894ec7d-6c4b-403c-a0ab-9f39d6f02626" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="11" labelwidth="115">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell locklevel="0" id="{41773620-2df7-459c-836c-6fbd212f49e7}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                      <cell locklevel="0" id="{be5ce3f0-ac6e-4806-ad9c-4b971c851fb8}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8ee1fea7-4460-4eef-8197-23f7cf0d0d82}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Request" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintake" disabled="true" />
+                      </cell>
+                      <cell id="{156f32c5-9869-40ca-a4df-bef28f112063}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Review" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintakeadmin" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintakeadmin" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{3b7877df-830c-4661-bdc3-1b54477a6b60}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{afc50d54-12d0-439d-a16e-960ee6b3f143}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{a0d19ca8-2bed-4bb3-bb78-7cb4678dd639}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{36bb2358-7cc7-4bf4-a2b5-ac022c0ce259}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{d77db1a4-14f7-45ad-9fd0-9582d2f90feb}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{41457b31-145c-4c44-8c10-a9811ec95896}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{7e2a5b42-0b6a-489f-b0a0-6e22c278cc04}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{be37fae8-0c2b-4c68-b851-7766de3e7649}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="new_editRequest" libraryUniqueId="{4a9dfe5e-e76f-48cc-a4e1-c5dcba4e85b3}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="hideFieldForUnauthorizedUsers" libraryName="new_editRequest" handlerUniqueId="{e242cb36-37f1-40b9-9102-f612cf4a2dc7}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

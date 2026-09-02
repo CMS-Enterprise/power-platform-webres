@@ -1,0 +1,289 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "e277e63c-42ef-4541-87a0-a167328e40f4"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "number": {
+                  "title": "DocumentType",
+                  "type": "number",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter a number",
+                  "x-ms-content-hint": "NUMBER"
+                },
+                "number_1": {
+                  "title": "DocumentVersion",
+                  "type": "number",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter a number",
+                  "x-ms-content-hint": "NUMBER"
+                },
+                "text_1": {
+                  "title": "DocumentName",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "file": {
+                  "title": "Document",
+                  "type": "object",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please select file or image",
+                  "x-ms-content-hint": "FILE",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "contentBytes": {
+                      "type": "string",
+                      "format": "byte"
+                    }
+                  }
+                },
+                "text_2": {
+                  "title": "ParentTextGuid",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_3": {
+                  "title": "OtherDocumentType",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "number",
+                "number_1",
+                "text_1",
+                "text_2",
+                "text_3"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "CreateDocument": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "67422267-4696-4820-82a9-71f15303c2ca"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_documents",
+              "item/cr69a_filename": "@triggerBody()['text_1']",
+              "item/cr69a_documenttype": "@triggerBody()['number']",
+              "item/cr69a_SystemIntake@odata.bind": "/new_systemintakes(@{triggerBody()['text_2']})",
+              "item/cr3ee_displayfilename": "@triggerBody()['text_1']",
+              "item/new_documentversion": "@triggerBody()['number_1']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Upload_a_file_or_an_image": {
+          "runAfter": {
+            "CreateDocument": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2914a87a-afdd-4e29-b597-ac7d2716036d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateEntityFileImageFieldContent",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_documents",
+              "recordId": "@outputs('CreateDocument')?['body/cr69a_documentid']",
+              "fileImageFieldName": "cr69a_file",
+              "item": "@triggerBody()?['file']?['contentBytes']",
+              "x-ms-file-name": "@triggerBody()['text_1']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Scope": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5fea20ca-651d-4676-b725-c9022f99e55d"
+          },
+          "type": "Compose",
+          "inputs": "@triggerBody()"
+        },
+        "Scope": {
+          "actions": {
+            "CheckInputs": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "0b632c42-7448-4e68-8155-cd08a2ec1806"
+              },
+              "type": "Compose",
+              "inputs": "if(\n    empty(triggerBody()?['DocumentType']),\n    'Document Type is required.',\n    if(\n        and(\n            equals(triggerBody()?['DocumentType'], 971270006),\n            empty(triggerBody()?['OtherDocumentType'])\n        ),\n        'Other Document Type is required when Document Type = Other.',\n        if(\n            empty(triggerBody()?['DocumentVersion']),\n            'Document Version is required.',\n            if(\n                empty(triggerBody()?['DocumentName']),\n                'Document Name is required.',\n                if(\n                    empty(triggerBody()?['ParentTextGuid']),\n                    'Parent record ID is missing.',\n                    if(\n                        empty(triggerBody()?['Document']?['Name']),\n                        'A file is required.',\n                        ''   // No errors\n                    )\n                )\n            )\n        )\n    )\n"
+            },
+            "Condition": {
+              "actions": {},
+              "runAfter": {
+                "CheckInputs": [
+                  "Succeeded"
+                ]
+              },
+              "else": {
+                "actions": {
+                  "Respond_to_a_Power_App_or_flow": {
+                    "runAfter": {},
+                    "metadata": {
+                      "operationMetadataId": "64bf583f-c102-432e-8218-339edcbb8d8e"
+                    },
+                    "type": "Response",
+                    "kind": "PowerApp",
+                    "inputs": {
+                      "statusCode": 200,
+                      "body": {
+                        "success": "@false",
+                        "message": "@{outputs('CheckInputs')}"
+                      },
+                      "schema": {
+                        "type": "object",
+                        "properties": {
+                          "success": {
+                            "title": "Success",
+                            "x-ms-dynamically-added": true,
+                            "type": "boolean"
+                          },
+                          "message": {
+                            "title": "Message",
+                            "x-ms-dynamically-added": true,
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "not": {
+                  "equals": [
+                    "@outputs('CheckInputs')",
+                    ""
+                  ]
+                }
+              },
+              "metadata": {
+                "operationMetadataId": "7ab220e5-967a-4c30-975a-8a1ee44ce55c"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f6b36c16-b992-48fb-91ea-321633db74a7"
+          },
+          "type": "Scope"
+        },
+        "Respond_to_a_Power_App_or_flow_2": {
+          "runAfter": {
+            "Upload_a_file_or_an_image": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "21f8df4d-f82a-4bc9-9195-c50f0fbe21f9"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "success": "@true",
+              "message": "\"Ok\""
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "Success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                },
+                "message": {
+                  "title": "Message",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "8e6197ce-f18c-4d3a-9dc1-ac1a7c4c029e"
+          },
+          "type": "Compose",
+          "inputs": "@triggerBody()"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

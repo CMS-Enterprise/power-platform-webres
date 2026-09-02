@@ -1,0 +1,28 @@
+<appaction uniquename="cr3ee__IssueADecision!21f0059623fc4930b1c15ef8fa20bb91!new_InitialITGO!cr69a_systemintakeadmin!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <context>1</context>
+  <contextentity>
+    <logicalname>cr69a_systemintakeadmin</logicalname>
+  </contextentity>
+  <contextvalue>cr69a_systemintakeadmin</contextvalue>
+  <grouptitle default="Issue A Decision">
+    <label description="Issue A Decision" languagecode="1033" />
+  </grouptitle>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>IssueADecision!21f0059623fc4930b1c15ef8fa20bb91</name>
+  <onclickeventtype>0</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>cr3ee__Actions!e1a87a98f4754eae9e7cda54627ad787!new_InitialITGO!cr69a_systemintakeadmin!0</uniquename>
+  </parentappactionid>
+  <sequence>20000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>3</type>
+</appaction>

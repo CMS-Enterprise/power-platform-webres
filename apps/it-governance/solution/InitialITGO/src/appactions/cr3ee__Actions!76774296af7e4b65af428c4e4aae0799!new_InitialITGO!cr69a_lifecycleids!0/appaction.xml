@@ -1,0 +1,28 @@
+<appaction uniquename="cr3ee__Actions!76774296af7e4b65af428c4e4aae0799!new_InitialITGO!cr69a_lifecycleids!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <context>1</context>
+  <contextentity>
+    <logicalname>cr69a_lifecycleids</logicalname>
+  </contextentity>
+  <contextvalue>cr69a_lifecycleids</contextvalue>
+  <grouptitle default="Actions">
+    <label description="Actions" languagecode="1033" />
+  </grouptitle>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>Actions!76774296af7e4b65af428c4e4aae0799</name>
+  <onclickeventtype>0</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>cr3ee__Actions!64332e3729ef47b4b5c99e7ea985472b!new_InitialITGO!cr69a_lifecycleids!0</uniquename>
+  </parentappactionid>
+  <sequence>10000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>3</type>
+</appaction>

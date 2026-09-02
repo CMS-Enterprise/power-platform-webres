@@ -1,0 +1,634 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_dataflows": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_shareddataflows_684e3"
+        },
+        "api": {
+          "name": "shared_dataflows"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "DataflowConfiguration (new_DataflowConfiguration)": {
+          "defaultValue": {
+            "EnvironmentId": "69e8387f-d121-ecfa-a34f-6e9d2e51754a-31c688f59-sovereign",
+            "Dataflows": {
+              "StageBusinessCases": "f3705023-fc18-4fb8-b2e3-65cde649d1c5",
+              "StageCedarSystems": "be05eb73-5c8c-42a2-864e-7b0ccee4a5cc",
+              "StageContacts": "e333a1e1-538b-44b1-8c2f-f78308a2fca8",
+              "StageContractNumbers": "d43aeee7-002c-432d-839a-9d6f6b30a2b6",
+              "StageDocuments": "79680d58-739e-4965-8227-bca139c59c1a",
+              "StageEditRequests": "e5c1354e-839f-465f-924c-012b59352f73",
+              "StageEstimatedLifecycleCosts": "f5f6c792-ccba-4986-b79d-2b5d5a3f93fd",
+              "StageFundingSources": "aa2ec5bd-7e5f-4ef7-80fb-2d6529074830",
+              "StageGRBDiscussionPosts": "fdd3b2cc-beb7-4a45-a3c0-a8d15ff2d374",
+              "StagePresentationLinks": "b69d0d03-c531-433f-8a9b-4772c735d16d",
+              "StageGRBReviewers": "c93013b9-6923-40bd-8c2b-e035d04cb2df",
+              "StageLinkedSystems": "6bc14932-5e6f-4ab1-8ac3-25639eb31284",
+              "StageSystemIntakes": "c522fa5c-4afc-4427-8d98-eaf1d185636e",
+              "CreateLCIDs": "c0ebdbb6-b78a-4d3f-b2bd-bc72d511fc4f",
+              "CreateCedarSystems": "6163a092-17d3-4781-9d12-ee7603f7b727",
+              "CreateRequests": "e031cd5e-fb29-4595-981e-6ee27ead2dc9",
+              "CreateReviews": "96254e12-b73c-4942-bbd5-be0b0e5a2ff2",
+              "LinkRequestsToReviews": "2943a1f0-2ce0-448a-8370-cd270de318b3",
+              "CreateFundingSources": "48e422b3-b641-4eb2-b9ba-9bd41cd10c02",
+              "LinkLCIDsToRequests": "ae28af50-288a-4471-8e5c-b0928a3df0f3",
+              "CreateAdditionalContacts": "a93a3a26-3d2b-4a24-88d5-a626901c87ee",
+              "CreateBusinessCasesAndSolutions": "59afc6ee-dd68-46e8-9cac-fd9658499f35",
+              "CreateDocuments": "d82dc5ca-4fd9-4a95-beaa-6f36ebf0d560",
+              "CreateEditRequests": "255c7656-9f96-490c-839e-8fb84d6e7a0e",
+              "CreateSystemLinks": "94eb33fd-20be-4e23-96c0-dd8b8e9ff292",
+              "UpdateContractNumbers": "a88bb0fe-486f-40da-8013-4e63e01fc407",
+              "CreateEstimatedLifecycleCosts": "9277f7d0-574b-4852-8181-450c3e4f12d5",
+              "MapOrphanedMultiSelectData": "46bd8042-694b-461d-873b-8fe3752e626f"
+            }
+          },
+          "type": "Object",
+          "metadata": {
+            "schemaName": "new_DataflowConfiguration"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "3f75d6cc-3a98-40e6-b0f1-7fe41eefccae"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Create_LCIDs": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ae0162c1-877c-48eb-a870-2d8da30ce571"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateLCIDs']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Requests": {
+          "runAfter": {
+            "Create_Cedar_Systems": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dda0c612-0c48-4444-930d-b1ba836875c9"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateRequests']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Cedar_Systems": {
+          "runAfter": {
+            "Create_LCIDs": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "01193a5a-e048-4efb-b05d-25b4b2468eb0"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateCedarSystems']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Funding_Sources": {
+          "runAfter": {
+            "Delay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "91eb766d-23f9-4b5a-9ca5-3e03d5ae68e3"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateFundingSources']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Link_LCIDs_to_System_Intake_Requests": {
+          "runAfter": {
+            "Create_Reviews": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fee10677-ef7d-4dd5-ac36-b46b7046aadb"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['LinkLCIDsToRequests']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Additional_Contacts": {
+          "runAfter": {
+            "Link_LCIDs_to_System_Intake_Requests": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9de86378-0231-4d22-984e-50af4bc2cc63"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateAdditionalContacts']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Business_Cases_and_Solutions": {
+          "runAfter": {
+            "Create_Additional_Contacts": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "25608f24-ee55-4597-96d7-06e67bc0dfa0"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateBusinessCasesAndSolutions']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Documents": {
+          "runAfter": {
+            "Create_Business_Cases_and_Solutions": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "86c3eee4-9e3c-4995-9424-cf96339da7a7"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateDocuments']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Edit_Requests": {
+          "runAfter": {
+            "Create_Documents": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4a48b1bc-7b44-4825-b411-ec3f075f3974"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateEditRequests']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_System_Links": {
+          "runAfter": {
+            "Create_Edit_Requests": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dcf49e03-431f-460d-9979-3cad4e7f1251"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateSystemLinks']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Update_Contract_Numbers": {
+          "runAfter": {
+            "Create_System_Links": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0ec9e834-1e7b-4865-b0ec-dfcbbbd61ae7"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['UpdateContractNumbers']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Create_Estimated_Lifecycle_Costs": {
+          "runAfter": {
+            "Link_Requests_to_Reviews": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5395faba-c198-4071-96a2-3637885e27b7"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateEstimatedLifecycleCosts']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Delay": {
+          "runAfter": {
+            "Create_Requests": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b5069bd3-c321-4f78-9886-fb9e3dce1c8e"
+          },
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 2,
+              "unit": "Minute"
+            }
+          }
+        },
+        "Create_Reviews": {
+          "runAfter": {
+            "Create_Funding_Sources": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a42ffd86-0542-4e81-ba1f-0123d991b4ee"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['CreateReviews']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Parse_JSON": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "58a9bca5-3055-4a64-a565-621f5c76e7ee"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@parameters('DataflowConfiguration (new_DataflowConfiguration)')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "EnvironmentId": {
+                  "type": "string"
+                },
+                "Dataflows": {
+                  "type": "object",
+                  "properties": {
+                    "StageBusinessCases": {
+                      "type": "string"
+                    },
+                    "StageCedarSystems": {
+                      "type": "string"
+                    },
+                    "StageContacts": {
+                      "type": "string"
+                    },
+                    "StageContractNumbers": {
+                      "type": "string"
+                    },
+                    "StageDocuments": {
+                      "type": "string"
+                    },
+                    "StageEditRequests": {
+                      "type": "string"
+                    },
+                    "StageEstimatedLifecycleCosts": {
+                      "type": "string"
+                    },
+                    "StageFundingSources": {
+                      "type": "string"
+                    },
+                    "StageGRBDiscussionPosts": {
+                      "type": "string"
+                    },
+                    "StagePresentationLinks": {
+                      "type": "string"
+                    },
+                    "StageGRBReviewers": {
+                      "type": "string"
+                    },
+                    "StageLinkedSystems": {
+                      "type": "string"
+                    },
+                    "StageSystemIntakes": {
+                      "type": "string"
+                    },
+                    "CreateLCIDs": {
+                      "type": "string"
+                    },
+                    "CreateCedarSystems": {
+                      "type": "string"
+                    },
+                    "CreateRequests": {
+                      "type": "string"
+                    },
+                    "CreateReviews": {
+                      "type": "string"
+                    },
+                    "LinkRequestsToReviews": {
+                      "type": "string"
+                    },
+                    "CreateFundingSources": {
+                      "type": "string"
+                    },
+                    "LinkLCIDsToRequests": {
+                      "type": "string"
+                    },
+                    "CreateAdditionalContacts": {
+                      "type": "string"
+                    },
+                    "CreateBusinessCasesAndSolutions": {
+                      "type": "string"
+                    },
+                    "CreateDocuments": {
+                      "type": "string"
+                    },
+                    "CreateEditRequests": {
+                      "type": "string"
+                    },
+                    "CreateSystemLinks": {
+                      "type": "string"
+                    },
+                    "UpdateContractNumbers": {
+                      "type": "string"
+                    },
+                    "CreateEstimatedLifecycleCosts": {
+                      "type": "string"
+                    },
+                    "MapOrphanedMultiSelectData": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Delay_2": {
+          "runAfter": {
+            "Update_Contract_Numbers": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b5069bd3-c321-4f78-9886-fb9e3dce1c8e"
+          },
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 2,
+              "unit": "Minute"
+            }
+          }
+        },
+        "Link_Requests_to_Reviews": {
+          "runAfter": {
+            "Delay_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a40f33bb-8c5d-45a9-b59b-a4d8de3332dc"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['LinkRequestsToReviews']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "Map_Orphaned_Multi_Select_Data": {
+          "runAfter": {
+            "Create_Estimated_Lifecycle_Costs": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e89160e0-6e8e-4a04-a9b3-0a24b7002b39"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_dataflows",
+              "operationId": "RefreshDataflow",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+            },
+            "parameters": {
+              "workspaceType": "Environment",
+              "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+              "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['MapOrphanedMultiSelectData']"
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

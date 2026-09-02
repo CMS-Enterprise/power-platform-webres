@@ -1,0 +1,46 @@
+<appaction uniquename="new__Mscrm.Form.{!EntityLogicalName}.Deactivate!new_InitialITGO!new_systemintake!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonaccessibilitytext default="Deactivate">
+    <label description="Deactivate" languagecode="1033" />
+  </buttonaccessibilitytext>
+  <buttonlabeltext default="Deactivate">
+    <label description="Deactivate" languagecode="1033" />
+  </buttonlabeltext>
+  <buttontooltipdescription default="Deactivate these {EntityLogicalNameCollectionMarker}. &lt;br&gt;&lt;br&gt;You can reactivate these {EntityLogicalNameCollectionMarker} from the Inactive {EntityLogicalNameCollectionMarker} View.">
+    <label description="Deactivate these {EntityLogicalNameCollectionMarker}. &lt;br&gt;&lt;br&gt;You can reactivate these {EntityLogicalNameCollectionMarker} from the Inactive {EntityLogicalNameCollectionMarker} View." languagecode="1033" />
+  </buttontooltipdescription>
+  <buttontooltiptitle default="Deactivate">
+    <label description="Deactivate" languagecode="1033" />
+  </buttontooltiptitle>
+  <context>1</context>
+  <contextentity>
+    <logicalname>new_systemintake</logicalname>
+  </contextentity>
+  <contextvalue>new_systemintake</contextvalue>
+  <fonticon>$clientsvg:PageBlock</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>Mscrm.Form.{!EntityLogicalName}.Deactivate</name>
+  <onclickeventjavascriptfunctionname>XrmCore.Commands.Deactivate.deactivatePrimaryRecord</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":4,"value":null},{"type":2,"value":null}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>adea1aea-b2aa-e611-80d6-00155d88c343</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>2</origin>
+  <sequence>100100060.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilityformulacomponentlibraryid>
+    <name>cr69a_initialitgodefaultcommandlibrary_86e7a</name>
+  </visibilityformulacomponentlibraryid>
+  <visibilityformulacomponentname>d6c16d67a81b4c71b460198143584ba8</visibilityformulacomponentname>
+  <visibilityformulafunctionname>Visible</visibilityformulafunctionname>
+  <visibilitytype>1</visibilitytype>
+</appaction>

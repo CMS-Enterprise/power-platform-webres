@@ -1,0 +1,13 @@
+function validateNumberField(executionContext) {
+    var formContext = executionContext.getFormContext();
+    var value = formContext.getAttribute("cr3ee_fundingnumbertext").getValue();
+
+    if (value && !/^\d+$/.test(value)) {
+        formContext.getControl("cr3ee_fundingnumbertext").setNotification(
+            "Only numbers are allowed.",
+            "numeric_error"
+        );
+    } else {
+        formContext.getControl("cr3ee_fundingnumbertext").clearNotification("numeric_error");
+    }
+}

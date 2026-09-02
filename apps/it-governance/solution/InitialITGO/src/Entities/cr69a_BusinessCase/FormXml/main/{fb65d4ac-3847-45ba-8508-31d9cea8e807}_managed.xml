@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{fb65d4ac-3847-45ba-8508-31d9cea8e807}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{d851878c-f0cd-4843-b0bd-b2f34b985d92}" IsUserDefined="1" name="General">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{f577361e-8cff-4cbe-ba81-14423c329c77}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell rowspan="3" id="{1e28b8c3-3888-49b1-b099-d5b2a55fa290}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Intake Request - Business Case Help" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_business_case_help" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>cr3ee_intake_business_case_help</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{7f01283b-e722-f111-8341-001dd8055bb1}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row>
+                      <cell id="{a463ca9e-1edc-4d13-a7f9-271d33a3d169}">
+                        <labels>
+                          <label description="Contract/Request Title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requesttitle" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_requesttitle" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f224bff7-979d-4732-9f50-5ded8ec02c69}" visible="true">
+                        <labels>
+                          <label description="Requester" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6cb92678-2c14-4bdf-8ac2-6a7e3dba0590}">
+                        <labels>
+                          <label description="Contract/Request Acronym" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_contractorrequestacronym" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_contractorrequestacronym" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3d035af3-f3be-4220-a53c-d4fe86de6611}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Business or User Need" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_businessneedmulti" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_businessneedmulti" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b64b9cc9-909b-4f2d-95eb-829e08e057cc}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Internal or External Support Needed" languagecode="1033" />
+                        </labels>
+                        <control id="easi_collaboration_needed" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="easi_collaboration_needed" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e5c0da4b-04c2-490c-b04f-7fd34fe6e0d1}">
+                        <labels>
+                          <label description="Current Process" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_currentprocess" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_currentprocess" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0f0c1d90-34ac-4142-a9e4-ddda93bf40ec}">
+                        <labels>
+                          <label description="How will CMS benefit?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cmsbenefit" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_cmsbenefit" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2585f404-31f5-4045-8680-031294496d66}">
+                        <labels>
+                          <label description="How does this align with organizational priorities?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alignwithorganizationalpriorities" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_alignwithorganizationalpriorities" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ca606af5-a638-4c1d-9a32-4a54027868a1}">
+                        <labels>
+                          <label description="How will you determine success?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_howwillyoudeterminesuccess" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_howwillyoudeterminesuccess" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d36c3ca4-0714-4516-a4fb-3c8eaba8ea23}">
+                        <labels>
+                          <label description="How will you implement GRT feedback?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_howwillyouimplementgrtfeedback" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_howwillyouimplementgrtfeedback" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{8f667ac5-a10b-43e8-893b-adc8c5799dbf}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="Solutions (At least one required)" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="subgrid_solutions" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>easi_cr69a_BusinessCase_cr69a_BusinessCase_cr69a_BusinessCaseSolution</RelationshipName>
+                            <TargetEntityType>cr69a_businesscasesolution</TargetEntityType>
+                            <ViewId>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewId>
+                            <ViewIds>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{8ace15dd-04c1-4851-b32e-1a5e594fdf5c}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{321b2731-e112-40ef-8c13-7bff5c12a8e6}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{150d4313-7b51-42ad-a16a-595baf738269}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{40e048af-675b-4330-add4-aae3afb18eb2}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{3bc7b775-17d0-4410-babe-4659c832752b}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{66c1fff0-ad92-4f5c-a8f9-76bd310a4f78}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{3c13c87f-3aa2-4de8-9898-677e68dc2044}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{1293baaf-f670-4164-957a-fb3e1df784f3}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr3ee_business_case_form_script" libraryUniqueId="{2ce2954d-ce9b-480a-9538-59d33bd0d587}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="businessCaseOnLoad" libraryName="cr3ee_business_case_form_script" handlerUniqueId="{588d94e5-ca61-4ef2-abca-d76c40e3fef7}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

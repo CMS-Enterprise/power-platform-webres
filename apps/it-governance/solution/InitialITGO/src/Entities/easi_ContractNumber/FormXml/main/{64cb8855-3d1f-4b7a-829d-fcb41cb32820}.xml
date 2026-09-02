@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{64cb8855-3d1f-4b7a-829d-fcb41cb32820}</formid>
+    <IntroducedVersion>1.0.0.36</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{6cd3c5b4-93ec-4170-9b06-181276166df1}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{64fdbaec-16c6-428f-a258-04d6277c9a51}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{fcd051fb-f777-4bdc-956f-789dd9c96d28}" visible="false">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4a814e4a-187b-4dfc-9ef8-039c11c496fd}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Contract Number" languagecode="1033" />
+                        </labels>
+                        <control id="easi_contractnumber" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="easi_contractnumber" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7a7165ff-79cf-4682-8dde-063eadfbbfb6}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Contractor" languagecode="1033" />
+                        </labels>
+                        <control id="easi_contractor" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="easi_contractor" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{aa0c39ec-e457-4c4e-920f-eed2291e8206}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Period of Performance Start" languagecode="1033" />
+                        </labels>
+                        <control id="easi_periodofperformancestart" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="easi_periodofperformancestart" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{55d69041-db56-4164-a3c5-f68a26185623}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Period of Performance End" languagecode="1033" />
+                        </labels>
+                        <control id="easi_periodofperformanceend" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="easi_periodofperformanceend" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{862bf382-5361-4874-9bc4-8929bb85951a}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="System Intake" languagecode="1033" />
+                        </labels>
+                        <control id="easi_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="easi_systemintake" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{9bf3b039-16e5-4af7-91a3-94240dce5187}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{78f7b982-a23f-4f8e-a41e-08cbbf48adca}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{b9de3210-5b8d-48d1-ac34-a62166255c49}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{b47c2f72-03c5-4f06-9c6e-d3298d20d3a0}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{a6e46ff1-59f4-4b4f-a15b-750327665d0c}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{70dfcb83-a11d-4db6-9a94-720fe6c85110}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{16759c77-66fc-4e51-8779-e26fda6d88c5}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{38967975-8a98-4afd-9216-b7bc389cf35b}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="EditRequest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2456637744afbea" PluginAssemblyId="2f8efe77-66b9-4aff-853f-b18851d2bc42" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <FileName>/PluginAssemblies/EditRequest-2F8EFE77-66B9-4AFF-853F-B18851D2BC42/EditRequest.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="EditRequest.EditRequest_Create_SetRequestAdminGovernanceStep, EditRequest, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2456637744afbea" PluginTypeId="c00736c8-5021-40c8-955c-f27d90d5e68d" Name="EditRequest.EditRequest_Create_SetRequestAdminGovernanceStep">
+      <FriendlyName>c9252b2f-ae49-49c3-b613-c3d2d0e5b188</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{e97583f2-f245-44d9-8f16-509d24bf2ae5}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{26e15ffc-4553-426a-89df-edf333db91f5}" IsUserDefined="1">
+          <labels>
+            <label description="" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{2024d597-a814-47b7-aa34-0886342d9247}">
+                  <labels>
+                    <label description="GENERAL" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{424e471e-5b37-4f2d-9607-7acef9f4b1cc}">
+                        <labels>
+                          <label description="Request Title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requesttitle" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_requesttitle" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ad77e980-b438-4789-8fc0-5f2b63f0f31d}" visible="false">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{cb321b1c-c537-83ad-e39d-089911c3bb12}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Contract or Request Acronym" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_contractorrequestacronym" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_contractorrequestacronym" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ed9102fd-cf37-4a9a-b176-f901de184fe4}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requesterphonenumber" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="cr69a_requesterphonenumber" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b0da767f-5d5e-46e7-9fbd-e5d8e02810d2}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Business Need or User Need" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_businessneedmulti" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_businessneedmulti" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{baa523a8-32b8-4429-9936-8c56b5642534}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="easi_collaboration_needed" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="easi_collaboration_needed" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{813038f4-8122-4c4f-97fb-22e480f33c9d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_recommendedworksupport" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_recommendedworksupport" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e584a2d9-92fb-49d4-9e95-b35706e4db7d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_currentprocess" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_currentprocess" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{62948a03-49c6-4f07-b27f-4eb8a1061eef}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cmsbenefit" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_cmsbenefit" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3646c569-c7cb-4f27-9d72-7c053635bcc3}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alignwithorganizationalpriorities" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_alignwithorganizationalpriorities" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5e19a767-91f3-4bc0-9507-9b22dbc4f75d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_howwillyoudeterminesuccess" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_howwillyoudeterminesuccess" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{aec2c306-b800-4836-bcf9-f708543afa80}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_howwillyouimplementgrtfeedback" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr69a_howwillyouimplementgrtfeedback" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{bd850bfd-5636-4255-a892-e86420ec7232}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="Subgrid_solutions" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>easi_cr69a_BusinessCase_cr69a_BusinessCase_cr69a_BusinessCaseSolution</RelationshipName>
+                            <TargetEntityType>cr69a_businesscasesolution</TargetEntityType>
+                            <ViewId>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewId>
+                            <ViewIds>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

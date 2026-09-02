@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{eacedb4d-1f26-4895-b89c-f0346e1dff62}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_recordid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestagingcontractnumberid">
+          <cell name="cr69a_recordid" width="300" />
+          <cell name="cr69a_systemintakeid" width="150" />
+          <cell name="cr69a_contractnumber" width="150" />
+          <cell name="cr69a_createdby" width="150" />
+          <cell name="cr69a_createdat" width="150" />
+          <cell name="cr69a_modifiedby" width="150" />
+          <cell name="cr69a_modifiedat" width="150" />
+          <cell name="cr69a_batchid" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestagingcontractnumber">
+          <attribute name="cr69a_systemintakestagingcontractnumberid" />
+          <attribute name="cr69a_recordid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_recordid" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="cr69a_systemintakeid" />
+          <attribute name="cr69a_contractnumber" />
+          <attribute name="cr69a_createdby" />
+          <attribute name="cr69a_createdat" />
+          <attribute name="cr69a_modifiedby" />
+          <attribute name="cr69a_modifiedat" />
+          <attribute name="cr69a_batchid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active System Intake - Staging Contract Numbers" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

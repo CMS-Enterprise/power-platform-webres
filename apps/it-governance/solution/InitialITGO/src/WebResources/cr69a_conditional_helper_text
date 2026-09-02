@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conditional Helper Text</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.43;
+        color: #323130;
+        background: #faf9f8;
+        margin: 0;
+        padding: 8px 0;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .alert {
+        padding: 8px 12px;
+        border-left: 4px solid #a9aeb1;
+        border-radius: 2px;
+        margin-bottom: 8px;
+      }
+
+      .alert-info {
+        background-color: #deecf9;
+        border-left-color: #0078d4;
+      }
+
+      .alert-success {
+        background-color: #dff6dd;
+        border-left-color: #107c10;
+      }
+    </style>
+
+    <script>
+      function getForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function qs() {
+        const out = {};
+        (location.search || "")
+          .replace(/^\?/, "")
+          .split("&")
+          .forEach((p) => {
+            if (!p) return;
+            const [k, v] = p.split("=");
+            out[decodeURIComponent(k)] = decodeURIComponent(v || "");
+          });
+        return out;
+      }
+
+      function cfg() {
+        try {
+          return JSON.parse(decodeURIComponent(qs().data || "{}"));
+        } catch {
+          return {};
+        }
+      }
+
+      function render() {
+        const c = cfg();
+        const form = getForm();
+        const el = document.getElementById("msg");
+        if (!form || !el) return;
+
+        const attr = form.getAttribute(c.field);
+        const val = attr && attr.getValue && attr.getValue();
+
+        if (!val) {
+          el.textContent = c.whenBlank || "No message provided.";
+        } else {
+          el.textContent = c.whenValue || "";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", render);
+    </script>
+  </head>
+
+  <body>
+    <div id="msg"></div>
+  </body>
+</html>

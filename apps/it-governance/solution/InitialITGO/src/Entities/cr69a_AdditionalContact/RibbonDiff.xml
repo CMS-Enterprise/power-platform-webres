@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.AccessChecker.OpenDialog.cr69a_additionalcontact.Button.Hide" Location="AccessChecker.OpenDialog.cr69a_additionalcontact.Button" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.Assign.Hide" Location="Mscrm.Form.cr69a_additionalcontact.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.Deactivate.Hide" Location="Mscrm.Form.cr69a_additionalcontact.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.Delete.Hide" Location="Mscrm.Form.cr69a_additionalcontact.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.Form.cr69a_additionalcontact.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.Flows.RefreshCommandBar.Hide" Location="Mscrm.Form.cr69a_additionalcontact.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.NewRecord.Hide" Location="Mscrm.Form.cr69a_additionalcontact.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.NewRecordForBPFEntity.Hide" Location="Mscrm.Form.cr69a_additionalcontact.NewRecordForBPFEntity" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.RefreshModernButton.Hide" Location="Mscrm.Form.cr69a_additionalcontact.RefreshModernButton" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.Reports.Hide" Location="Mscrm.Form.cr69a_additionalcontact.Reports" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_additionalcontact.WordTemplate.Hide" Location="Mscrm.Form.cr69a_additionalcontact.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.AddExistingStandard.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.DocumentTemplate.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.ExportToExcel.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.RefreshButton.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.RunReport.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_additionalcontact.WordTemplate.Hide" Location="Mscrm.SubGrid.cr69a_additionalcontact.WordTemplate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

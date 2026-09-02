@@ -1,0 +1,34 @@
+<appaction uniquename="cr3ee__Un-Retire!1337779955fe4f63bc7d7dafde1f9ae0!new_InitialITGO!cr69a_lifecycleids!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Un-Retire">
+    <label description="Un-Retire" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>cr69a_lifecycleids</logicalname>
+  </contextentity>
+  <contextvalue>cr69a_lifecycleids</contextvalue>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>Un-Retire!1337779955fe4f63bc7d7dafde1f9ae0</name>
+  <onclickeventjavascriptfunctionname>window.ITGov_UnretireLCID</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":5}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>a58dd2de-2234-f111-88b3-001dd804cd4c</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>cr3ee__Actions!76774296af7e4b65af428c4e4aae0799!new_InitialITGO!cr69a_lifecycleids!0</uniquename>
+  </parentappactionid>
+  <sequence>30000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Workflow WorkflowId="{f941c151-e0b7-44b0-894e-3cae2df70447}" Name="Admin Governance Task List" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <XamlFileName>/Workflows/AdminGovernanceTaskList-F941C151-E0B7-44B0-894E-3CAE2DF70447.xaml</XamlFileName>
+  <Type>1</Type>
+  <Subprocess>0</Subprocess>
+  <Category>4</Category>
+  <Mode>0</Mode>
+  <Scope>4</Scope>
+  <OnDemand>0</OnDemand>
+  <TriggerOnCreate>1</TriggerOnCreate>
+  <TriggerOnDelete>0</TriggerOnDelete>
+  <AsyncAutodelete>0</AsyncAutodelete>
+  <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+  <StateCode>0</StateCode>
+  <StatusCode>1</StatusCode>
+  <processorder>100</processorder>
+  <RunAs>1</RunAs>
+  <UniqueName>new_admingovernancetasklist</UniqueName>
+  <IsTransacted>1</IsTransacted>
+  <IntroducedVersion>1.0.0.3</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <BusinessProcessType>0</BusinessProcessType>
+  <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+  <ProcessTriggerScope>1</ProcessTriggerScope>
+  <ModernFlowType>0</ModernFlowType>
+  <PrimaryEntity>cr69a_SystemIntakeAdmin</PrimaryEntity>
+  <LocalizedNames>
+    <LocalizedName languagecode="1033" description="Admin Governance Task List" />
+  </LocalizedNames>
+  <labels>
+    <steplabels id="{03453179-fd92-4999-982e-0fc525b86a0e}">
+      <label languagecode="1033" description="Intake Request Review" />
+    </steplabels>
+    <steplabels id="{ce06a27d-b4bc-4ac8-b892-12c84ce203c6}">
+      <label languagecode="1033" description="Intake Review Complete" />
+    </steplabels>
+    <steplabels id="{0c3db864-35f9-49ce-a7e1-e265e540deb0}">
+      <label languagecode="1033" description="Draft Business Case Review" />
+    </steplabels>
+    <steplabels id="{50f95b8d-c29c-4ba8-8a7c-c27f4fea8824}">
+      <label languagecode="1033" description="Business Case Draft Complete" />
+    </steplabels>
+    <steplabels id="{0b761350-6b97-4e0d-b436-43612e39e3a2}">
+      <label languagecode="1033" description="Feedback for the requester" />
+    </steplabels>
+    <steplabels id="{c378d655-6ae8-41db-ab7f-03ebae9b20ab}">
+      <label languagecode="1033" description="GRB Review" />
+    </steplabels>
+    <steplabels id="{db53e86d-5497-4188-b007-30cd2a67e64f}">
+      <label languagecode="1033" description="GRB Review Meeting Complete" />
+    </steplabels>
+  </labels>
+</Workflow>

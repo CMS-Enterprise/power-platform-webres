@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{872f3c29-31b4-f011-bbd3-001dd80a6132}</WebResourceId>
+  <Name>cr69a_systemIntakeRequestCompleteHeader</Name>
+  <DisplayName>System Intake Request - Complete Header</DisplayName>
+  <WebResourceType>1</WebResourceType>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/cr69a_systemIntakeRequestCompleteHeader872F3C29-31B4-F011-BBD3-001DD80A6132</FileName>
+</WebResource>

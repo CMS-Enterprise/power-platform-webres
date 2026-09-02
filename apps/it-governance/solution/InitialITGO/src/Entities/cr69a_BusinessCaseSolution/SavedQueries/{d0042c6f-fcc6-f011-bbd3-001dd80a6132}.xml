@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{d0042c6f-fcc6-f011-bbd3-001dd80a6132}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_solutiontitle" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_businesscasesolutionid">
+          <cell name="cr69a_solutiontitle" width="200" />
+          <cell name="cr69a_sumary" width="100" />
+          <cell name="cr69a_targetcontractaward" width="168" />
+          <cell name="cr69a_targetcompletionofdevelopmentwork" width="274" />
+          <cell name="cr69a_acquisitionapproach" width="165" />
+          <cell name="cr69a_approvedforuseatcms" width="191" />
+          <cell name="cr69a_zerotrustprinciplealignment" width="217" />
+          <cell name="cr69a_doyouneedtohostyoursolution" width="237" />
+          <cell name="cr69a_userinterfacepublicfacingorinvolveoutside" width="308" />
+          <cell name="cr69a_workforcetrainingrequirements" width="230" />
+          <cell name="cr69a_pros" width="100" />
+          <cell name="cr69a_cons" width="100" />
+          <cell name="cr69a_costimpact" width="109" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="true">
+        <entity name="cr69a_businesscasesolution">
+          <attribute name="cr69a_solutiontitle" />
+          <attribute name="cr69a_businesscasesolutionid" />
+          <attribute name="cr69a_sumary" />
+          <attribute name="cr69a_targetcontractaward" />
+          <attribute name="cr69a_targetcompletionofdevelopmentwork" />
+          <attribute name="cr69a_acquisitionapproach" />
+          <attribute name="cr69a_approvedforuseatcms" />
+          <attribute name="cr69a_zerotrustprinciplealignment" />
+          <attribute name="cr69a_doyouneedtohostyoursolution" />
+          <attribute name="cr69a_userinterfacepublicfacingorinvolveoutside" />
+          <attribute name="cr69a_workforcetrainingrequirements" />
+          <attribute name="cr69a_pros" />
+          <attribute name="cr69a_cons" />
+          <attribute name="cr69a_costimpact" />
+          <order attribute="cr69a_solutiontitle" descending="false" />
+          <filter type="and">
+            <condition attribute="ownerid" operator="eq-userid" />
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.34</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="My Business Case Solutions" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

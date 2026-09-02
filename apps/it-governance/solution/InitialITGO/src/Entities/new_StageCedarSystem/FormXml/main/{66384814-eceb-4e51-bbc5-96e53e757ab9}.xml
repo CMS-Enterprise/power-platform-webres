@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{66384814-eceb-4e51-bbc5-96e53e757ab9}</formid>
+    <IntroducedVersion>1.0.0.99</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{7defe976-44c3-4dba-b4c7-f7655baa4f99}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{d408cc01-30f4-48ec-af7c-a1423b3a9bc7}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{485efbd8-3208-4c09-bae5-07c4f1ecb84c}">
+                        <labels>
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="new_name" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="new_name" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{470c9331-5a4e-4fcc-9786-25fa1d8aaab0}">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="null_section_3" id="f1fe306d-2aec-41af-b253-1e69935d3205" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Staging System Details" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{025b3231-201f-4841-a012-134dbf25498a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Acronym" languagecode="1033" />
+                        </labels>
+                        <control id="new_acronym" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_acronym" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a8da4f38-4b1e-40c7-97be-e7d45759901f}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="ATO Effective Date" languagecode="1033" />
+                        </labels>
+                        <control id="new_atoeffectivedate" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_atoeffectivedate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{02a4a19b-279a-4b06-8a57-9f1a4276314d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="ATO Expiration Date" languagecode="1033" />
+                        </labels>
+                        <control id="new_atoexpirationdate" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_atoexpirationdate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0164ea26-42aa-4a0b-be4c-d043d8eff7ba}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Business Owner Org" languagecode="1033" />
+                        </labels>
+                        <control id="new_businessownerorg" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_businessownerorg" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{479a9423-95e2-467b-8fb8-4acdc79c77a0}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Batch ID" languagecode="1033" />
+                        </labels>
+                        <control id="new_batchid" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_batchid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{139e2008-c1fd-42b4-b3f6-9f8d503c696f}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Business Owner Org Comp" languagecode="1033" />
+                        </labels>
+                        <control id="new_businessownerorgcomp" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_businessownerorgcomp" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ec4c73dc-c691-4626-8936-0cc2c0664be6}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Cedar ID" languagecode="1033" />
+                        </labels>
+                        <control id="new_cedarid" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_cedarid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e0f55023-d6fe-4563-a7ef-ad4bd66be132}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Cedar UUID" languagecode="1033" />
+                        </labels>
+                        <control id="new_cedaruuid" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_cedaruuid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{887071fa-defd-4e08-8fad-1758cab0677d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Description" languagecode="1033" />
+                        </labels>
+                        <control id="new_description" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_description" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7adc90b3-7bab-4a3e-93ee-13288908a228}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="ICT Object ID" languagecode="1033" />
+                        </labels>
+                        <control id="new_ictobjectid" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_ictobjectid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9d8b5aca-cb4f-4fab-a5e1-f7d45f5dc94a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="OA Status" languagecode="1033" />
+                        </labels>
+                        <control id="new_oastatus" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_oastatus" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{751c13f8-1738-4aa2-b9f1-f4d5c22068dc}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="State" languagecode="1033" />
+                        </labels>
+                        <control id="new_state" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_state" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0704bfe6-fba5-438b-920d-51faa4d83adc}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="System Maintainer Org" languagecode="1033" />
+                        </labels>
+                        <control id="new_systemmaintainerorg" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_systemmaintainerorg" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c9308b16-48c9-48ac-a8b9-f4a0d9a71b63}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="System Maintainer Org Comp" languagecode="1033" />
+                        </labels>
+                        <control id="new_systemmaintainerorgcomp" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_systemmaintainerorgcomp" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6bf656dd-5a39-4c43-a900-bba1558dd5a5}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Version" languagecode="1033" />
+                        </labels>
+                        <control id="new_version" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_version" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{5ba73cb6-4927-42ad-b092-60fa33458608}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{b7f3cfc8-9873-4f98-860e-c5e78cdf55b3}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{e62a9b33-5aa1-480a-a41b-029a91def9fa}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{c9e28d44-605d-40f0-8868-4583a00d501a}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{88ee118e-6521-4409-be67-35c6a80af1a8}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{9ca53e5d-1fb9-4a08-bba9-be8ab455d937}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{9484fce2-14d5-4f22-9428-da67a8969303}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{de92191c-ddf3-4bd7-be92-932717d22d03}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

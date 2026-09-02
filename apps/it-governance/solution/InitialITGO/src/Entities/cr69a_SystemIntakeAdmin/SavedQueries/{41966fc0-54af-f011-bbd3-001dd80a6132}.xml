@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{41966fc0-54af-f011-bbd3-001dd80a6132}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_title" select="1" preview="1" icon="1">
+        <row name="result" id="cr69a_systemintakeadminid">
+          <cell name="cr69a_title" width="150" />
+          <cell name="cr69a_decision" width="100" />
+          <cell name="cr69a_systemintake" width="100" />
+          <cell name="ownerid" width="100" />
+          <cell name="createdon" width="100" />
+          <cell name="cr69a_systemintakecomplete" width="100" />
+          <cell name="cr69a_decisiondate" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+        <entity name="cr69a_systemintakeadmin">
+          <attribute name="cr69a_title" />
+          <attribute name="cr69a_systemintakecomplete" />
+          <attribute name="cr69a_systemintake" />
+          <attribute name="ownerid" />
+          <attribute name="cr69a_decision" />
+          <attribute name="createdon" />
+          <attribute name="cr69a_decisiondate" />
+          <order attribute="cr69a_decisiondate" descending="true" />
+          <order attribute="cr69a_title" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+            <condition attribute="cr69a_systemintakecomplete" operator="eq" value="971270000" />
+          </filter>
+          <attribute name="cr69a_systemintakeadminid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.16</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Finished Reviews" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

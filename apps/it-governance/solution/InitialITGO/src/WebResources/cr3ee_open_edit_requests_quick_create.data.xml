@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{f684a3d1-0718-f111-8407-001dd8099ed4}</WebResourceId>
+  <Name>cr3ee_open_edit_requests_quick_create</Name>
+  <DisplayName>Review - Open Edit Requests Quick Create</DisplayName>
+  <Description>Command bar function to open the Edit Request Quick Create</Description>
+  <LanguageCode>0</LanguageCode>
+  <WebResourceType>3</WebResourceType>
+  <IntroducedVersion>1.0.0.1</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/cr3ee_open_edit_requests_quick_createF684A3D1-0718-F111-8407-001DD8099ED4</FileName>
+</WebResource>

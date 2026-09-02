@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{14ddc06c-0a05-4e63-a6c8-162ccdc687f9}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_documentid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestagingdocumentid">
+          <cell name="cr69a_documentid" width="300" />
+          <cell name="cr69a_systemintakeid" width="150" />
+          <cell name="cr69a_filename" width="150" />
+          <cell name="cr69a_documenttype" width="150" />
+          <cell name="cr69a_othertype" width="150" />
+          <cell name="cr69a_storagebucket" width="150" />
+          <cell name="cr69a_s3key" width="150" />
+          <cell name="cr69a_createdby" width="150" />
+          <cell name="cr69a_createdat" width="150" />
+          <cell name="cr69a_modifiedby" width="150" />
+          <cell name="cr69a_modifiedat" width="150" />
+          <cell name="cr69a_uploaderrole" width="150" />
+          <cell name="cr69a_documentversion" width="150" />
+          <cell name="cr69a_batchid" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestagingdocument">
+          <attribute name="cr69a_systemintakestagingdocumentid" />
+          <attribute name="cr69a_documentid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_documentid" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="cr69a_systemintakeid" />
+          <attribute name="cr69a_filename" />
+          <attribute name="cr69a_documenttype" />
+          <attribute name="cr69a_othertype" />
+          <attribute name="cr69a_storagebucket" />
+          <attribute name="cr69a_s3key" />
+          <attribute name="cr69a_createdby" />
+          <attribute name="cr69a_createdat" />
+          <attribute name="cr69a_modifiedby" />
+          <attribute name="cr69a_modifiedat" />
+          <attribute name="cr69a_uploaderrole" />
+          <attribute name="cr69a_documentversion" />
+          <attribute name="cr69a_batchid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active System Intake - Staging Documents" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

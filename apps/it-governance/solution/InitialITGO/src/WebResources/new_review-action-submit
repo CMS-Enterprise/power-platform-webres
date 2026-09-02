@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complete Action</title>
+
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        color: #323130;
+        background-color: #faf9f8;
+        margin: 0;
+        padding: 12px;
+      }
+
+      .btn-primary {
+        background-color: #0078d4;
+        border: 1px solid #0078d4;
+        color: #ffffff;
+        padding: 8px 16px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      .submit-action-button {
+        text-align: right;
+        margin-top: 25px;
+      }
+    </style>
+
+    <script>
+      function getFormWindow() {
+        if (parent?.ActionCenter) {
+          console.log("returning parent 1");
+          return parent;
+        }
+
+        try {
+          for (let i = 0; i < parent.frames.length; i++) {
+            const w = parent.frames[i];
+            if (w?.ActionCenter) {
+              return w;
+            } else {
+              console.log("couldnt find a parent frame with the window?");
+            }
+          }
+        } catch (e) {
+          console.error("Unable to find parent frame?");
+        }
+
+        return null;
+      }
+
+      function completeAction() {
+        try {
+          const Xrm = parent?.Xrm;
+          const formContext = Xrm?.Page;
+
+          if (!Xrm || !formContext) {
+            console.error("Unable to find form context.");
+            return;
+          }
+
+          formContext.data.save().then(
+            function () {
+              const formWindow = getFormWindow();
+              if (!formWindow) {
+                console.log("Could not locate form window (no Xrm.Page found)");
+                return;
+              }
+              const ac = formWindow.ActionCenter;
+              const formContext = formWindow.Xrm.Page;
+              if (!ac?.selectAction) {
+                console.log(
+                  "ActionCenter not found on form window",
+                  formWindow,
+                );
+                console.log(
+                  "formWindow.ActionCenter =",
+                  formWindow.ActionCenter,
+                );
+                return;
+              }
+
+              ac.reset(formContext);
+            },
+            function (err) {
+              console.error("Save failed:", err);
+            },
+          );
+        } catch (err) {
+          console.error("Unexpected error:", err);
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="submit-action-button">
+      <button
+        id="completeActionButton"
+        class="btn-primary"
+        onclick="completeAction()"
+      >
+        Complete Action
+      </button>
+    </div>
+  </body>
+</html>

@@ -17,7 +17,9 @@ This approach favors clarity, safety, and maintainability over premature abstrac
 
 ## Documentation
 
+- [Development environment setup](./docs/dev_environment_setup.md)
 - [Security Policy](./SECURITY.md)
+
 
 ## Power Platform solution source
 

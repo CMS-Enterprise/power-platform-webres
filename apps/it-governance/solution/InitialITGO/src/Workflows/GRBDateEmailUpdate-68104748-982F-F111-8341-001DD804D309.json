@@ -1,0 +1,259 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_6649a"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "IT Governance Team Email (new_ITGovernanceTeamEmail)": {
+          "defaultValue": "It_Governance@cms.hhs.gov",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_ITGovernanceTeamEmail"
+          }
+        },
+        "AppId (new_AppId)": {
+          "defaultValue": "110e68fa-41bf-4a23-a577-e58b353d60c7",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_AppId",
+            "description": "Current Application ID"
+          }
+        },
+        "OrgBaseUrl (new_OrgBaseUrl)": {
+          "defaultValue": "https://itgovernancedev.crm9.dynamics.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_OrgBaseUrl",
+            "description": "The base URL for the current environment"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "da6959fa-a822-490c-8f0c-7db074258d6f"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "cr69a_systemintakeadmin",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "cr69a_grbreviewmeetingdate,cr69a_systemintake"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Get_Request": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "55445b00-8761-4af4-b14b-d1d04b06be55"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "recordId": "@triggerOutputs()?['body/_cr69a_systemintake_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_Requester": {
+          "runAfter": {
+            "Get_Request": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3bea3fd4-4bd7-4688-b5d3-d703d91beebb"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "systemusers",
+              "recordId": "@outputs('Get_Request')?['body/_cr69a_requester_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Run_a_Child_Flow": {
+          "runAfter": {
+            "StringTokens": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d46d40c8-2d94-4bf8-8cff-571a51b36a9b"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "574e9e7e-a80e-f111-8407-001dd809993d"
+            },
+            "body": {
+              "text": "grb-meeting-update",
+              "text_1": "@outputs('StringTokens')"
+            }
+          }
+        },
+        "Tokens": {
+          "runAfter": {
+            "Review_Link": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9ad3db45-e9f5-4752-84c1-cb4b93c5446b"
+          },
+          "type": "Compose",
+          "inputs": [
+            {
+              "key": "GRBMeetingDate",
+              "value": "@{outputs('FormattedDate')}"
+            },
+            {
+              "key": "RequestName",
+              "value": "@{outputs('Get_Request')?['body/new_name']}"
+            },
+            {
+              "key": "RequesterName",
+              "value": "@{outputs('Get_Requester')?['body/fullname']}"
+            },
+            {
+              "key": "SystemIntakeRequestLink",
+              "value": "@{outputs('Request_Link')}"
+            },
+            {
+              "key": "SystemIntakeAdminLink",
+              "value": "@{outputs('Review_Link')}"
+            },
+            {
+              "key": "ITGovernanceInboxAddress",
+              "value": "@{parameters('IT Governance Team Email (new_ITGovernanceTeamEmail)')}"
+            }
+          ]
+        },
+        "StringTokens": {
+          "runAfter": {
+            "Tokens": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e5e7883e-62cc-406a-b80d-fa3f9e94f310"
+          },
+          "type": "Compose",
+          "inputs": "@string(outputs('Tokens'))"
+        },
+        "Request_Link": {
+          "runAfter": {
+            "FormattedDate": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "107ccb57-4398-4862-a969-1b8fd5260360"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=new_systemintake',\n  '&id=', outputs('Get_Request')?['body/new_systemintakeid']\n)"
+        },
+        "Review_Link": {
+          "runAfter": {
+            "Request_Link": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7ba58ee6-b02a-4c95-a4ff-2ffe7d92eea6"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=cr69a_systemintakeadmin',\n  '&id=', triggerOutputs()?['body/cr69a_systemintakeadminid']\n)"
+        },
+        "Send_an_email_(V2)": {
+          "runAfter": {
+            "Run_a_Child_Flow": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "96c6b66c-fde1-4d09-89c4-296482ab3635"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_Requester')?['body/internalemailaddress']",
+              "emailMessage/Subject": "@body('Run_a_Child_Flow')?['emailsubject']",
+              "emailMessage/Body": "<p>@{body('Run_a_Child_Flow')?['emailbody']}</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "FormattedDate": {
+          "runAfter": {
+            "Get_Requester": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2ac3ef65-ee3e-42ed-805c-814d6f66203c"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  formatDateTime(\n      triggerOutputs()?['body/cr69a_grbreviewmeetingdate'],\n    'MMMM d, yyyy h:mm tt'\n  ),\n  ' ET'\n)"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

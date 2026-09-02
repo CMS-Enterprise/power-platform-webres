@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{b4877951-ac6c-4051-83e8-165124aedb84}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_recordid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestaginggrbpresentationlinksid">
+          <cell name="cr69a_recordid" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestaginggrbpresentationlinks">
+          <attribute name="cr69a_systemintakestaginggrbpresentationlinksid" />
+          <attribute name="cr69a_recordid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_recordid" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="1" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Inactive System Intake - Staging GRB Presentation Links" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

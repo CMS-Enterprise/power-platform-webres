@@ -1,0 +1,405 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "f24bddd7-da59-41db-a2c9-c3c7d6021128"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "RequestedTemplateKey",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "Tokens",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Tokens_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "71a947e6-fcf3-4216-ae5f-3b8c048bdbc0"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "emailbody": "@variables('WorkingHtml')",
+              "emailsubject": "@variables('EmailSubject')"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "emailbody": {
+                  "title": "EmailBody",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "emailsubject": {
+                  "title": "EmailSubject",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "Standard_Email_Shell_ID": {
+          "runAfter": {
+            "Json_Tokens": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c7e0836c-a500-4dd1-a356-bd356ea152ec"
+          },
+          "type": "Compose",
+          "inputs": "e0279026-a60e-f111-8407-001dd8099ed4"
+        },
+        "Tokens": {
+          "foreach": "@outputs('Json_Tokens')",
+          "actions": {
+            "Set_variable": {
+              "runAfter": {
+                "NextHtml": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6ebca426-a2f3-4d46-b74d-7970b355b5db"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "WorkingHtml",
+                "value": "@{replace(\n  outputs('NextHtml'),\n  concat('{{', items('Tokens')?['key'], '}}'),\n  coalesce(string(items('Tokens')?['value']), '')\n)}"
+              }
+            },
+            "NextHtml": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "cb3d98d6-e777-4d79-9f31-87042859476c"
+              },
+              "type": "Compose",
+              "inputs": "@variables('WorkingHtml')"
+            }
+          },
+          "runAfter": {
+            "Insert_Footer": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2d42a1ec-6c5e-48b4-8729-7d8b1d1dc633"
+          },
+          "type": "Foreach"
+        },
+        "Json_Tokens": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "806958f3-be23-4201-8e25-e6dc7ff00142"
+          },
+          "type": "Compose",
+          "inputs": "@json(triggerBody()?['text_1'])"
+        },
+        "Initialize_Email_Body": {
+          "runAfter": {
+            "Get_Email_Footer": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1126e399-8e25-463f-8748-5bd99a749ab5"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "WorkingHtml",
+                "type": "string",
+                "value": "@{replace(\n    first(body('Get_Email_Shell_2')?['value'])?['new_body'],\n    '{{BODY_HTML}}',\n    first(body('Get_Requested_Template_2')?['value'])?['new_body']\n)}"
+              }
+            ]
+          }
+        },
+        "Initialize_Email_Subject": {
+          "runAfter": {
+            "Tokens": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1bc15aef-a036-4b2a-acef-14f512095d65"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "EmailSubject",
+                "type": "string",
+                "value": "@{first(body('Get_Requested_Template_2')?['value'])?['new_subject']}"
+              }
+            ]
+          }
+        },
+        "Tokens_2": {
+          "foreach": "@outputs('Json_Tokens')",
+          "actions": {
+            "Next_Subject": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "9700e77d-f805-4ce1-8414-fa85d0022f73"
+              },
+              "type": "Compose",
+              "inputs": "@variables('EmailSubject')"
+            },
+            "Set_variable_2": {
+              "runAfter": {
+                "Next_Subject": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "aeca2159-288c-45f3-a7da-eb2188bc95e2"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "EmailSubject",
+                "value": "@{replace(\n  outputs('Next_Subject'),\n  concat('{{', items('Tokens_2')?['key'], '}}'),\n  coalesce(string(items('Tokens_2')?['value']), '')\n)}"
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_Email_Subject": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cd99ce8b-0af0-47a9-a7ab-63ad35f31235"
+          },
+          "type": "Foreach"
+        },
+        "Get_Email_Header": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fe7c2964-f08c-4084-b158-fcbe65960fc5"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemnotificationtemplates",
+              "$filter": "new_templatekey eq 'standard-header'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_Email_Footer": {
+          "runAfter": {
+            "Get_Email_Header": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "38a5517e-337c-4a70-9603-b0a93b7a0b90"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemnotificationtemplates",
+              "$filter": "new_templatekey eq 'standard-footer'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Insert_Header": {
+          "runAfter": {
+            "NextEmailBody1": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d44abd63-b037-4141-ab0a-54480f77903c"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "WorkingHtml",
+            "value": "@{replace(\n    outputs('NextEmailBody1'),\n  '{{HEADER_HTML}}',\n    coalesce(\n      first(body('Get_Email_Header') ? ['value']) ? ['new_body'],\n      ''\n    )\n)}"
+          }
+        },
+        "Insert_Footer": {
+          "runAfter": {
+            "NextEmailBody2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0e68acc8-3a33-4a00-9ba6-7cbc747cb752"
+          },
+          "type": "SetVariable",
+          "inputs": {
+            "name": "WorkingHtml",
+            "value": "@{replace(\n    outputs('NextEmailBody2'),\n    '{{FOOTER_HTML}}',\n    coalesce(\n        first(body('Get_Email_Footer')?['value'])?['new_body'],\n        ''\n    )\n)\n}"
+          }
+        },
+        "NextEmailBody1": {
+          "runAfter": {
+            "Initialize_Email_Body": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c082cff0-150f-4244-97a5-caea856d6113"
+          },
+          "type": "Compose",
+          "inputs": "@variables('WorkingHtml')"
+        },
+        "NextEmailBody2": {
+          "runAfter": {
+            "Insert_Header": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "80d9560d-7040-4f8c-936c-42582221f302"
+          },
+          "type": "Compose",
+          "inputs": "@variables('WorkingHtml')"
+        },
+        "Get_Requested_Template_2": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c63a26e8-ae44-4dee-97d4-66fa48d3f239"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemnotificationtemplates",
+              "$filter": "new_templatekey eq '@{triggerBody()['text']}'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_Email_Shell_2": {
+          "runAfter": {
+            "Standard_Email_Shell_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "93cfd815-4966-43cc-88b3-5e4b99d68c1f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemnotificationtemplates",
+              "$filter": "new_templatekey eq 'standard-shell'"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "Get_Email_Shell_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "aea22180-99df-40bf-8658-278b439f4cfb"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_Email_Shell_2')"
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Get_Requested_Template_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "20e3a6dd-2d1d-4f0a-b6bf-3df881515fbb"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_Requested_Template_2')"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

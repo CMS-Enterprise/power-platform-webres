@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{d40eae5c-ada9-402e-a8da-73f3406a7043}</formid>
+    <IntroducedVersion>1.0.0.7</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form maxWidth="1920">
+      <tabs>
+        <tab id="{3e67df41-e4f3-49bd-b212-12e25786e519}" name="tab_1" showlabel="false">
+          <labels>
+            <label description="Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="33%">
+              <sections>
+                <section id="{de0d5e8f-4e35-4bbc-85bd-9ee5cf7997da}" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{0c9363eb-527a-d91d-5552-80de78538791}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Which form needs edits?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_whichformneedsedits" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="cr69a_whichformneedsedits" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{019a807c-2640-407e-9494-8e99d58ab262}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="What changes are needed" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_changes_needed" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_changes_needed" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{87219697-323d-4c71-ac7b-0060fdeb142d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Additional Information" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_additionalinformation" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_additionalinformation" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7dcce2bd-ed85-2d2e-d536-71785e520789}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Admin Notes" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_adminnotes" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_adminnotes" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="{21ffadc8-2670-4641-b527-5d6421059fe9}" name="tab_1_column_2_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{3c33d72c-ae10-9446-1ceb-e0076089c74c}" showlabel="true" locklevel="0" visible="false">
+                        <labels>
+                          <label description="System Intake Admin" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintakeadmin" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintakeadmin" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{61db4129-c759-4170-b645-0cb30ce0e4f8}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="System Intake" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintake" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="{b9d8ed91-2594-4ae0-b274-7522a4a3792b}" name="tab_1_column_3_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{30099080-31ed-4ca0-b925-a1dad34598ec}" showlabel="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <formLibraries>
+        <Library name="easi_editRequestQuickCreate" libraryUniqueId="{861c5e45-c31b-bd2c-ce5d-ba264870c8e3}" />
+      </formLibraries>
+      <DisplayConditions Order="1">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Edit Request - Quick Create" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

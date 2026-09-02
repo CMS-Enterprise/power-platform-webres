@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppModule>
+  <UniqueName>new_InitialITGO</UniqueName>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <WebResourceId>58d614ed-988a-f011-b4cc-001dd8062d4a</WebResourceId>
+  <OptimizedFor></OptimizedFor>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <FormFactor>1</FormFactor>
+  <ClientType>4</ClientType>
+  <NavigationType>0</NavigationType>
+  <AppModuleComponents>
+    <AppModuleComponent type="1" schemaName="account" />
+    <AppModuleComponent type="1" schemaName="cr69a_additionalcontact" />
+    <AppModuleComponent type="1" schemaName="cr69a_businesscase" />
+    <AppModuleComponent type="1" schemaName="cr69a_businesscasesolution" />
+    <AppModuleComponent type="1" schemaName="cr69a_closerequest" />
+    <AppModuleComponent type="1" schemaName="cr69a_document" />
+    <AppModuleComponent type="1" schemaName="cr69a_editrequest" />
+    <AppModuleComponent type="1" schemaName="cr69a_estimatedlifecyclecost" />
+    <AppModuleComponent type="1" schemaName="cr69a_flowtrigger" />
+    <AppModuleComponent type="1" schemaName="cr69a_fundingsources" />
+    <AppModuleComponent type="1" schemaName="cr69a_intakestaging" />
+    <AppModuleComponent type="1" schemaName="cr69a_lifecycleids" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakeadmin" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakeadministrator" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestagingbusinesscase" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestagingcontact" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestagingcontractnumber" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestagingdocument" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestagingeditrequests" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestagingestimatedlifecycleco" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestagingfundingsource" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestaginggrbdiscussion" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestaginggrbpresentationlinks" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestaginggrbreviewer" />
+    <AppModuleComponent type="1" schemaName="cr69a_systemintakestaginglinkedsystems" />
+    <AppModuleComponent type="1" schemaName="easi_contractnumber" />
+    <AppModuleComponent type="1" schemaName="new_activitylogs" />
+    <AppModuleComponent type="1" schemaName="new_cedarsystem" />
+    <AppModuleComponent type="1" schemaName="new_governancetasklist" />
+    <AppModuleComponent type="1" schemaName="new_lcidactivitylog" />
+    <AppModuleComponent type="1" schemaName="new_stagecedarsystem" />
+    <AppModuleComponent type="1" schemaName="new_systemintake" />
+    <AppModuleComponent type="1" schemaName="new_systemlink" />
+    <AppModuleComponent type="1" schemaName="new_systemnotificationtemplate" />
+    <AppModuleComponent type="60" id="{55854c7e-ff52-f111-bec6-001dd8055bb1}" />
+    <AppModuleComponent type="60" id="{28a7541b-0853-f111-bec6-001dd8055bb1}" />
+    <AppModuleComponent type="62" schemaName="new_InitialITGO" />
+  </AppModuleComponents>
+  <AppModuleRoleMaps>
+    <Role id="{236750cd-45ae-4939-ab12-b24b920ced93}" />
+    <Role id="{627090ff-40a3-4053-8790-584edc5be201}" />
+    <Role id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+  </AppModuleRoleMaps>
+  <LocalizedNames>
+    <LocalizedName description="IT Governance" languagecode="1033" />
+  </LocalizedNames>
+  <appelements>
+    <appelement uniquename="cr69a_new_InitialITGO_canvasappid_cr69a_initialitgodefaultcommandlibrary_86e7a">
+      <canvasappid>
+        <name>cr69a_initialitgodefaultcommandlibrary_86e7a</name>
+      </canvasappid>
+      <iscustomizable>1</iscustomizable>
+      <name>cr69a_new_InitialITGO_canvasappid_cr69a_initialitgodefaultcommandlibrary_86e7a</name>
+    </appelement>
+    <appelement uniquename="cr69a_new_InitialITGO_canvasappid_cr69a_systemintakeadmintools_0f36a">
+      <canvasappid>
+        <name>cr69a_systemintakeadmintools_0f36a</name>
+      </canvasappid>
+      <iscustomizable>1</iscustomizable>
+      <name>cr69a_new_InitialITGO_canvasappid_cr69a_systemintakeadmintools_0f36a</name>
+    </appelement>
+  </appelements>
+  <appsettings>
+    <appsetting settingdefinitionid.uniquename="AppChannel">
+      <iscustomizable>1</iscustomizable>
+      <value>1</value>
+    </appsetting>
+    <appsetting settingdefinitionid.uniquename="appcopilotenabled">
+      <iscustomizable>1</iscustomizable>
+      <value>2</value>
+    </appsetting>
+    <appsetting settingdefinitionid.uniquename="MobileCommandingImprovements2022Tablet">
+      <iscustomizable>1</iscustomizable>
+      <value>true</value>
+    </appsetting>
+  </appsettings>
+</AppModule>

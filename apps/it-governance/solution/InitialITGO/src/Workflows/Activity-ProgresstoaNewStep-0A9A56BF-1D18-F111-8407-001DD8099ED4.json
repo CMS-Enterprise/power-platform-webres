@@ -1,0 +1,478 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_6649a"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "IT Governance Team Email (new_ITGovernanceTeamEmail)": {
+          "defaultValue": "It_Governance@cms.hhs.gov",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_ITGovernanceTeamEmail"
+          }
+        },
+        "AppId (new_AppId)": {
+          "defaultValue": "110e68fa-41bf-4a23-a577-e58b353d60c7",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_AppId",
+            "description": "Current Application ID"
+          }
+        },
+        "OrgBaseUrl (new_OrgBaseUrl)": {
+          "defaultValue": "https://itgovernancedev.crm9.dynamics.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_OrgBaseUrl",
+            "description": "The base URL for the current environment"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "d1901f38-b091-4839-b9f8-f109ed087b2b"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "ActivityLogID",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_Activity_Log": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5a227064-ea7a-44b3-a6a3-b61370dc3d6c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_activitylogses",
+              "recordId": "@triggerBody()['text']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Status_Map": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "c61071c6-5f05-451a-b841-974cbafa1d7c"
+          },
+          "type": "Compose",
+          "inputs": "@json('{\n  \"971270000\":\"Your Intake Request is under review by the Governance Team.\",\n  \"971270001\":\"The Governance Team has requested a draft Business Case.\",\n  \"100000001\":\"A GRT Meeting is being scheduled.\",\n  \"971270002\":\"A GRT Meeting regarding this Intake Request is in progress.\",\n  \"971270008\":\"An LCID is currently being processed for your Intake Request.\",\n  \"971270003\":\"Administrators have requested a Final Business Case.\",\n  \"100000002\":\"A GRB Review is being scheduled.\",\n  \"100000003\":\"Business Case edits have been requested.\",\n  \"971270004\":\"The admin team is awaiting the results of the GRB Review.\",\n  \"971270005\":\"The Governance Review Board is reviewing the final Business case and recommendations.\",\n  \"971270009\":\"Your Intake Request has been marked as Finished.\"\n}')"
+        },
+        "Get_Request": {
+          "runAfter": {
+            "If_GRB_Review_Meeting": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "757e44b6-3f7d-4308-8e6b-cd2901c30a17"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "recordId": "@outputs('Get_Activity_Log')?['body/_new_systemintake_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_Requester": {
+          "runAfter": {
+            "Get_Request": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a0e365e1-aa10-44d5-8836-d2d92cc318c9"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "systemusers",
+              "recordId": "@outputs('Get_Request')?['body/_cr69a_requester_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Request_Link": {
+          "runAfter": {
+            "Get_Requester": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "de173fd6-331e-42e2-b698-f2b6061b4a9a"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=new_systemintake',\n  '&id=', outputs('Get_Request')?['body/new_systemintakeid']\n)"
+        },
+        "Review_Link": {
+          "runAfter": {
+            "Request_Link": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "790cdbf1-12a4-4010-ac51-00d5afd6bd5e"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=cr69a_systemintakeadmin',\n  '&id=', outputs('Get_Activity_Log')?['body/_new_adminreview_value']\n)"
+        },
+        "Tokens": {
+          "runAfter": {
+            "Review_Link": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "58867386-c40f-40cd-91b5-be0a2b8e5ad5"
+          },
+          "type": "Compose",
+          "inputs": [
+            {
+              "key": "RequestName",
+              "value": "@{outputs('Get_Request')?['body/new_name']}"
+            },
+            {
+              "key": "Step",
+              "value": "@{outputs('Get_Activity_Log')?['body/new_process_target_step@OData.Community.Display.V1.FormattedValue']}"
+            },
+            {
+              "key": "OptionalMeetingDateMessage",
+              "value": "@variables('OptionalMeetingDateMessage')"
+            },
+            {
+              "key": "Feedback",
+              "value": "@{outputs('Get_Activity_Log')?['body/new_requester_feedback']}"
+            },
+            {
+              "key": "RequesterName",
+              "value": "@{outputs('Get_Requester')?['body/fullname']}"
+            },
+            {
+              "key": "SystemIntakeRequestLink",
+              "value": "@{outputs('Request_Link')}"
+            },
+            {
+              "key": "SystemIntakeAdminLink",
+              "value": "@{outputs('Review_Link')}"
+            },
+            {
+              "key": "ITGovernanceInboxAddress",
+              "value": "@{parameters('IT Governance Team Email (new_ITGovernanceTeamEmail)')}"
+            },
+            {
+              "key": "AdditionalInfo",
+              "value": "@{outputs('Get_Activity_Log')?['body/new_additionalinformation']}"
+            }
+          ]
+        },
+        "StringTokens": {
+          "runAfter": {
+            "Tokens": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cc80f9d1-733f-44a8-8c25-5355e2360b2d"
+          },
+          "type": "Compose",
+          "inputs": "@string(outputs('Tokens'))"
+        },
+        "Run_a_Child_Flow": {
+          "runAfter": {
+            "StringTokens": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ba8a07fc-1d28-4104-a424-2982106eea49"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "574e9e7e-a80e-f111-8407-001dd809993d"
+            },
+            "body": {
+              "text": "progress-to-new-step",
+              "text_1": "@outputs('StringTokens')"
+            }
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Send_an_email_(V2)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "baba1cb5-d364-4e5a-b88f-0a7de37efd41"
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "success": "@{true}"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "Success",
+                  "x-ms-dynamically-added": true,
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "Send_an_email_(V2)": {
+          "runAfter": {
+            "Run_a_Child_Flow": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "05fa7b46-f198-4802-a4db-43bdc9e04bd6"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_Requester')?['body/internalemailaddress']",
+              "emailMessage/Subject": "@body('Run_a_Child_Flow')?['emailsubject']",
+              "emailMessage/Body": "<p>@{body('Run_a_Child_Flow')?['emailbody']}</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "If_GRT_Meeting": {
+          "actions": {
+            "Update_a_row": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "74574a5e-75ee-4e35-b50c-6228dc8448f0"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_systemintakeadmins",
+                  "recordId": "@outputs('Get_Activity_Log')?['body/_new_adminreview_value']",
+                  "item/cr69a_grtmeetingdate": "@outputs('Get_Activity_Log')?['body/new_grtmeetingdate']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Set_Optional_Meeting_Date_Message_for_GRT": {
+              "runAfter": {
+                "Update_a_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "51fc4a8b-2390-42de-baf4-fc291fef416e"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "OptionalMeetingDateMessage",
+                "value": "<br />\n<div class=\"no-margin\">\n    <strong>GRT Meeting Date:</strong>\n    @{formatDateTime(outputs('Get_Activity_Log')?['body/new_grtmeetingdate'], 'dddd, MMMM d, yyyy \\a\\t h:mm tt')}\n</div>"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_Activity_Log": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_Activity_Log')?['body/new_process_target_step']",
+                  971270002
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_Activity_Log')?['body/new_grtmeetingdate']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "93de73d1-28f9-4506-9b55-0de52f8716d9"
+          },
+          "type": "If"
+        },
+        "If_GRB_Review_Meeting": {
+          "actions": {
+            "Update_a_row_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "9bd004b1-6a2e-446e-8ec8-cb883697886c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_systemintakeadmins",
+                  "recordId": "@outputs('Get_Activity_Log')?['body/_new_adminreview_value']",
+                  "item/cr69a_grbreviewmeetingdate": "@outputs('Get_Activity_Log')?['body/new_grbreviewmeetingdate']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Set_Optional_Meeting_Date_Message_for_GRB": {
+              "runAfter": {
+                "Update_a_row_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "cca9417e-bde1-4667-a819-0d8634e8ac27"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "OptionalMeetingDateMessage",
+                "value": "<br />\n<div class=\"no-margin\">\n    <strong>GRB Meeting Date:</strong>\n    @{formatDateTime(outputs('Get_Activity_Log')?['body/new_grbreviewmeetingdate'], 'dddd, MMMM d, yyyy \\a\\t h:mm tt')}\n</div>"
+              }
+            }
+          },
+          "runAfter": {
+            "If_GRT_Meeting": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@outputs('Get_Activity_Log')?['body/new_process_target_step']",
+                  971270004
+                ]
+              },
+              {
+                "not": {
+                  "equals": [
+                    "@outputs('Get_Activity_Log')?['body/new_grbreviewmeetingdate']",
+                    "@null"
+                  ]
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "337d87d5-256a-4ae3-97e2-236ebe188db4"
+          },
+          "type": "If"
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "Status_Map": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2d507e79-b091-48ba-8125-9873b9cf8ead"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "OptionalMeetingDateMessage",
+                "type": "string",
+                "value": "\"\""
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

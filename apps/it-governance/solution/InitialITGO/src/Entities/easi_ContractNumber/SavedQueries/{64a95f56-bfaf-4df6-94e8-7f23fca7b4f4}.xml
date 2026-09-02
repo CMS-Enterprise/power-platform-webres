@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{64a95f56-bfaf-4df6-94e8-7f23fca7b4f4}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="easi_name" select="1" icon="1" preview="1">
+        <row name="result" id="easi_contractnumberid">
+          <cell name="easi_contractnumber" width="138" />
+          <cell name="easi_contractor" width="100" />
+          <cell name="easi_periodofperformancestart" width="197" />
+          <cell name="easi_periodofperformanceend" width="193" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="easi_contractnumber">
+          <attribute name="easi_contractnumberid" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="easi_contractnumber" />
+          <attribute name="easi_contractor" />
+          <attribute name="easi_periodofperformanceend" />
+          <attribute name="easi_periodofperformancestart" />
+          <order attribute="easi_contractnumber" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.36</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Contract Numbers" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

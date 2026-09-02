@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{4fc13290-6449-436b-8f69-1e0aefe95e59}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{fb0131af-a8d6-43fe-860b-7725a020de8b}" IsUserDefined="1">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{3a47fcd8-a220-4442-85a8-98181cc4a52b}">
+                  <labels>
+                    <label description="General" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{e4b35a16-eb79-4e61-be59-214eb6fbeccc}">
+                        <labels>
+                          <label description="id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_recordid" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_recordid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fd04a831-bcc2-418b-9fe7-f29b54af7c3c}">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4cc0c202-e55f-4267-951d-3ba193785fa7}">
+                        <labels>
+                          <label description="user_id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_userid" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_userid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f0c778e4-f713-483c-a112-c9c77419c52b}">
+                        <labels>
+                          <label description="system_intake_id" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintakeid" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_systemintakeid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{745fc6e0-0598-4aff-ad05-c4e63a7973ff}">
+                        <labels>
+                          <label description="voting_role" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_votingrole" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_votingrole" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{76959d0a-a3bd-4ebd-8cd5-1a1bc30273a2}">
+                        <labels>
+                          <label description="grb_role" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_grbrole" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_grbrole" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e8c5c0c7-104f-4811-8ffe-2143262e3dce}">
+                        <labels>
+                          <label description="created_by" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_createdby" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_createdby" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{45918135-7b69-494c-b68f-fbdb0bb14a0c}">
+                        <labels>
+                          <label description="created_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_createdat" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_createdat" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3df1afdd-b474-4248-9b8f-c543ef2a0851}">
+                        <labels>
+                          <label description="modified_by" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_modifiedby" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_modifiedby" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{082555f6-e2af-4efe-9612-a458155c5e8c}">
+                        <labels>
+                          <label description="modified_at" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_modifiedat" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_modifiedat" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{aa9dbfe4-11fe-4bac-9554-164d737d07e8}">
+                        <labels>
+                          <label description="vote" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_vote" classid="{3ef39988-22bb-4f0b-bbbe-64b5a3748aee}" datafieldname="cr69a_vote" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b75deb83-3694-4ec2-871d-30de2ef56552}">
+                        <labels>
+                          <label description="vote_comment" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_votecomment" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="cr69a_votecomment" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{660f4dec-8100-43e3-898b-2aedb19850ec}">
+                        <labels>
+                          <label description="date_voted" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_datevoted" classid="{5b773807-9fb2-42db-97c3-7a91eff8adff}" datafieldname="cr69a_datevoted" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.Activate.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.AddExistingStandard.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.Assign.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.Deactivate.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.DocumentTemplate.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.ExportSelectedToExcel.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.ExportSelectedToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.ExportToExcel.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.RefreshButton.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.RunReport.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.SendSelected.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.SendSelected" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.Sharing.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.Sharing" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_businesscasesolution.WordTemplate.Hide" Location="Mscrm.SubGrid.cr69a_businesscasesolution.WordTemplate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

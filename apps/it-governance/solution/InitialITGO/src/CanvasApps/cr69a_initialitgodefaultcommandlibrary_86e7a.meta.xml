@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>cr69a_initialitgodefaultcommandlibrary_86e7a</Name>
+  <AppVersion>2026-06-11T18:38:47Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>3.26054.13.0</CreatedByClientVersion>
+  <MinClientVersion>0.0.0.0</MinClientVersion>
+  <Tags>{"primaryDeviceWidth":"1366","primaryDeviceHeight":"768","sienaVersion":"20260604T154043Z-3.26053.13.0","deviceCapabilities":"","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Tablet","publisherVersion":"3.25122.8","minimumRequiredApiVersion":"2.2.0","hasComponent":"true","hasUnlockedComponent":"true","isUnifiedRootApp":"false","showStatusBar":"false"}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>RGBA(251,101,60,1)</BackgroundColor>
+  <DisplayName>InitialITGO_DefaultCommandLibrary</DisplayName>
+  <Description xsi:nil="true"></Description>
+  <CommitMessage>Saved by Command designer.</CommitMessage>
+  <Publisher></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{}</ConnectionReferences>
+  <DatabaseReferences>{"default.cds":{"databaseDetails":{"referenceType":"Environmental","environmentName":"default.cds"},"dataSources":{"Requests":{"entitySetName":"new_systemintakes","logicalName":"new_systemintake"},"Edit Requests":{"entitySetName":"cr69a_editrequests","logicalName":"cr69a_editrequest"},"System Intake Reviews":{"entitySetName":"cr69a_systemintakeadmins","logicalName":"cr69a_systemintakeadmin"},"Life Cycle IDs":{"entitySetName":"cr69a_lifecycleidses","logicalName":"cr69a_lifecycleids"},"Documents":{"entitySetName":"cr69a_documents","logicalName":"cr69a_document"}}}}</DatabaseReferences>
+  <AppComponents>[]</AppComponents>
+  <AppComponentDependencies>[]</AppComponentDependencies>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>1</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <AdminControlBypassConsent>0</AdminControlBypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[{"logicalname":"new_systemintake","componenttype":1},{"logicalname":"cr69a_editrequest","componenttype":1},{"logicalname":"cr69a_systemintakeadmin","componenttype":1},{"logicalname":"cr69a_lifecycleids","componenttype":1},{"logicalname":"cr69a_document","componenttype":1}]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <BackgroundImageUri>/CanvasApps/cr69a_initialitgodefaultcommandlibrary_86e7a_BackgroundImageUri</BackgroundImageUri>
+  <DocumentUri>/CanvasApps/cr69a_initialitgodefaultcommandlibrary_86e7a_DocumentUri.msapp</DocumentUri>
+</CanvasApp>

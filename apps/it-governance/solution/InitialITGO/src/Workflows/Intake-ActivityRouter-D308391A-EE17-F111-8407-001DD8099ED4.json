@@ -1,0 +1,226 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "631c63a9-3bfd-4e72-8f71-9265c2f9612b"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 1,
+              "subscriptionRequest/entityname": "new_activitylogs",
+              "subscriptionRequest/scope": 4
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "6481f080-1755-437b-87d8-1e50379d7dcd"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body']"
+        },
+        "Switch": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "cases": {
+            "Progress_to_a_New_Step": {
+              "case": 216640000,
+              "actions": {
+                "Progress_to_a_New_Step_Child_Flow": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "117b645c-b67f-41c9-83e2-fc2f55668f35"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "0a9a56bf-1d18-f111-8407-001dd8099ed4"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_activitylogsid']"
+                    }
+                  }
+                }
+              }
+            },
+            "Issue_a_Life_Cycle_ID": {
+              "case": 216640001,
+              "actions": {
+                "Issue_a_Life_Cycle_ID_Child_Flow": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "1f5ecb1b-9483-4930-98ce-7c57a6aa8a5e"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "6bc5e4c4-1d18-f111-8407-001dd809993d"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_activitylogsid']"
+                    }
+                  }
+                }
+              }
+            },
+            "Not_an_IT_Governance_Request": {
+              "case": 216640002,
+              "actions": {
+                "Not_an_IT_Governance_Request_Child_Flow": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "100859b2-ae54-4bde-a1ec-be692ebf87b3"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "6ac5e4c4-1d18-f111-8407-001dd809993d"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_activitylogsid']"
+                    }
+                  }
+                }
+              }
+            },
+            "Not_Approved_by_GRB": {
+              "case": 216640003,
+              "actions": {
+                "Not_Approved_by_GRB": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "2d701633-970e-496a-9450-66de6433e85f"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "6cc5e4c4-1d18-f111-8407-001dd809993d"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_activitylogsid']"
+                    }
+                  }
+                }
+              }
+            },
+            "Close_Request": {
+              "case": 216640004,
+              "actions": {
+                "Close_Request_Child_Flow": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "50b5b09b-f8be-4968-8e9a-ba891756336b"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "2e7c4ac0-1d18-f111-8407-001dd809c7de"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_activitylogsid']"
+                    }
+                  }
+                }
+              }
+            },
+            "Edit_Request": {
+              "case": 216640005,
+              "actions": {
+                "No_Op_-_No_Activity_Required_on_Edit_Request": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "69eaa978-9d5f-414e-a5df-9d2aa6205348"
+                  },
+                  "type": "Compose",
+                  "inputs": "@null"
+                }
+              }
+            },
+            "Re-open_Request": {
+              "case": 216640006,
+              "actions": {
+                "Re-open_Request_Child_Flow": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "22b74c8b-0370-4e0e-8af1-830979828fe4"
+                  },
+                  "type": "Workflow",
+                  "inputs": {
+                    "host": {
+                      "workflowReferenceName": "69c5e4c4-1d18-f111-8407-001dd809993d"
+                    },
+                    "body": {
+                      "text": "@triggerOutputs()?['body/new_activitylogsid']"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "actions": {
+              "Terminate": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "ec393ccf-a3f6-447d-895f-d3beb9b0b08a"
+                },
+                "type": "Terminate",
+                "inputs": {
+                  "runStatus": "Failed",
+                  "runError": {
+                    "message": "Invalid Activity Type"
+                  }
+                }
+              }
+            }
+          },
+          "expression": "@triggerOutputs()?['body/cr3ee_activitytype']",
+          "metadata": {
+            "operationMetadataId": "88dd4da6-dd61-4dbf-8ced-7ccb0c1abd57"
+          },
+          "type": "Switch"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

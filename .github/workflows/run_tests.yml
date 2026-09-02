@@ -1,0 +1,33 @@
+name: Run Tests
+on:
+  workflow_call:
+    inputs:
+      skip_tests:
+        description: 'Skip tests'
+        type: boolean
+        required: false
+        default: false
+      continue_on_error:
+        description: 'Continue workflow on error'
+        type: boolean
+        required: false
+        default: false
+
+env:
+  GIT_HASH: ${{ github.sha }}
+  GIT_REF_NAME: ${{ github.ref }}
+
+jobs:
+  lint:
+    if: ${{ inputs.skip_tests == false && github.event_name != 'merge_group' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+      - uses: actions/setup-python@v7 # Python is required for pre-commit/action
+        with:
+          python-version: '3.9'
+      - name: Pre-commit checks
+        uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: --all-files    

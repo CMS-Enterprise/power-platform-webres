@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{65e897e5-3086-4580-8f19-26cb396d4d3f}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_documentid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestagingdocumentid">
+          <cell name="cr69a_documentid" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestagingdocument">
+          <attribute name="cr69a_systemintakestagingdocumentid" />
+          <attribute name="cr69a_documentid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_documentid" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="1" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Inactive System Intake - Staging Documents" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdtempSync, renameSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+} from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { createInterface } from "node:readline/promises";
@@ -15,9 +21,13 @@ import {
 
 async function main() {
   const repoRoot = process.cwd();
-  const { environmentUrl, solutionName, outputFolder } = loadSolutionConfig(repoRoot);
+  const { environmentUrl, solutionName, outputFolder } =
+    loadSolutionConfig(repoRoot);
   const pac = findPac();
-  if (!pac) throw new Error("PAC CLI was not found. Install Microsoft.PowerApps.CLI.Tool before exporting.");
+  if (!pac)
+    throw new Error(
+      "PAC CLI was not found. Install Microsoft.PowerApps.CLI.Tool before exporting.",
+    );
   requirePacVersion(pac);
 
   const localChanges = getWorkingTreeChanges(repoRoot, outputFolder);
@@ -34,22 +44,83 @@ async function main() {
 
   try {
     console.log(`Exporting '${solutionName}' from ${environmentUrl}`);
-    cloneSolution({ pac, environmentUrl, solutionName, outputFolder: unpackedFolder });
+    cloneSolution({
+      pac,
+      environmentUrl,
+      solutionName,
+      outputFolder: unpackedFolder,
+    });
+
+    // Customizations.xml includes opaque, environment-generated diagnostic data
+    // such as refresh-history URLs. This repository is a reviewable snapshot and
+    // is intentionally not used to repack or deploy the complete solution.
+    const customizationsPath = path.join(
+      unpackedFolder,
+      solutionName,
+      "src",
+      "Other",
+      "Customizations.xml",
+    );
+    rmSync(customizationsPath, { force: true });
+
+    // Environment-variable definitions are useful review metadata, but their
+    // runtime values are environment-specific and may contain sensitive data.
+    const environmentVariableDefinitionsPath = path.join(
+      unpackedFolder,
+      solutionName,
+      "src",
+      "environmentvariabledefinitions",
+    );
+    if (existsSync(environmentVariableDefinitionsPath)) {
+      for (const entry of readdirSync(environmentVariableDefinitionsPath, {
+        withFileTypes: true,
+      })) {
+        if (!entry.isDirectory()) continue;
+        rmSync(
+          path.join(
+            environmentVariableDefinitionsPath,
+            entry.name,
+            "environmentvariablevalues.json",
+          ),
+          { force: true },
+        );
+      }
+
+      // This definition embeds a complete environment-specific dataflow map in
+      // its default value, so retain it in deployment configuration instead.
+      rmSync(
+        path.join(
+          environmentVariableDefinitionsPath,
+          "new_DataflowConfiguration",
+        ),
+        { recursive: true, force: true },
+      );
+    }
 
     if (existsSync(outputFolder)) {
       const changes = getDirectoryChanges(outputFolder, unpackedFolder);
       if (!changes) {
-        console.log("The checked-out solution already matches the environment. No files changed.");
+        console.log(
+          "The checked-out solution already matches the environment. No files changed.",
+        );
         return;
       }
       console.log("\nIncoming solution changes:\n");
       console.log(changes);
     } else {
-      console.log(`\nThis is the initial export to ${path.relative(repoRoot, outputFolder)}.`);
+      console.log(
+        `\nThis is the initial export to ${path.relative(repoRoot, outputFolder)}.`,
+      );
     }
 
-    if (!(await confirm("\nReplace the checked-out solution with this export? (y/N) "))) {
-      console.log("Export cancelled. The checked-out solution was not changed.");
+    if (
+      !(await confirm(
+        "\nReplace the checked-out solution with this export? (y/N) ",
+      ))
+    ) {
+      console.log(
+        "Export cancelled. The checked-out solution was not changed.",
+      );
       return;
     }
 
@@ -61,8 +132,12 @@ async function main() {
       throw error;
     }
 
-    console.log(`Solution updated at ${path.relative(repoRoot, outputFolder)}.`);
-    console.log("Review the complete Git diff before staging or committing it.");
+    console.log(
+      `Solution updated at ${path.relative(repoRoot, outputFolder)}.`,
+    );
+    console.log(
+      "Review the complete Git diff before staging or committing it.",
+    );
   } finally {
     rmSync(stagingRoot, { recursive: true, force: true });
   }
@@ -70,7 +145,10 @@ async function main() {
 
 async function confirm(prompt) {
   if (!process.stdin.isTTY) return false;
-  const readline = createInterface({ input: process.stdin, output: process.stdout });
+  const readline = createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
   try {
     return /^y(es)?$/i.test((await readline.question(prompt)).trim());
   } finally {

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{4c9098e9-36c9-40b6-b331-5bd71e0c9812}</formid>
+    <IntroducedVersion>1.0.0.7</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form maxWidth="400">
+      <tabs>
+        <tab id="{3fe946da-1ac1-4715-8682-0c7721ff995e}" name="tab_1" showlabel="false">
+          <labels>
+            <label description="Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section id="{6f6dbd2e-5bc7-4cc6-b3c1-62b3d3d02da1}" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{b92dc2d6-b13c-5850-395e-0dec1d0d5792}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Why are you closing this request?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_whyareyouclosingthisrequest" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_whyareyouclosingthisrequest" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{62cb375c-809b-86a9-5d41-d467eead39b0}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Additional Information" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_additionalinformation" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_additionalinformation" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="6">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Close Request" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

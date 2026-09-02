@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Workflow WorkflowId="{a6cd0906-7fe3-40c1-afd5-991cb6a6527c}" Name="Governance Task List" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <XamlFileName>/Workflows/GovernanceTaskList-A6CD0906-7FE3-40C1-AFD5-991CB6A6527C.xaml</XamlFileName>
+  <Type>1</Type>
+  <Subprocess>0</Subprocess>
+  <Category>4</Category>
+  <Mode>0</Mode>
+  <Scope>4</Scope>
+  <OnDemand>0</OnDemand>
+  <TriggerOnCreate>1</TriggerOnCreate>
+  <TriggerOnDelete>0</TriggerOnDelete>
+  <AsyncAutodelete>0</AsyncAutodelete>
+  <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+  <StateCode>0</StateCode>
+  <StatusCode>1</StatusCode>
+  <processorder>100</processorder>
+  <RunAs>1</RunAs>
+  <UniqueName>new_governancetasklist</UniqueName>
+  <IsTransacted>1</IsTransacted>
+  <IntroducedVersion>1.0.0.3</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <BusinessProcessType>0</BusinessProcessType>
+  <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+  <ProcessTriggerScope>1</ProcessTriggerScope>
+  <ModernFlowType>0</ModernFlowType>
+  <PrimaryEntity>new_SystemIntake</PrimaryEntity>
+  <LocalizedNames>
+    <LocalizedName languagecode="1033" description="Governance Task List" />
+  </LocalizedNames>
+  <labels>
+    <steplabels id="{107e8813-a2e1-4245-a178-ea90ea422227}">
+      <label languagecode="1033" description="Fill Out The Intake Request Form" />
+    </steplabels>
+    <steplabels id="{ae81f685-5621-424e-b030-92beaeefbd0c}">
+      <label languagecode="1033" description="Request Type" />
+    </steplabels>
+    <steplabels id="{cd4018a9-6bf9-4cf0-84c5-d268b5e93974}">
+      <label languagecode="1033" description="Feedback From Initial Review" />
+    </steplabels>
+    <steplabels id="{aa764256-1b22-4d40-99ed-b13dff328b7a}">
+      <label languagecode="1033" description="Request Type" />
+    </steplabels>
+    <steplabels id="{b4fc1c85-6c00-4244-8ee2-6f1deedeee90}">
+      <label languagecode="1033" description="Prepare A Draft Business Case" />
+    </steplabels>
+    <steplabels id="{f2c99e67-4041-4e16-9b82-9b4453911299}">
+      <label languagecode="1033" description="Request Type" />
+    </steplabels>
+    <steplabels id="{f9e6f89a-3185-45f1-a078-ba59c8675448}">
+      <label languagecode="1033" description="Attend The GRT Meeting" />
+    </steplabels>
+    <steplabels id="{08dc2733-0f26-4492-9e04-fe67959393bc}">
+      <label languagecode="1033" description="Request Type" />
+    </steplabels>
+    <steplabels id="{754c462b-af16-45d6-a1ec-e45608a12d93}">
+      <label languagecode="1033" description="Submit Your Business Case For Final Approval" />
+    </steplabels>
+    <steplabels id="{977ea864-91e7-4adf-bc14-998533cbab6f}">
+      <label languagecode="1033" description="Request Type" />
+    </steplabels>
+    <steplabels id="{cd8cb240-ce90-4e61-9c3e-39da10a37c0f}">
+      <label languagecode="1033" description="Participate In GRB Review" />
+    </steplabels>
+    <steplabels id="{5a05e80a-41cc-4d5d-97e4-d03f64d1a77b}">
+      <label languagecode="1033" description="Request Type" />
+    </steplabels>
+    <steplabels id="{71176616-3a1a-45eb-9e12-0abc943eeb23}">
+      <label languagecode="1033" description="Decision And Next Steps" />
+    </steplabels>
+    <steplabels id="{6f7d43f5-c6c6-46af-931a-59995e7f3cef}">
+      <label languagecode="1033" description="Period of Performance Start" />
+    </steplabels>
+  </labels>
+</Workflow>

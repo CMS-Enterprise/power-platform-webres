@@ -1,0 +1,286 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7c24c"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_f4415"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "OrgBaseUrl (new_OrgBaseUrl)": {
+          "defaultValue": "https://icpg-dev.crm9.dynamics.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_OrgBaseUrl",
+            "description": "The base URL for the current environment"
+          }
+        },
+        "AppId (new_AppId)": {
+          "defaultValue": "bc878d88-0468-f011-bec2-001dd8062d4a",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_AppId",
+            "description": "Current Application ID"
+          }
+        },
+        "System Intake Process Steps (easi_system_intake_process_steps)": {
+          "defaultValue": {
+            "03453179-fd92-4999-982e-0fc525b86a0e": 971270000,
+            "0c3db864-35f9-49ce-a7e1-e265e540deb0": 971270001,
+            "c355d998-96cd-4873-85ff-3d1052c4f4be": 100000001,
+            "be335059-40b9-462e-a23d-95230ffdcf62": 971270002,
+            "718e0607-8a6e-49ba-9a4a-49206872a6b2": 971270003,
+            "d4e16d87-9627-4f8d-884e-77ffde02e6f2": 100000002,
+            "c378d655-6ae8-41db-ab7f-03ebae9b20ab": 971270004,
+            "e1f9ea62-9f11-4f11-953d-678fd2efde2e": 971270007,
+            "475078e5-28c2-4eb2-abc0-c7854f35959a": 971270008,
+            "11d19247-9a31-490c-a8f1-6097f0838cfe": 971270009
+          },
+          "type": "Object",
+          "metadata": {
+            "schemaName": "easi_system_intake_process_steps"
+          }
+        }
+      },
+      "triggers": {
+        "When_Admin_Task_List_is_modified": {
+          "metadata": {
+            "operationMetadataId": "625ccb80-b057-4662-a2c8-7da87beded6d"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "new_admingovernancetasklist",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "activestageid, statecode"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "7f35e8f6-ccc4-42ed-87a1-dfaa4744fdb9"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body']"
+        },
+        "Get_a_row_by_ID_(System_Intake_Admin)": {
+          "runAfter": {
+            "UpdateStep": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fdd322a0-5409-429b-877c-91abf5e974b7"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_systemintakeadmins",
+              "recordId": "@triggerOutputs()?['body/_bpf_cr69a_systemintakeadminid_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "UpdateSystemIntakeRequest": {
+          "runAfter": {
+            "Update_a_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "270a6e8f-6264-460f-990f-4de948c3d01c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "recordId": "@outputs('Get_a_row_by_ID_(System_Intake_Admin)')?['body/_cr69a_systemintake_value']",
+              "item/cr69a_admingovernancetasklist": "@if(equals(triggerOutputs()?['body/statuscode'], 2), 971270005,\n  if(equals(triggerOutputs()?['body/_activestageid_value'], '03453179-fd92-4999-982e-0fc525b86a0e'), 971270000,\n    if(equals(triggerOutputs()?['body/_activestageid_value'], '0c3db864-35f9-49ce-a7e1-e265e540deb0'), 971270001,\n      if(equals(triggerOutputs()?['body/_activestageid_value'], 'c355d998-96cd-4873-85ff-3d1052c4f4be'), 100000001,\n        if(equals(triggerOutputs()?['body/_activestageid_value'], 'be335059-40b9-462e-a23d-95230ffdcf62'), 971270002,\n          if(equals(triggerOutputs()?['body/_activestageid_value'], '475078e5-28c2-4eb2-abc0-c7854f35959a'), 971270008,\n            if(equals(triggerOutputs()?['body/_activestageid_value'], '718e0607-8a6e-49ba-9a4a-49206872a6b2'), 971270003,\n              if(equals(triggerOutputs()?['body/_activestageid_value'], 'd4e16d87-9627-4f8d-884e-77ffde02e6f2'), 100000002,\n                if(equals(triggerOutputs()?['body/_activestageid_value'], 'c378d655-6ae8-41db-ab7f-03ebae9b20ab'), 971270004,\n                  if(equals(triggerOutputs()?['body/_activestageid_value'], '11d19247-9a31-490c-a8f1-6097f0838cfe'), 971270009,\n                    if(equals(triggerOutputs()?['body/_activestageid_value'], 'e1f9ea62-9f11-4f11-953d-678fd2efde2e'), 971270007,\n                      -1\n                    )\n                  )\n                )\n              )\n            )\n          )\n        )\n      )\n    )\n  )\n)",
+              "item/cr69a_readyforreview": false
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Get_a_row_by_ID_(System_Intake_Admin)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d4c5858b-b217-41dd-b8c8-b00896834e21"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_a_row_by_ID_(System_Intake_Admin)')"
+        },
+        "Get_a_row_by_ID_3": {
+          "runAfter": {
+            "Result_of_the_Update": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1760f696-29ed-49a2-b678-d860357dc49c"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "systemusers",
+              "recordId": "@outputs('UpdateSystemIntakeRequest')?['body/_cr69a_requester_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose_4": {
+          "runAfter": {
+            "Get_a_row_by_ID_3": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1e3f710e-e1e9-4cf2-84dc-0b224bd6e43a"
+          },
+          "type": "Compose",
+          "inputs": "@outputs('Get_a_row_by_ID_3')?['body/internalemailaddress']"
+        },
+        "Send_an_email_(V2)": {
+          "runAfter": {
+            "SystemIntakeRequestLink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a0e1ae2e-1c47-40c4-a3f4-42c8a5b40b6f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_a_row_by_ID_3')?['body/internalemailaddress']",
+              "emailMessage/Subject": "Your System Intake Request has Changed Status",
+              "emailMessage/Body": "<p>Your System Intake Request has Changed Statuses.</p>\n<p>@{if(\n  not(empty(outputs('Get_a_row_by_ID_(System_Intake_Admin)')?['body/cr69a_feedbackfortherequesterdraftbusinesscase'])),\n  outputs('Get_a_row_by_ID_(System_Intake_Admin)')?['body/cr69a_feedbackfortherequesterdraftbusinesscase'],\n  ''\n)\n}</p>\n<p> @{if(equals(triggerOutputs()?['body/statuscode'], 2), 'A Decision has been made for this request.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], '03453179-fd92-4999-982e-0fc525b86a0e'), 'Your Intake Request is under review by the Governance Team.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], '0c3db864-35f9-49ce-a7e1-e265e540deb0'), 'The Governance Team has requested a draft Business Case.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], 'c355d998-96cd-4873-85ff-3d1052c4f4be'), 'A GRT Meeting is being scheduled.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], 'be335059-40b9-462e-a23d-95230ffdcf62'), 'A GRT Meeting regarding this System Intake Request is in progress.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], '475078e5-28c2-4eb2-abc0-c7854f35959a'), 'An LCID is currently being processed for your System Intake Request.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], '718e0607-8a6e-49ba-9a4a-49206872a6b2'), 'Business Case edits have been requested.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], 'd4e16d87-9627-4f8d-884e-77ffde02e6f2'), 'A GRB Review is being scheduled.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], 'c378d655-6ae8-41db-ab7f-03ebae9b20ab'), 'The Governance Review Board is reviewing the final Business case and recommendations.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], '11d19247-9a31-490c-a8f1-6097f0838cfe'), 'Your System Intake Request has been marked as Finished.',\nif(equals(triggerOutputs()?['body/_activestageid_value'], 'e1f9ea62-9f11-4f11-953d-678fd2efde2e'), 'The review is complete and a final decision is pending.',\n-1\n)\n)\n)\n)\n)\n)\n)\n)\n)\n)\n)} Please follow this link to view the System Intake Request and view pertinent information:&nbsp;<a href=\"@{outputs('SystemIntakeRequestLink')}\">System Intake Request</a></p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "SystemIntakeRequestLink": {
+          "runAfter": {
+            "Compose_4": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "904a1a52-1966-4bb7-a97a-3970faee507d"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=new_systemintake',\n  '&id=', outputs('UpdateSystemIntakeRequest')?['body/new_systemintakeid']\n)"
+        },
+        "Result_of_the_Update": {
+          "runAfter": {
+            "UpdateSystemIntakeRequest": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3e85d650-6a3e-4bc5-86df-47d315f67503"
+          },
+          "type": "Compose",
+          "inputs": "@body('UpdateSystemIntakeRequest')"
+        },
+        "UpdateStep": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "d8cac233-89c9-445e-80bb-a4f23b043276"
+          },
+          "type": "Compose",
+          "inputs": "@if(equals(triggerOutputs()?['body/statuscode'], 2), 971270005, parameters('System Intake Process Steps (easi_system_intake_process_steps)')?[triggerOutputs()?['body/_activestageid_value']])"
+        },
+        "Update_a_row": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "53013f88-d687-45e3-b7d3-9dcbb2e21b69"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_systemintakeadmins",
+              "recordId": "@outputs('Get_a_row_by_ID_(System_Intake_Admin)')?['body/cr69a_systemintakeadminid']",
+              "item/cr69a_readyforreview": false
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,37 @@
+<appaction uniquename="cr3ee__UploadDocuments!1f85e3e25d0b423eae57cb0f79b638c7!new_InitialITGO!new_systemintake!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Upload Documents">
+    <label description="Upload Documents" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>new_systemintake</logicalname>
+  </contextentity>
+  <contextvalue>new_systemintake</contextvalue>
+  <fonticon>Attach</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>UploadDocuments!1f85e3e25d0b423eae57cb0f79b638c7</name>
+  <onclickeventjavascriptfunctionname>openIntakeFileUpload</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":5}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>ced4607f-3208-f111-8407-001dd809993d</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <sequence>100100005.5000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilityformulacomponentlibraryid>
+    <name>cr69a_initialitgodefaultcommandlibrary_86e7a</name>
+  </visibilityformulacomponentlibraryid>
+  <visibilityformulacomponentname>b5f7dbccb5a8445db672a27ea7ee51ce</visibilityformulacomponentname>
+  <visibilityformulafunctionname>Visible</visibilityformulafunctionname>
+  <visibilitytype>1</visibilitytype>
+</appaction>

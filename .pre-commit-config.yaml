@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+        name: Check YAML formatting
+      - id: detect-private-key
+        name: Check for private keys
+      # - id: end-of-file-fixer
+      #   if desired we can turn this on to require new lines for all or specific files
+      #   name: Add newlines to ends of files

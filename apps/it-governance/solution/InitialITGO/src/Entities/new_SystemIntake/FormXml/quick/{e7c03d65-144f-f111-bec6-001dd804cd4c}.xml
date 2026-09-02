@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{e7c03d65-144f-f111-bec6-001dd804cd4c}</formid>
+    <IntroducedVersion>1.0.0.102</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="ACBA75B7-97B6-4116-AA55-51312992B721" name="tab_1" showlabel="false" labelid="{6ced4a6a-178d-48d2-b6d7-6b3866d9b51e}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section id="AD49B5BF-256F-46A8-9C75-947146172EB9" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{c50d2754-3ea6-413d-a48a-76a96dd14040}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="C0550AC7-0F44-45A4-8EF5-D2911C0689D9" labelid="{598f2e19-812a-4a2e-8a9f-4e1c7df67c4c}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9499c41a-af44-4046-9fc8-1e8ba0d1610c}" locklevel="0" colspan="1" rowspan="1" labelid="{580efc00-e92e-4adb-bf7a-1c7e673e3e21}">
+                        <labels>
+                          <label description="Business or User Need" languagecode="1033" />
+                        </labels>
+                        <control id="new_businessoruserneed" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_businessoruserneed" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7cd98f6d-e366-4b94-8d14-ddee47898337}" locklevel="0" colspan="1" rowspan="1" labelid="{bb7c4764-5250-4fff-a973-d0238e2f84ef}">
+                        <labels>
+                          <label description="Internal or External Support Needed" languagecode="1033" />
+                        </labels>
+                        <control id="new_internalorexternalsupportneeded" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_internalorexternalsupportneeded" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f2ded938-3780-4f9f-8c57-363eb3e66af8}" locklevel="0" colspan="1" rowspan="1" labelid="{2de3dc6e-7d2b-479c-a2cc-bdd24308f1cf}">
+                        <labels>
+                          <label description="Current Process" languagecode="1033" />
+                        </labels>
+                        <control id="new_currentprocess" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_currentprocess" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{de21b26e-9893-4802-abae-fcf4b8ace75c}" locklevel="0" colspan="1" rowspan="1" labelid="{689d0215-931f-45ef-8caa-d853ff5b329f}">
+                        <labels>
+                          <label description="How will CMS benefit?" languagecode="1033" />
+                        </labels>
+                        <control id="new_howwillcmsbenefit" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_howwillcmsbenefit" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{98df152b-8aea-4e69-853a-18505953226b}" locklevel="0" colspan="1" rowspan="1" labelid="{97000645-caf2-47bf-9b5f-e93737e339c5}">
+                        <labels>
+                          <label description="How does this align with organizational priorities" languagecode="1033" />
+                        </labels>
+                        <control id="new_organizationalpriorityalignment" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_organizationalpriorityalignment" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{25800ea8-3a38-44da-b7dd-72642a4a1dd7}" locklevel="0" colspan="1" rowspan="1" labelid="{9aabbf12-f9c8-4403-b818-b365aea0ecfd}">
+                        <labels>
+                          <label description="How will you determine success?" languagecode="1033" />
+                        </labels>
+                        <control id="new_successcriteria" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_successcriteria" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ec5bd6e8-c6fb-41b4-bd9b-ebabb26c1747}" locklevel="0" colspan="1" rowspan="1" labelid="{e614e2d2-5892-498a-8bfb-58879ee03980}">
+                        <labels>
+                          <label description="How will you implement GRT feedback?" languagecode="1033" />
+                        </labels>
+                        <control id="new_grt_feedback_implementation" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_grt_feedback_implementation" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{41a29ac8-fd0c-4ff1-a340-b4175287e95c}" rowspan="4" colspan="1" auto="false" labelid="{c7856491-559a-4f6a-abe2-4aac10ccb1e3}">
+                        <labels>
+                          <label description="Solutions" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="subgrid_solutions" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>new_cr69a_businesscasesolution_Request_new_systemintake</RelationshipName>
+                            <TargetEntityType>cr69a_businesscasesolution</TargetEntityType>
+                            <ViewId>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewId>
+                            <ViewIds>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="12" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Request - Business Case" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

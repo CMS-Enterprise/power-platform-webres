@@ -1,0 +1,338 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_7c24c"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_f4415"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "OrgBaseUrl (new_OrgBaseUrl)": {
+          "defaultValue": "https://icpg-dev.crm9.dynamics.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_OrgBaseUrl",
+            "description": "The base URL for the current environment"
+          }
+        },
+        "AppId (new_AppId)": {
+          "defaultValue": "bc878d88-0468-f011-bec2-001dd8062d4a",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_AppId",
+            "description": "Current Application ID"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "e44c43dd-a645-4fa3-bd14-2aaf0b6df596"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "cr69a_systemintakeadmin",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "cr69a_lcidrequested"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "fbe3eb59-cc6d-48d5-8c8b-b6923658fc8a"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body']"
+        },
+        "Add_a_new_row": {
+          "runAfter": {
+            "Owner": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1620b326-f3bd-4c21-88f8-754293e5667e"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_lifecycleidses",
+              "item/cr69a_lcid": "@outputs('LCID')",
+              "item/cr69a_lcidexpiresat": "@triggerOutputs()?['body/cr69a_lcidexpirationdate']",
+              "item/cr69a_lcidscope": "@triggerOutputs()?['body/cr69a_scopeoflifecycleid']",
+              "item/ownerid@odata.bind": "@outputs('Owner')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Initialize_variable": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "70d69b1b-c3ef-4a3a-96cc-7001d003da67"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "varPrefix",
+                "type": "string",
+                "value": "@{concat('LC-', formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Eastern Standard Time'), 'yyyy'), '-')}"
+              }
+            ]
+          }
+        },
+        "List_rows": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0a880349-42b0-4640-9e85-bbd04b352f58"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_lifecycleidses",
+              "$select": "cr69a_lcid",
+              "fetchXml": "<fetch mapping='logical' returntotalrecordcount='true'>\n  <entity name='cr69a_lifecycleids'>\n    <attribute name='cr69a_lcid' />\n    <attribute name='cr69a_lifecycleidsid' />\n  </entity>\n</fetch>"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "NextSequence": {
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f9a9b8f5-ebff-4e6f-b490-9bd9ce6900f6"
+          },
+          "type": "Compose",
+          "inputs": "@add(int(outputs('List_rows')?['body/@Microsoft.Dynamics.CRM.totalrecordcount']), 1)"
+        },
+        "LCID": {
+          "runAfter": {
+            "NextSequence": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "32d6c7fd-1d9f-4728-85c1-974bca7ffc32"
+          },
+          "type": "Compose",
+          "inputs": "@concat(variables('varPrefix'), outputs('NextSequence'))"
+        },
+        "Update_a_row": {
+          "runAfter": {
+            "FormattedLifeCycleIDLookup": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7472cd5b-2738-4576-832b-05c336676c94"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "cr69a_systemintakeadmins",
+              "recordId": "@triggerOutputs()?['body/cr69a_systemintakeadminid']",
+              "item/cr69a_LCID@odata.bind": "@outputs('FormattedLifeCycleIDLookup')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Owner": {
+          "runAfter": {
+            "LCID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "646bf5f3-f70a-469f-9430-d257b35af3a5"
+          },
+          "type": "Compose",
+          "inputs": "@concat('/systemusers(', triggerOutputs()?['body/_cr69a_lcidrequestedby_value'], ')')"
+        },
+        "FormattedLifeCycleIDLookup": {
+          "runAfter": {
+            "Add_a_new_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "b10075c0-547e-4895-8fe5-a24566ca6198"
+          },
+          "type": "Compose",
+          "inputs": "@concat('/cr69a_lifecycleidses(', outputs('Add_a_new_row')?['body/cr69a_lifecycleidsid'], ')')"
+        },
+        "Get_a_row_by_ID": {
+          "runAfter": {
+            "Update_a_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3e09f660-f70f-4d76-9a3c-e403c41bc1eb"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "recordId": "@triggerOutputs()?['body/_cr69a_systemintake_value']"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_a_row_by_ID_2": {
+          "runAfter": {
+            "UpdateSystemIntakeRequest": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5ebf3a88-0e5a-4616-948e-9b3fd55e9c54"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "systemusers",
+              "recordId": "@outputs('Get_a_row_by_ID')?['body/_cr69a_requester_value']",
+              "$select": "internalemailaddress"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Send_an_email_(V2)": {
+          "runAfter": {
+            "SystemIntakeRequestLink": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8a277681-9d0e-43d0-82ba-8b1e426f8197"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@outputs('Get_a_row_by_ID_2')?['body/internalemailaddress']",
+              "emailMessage/Subject": "CMS System Intake: An LCID has been issued for your system intake request",
+              "emailMessage/Body": "<p>An LCID has been issued for your system intake request.</p>\n\n<p>Please follow this link to view the System Intake Request and view pertinent information:&nbsp;<a href=\"@{outputs('SystemIntakeRequestLink')}\">System Intake Request</a></p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "UpdateSystemIntakeRequest": {
+          "runAfter": {
+            "Get_a_row_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "817e2b82-3edd-4c36-aa25-1d378838b48e"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "recordId": "@outputs('Get_a_row_by_ID')?['body/new_systemintakeid']",
+              "item/cr69a_LCID@odata.bind": "@outputs('FormattedLifeCycleIDLookup')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "SystemIntakeRequestLink": {
+          "runAfter": {
+            "Get_a_row_by_ID_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5e87b568-598d-4352-9bc1-f19b83b19a1a"
+          },
+          "type": "Compose",
+          "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=new_systemintake',\n  '&id=', outputs('UpdateSystemIntakeRequest')?['body/new_systemintakeid']\n)"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

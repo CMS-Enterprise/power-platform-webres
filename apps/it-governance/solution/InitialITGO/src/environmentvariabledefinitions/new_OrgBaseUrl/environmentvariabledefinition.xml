@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="new_OrgBaseUrl">
+  <description default="The base URL for the current environment">
+    <label description="The base URL for the current environment" languagecode="1033" />
+  </description>
+  <displayname default="OrgBaseUrl">
+    <label description="OrgBaseUrl" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.3</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

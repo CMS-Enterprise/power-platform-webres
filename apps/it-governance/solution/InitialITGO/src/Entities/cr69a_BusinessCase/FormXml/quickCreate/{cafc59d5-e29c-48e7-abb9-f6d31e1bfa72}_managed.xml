@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{cafc59d5-e29c-48e7-abb9-f6d31e1bfa72}</formid>
+    <IntroducedVersion>1.0.0.7</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="{23501aa9-791c-4725-93fb-37e706fa9415}" name="tab_1" showlabel="false">
+          <labels>
+            <label description="Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="33%">
+              <sections>
+                <section id="{6b0b6a8e-e087-40f3-9e8d-0842f8352554}" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{785caec3-e6cb-bb66-1046-a67205742311}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Request Title" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requesttitle" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_requesttitle" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7e216c27-8525-2d91-75b8-1e76d7aa005d}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Contract or Request Acronym" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_contractorrequestacronym" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_contractorrequestacronym" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{80967364-6b26-6911-352a-b1146d8433ba}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0d5c8c19-83d7-68b8-51b2-9547b9b176c5}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Requester Phone Number" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requesterphonenumber" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_requesterphonenumber" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="{e92d8041-1aed-4327-af5c-a0ce97f4161f}" name="tab_1_column_2_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{7ee72546-c0b4-b33a-e3ba-6b97c7ae2d12}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Business Case or User Need" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_businesscaseoruserneed" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_businesscaseoruserneed" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5d1339e3-0669-46dd-9a97-f9eb611cfa6c}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Collaboration Needed" languagecode="1033" />
+                        </labels>
+                        <control id="easi_collaboration_needed" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="easi_collaboration_needed" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d2249548-dbe3-e6ad-8369-3ea897413a39}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Recommended Work Support" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_recommendedworksupport" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_recommendedworksupport" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2372a9e5-e444-85ce-72cb-6cbc5a77da5d}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Current Process" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_currentprocess" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_currentprocess" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3b15d450-2deb-bc5b-9490-52665ed16e16}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="CMS Benefit" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cmsbenefit" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_cmsbenefit" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b5d9c4a9-54d5-2e81-6c9e-0b6a896084e3}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Align with Organizational Priorities" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alignwithorganizationalpriorities" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_alignwithorganizationalpriorities" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e73db0e8-31b5-8712-5a8c-dddc656b56bd}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="How will you determine success?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_howwillyoudeterminesuccess" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_howwillyoudeterminesuccess" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a67eac93-b878-a200-0d43-52813e90337c}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="How will you implement GRT feedback?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_howwillyouimplementgrtfeedback" classid="{E0DECE4B-6FC8-4a8f-A065-082708572369}" datafieldname="cr69a_howwillyouimplementgrtfeedback" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="{377442ad-b325-4f99-9da4-829ef108f9f5}" name="tab_1_column_3_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0">
+                  <labels>
+                    <label description="section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{64d10495-7266-ac75-00ae-cedadd4a4452}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Preferred Solution" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_preferredsolution" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_preferredsolution" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e7e079e9-a672-a146-ea23-667ebdb4ac2a}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Alternative A" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternativea" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_alternativea" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{006ca354-1ba3-6c7e-8a93-4d23030416cd}" showlabel="true" locklevel="0">
+                        <labels>
+                          <label description="Alternative B" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_alternativeb" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_alternativeb" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="1">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="New Form" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

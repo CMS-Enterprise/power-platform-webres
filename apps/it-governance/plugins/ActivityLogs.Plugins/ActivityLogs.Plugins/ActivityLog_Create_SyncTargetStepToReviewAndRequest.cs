@@ -6,6 +6,7 @@ namespace SystemIntake.Plugins
     public class ActivityLog_Create_SyncTargetStepToReviewAndRequest : IPlugin
     {
         private const string ActivityLogEntity = "new_activitylogs";
+        private const string BatchIdField = "cr3ee_batchid";
 
         // Activity Log fields
         private const string TargetStepField = "new_process_target_step"; // Choice (global)
@@ -91,6 +92,15 @@ namespace SystemIntake.Plugins
                     target.LogicalName,
                     target.Id
                 );
+
+                object batchId;
+                if (target.Attributes.TryGetValue(BatchIdField, out batchId)
+                    && batchId != null
+                    && (!(batchId is string) || !string.IsNullOrWhiteSpace((string)batchId)))
+                {
+                    tracing?.Trace("ActivityLog_Create_SyncTargetStepToReviewAndRequest: Batch ID is populated; bypassing synchronization for migrated data.");
+                    return;
+                }
 
                 var reviewRef = target.GetAttributeValue<EntityReference>(ReviewLookupField);
                 var requestRef = target.GetAttributeValue<EntityReference>(RequestLookupField);

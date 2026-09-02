@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{327da401-8003-f111-8407-001dd8099ed4}</formid>
+    <IntroducedVersion>1.0.0.49</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="F931FFE2-B873-473F-8F95-9502F0AA3F5E" name="tab_1" showlabel="false" labelid="{32e20ae9-db84-4774-a699-9ba1d2269e5f}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="34%">
+              <sections>
+                <section id="0C655D4E-C6E3-424E-9AF5-71E72D30D12E" name="section_title" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{1866731d-4c00-4596-801b-f2ab5a24c50f}" visible="true">
+                  <labels>
+                    <label description="Progress to a new step" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{4f7d3043-12c6-445e-b9e4-1b3cf235100e}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_activitytype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr3ee_activitytype" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{57a87e92-1d86-4385-85d0-f06fc8d35eaf}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="New or existing LCID?" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_lifecycleid" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr3ee_lifecycleid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e755b674-0c84-4735-a3da-feeee694c0a2}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_lcid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr3ee_lcid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{dd72bb32-c318-4bff-8773-5ef18484f067}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidtype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidtype" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c08639a7-ee9d-4c66-ab4d-28930aba58d7}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidislowit" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidislowit" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8fbe6544-4a0c-42cc-90cc-cec0b1a27dc8}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidisshortened" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidisshortened" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fd508237-b9a4-426b-9ed0-718b6cc0f9c0}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_lcidcomponent" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_lcidcomponent" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f0b07faf-a5b4-4281-9eec-5291f16bf2bc}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_expirationdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr3ee_expirationdate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f479d490-51c5-41e0-a549-fd8494d6dd1b}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_scopeofthelifecycleid" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_scopeofthelifecycleid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{64f8c3f0-52df-4e2d-b6a8-5e5c985c4867}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_nextsteps" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_nextsteps" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{737a01c9-8c5c-4050-9530-263820e92d51}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_trbconsult" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr3ee_trbconsult" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{12f59393-8a28-4d76-b7f0-ed64a6c81006}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_projectcostbaseline" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_projectcostbaseline" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2437ab15-aaa3-42fa-b977-ece80aefeb1a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_reason" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_reason" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fc902e89-7995-4e43-b877-b3b4cceb1044}" locklevel="0" colspan="1" rowspan="1" labelid="{2ce5d946-0233-48d4-a69c-c7a050cb2bcc}">
+                        <labels>
+                          <label description="New IT Gov process step" languagecode="1033" />
+                        </labels>
+                        <control id="new_process_target_step" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_process_target_step" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b92d6349-99ae-4a2f-ad3f-24f235059fd6}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_grtmeetingdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="new_grtmeetingdate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1d361e82-b086-49d4-ab86-893e18dc49f1}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_grbreviewmeetingdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="new_grbreviewmeetingdate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e8c904ab-6bc0-4f62-9e4f-9148e553f6d6}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_whyareyouclosingthisrequest" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_whyareyouclosingthisrequest" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3bd502c6-71a5-49fc-baf9-a40759875780}" locklevel="0" colspan="1" rowspan="1" labelid="{65ce43e1-9a5b-471c-93bd-8eab631beca4}">
+                        <labels>
+                          <label description="Feedback for the requester" languagecode="1033" />
+                        </labels>
+                        <control id="new_requester_feedback" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_requester_feedback" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{87819907-c97a-46b0-a60e-be63b6a86846}" locklevel="0" colspan="1" rowspan="1" labelid="{1b72d77b-d742-45bc-b2e0-a2a00f0fe394}">
+                        <labels>
+                          <label description="Recommendations for the GRB" languagecode="1033" />
+                        </labels>
+                        <control id="new_recommendationsforthegrb" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_recommendationsforthegrb" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{54d1270e-239f-44f8-9631-35eb88c58aed}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_whyareyoureopeningthisrequest" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_whyareyoureopeningthisrequest" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d598aa1b-9f67-4758-b204-5c346d331536}" locklevel="0" colspan="1" rowspan="1" labelid="{f856d003-fef9-44ec-8b25-7b681bfb1fb1}">
+                        <labels>
+                          <label description="Additional Information" languagecode="1033" />
+                        </labels>
+                        <control id="new_additionalinformation" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_additionalinformation" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="02DECBA0-3AE2-484D-A19F-C5353AF4F4F2" name="tab_1_column_2_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{c024066a-658c-4fa3-996d-a8dc8ea1911b}" visible="false">
+                  <labels>
+                    <label description="Notification email (optional)" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="46FD66EA-B686-41D9-AAE0-C565BD78EC1F" name="tab_1_column_3_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{a1195d6d-99bf-4bc0-be12-7f3249fc39d3}">
+                  <labels>
+                    <label description="Admin" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{6f228f06-d264-4fab-bfaf-8d3f82a6a168}" locklevel="0" colspan="1" rowspan="1" labelid="{910dbe87-9483-4d05-a591-6486103a99bd}">
+                        <labels>
+                          <label description="Admin Note (optional)" languagecode="1033" />
+                        </labels>
+                        <control id="new_adminnote" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_adminnote" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0b79915e-667f-4f75-9e0f-95a4e1889cdf}" locklevel="0" colspan="1" rowspan="1" labelid="{3c8a03ad-951a-4ac1-af25-9e30c4152459}" visible="false">
+                        <labels>
+                          <label description="Request" languagecode="1033" />
+                        </labels>
+                        <control id="new_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_systemintake" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{99fc4896-09d0-4692-a1ff-565b2890c7f8}" locklevel="0" colspan="1" rowspan="1" labelid="{0ed2d217-4fa5-4305-966e-c2bb95098823}" visible="false">
+                        <labels>
+                          <label description="Review" languagecode="1033" />
+                        </labels>
+                        <control id="new_adminreview" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_adminreview" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d57e8596-6821-4476-814d-27baa324a551}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_activityby" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_activityby" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d1a13a49-60cd-48a8-8494-97b720855b64}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_activity" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_activity" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{be4a2bf3-e88f-4ebf-8e1d-15d1469e7425}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="new_activityon" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="new_activityon" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr3ee_activity_log_quick_create_script" libraryUniqueId="{7a4530b2-12bb-4604-86bd-4aef6013443a}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="onLoad" libraryName="cr3ee_activity_log_quick_create_script" handlerUniqueId="{2bd6e9a4-beda-42fb-8ae3-5d636f2389a3}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onchange" application="false" active="false" attribute="cr3ee_activitytype">
+          <Handlers>
+            <Handler functionName="onActivityTypeChange" libraryName="cr3ee_activity_log_quick_create_script" handlerUniqueId="{f8c7f35b-d471-4b17-ac13-9901f92ecc0b}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onchange" application="false" active="false" attribute="new_process_target_step">
+          <Handlers>
+            <Handler functionName="onProcessTargetStepChange" libraryName="cr3ee_activity_log_quick_create_script" handlerUniqueId="{760bc3ca-73f5-43a7-bf64-7883743f9ee6}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onchange" application="false" active="false" attribute="cr3ee_lifecycleid">
+          <Handlers>
+            <Handler functionName="onLifecycleIDSelectionChange" libraryName="cr3ee_activity_log_quick_create_script" handlerUniqueId="{9094fbb9-cd48-4639-ab9e-ba961aa103c6}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Quick Create" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

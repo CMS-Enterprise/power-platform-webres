@@ -1,0 +1,879 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_dataflows": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_shareddataflows_684e3"
+        },
+        "api": {
+          "name": "shared_dataflows"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "invoker",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_6649a"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "DataflowConfiguration (new_DataflowConfiguration)": {
+          "defaultValue": {
+            "EnvironmentId": "69e8387f-d121-ecfa-a34f-6e9d2e51754a-31c688f59-sovereign",
+            "Dataflows": {
+              "StageBusinessCases": "f3705023-fc18-4fb8-b2e3-65cde649d1c5",
+              "StageCedarSystems": "be05eb73-5c8c-42a2-864e-7b0ccee4a5cc",
+              "StageContacts": "e333a1e1-538b-44b1-8c2f-f78308a2fca8",
+              "StageContractNumbers": "d43aeee7-002c-432d-839a-9d6f6b30a2b6",
+              "StageDocuments": "79680d58-739e-4965-8227-bca139c59c1a",
+              "StageEditRequests": "e5c1354e-839f-465f-924c-012b59352f73",
+              "StageEstimatedLifecycleCosts": "f5f6c792-ccba-4986-b79d-2b5d5a3f93fd",
+              "StageFundingSources": "aa2ec5bd-7e5f-4ef7-80fb-2d6529074830",
+              "StageGRBDiscussionPosts": "fdd3b2cc-beb7-4a45-a3c0-a8d15ff2d374",
+              "StagePresentationLinks": "b69d0d03-c531-433f-8a9b-4772c735d16d",
+              "StageGRBReviewers": "c93013b9-6923-40bd-8c2b-e035d04cb2df",
+              "StageLinkedSystems": "6bc14932-5e6f-4ab1-8ac3-25639eb31284",
+              "StageSystemIntakes": "c522fa5c-4afc-4427-8d98-eaf1d185636e",
+              "CreateLCIDs": "c0ebdbb6-b78a-4d3f-b2bd-bc72d511fc4f",
+              "CreateCedarSystems": "6163a092-17d3-4781-9d12-ee7603f7b727",
+              "CreateRequests": "e031cd5e-fb29-4595-981e-6ee27ead2dc9",
+              "CreateReviews": "96254e12-b73c-4942-bbd5-be0b0e5a2ff2",
+              "LinkRequestsToReviews": "2943a1f0-2ce0-448a-8370-cd270de318b3",
+              "CreateFundingSources": "48e422b3-b641-4eb2-b9ba-9bd41cd10c02",
+              "LinkLCIDsToRequests": "ae28af50-288a-4471-8e5c-b0928a3df0f3",
+              "CreateAdditionalContacts": "a93a3a26-3d2b-4a24-88d5-a626901c87ee",
+              "CreateBusinessCasesAndSolutions": "59afc6ee-dd68-46e8-9cac-fd9658499f35",
+              "CreateDocuments": "d82dc5ca-4fd9-4a95-beaa-6f36ebf0d560",
+              "CreateEditRequests": "255c7656-9f96-490c-839e-8fb84d6e7a0e",
+              "CreateSystemLinks": "94eb33fd-20be-4e23-96c0-dd8b8e9ff292",
+              "UpdateContractNumbers": "a88bb0fe-486f-40da-8013-4e63e01fc407",
+              "CreateEstimatedLifecycleCosts": "9277f7d0-574b-4852-8181-450c3e4f12d5"
+            }
+          },
+          "type": "Object",
+          "metadata": {
+            "schemaName": "new_DataflowConfiguration"
+          }
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b1ab7ce1-ec50-43d9-a6be-540420416aa2"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "Initialize_variable": {
+          "runAfter": {
+            "Condition": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5ea14bf5-b1c5-4c2d-be93-2553ba2e699f"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Batch ID",
+                "type": "string",
+                "value": "@{guid()}"
+              }
+            ]
+          }
+        },
+        "Add_a_new_row": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a0cc2cc0-0359-4c7e-bfa8-02432d0da8a6"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "CreateRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "easi_migrationruns",
+              "item/easi_name": "@variables('Batch ID')",
+              "item/easi_batchid": "@variables('Batch ID')",
+              "item/easi_startedon": "@utcNow()",
+              "item/easi_migrationrunstatus": 100000000
+            },
+            "authentication": {
+              "type": "Raw",
+              "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+            }
+          }
+        },
+        "StageAllSystemIntakeData": {
+          "actions": {
+            "Stage_Business_Cases": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "96f16def-9ac3-4563-96b1-323470f925f4"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageBusinessCases']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Contacts": {
+              "runAfter": {
+                "Stage_Cedar_Systems": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "2e526e93-6af6-4019-b8ab-346959bbc48a"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageContacts']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Contract_Numbers": {
+              "runAfter": {
+                "Stage_Contacts": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bbe53b88-4822-41e9-8e65-03991f83de20"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageContractNumbers']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Documents": {
+              "runAfter": {
+                "Stage_Contract_Numbers": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "0b54352b-0917-4f33-b946-a7bcc5b3d745"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageDocuments']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Edit_Requests": {
+              "runAfter": {
+                "Stage_Documents": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "71a12f9b-40e8-4e97-bb59-e82a4db6050c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageEditRequests']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Estimated_Lifecycle_Costs": {
+              "runAfter": {
+                "Stage_Edit_Requests": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ec2e00bf-67f9-43d1-a3e1-e817f3435e11"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageEstimatedLifecycleCosts']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Funding_Sources": {
+              "runAfter": {
+                "Stage_Estimated_Lifecycle_Costs": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "68e12bae-b7d4-4d1c-8b48-ab158dda23c6"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageFundingSources']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_GRB_Discussion_Posts": {
+              "runAfter": {
+                "Stage_Funding_Sources": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "b0ead4b9-e821-44c1-a08e-02a63a84df5a"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageGRBDiscussionPosts']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Presentation_Links": {
+              "runAfter": {
+                "Stage_GRB_Discussion_Posts": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "8ad5399b-4fec-40f3-a495-b2b13c9a1f4a"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StagePresentationLinks']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_GRB_Reviewers": {
+              "runAfter": {
+                "Stage_Presentation_Links": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "8e0a5c3d-097a-4d82-96d2-4e2fb2babb1c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageGRBReviewers']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Linked_Systems": {
+              "runAfter": {
+                "Stage_GRB_Reviewers": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ef5a4ec8-5bf4-42aa-a8fc-820ffabe21e0"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageLinkedSystems']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_System_Intakes": {
+              "runAfter": {
+                "Stage_Linked_Systems": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9802d66d-0330-4e6c-a19a-6f9b164cd1c1"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageSystemIntakes']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Update_a_row": {
+              "runAfter": {
+                "Delay": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d11d4274-ca23-42db-8b82-de607ae3d5e3"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "easi_migrationruns",
+                  "recordId": "@outputs('Add_a_new_row')?['body/easi_migrationrunid']",
+                  "item/easi_migrationrunstatus": 100000001
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Send_an_email_(V2)": {
+              "runAfter": {
+                "Update_a_row": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "88324574-2b3a-42e7-9f49-58ef84ecc805"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "cooper.heinrichs@cms.hhs.gov",
+                  "emailMessage/Subject": "IT GO - Stage All Data Job Has Succeeded",
+                  "emailMessage/Body": "<p>Data has been staged.</p>",
+                  "emailMessage/Importance": "Normal"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Stage_Cedar_Systems": {
+              "runAfter": {
+                "Stage_Business_Cases": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "03425464-01eb-4d6a-8a8c-f524d4f54d95"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_dataflows",
+                  "operationId": "RefreshDataflow",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataflows"
+                },
+                "parameters": {
+                  "workspaceType": "Environment",
+                  "groupIdForRefreshDataflow": "@body('Parse_JSON')?['EnvironmentId']",
+                  "dataflowIdForRefreshDataflow": "@body('Parse_JSON')?['Dataflows']?['StageCedarSystems']"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delay": {
+              "runAfter": {
+                "Stage_System_Intakes": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "bd1e7007-9b70-4500-bbbe-f32d4e600d1e"
+              },
+              "type": "Wait",
+              "inputs": {
+                "interval": {
+                  "count": 3,
+                  "unit": "Minute"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Add_a_new_row": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c925352f-4426-4696-b74e-1154c480f276"
+          },
+          "type": "Scope"
+        },
+        "FailureLogging": {
+          "actions": {
+            "Update_a_row_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "cdf00143-b10b-428b-9efd-bd1b42f6dd6d"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "easi_migrationruns",
+                  "recordId": "@outputs('Update_a_row')?['body/easi_migrationrunid']",
+                  "item/easi_migrationrunstatus": 100000002
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Send_an_email_(V2)_2": {
+              "runAfter": {
+                "Update_a_row_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "fc6dd18c-4f10-4963-82b1-7bb7d3fd8ba8"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "cooper.heinrichs@cms.hhs.gov",
+                  "emailMessage/Subject": "Staging System Intake Data Job Has Failed",
+                  "emailMessage/Body": "<p>There was an error in the Stage All Data job for System Intakes.</p>",
+                  "emailMessage/Importance": "Normal"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "StageAllSystemIntakeData": [
+              "Skipped",
+              "TimedOut",
+              "Failed"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cd515337-d846-42d7-a40e-2e19acc5cdac"
+          },
+          "type": "Scope"
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c778b004-d838-4e8f-8b98-36a4558229f7"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@parameters('DataflowConfiguration (new_DataflowConfiguration)')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "EnvironmentId": {
+                  "type": "string"
+                },
+                "Dataflows": {
+                  "type": "object",
+                  "properties": {
+                    "StageBusinessCases": {
+                      "type": "string"
+                    },
+                    "StageCedarSystems": {
+                      "type": "string"
+                    },
+                    "StageContacts": {
+                      "type": "string"
+                    },
+                    "StageContractNumbers": {
+                      "type": "string"
+                    },
+                    "StageDocuments": {
+                      "type": "string"
+                    },
+                    "StageEditRequests": {
+                      "type": "string"
+                    },
+                    "StageEstimatedLifecycleCosts": {
+                      "type": "string"
+                    },
+                    "StageFundingSources": {
+                      "type": "string"
+                    },
+                    "StageGRBDiscussionPosts": {
+                      "type": "string"
+                    },
+                    "StagePresentationLinks": {
+                      "type": "string"
+                    },
+                    "StageGRBReviewers": {
+                      "type": "string"
+                    },
+                    "StageLinkedSystems": {
+                      "type": "string"
+                    },
+                    "StageSystemIntakes": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Preflight_Validation": {
+          "actions": {
+            "FindRunningMigrations": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "f0e47fd2-fdab-4c40-9562-cbb4c4111c94"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "easi_migrationruns",
+                  "$filter": "easi_migrationrunstatus eq 100000000"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "MigrationAlreadyRunning": {
+              "actions": {
+                "Append_to_array_variable": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "6aab6a28-963b-4937-b6ea-8fe21b60f782"
+                  },
+                  "type": "AppendToArrayVariable",
+                  "inputs": {
+                    "name": "PreflightErrors",
+                    "value": "A migration is already running."
+                  }
+                }
+              },
+              "runAfter": {
+                "Compose": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "greater": [
+                  "@length(outputs('FindRunningMigrations')?['body/value'])",
+                  0
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3f8b5544-bb2b-47ed-8183-74a62f8390a5"
+              },
+              "type": "If"
+            },
+            "Compose": {
+              "runAfter": {
+                "FindRunningMigrations": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "2edf06f6-b2b8-4d26-b0dd-246ff274a148"
+              },
+              "type": "Compose",
+              "inputs": "@outputs('FindRunningMigrations')?['body/value']"
+            }
+          },
+          "runAfter": {
+            "Initialize_PreflightErrors_Variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "417000be-c9ce-4d18-954d-19fca9db1de6"
+          },
+          "type": "Scope"
+        },
+        "Initialize_PreflightErrors_Variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1430b79a-8595-4727-8e45-db46cd205d30"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PreflightErrors",
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "Condition": {
+          "actions": {
+            "PreflightErrors": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "d09323a0-6cd2-4665-9b80-86f11010bccc"
+              },
+              "type": "Compose",
+              "inputs": "@variables('PreflightErrors')"
+            },
+            "Send_an_email_(V2)_3": {
+              "runAfter": {
+                "PreflightErrors": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9154d8e6-64d6-4152-ab2a-e84335ec4ac0"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "cooper.heinrichs@cms.hhs.gov",
+                  "emailMessage/Subject": "Migration Failed Preflight Validation",
+                  "emailMessage/Body": "<p>@{join(variables('PreflightErrors'), decodeUriComponent('%0A'))}</p>",
+                  "emailMessage/Importance": "Normal"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Terminate": {
+              "runAfter": {
+                "Send_an_email_(V2)_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "635d546e-7eb8-4b37-8b6e-f5b691f1d103"
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Failed"
+              }
+            }
+          },
+          "runAfter": {
+            "Preflight_Validation": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "greater": [
+              "@length(variables('PreflightErrors'))",
+              0
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "ed3349bb-6ea6-41db-bf54-8782395ca124"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

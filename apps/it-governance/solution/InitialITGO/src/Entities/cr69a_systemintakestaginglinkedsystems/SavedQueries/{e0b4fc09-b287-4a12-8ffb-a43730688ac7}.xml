@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{e0b4fc09-b287-4a12-8ffb-a43730688ac7}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_recordid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestaginglinkedsystemsid">
+          <cell name="cr69a_recordid" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>1</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestaginglinkedsystems">
+          <attribute name="cr69a_systemintakestaginglinkedsystemsid" />
+          <attribute name="cr69a_recordid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_recordid" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="System Intake - Staging Linked Systems Advanced Find View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

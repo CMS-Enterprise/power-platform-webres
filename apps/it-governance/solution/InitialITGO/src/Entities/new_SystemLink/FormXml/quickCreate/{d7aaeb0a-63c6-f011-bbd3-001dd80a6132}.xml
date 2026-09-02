@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{d7aaeb0a-63c6-f011-bbd3-001dd80a6132}</formid>
+    <IntroducedVersion>1.0.0.34</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="F931FFE2-B873-473F-8F95-9502F0AA3F5E" name="tab_1" showlabel="false" labelid="{cf10e409-ffbf-472a-ab46-141966ea2cbd}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="34%">
+              <sections>
+                <section id="0C655D4E-C6E3-424E-9AF5-71E72D30D12E" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{15d9a351-1ef6-40a2-b318-137216a462db}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="542FBFBE-0E4C-496C-8012-555DE6581923" labelid="{a79b75dd-2f84-4a58-9d81-2f7504839f4d}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3cb84637-4d0c-458e-8b2c-43b3aa7cf897}" locklevel="0" colspan="1" rowspan="1" labelid="{98bbfeee-2da8-4a7b-aa16-6f33508e7f4f}" visible="false">
+                        <labels>
+                          <label description="Name" languagecode="1033" />
+                        </labels>
+                        <control id="new_name" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_name" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{723a8bc1-4231-4aaa-afb8-e3b1051ffaaf}" locklevel="0" colspan="1" rowspan="1" labelid="{ca29d84a-b81a-467e-94f7-48967cfd73a8}" visible="false">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{16fcfcd0-4d38-4211-b2e5-7f186790ec82}" locklevel="0" colspan="1" rowspan="1" labelid="{73547a0a-029f-41df-ad17-a1df672d4a36}" visible="false">
+                        <labels>
+                          <label description="System Intake" languagecode="1033" />
+                        </labels>
+                        <control id="new_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_systemintake" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ab33055b-d96f-4ac7-bab1-6c443e221fbe}" locklevel="0" colspan="1" rowspan="1" labelid="{70fc3284-a5b8-45d1-8784-eee844991c1e}">
+                        <labels>
+                          <label description="System" languagecode="1033" />
+                        </labels>
+                        <control id="new_cedarsystem" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_cedarsystem" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{53ca16e7-5cea-48c0-ab05-979f06b101a6}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="System Relationship Type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemrelationshiptypemulti" classid="{4AA28AB7-9C13-4F57-A73D-AD894D048B5F}" datafieldname="cr69a_systemrelationshiptypemulti" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8f8d3d83-0e24-438c-a5b5-47b50a1796e8}" locklevel="0" colspan="1" rowspan="1" visible="true">
+                        <labels>
+                          <label description="Other System Description" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_othersystemdescription" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="cr69a_othersystemdescription" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="02DECBA0-3AE2-484D-A19F-C5353AF4F4F2" name="tab_1_column_2_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{4310fe36-0233-4bcb-9ce9-cc2582aa2b0e}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="266FE48D-4D04-4E9A-8C5A-7DEF9A2F059B" labelid="{92005565-bd0c-45f1-a3f4-1cf466a292b4}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="46FD66EA-B686-41D9-AAE0-C565BD78EC1F" name="tab_1_column_3_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{8da5ec83-6a76-436d-aaf9-72d2592b5b2b}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="07C04A4E-A482-45CC-BAB7-7FCA3CD02938" labelid="{e11b4b6a-b470-49c6-a25d-6bdab4cd2fa4}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr3ee_system_link_script" libraryUniqueId="{3b826620-6c9d-47dc-83a4-1cd32fb2f40f}" />
+      </formLibraries>
+      <events>
+        <event name="onchange" application="false" active="false" attribute="cr69a_systemrelationshiptypemulti">
+          <Handlers>
+            <Handler functionName="toggleOtherSystemDescription" libraryName="cr3ee_system_link_script" handlerUniqueId="{14b53230-40a9-485b-9b3b-0be58bdad3d1}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="toggleOtherSystemDescription" libraryName="cr3ee_system_link_script" handlerUniqueId="{2e988807-caff-4d86-acf9-1051d7c85645}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Quick Create" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

@@ -1,0 +1,439 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedoffice365_6649a"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "IT Governance Team Email (new_ITGovernanceTeamEmail)": {
+          "defaultValue": "It_Governance@cms.hhs.gov",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_ITGovernanceTeamEmail"
+          }
+        },
+        "AppId (new_AppId)": {
+          "defaultValue": "110e68fa-41bf-4a23-a577-e58b353d60c7",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_AppId",
+            "description": "Current Application ID"
+          }
+        },
+        "OrgBaseUrl (new_OrgBaseUrl)": {
+          "defaultValue": "https://itgovernancedev.crm9.dynamics.com",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_OrgBaseUrl",
+            "description": "The base URL for the current environment"
+          }
+        },
+        "Email Notification Recipients (new_EmailNotificationRecipients)": {
+          "defaultValue": "cooper.heinrichs@cms.hhs.gov",
+          "type": "String",
+          "metadata": {
+            "schemaName": "new_EmailNotificationRecipients",
+            "description": "The emails in this list will receive emails triggered by It Governance Request submissions and changes"
+          }
+        }
+      },
+      "triggers": {
+        "When_a_row_is_added,_modified_or_deleted": {
+          "metadata": {
+            "operationMetadataId": "c794595f-b3b5-4e4b-882e-168dbba14332"
+          },
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "SubscribeWebhookTrigger",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "subscriptionRequest/message": 3,
+              "subscriptionRequest/entityname": "cr69a_lifecycleids",
+              "subscriptionRequest/scope": 4,
+              "subscriptionRequest/filteringattributes": "cr3ee_scope,cr3ee_costbaseline,cr69a_retiresat,cr69a_lcidexpiresat,new_lcidcomponent,new_lcidislowit,new_lcidisshortened,new_lcidtype"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "2bb104ca-5f33-48ae-a813-c23a9e810f7b"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()?['body']"
+        },
+        "List_rows": {
+          "runAfter": {
+            "Formatted_Expiration_Date": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "a9bc2453-c6d0-4cd2-a2b4-ace8f9ee075f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "new_systemintakes",
+              "$filter": "_cr69a_lcid_value eq @{triggerOutputs()?['body/cr69a_lifecycleidsid']}"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Apply_to_each": {
+          "foreach": "@outputs('List_rows')?['body/value']",
+          "actions": {
+            "RequestLink": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "ed6f8354-9ff3-47a7-8545-65b5b8747cb8"
+              },
+              "type": "Compose",
+              "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=new_systemintake',\n  '&id=', items('Apply_to_each')?['new_systemintakeid']\n)"
+            },
+            "ReviewLink": {
+              "runAfter": {
+                "RequestLink": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "6f3cedcd-f73c-4aad-9e29-a032f287758a"
+              },
+              "type": "Compose",
+              "inputs": "@concat(\n  parameters('OrgBaseUrl (new_OrgBaseUrl)'),\n  '/main.aspx?appid=', parameters('AppId (new_AppId)'),\n  '&pagetype=entityrecord&etn=cr69a_systemintakeadmin',\n  '&id=', items('Apply_to_each')?['_cr69a_systemintakereview_value']\n)"
+            },
+            "Get_User": {
+              "runAfter": {
+                "ReviewLink": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "8c84e781-8287-4c7b-b0eb-55b95e5a3aeb"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "GetItem",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "systemusers",
+                  "recordId": "@items('Apply_to_each')?['_ownerid_value']"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Tokens": {
+              "runAfter": {
+                "Get_User": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e63b9e28-3087-4a43-b87b-8167524454fe"
+              },
+              "type": "Compose",
+              "inputs": [
+                {
+                  "key": "LifecycleID",
+                  "value": "@{triggerOutputs()?['body/cr69a_lcid']}"
+                },
+                {
+                  "key": "LifecycleIssuedAt",
+                  "value": "@{outputs('Formatted_Issue_Date')}"
+                },
+                {
+                  "key": "ITGovernanceInboxAddress",
+                  "value": "@{parameters('IT Governance Team Email (new_ITGovernanceTeamEmail)')}"
+                },
+                {
+                  "key": "LifecycleExpiresAt",
+                  "value": "@{outputs('Formatted_Expiration_Date')}"
+                },
+                {
+                  "key": "LifecycleScope",
+                  "value": "@{triggerOutputs()?['body/cr3ee_scope']}"
+                },
+                {
+                  "key": "LifecycleCostBaseline",
+                  "value": "@{triggerOutputs()?['body/cr3ee_costbaseline']}"
+                },
+                {
+                  "key": "NextSteps",
+                  "value": "@{items('Apply_to_each')?['cr3ee_nextsteps']}"
+                },
+                {
+                  "key": "AdditionalInfo",
+                  "value": "@{triggerOutputs()?['body/new_additionalinformation']}"
+                },
+                {
+                  "key": "LCIDType",
+                  "value": "@{triggerBody()?['_new_lcidtype_label']}"
+                },
+                {
+                  "key": "LCIDLowIT",
+                  "value": "@{triggerBody()?['_new_lcidislowit_label']}"
+                },
+                {
+                  "key": "LCIDShortened",
+                  "value": "@{triggerBody()?['_new_lcidisshortened_label']}"
+                },
+                {
+                  "key": "LCIDComponent",
+                  "value": "@{triggerBody()?['_new_lcidcomponent_label']}"
+                }
+              ]
+            },
+            "StringTokens": {
+              "runAfter": {
+                "Tokens": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "d764894a-965b-4104-8ee7-caa4dd27005a"
+              },
+              "type": "Compose",
+              "inputs": "@string(outputs('Tokens'))"
+            },
+            "Run_a_Child_Flow": {
+              "runAfter": {
+                "StringTokens": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "32315638-5627-4f41-b263-757a7595382c"
+              },
+              "type": "Workflow",
+              "inputs": {
+                "host": {
+                  "workflowReferenceName": "574e9e7e-a80e-f111-8407-001dd809993d"
+                },
+                "body": {
+                  "text": "lcid-update",
+                  "text_1": "@outputs('StringTokens')"
+                }
+              }
+            },
+            "Send_an_email_(V2)": {
+              "runAfter": {
+                "Run_a_Child_Flow": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4bbfc0f8-d3cf-40c1-8c6f-2fa75e46cd00"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "@outputs('Get_User')?['body/internalemailaddress']",
+                  "emailMessage/Subject": "@body('Run_a_Child_Flow')?['emailsubject']",
+                  "emailMessage/Body": "<p>@{body('Run_a_Child_Flow')?['emailbody']}</p>",
+                  "emailMessage/Importance": "Normal"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "bbebf29d-c437-4a1d-a974-aa01a4218045"
+          },
+          "type": "Foreach"
+        },
+        "Formatted_Issue_Date": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f822be82-a414-4aa7-9c94-b09e82c4ec9a"
+          },
+          "type": "Compose",
+          "inputs": "@formatDateTime(\n    convertTimeZone(triggerOutputs()?['body/cr69a_issuedat'],'UTC','Eastern Standard Time'),\n    'MMMM d, yyyy h:mm tt'\n)"
+        },
+        "Formatted_Expiration_Date": {
+          "runAfter": {
+            "Formatted_Issue_Date": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "3f99585e-a7db-409e-bbf5-4d03562c8b44"
+          },
+          "type": "Compose",
+          "inputs": "@formatDateTime(\n    convertTimeZone(triggerOutputs()?['body/cr69a_lcidexpiresat'],'UTC','Eastern Standard Time'),\n    'MMMM d, yyyy h:mm tt'\n)"
+        },
+        "String_Tokens_2": {
+          "runAfter": {
+            "Tokens_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8a7319f9-b654-4820-9e36-a0e2d93039f2"
+          },
+          "type": "Compose",
+          "inputs": "@string(outputs('Tokens_2'))"
+        },
+        "Run_a_Child_Flow_2": {
+          "runAfter": {
+            "String_Tokens_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "2195f10b-308e-440b-be27-f377745b0923"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "574e9e7e-a80e-f111-8407-001dd809993d"
+            },
+            "body": {
+              "text": "lcid-update",
+              "text_1": "@outputs('String_Tokens_2')"
+            }
+          }
+        },
+        "Send_an_email_(V2)_2": {
+          "runAfter": {
+            "Run_a_Child_Flow_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cae0b39f-8124-4297-974e-365d2d2abc83"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@parameters('Email Notification Recipients (new_EmailNotificationRecipients)')",
+              "emailMessage/Subject": "@{body('Run_a_Child_Flow_2')?['emailsubject']}1",
+              "emailMessage/Body": "<p>@{body('Run_a_Child_Flow_2')?['emailbody']}</p>",
+              "emailMessage/Importance": "Normal"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Tokens_2": {
+          "runAfter": {
+            "Apply_to_each": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "339f7009-7d3a-432b-be45-0d2d0f1ce347"
+          },
+          "type": "Compose",
+          "inputs": [
+            {
+              "key": "LifecycleID",
+              "value": "@{triggerOutputs()?['body/cr69a_lcid']}"
+            },
+            {
+              "key": "LifecycleIssuedAt",
+              "value": "@{outputs('Formatted_Issue_Date')}"
+            },
+            {
+              "key": "ITGovernanceInboxAddress",
+              "value": "@{parameters('IT Governance Team Email (new_ITGovernanceTeamEmail)')}"
+            },
+            {
+              "key": "LifecycleExpiresAt",
+              "value": "@{outputs('Formatted_Expiration_Date')}"
+            },
+            {
+              "key": "LifecycleScope",
+              "value": "@{triggerOutputs()?['body/cr3ee_scope']}"
+            },
+            {
+              "key": "LifecycleCostBaseline",
+              "value": "@{triggerOutputs()?['body/cr3ee_costbaseline']}"
+            },
+            {
+              "key": "AdditionalInfo",
+              "value": "@{triggerOutputs()?['body/new_additionalinformation']}"
+            },
+            {
+              "key": "LCIDType",
+              "value": "@{triggerBody()?['_new_lcidtype_label']}"
+            },
+            {
+              "key": "LCIDLowIT",
+              "value": "@{triggerBody()?['_new_lcidislowit_label']}"
+            },
+            {
+              "key": "LCIDShortened",
+              "value": "@{triggerBody()?['_new_lcidisshortened_label']}"
+            },
+            {
+              "key": "LCIDComponent",
+              "value": "@{triggerBody()?['_new_lcidcomponent_label']}"
+            }
+          ]
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{393b561d-050e-4b02-9589-f99cde94f257}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="new_action" select="1" icon="1" preview="1">
+        <row name="result" id="new_lcidactivitylogid">
+          <cell name="new_activitytype" width="118" />
+          <cell name="createdby" width="104" />
+          <cell name="createdon" width="125" />
+          <cell name="new_reason" width="100" />
+          <cell name="new_additionalinformation" width="171" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="new_lcidactivitylog">
+          <attribute name="new_lcidactivitylogid" />
+          <attribute name="createdon" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="new_activitytype" />
+          <attribute name="createdby" />
+          <attribute name="new_additionalinformation" />
+          <order attribute="createdon" descending="true" />
+          <attribute name="new_reason" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.74</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active LCID Activity Logs" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

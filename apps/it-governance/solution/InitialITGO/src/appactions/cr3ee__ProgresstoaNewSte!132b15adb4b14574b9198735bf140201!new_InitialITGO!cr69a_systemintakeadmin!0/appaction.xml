@@ -1,0 +1,34 @@
+<appaction uniquename="cr3ee__ProgresstoaNewSte!132b15adb4b14574b9198735bf140201!new_InitialITGO!cr69a_systemintakeadmin!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Progress to a New Step">
+    <label description="Progress to a New Step" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>cr69a_systemintakeadmin</logicalname>
+  </contextentity>
+  <contextvalue>cr69a_systemintakeadmin</contextvalue>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>ProgresstoaNewSte!132b15adb4b14574b9198735bf140201</name>
+  <onclickeventjavascriptfunctionname>window.ITGov_ProgressToNewStep</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":5}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>e20b4a1c-f717-f111-8407-001dd809993d</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>cr3ee__Actions!6bb3f16b78c249f5808ef6bb247483eb!new_InitialITGO!cr69a_systemintakeadmin!0</uniquename>
+  </parentappactionid>
+  <sequence>20000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

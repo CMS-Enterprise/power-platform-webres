@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{b1e8f41a-952b-4d76-8043-d6fee1eccd32}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_lcid" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_lifecycleidsid">
+          <cell name="cr69a_lcid" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_lifecycleids">
+          <attribute name="cr69a_lifecycleidsid" />
+          <attribute name="cr69a_lcid" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_lcid" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="1" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Inactive Life Cycle IDs" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

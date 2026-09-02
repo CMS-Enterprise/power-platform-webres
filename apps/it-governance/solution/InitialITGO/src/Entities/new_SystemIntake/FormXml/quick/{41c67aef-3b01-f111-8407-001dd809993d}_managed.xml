@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{41c67aef-3b01-f111-8407-001dd809993d}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="ACBA75B7-97B6-4116-AA55-51312992B721" name="tab_1" showlabel="false" labelid="{4cd84acd-ef51-4dda-8fdf-f6bb03525f58}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section id="AD49B5BF-256F-46A8-9C75-947146172EB9" name="section_business_case" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{313d6612-17ab-40be-8f48-dde1983372d0}">
+                  <labels>
+                    <label description="Business Case" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="C0550AC7-0F44-45A4-8EF5-D2911C0689D9" labelid="{ab4e6c97-53a3-4cfb-a3f5-e03b60d2765e}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ab683fa4-6aa9-45df-a809-f99ceadc7793}" locklevel="0" colspan="1" rowspan="1" labelid="{d127b7be-fed9-4f89-8fc3-17e0088f719c}">
+                        <labels>
+                          <label description="Business Case" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_businesscase" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_businesscase" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="6" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Intake Request - Business Cases" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

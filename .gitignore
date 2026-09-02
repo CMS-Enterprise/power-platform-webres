@@ -104,3 +104,12 @@ Thumbs.db`
 postman/*local*.json
 postman/*env*.json
 !postman/*example*.json
+
+# Power Platform export diagnostics may contain short-lived bearer credentials.
+# This repository keeps a reviewable solution snapshot, not a repackable export.
+apps/it-governance/solution/InitialITGO/src/Other/Customizations.xml
+
+# Keep environment-variable schemas, but exclude runtime values and the
+# environment-specific dataflow ID configuration from the review snapshot.
+apps/it-governance/solution/InitialITGO/src/environmentvariabledefinitions/**/environmentvariablevalues.json
+apps/it-governance/solution/InitialITGO/src/environmentvariabledefinitions/new_DataflowConfiguration/

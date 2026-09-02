@@ -1,0 +1,62 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "36e14391-b934-4f96-9798-5176a670ddc8"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          }
+        }
+      },
+      "actions": {
+        "HTTP": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "7acaace6-fec0-4ea8-acaf-2c1f3f6ea32e"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "GET",
+            "uri": "https://webmethods-apigw.cedarimpl.cms.gov/system/summary",
+            "headers": {
+              "Authorization": "Bearer ",
+              "Content-Type": "application/json"
+            }
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5aece0aa-381c-429e-b8f8-7cb3b55c8647"
+          },
+          "type": "Compose",
+          "inputs": "@body('HTTP')"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

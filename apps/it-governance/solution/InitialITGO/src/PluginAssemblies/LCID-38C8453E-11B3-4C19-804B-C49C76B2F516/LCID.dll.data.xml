@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="LCID, Version=1.0.4.0, Culture=neutral, PublicKeyToken=01150a5768a57460" PluginAssemblyId="38c8453e-11b3-4c19-804b-c49c76b2f516" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <FileName>/PluginAssemblies/LCID-38C8453E-11B3-4C19-804B-C49C76B2F516/LCID.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="LCIDActivityLogs.LcidUpdateCreateActivityLog, LCID, Version=1.0.4.0, Culture=neutral, PublicKeyToken=01150a5768a57460" PluginTypeId="e913b321-7bfc-4ca9-baf7-53f1f1b49872" Name="LCIDActivityLogs.LcidUpdateCreateActivityLog">
+      <FriendlyName>06e712a5-7174-48c5-bb4a-8cce408db64d</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

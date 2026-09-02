@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>1</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{38ad0ea8-3f86-433b-85dc-93aeba9906d4}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_title" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakeadminid">
+          <cell name="cr69a_title" width="300" />
+          <cell name="cr69a_decision" width="100" />
+          <cell name="cr69a_systemintake" width="100" />
+          <cell name="ownerid" width="100" />
+          <cell name="createdon" width="125" />
+          <cell name="cr69a_systemintakecomplete" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>4</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakeadmin">
+          <attribute name="cr69a_title" />
+          <attribute name="createdon" />
+          <order attribute="cr69a_title" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <filter type="or" isquickfindfields="1">
+            <condition attribute="cr69a_title" operator="like" value="{0}" />
+          </filter>
+          <attribute name="cr69a_systemintakecomplete" />
+          <attribute name="cr69a_systemintake" />
+          <attribute name="ownerid" />
+          <attribute name="cr69a_decision" />
+          <attribute name="cr69a_systemintakeadminid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Quick Find Active" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

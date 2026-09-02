@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{5e58f2d1-15b8-40c0-af2a-e6661470f423}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="cr69a_id" select="1" icon="1" preview="1">
+        <row name="result" id="cr69a_systemintakestagingbusinesscaseid">
+          <cell name="cr69a_id" width="300" />
+          <cell name="cr69a_eua_user_id" width="150" />
+          <cell name="cr69a_project_name" width="150" />
+          <cell name="cr69a_requester" width="150" />
+          <cell name="cr69a_requester_phone_number" width="150" />
+          <cell name="cr69a_business_owner" width="150" />
+          <cell name="cr69a_business_need" width="150" />
+          <cell name="cr69a_cms_benefit" width="150" />
+          <cell name="cr69a_priority_alignment" width="150" />
+          <cell name="cr69a_success_indicators" width="150" />
+          <cell name="cr69a_current_solution_summary" width="150" />
+          <cell name="cr69a_preferred_title" width="150" />
+          <cell name="cr69a_preferred_summary" width="150" />
+          <cell name="cr69a_preferred_acquisition_approach" width="150" />
+          <cell name="cr69a_preferred_pros" width="150" />
+          <cell name="cr69a_preferred_cons" width="150" />
+          <cell name="cr69a_preferred_cost_savings" width="150" />
+          <cell name="cr69a_alternative_a_title" width="150" />
+          <cell name="cr69a_alternative_a_summary" width="150" />
+          <cell name="cr69a_alternative_a_acquisition_approach" width="150" />
+          <cell name="cr69a_alternative_a_pros" width="150" />
+          <cell name="cr69a_alternative_a_cons" width="150" />
+          <cell name="cr69a_alternative_a_cost_savings" width="150" />
+          <cell name="cr69a_alternative_b_title" width="150" />
+          <cell name="cr69a_alternative_b_summary" width="150" />
+          <cell name="cr69a_alternative_b_acquisition_approach" width="150" />
+          <cell name="cr69a_alternative_b_pros" width="150" />
+          <cell name="cr69a_alternative_b_cons" width="150" />
+          <cell name="cr69a_alternative_b_cost_savings" width="150" />
+          <cell name="cr69a_system_intake" width="150" />
+          <cell name="cr69a_created_at" width="150" />
+          <cell name="cr69a_updated_at" width="150" />
+          <cell name="cr69a_status" width="150" />
+          <cell name="cr69a_preferred_hosting_type" width="150" />
+          <cell name="cr69a_preferred_hosting_location" width="150" />
+          <cell name="cr69a_preferred_hosting_cloud_service_type" width="150" />
+          <cell name="cr69a_preferred_has_ui" width="150" />
+          <cell name="cr69a_alternative_a_hosting_type" width="150" />
+          <cell name="cr69a_alternative_a_hosting_location" width="150" />
+          <cell name="cr69a_alternative_a_hosting_cloud_service_typ" width="150" />
+          <cell name="cr69a_alternative_a_has_ui" width="150" />
+          <cell name="cr69a_alternative_b_hosting_type" width="150" />
+          <cell name="cr69a_alternative_b_hosting_location" width="150" />
+          <cell name="cr69a_alternative_b_hosting_cloud_service_typ" width="150" />
+          <cell name="cr69a_alternative_b_has_ui" width="150" />
+          <cell name="cr69a_initial_submitted_at" width="150" />
+          <cell name="cr69a_last_submitted_at" width="150" />
+          <cell name="cr69a_archived_at" width="150" />
+          <cell name="cr69a_preferred_security_is_approved" width="150" />
+          <cell name="cr69a_preferred_security_is_being_reviewed" width="150" />
+          <cell name="cr69a_alternative_a_security_is_approved" width="150" />
+          <cell name="cr69a_alternative_a_security_is_being_reviewe" width="150" />
+          <cell name="cr69a_alternative_b_security_is_being_reviewe" width="150" />
+          <cell name="cr69a_collaboration_needed" width="150" />
+          <cell name="cr69a_project_acronym" width="150" />
+          <cell name="cr69a_response_to_grt_feedback" width="150" />
+          <cell name="cr69a_preferred_target_contract_award_date" width="150" />
+          <cell name="cr69a_preferred_target_completion_date" width="150" />
+          <cell name="cr69a_preferred_zero_trust_alignment" width="150" />
+          <cell name="cr69a_preferred_hosting_cloud_strategy" width="150" />
+          <cell name="cr69a_preferred_workforce_training_reqs" width="150" />
+          <cell name="cr69a_alternative_a_target_contract_award_dat" width="150" />
+          <cell name="cr69a_alternative_a_target_completion_date" width="150" />
+          <cell name="cr69a_alternative_a_zero_trust_alignment" width="150" />
+          <cell name="cr69a_alternative_a_hosting_cloud_strategy" width="150" />
+          <cell name="cr69a_alternative_a_workforce_training_reqs" width="150" />
+          <cell name="cr69a_alternative_b_target_contract_award_dat" width="150" />
+          <cell name="cr69a_alternative_b_target_completion_date" width="150" />
+          <cell name="cr69a_alternative_b_zero_trust_alignment" width="150" />
+          <cell name="cr69a_alternative_b_hosting_cloud_strategy" width="150" />
+          <cell name="cr69a_alternative_b_workforce_training_reqs" width="150" />
+          <cell name="cr69a_batchid" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="cr69a_systemintakestagingbusinesscase">
+          <attribute name="cr69a_id" />
+          <order attribute="cr69a_id" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="cr69a_eua_user_id" />
+          <attribute name="cr69a_project_name" />
+          <attribute name="cr69a_requester" />
+          <attribute name="cr69a_requester_phone_number" />
+          <attribute name="cr69a_business_owner" />
+          <attribute name="cr69a_business_need" />
+          <attribute name="cr69a_cms_benefit" />
+          <attribute name="cr69a_priority_alignment" />
+          <attribute name="cr69a_success_indicators" />
+          <attribute name="cr69a_current_solution_summary" />
+          <attribute name="cr69a_preferred_title" />
+          <attribute name="cr69a_preferred_summary" />
+          <attribute name="cr69a_preferred_acquisition_approach" />
+          <attribute name="cr69a_preferred_pros" />
+          <attribute name="cr69a_preferred_cons" />
+          <attribute name="cr69a_preferred_cost_savings" />
+          <attribute name="cr69a_alternative_a_title" />
+          <attribute name="cr69a_alternative_a_summary" />
+          <attribute name="cr69a_alternative_a_acquisition_approach" />
+          <attribute name="cr69a_alternative_a_pros" />
+          <attribute name="cr69a_alternative_a_cons" />
+          <attribute name="cr69a_alternative_a_cost_savings" />
+          <attribute name="cr69a_alternative_b_title" />
+          <attribute name="cr69a_alternative_b_summary" />
+          <attribute name="cr69a_alternative_b_acquisition_approach" />
+          <attribute name="cr69a_alternative_b_pros" />
+          <attribute name="cr69a_alternative_b_cons" />
+          <attribute name="cr69a_alternative_b_cost_savings" />
+          <attribute name="cr69a_system_intake" />
+          <attribute name="cr69a_created_at" />
+          <attribute name="cr69a_updated_at" />
+          <attribute name="cr69a_status" />
+          <attribute name="cr69a_preferred_hosting_type" />
+          <attribute name="cr69a_preferred_hosting_location" />
+          <attribute name="cr69a_preferred_hosting_cloud_service_type" />
+          <attribute name="cr69a_preferred_has_ui" />
+          <attribute name="cr69a_alternative_a_hosting_type" />
+          <attribute name="cr69a_alternative_a_hosting_location" />
+          <attribute name="cr69a_alternative_a_hosting_cloud_service_typ" />
+          <attribute name="cr69a_alternative_a_has_ui" />
+          <attribute name="cr69a_alternative_b_hosting_type" />
+          <attribute name="cr69a_alternative_b_hosting_location" />
+          <attribute name="cr69a_alternative_b_hosting_cloud_service_typ" />
+          <attribute name="cr69a_alternative_b_has_ui" />
+          <attribute name="cr69a_initial_submitted_at" />
+          <attribute name="cr69a_last_submitted_at" />
+          <attribute name="cr69a_archived_at" />
+          <attribute name="cr69a_preferred_security_is_approved" />
+          <attribute name="cr69a_preferred_security_is_being_reviewed" />
+          <attribute name="cr69a_alternative_a_security_is_approved" />
+          <attribute name="cr69a_alternative_a_security_is_being_reviewe" />
+          <attribute name="cr69a_alternative_b_security_is_being_reviewe" />
+          <attribute name="cr69a_collaboration_needed" />
+          <attribute name="cr69a_project_acronym" />
+          <attribute name="cr69a_response_to_grt_feedback" />
+          <attribute name="cr69a_preferred_target_contract_award_date" />
+          <attribute name="cr69a_preferred_target_completion_date" />
+          <attribute name="cr69a_preferred_zero_trust_alignment" />
+          <attribute name="cr69a_preferred_hosting_cloud_strategy" />
+          <attribute name="cr69a_preferred_workforce_training_reqs" />
+          <attribute name="cr69a_alternative_a_target_contract_award_dat" />
+          <attribute name="cr69a_alternative_a_target_completion_date" />
+          <attribute name="cr69a_alternative_a_zero_trust_alignment" />
+          <attribute name="cr69a_alternative_a_hosting_cloud_strategy" />
+          <attribute name="cr69a_alternative_a_workforce_training_reqs" />
+          <attribute name="cr69a_alternative_b_target_contract_award_dat" />
+          <attribute name="cr69a_alternative_b_target_completion_date" />
+          <attribute name="cr69a_alternative_b_zero_trust_alignment" />
+          <attribute name="cr69a_alternative_b_hosting_cloud_strategy" />
+          <attribute name="cr69a_alternative_b_workforce_training_reqs" />
+          <attribute name="cr69a_systemintakestagingbusinesscaseid" />
+          <attribute name="cr69a_batchid" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active System Intake - Staging Business Cases" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

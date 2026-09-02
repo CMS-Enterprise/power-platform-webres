@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{a4311e27-0c02-f111-8407-001dd809993d}</formid>
+    <IntroducedVersion>1.0.0.49</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="ACBA75B7-97B6-4116-AA55-51312992B721" name="tab_1" showlabel="false" labelid="{34c7a619-d280-4398-aebe-b802972bc086}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section id="AD49B5BF-256F-46A8-9C75-947146172EB9" name="tab_1_column_1_section_1" columns="1" showlabel="false" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{12b56383-9a6d-4777-a9d6-9cb18c682747}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="C0550AC7-0F44-45A4-8EF5-D2911C0689D9" labelid="{e352c075-c81e-4ca0-9de1-8396ca8d554a}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{600bcb59-9e35-4f6d-95d1-89e4150203b3}" locklevel="0" colspan="1" rowspan="1" labelid="{a21328ba-e17e-408b-9759-925c0b3a264e}">
+                        <labels>
+                          <label description="Contract/Request Title" languagecode="1033" />
+                        </labels>
+                        <control id="new_name" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_name" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{0c5c7756-40b4-4822-b43f-b1b1135c3d31}" locklevel="0" colspan="1" rowspan="1" labelid="{fc24de04-dc10-4a25-a61d-5d322e2c3325}">
+                        <labels>
+                          <label description="Project Acronym" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_projectacronym" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="cr69a_projectacronym" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2f4750de-b2a8-4e82-b3a4-e9e1ad49dd3f}" userspacer="true" showlabel="false" colspan="1" rowspan="1" labelid="{3809891e-e599-4d16-ad60-66e77ff4953b}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c6f7e0b5-c98f-48a8-a9cb-0604868ee369}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_business_need_multi" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_business_need_multi" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{614ae9cf-a304-4f1d-aa9f-09e29fa2b0e8}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_proposedsolution" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_proposedsolution" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{f76033aa-4ba1-4283-9bda-597d50612d9d}" userspacer="true" showlabel="false" colspan="1" rowspan="1" labelid="{013f4389-2b59-4837-97cc-bedbcde299ae}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c7dbf4b7-0e2a-4290-b591-fc40d092abb1}" locklevel="0" colspan="1" rowspan="1" labelid="{a3193dce-e842-4bb6-ba05-3dcda5945c12}">
+                        <labels>
+                          <label description="Where are you in the process?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_current_process_status" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_current_process_status" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{9e65f978-0366-4587-8cee-e6efb6f49c03}" locklevel="0" colspan="1" rowspan="1" labelid="{bea274d4-eaa2-4c9b-9a99-b3c749863f5f}">
+                        <labels>
+                          <label description="Do you need Enterprise Architecture support?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_enterprise_architecture_support" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_enterprise_architecture_support" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{45f784de-06d9-446f-8ee0-2ef312d0ed65}" locklevel="0" colspan="1" rowspan="1" labelid="{02c693b6-f09b-4bae-8888-b533f9dddbdf}">
+                        <labels>
+                          <label description="Does your request involve AI technologies?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_ai_technologies_used" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_ai_technologies_used" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2e5903c6-e890-4224-9dab-dff87cda664a}" locklevel="0" colspan="1" rowspan="1" labelid="{6e99c4e0-e892-4bc9-9462-7aa2e80bc915}">
+                        <labels>
+                          <label description="User interface creation or changes required?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_interface_component" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_interface_component" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4ecb220d-5a3f-4ee3-a991-b8ecd60034a9}" locklevel="0" colspan="1" rowspan="1" labelid="{95a6b972-f499-40a0-910d-cbe3eee060b4}">
+                        <labels>
+                          <label description="Do you plan to use any software products?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_software_products" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_software_products" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="10" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Request Details" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.AccessChecker.OpenDialog.cr69a_document.Button.Hide" Location="AccessChecker.OpenDialog.cr69a_document.Button" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.Activate.Hide" Location="Mscrm.Form.cr69a_document.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.Assign.Hide" Location="Mscrm.Form.cr69a_document.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.Deactivate.Hide" Location="Mscrm.Form.cr69a_document.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.Delete.Hide" Location="Mscrm.Form.cr69a_document.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.Form.cr69a_document.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.Flows.RefreshCommandBar.Hide" Location="Mscrm.Form.cr69a_document.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.NewRecord.Hide" Location="Mscrm.Form.cr69a_document.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.NewRecordForBPFEntity.Hide" Location="Mscrm.Form.cr69a_document.NewRecordForBPFEntity" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.RefreshModernButton.Hide" Location="Mscrm.Form.cr69a_document.RefreshModernButton" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.Reports.Hide" Location="Mscrm.Form.cr69a_document.Reports" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.cr69a_document.WordTemplate.Hide" Location="Mscrm.Form.cr69a_document.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.cr69a_document.MBPF.ConvertTo.Hide" Location="Mscrm.HomepageGrid.cr69a_document.MBPF.ConvertTo" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.Activate.Hide" Location="Mscrm.SubGrid.cr69a_document.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.cr69a_document.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.AddExistingStandard.Hide" Location="Mscrm.SubGrid.cr69a_document.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.AddNewStandard.Hide" Location="Mscrm.SubGrid.cr69a_document.AddNewStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.Assign.Hide" Location="Mscrm.SubGrid.cr69a_document.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.Deactivate.Hide" Location="Mscrm.SubGrid.cr69a_document.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.DocumentTemplate.Hide" Location="Mscrm.SubGrid.cr69a_document.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.ExportToExcel.Hide" Location="Mscrm.SubGrid.cr69a_document.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.cr69a_document.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.NewRecord.Hide" Location="Mscrm.SubGrid.cr69a_document.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.RefreshButton.Hide" Location="Mscrm.SubGrid.cr69a_document.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.Remove.Hide" Location="Mscrm.SubGrid.cr69a_document.Remove" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.RunReport.Hide" Location="Mscrm.SubGrid.cr69a_document.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_document.WordTemplate.Hide" Location="Mscrm.SubGrid.cr69a_document.WordTemplate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

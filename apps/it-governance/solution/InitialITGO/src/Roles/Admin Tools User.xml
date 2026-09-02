@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Role id="{978e919b-d08c-f011-b4cc-001dd80a6132}" name="Admin Tools User" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsCustomizable>1</IsCustomizable>
+  <IsAutoAssigned>0</IsAutoAssigned>
+  <RolePrivileges>
+    <RolePrivilege name="prvAppendcr69a_EditRequest" level="Global" />
+    <RolePrivilege name="prvAppendExpiredProcess" level="Global" />
+    <RolePrivilege name="prvAppendNewProcess" level="Global" />
+    <RolePrivilege name="prvAppendTocr69a_EditRequest" level="Global" />
+    <RolePrivilege name="prvAppendToExpiredProcess" level="Global" />
+    <RolePrivilege name="prvAppendToNewProcess" level="Global" />
+    <RolePrivilege name="prvAppendToTranslationProcess" level="Global" />
+    <RolePrivilege name="prvAppendTranslationProcess" level="Global" />
+    <RolePrivilege name="prvAssigncr69a_EditRequest" level="Global" />
+    <RolePrivilege name="prvCreatecr69a_EditRequest" level="Global" />
+    <RolePrivilege name="prvCreateExpiredProcess" level="Global" />
+    <RolePrivilege name="prvCreateNewProcess" level="Global" />
+    <RolePrivilege name="prvCreateSharePointData" level="Global" />
+    <RolePrivilege name="prvCreateTranslationProcess" level="Global" />
+    <RolePrivilege name="prvDeletecr69a_IntakeStaging" level="Global" />
+    <RolePrivilege name="prvDeletecr69a_systemintakestagingbusinesscase" level="Global" />
+    <RolePrivilege name="prvDeletecr69a_systemintakestagingeditrequests" level="Global" />
+    <RolePrivilege name="prvDeletecr69a_SystemIntakeStagingFundingSource" level="Global" />
+    <RolePrivilege name="prvDeletecr69a_systemintakestaginglinkedsystems" level="Global" />
+    <RolePrivilege name="prvDeleteExpiredProcess" level="Global" />
+    <RolePrivilege name="prvDeleteNewProcess" level="Global" />
+    <RolePrivilege name="prvDeleteTranslationProcess" level="Global" />
+    <RolePrivilege name="prvReadcr69a_EditRequest" level="Global" />
+    <RolePrivilege name="prvReadcr69a_IntakeStaging" level="Global" />
+    <RolePrivilege name="prvReadcr69a_systemintakestagingbusinesscase" level="Global" />
+    <RolePrivilege name="prvReadcr69a_systemintakestagingeditrequests" level="Global" />
+    <RolePrivilege name="prvReadcr69a_SystemIntakeStagingFundingSource" level="Global" />
+    <RolePrivilege name="prvReadcr69a_systemintakestaginglinkedsystems" level="Global" />
+    <RolePrivilege name="prvReadExpiredProcess" level="Global" />
+    <RolePrivilege name="prvReadNewProcess" level="Global" />
+    <RolePrivilege name="prvReadPluginAssembly" level="Global" />
+    <RolePrivilege name="prvReadPluginType" level="Global" />
+    <RolePrivilege name="prvReadSdkMessage" level="Global" />
+    <RolePrivilege name="prvReadSdkMessageProcessingStep" level="Global" />
+    <RolePrivilege name="prvReadSdkMessageProcessingStepImage" level="Global" />
+    <RolePrivilege name="prvReadSharePointData" level="Global" />
+    <RolePrivilege name="prvReadSharePointDocument" level="Global" />
+    <RolePrivilege name="prvReadTranslationProcess" level="Global" />
+    <RolePrivilege name="prvSharecr69a_EditRequest" level="Global" />
+    <RolePrivilege name="prvWritecr69a_EditRequest" level="Global" />
+    <RolePrivilege name="prvWritecr69a_IntakeStaging" level="Global" />
+    <RolePrivilege name="prvWritecr69a_systemintakestagingbusinesscase" level="Global" />
+    <RolePrivilege name="prvWritecr69a_systemintakestagingeditrequests" level="Global" />
+    <RolePrivilege name="prvWritecr69a_SystemIntakeStagingFundingSource" level="Global" />
+    <RolePrivilege name="prvWritecr69a_systemintakestaginglinkedsystems" level="Global" />
+    <RolePrivilege name="prvWriteExpiredProcess" level="Global" />
+    <RolePrivilege name="prvWriteNewProcess" level="Global" />
+    <RolePrivilege name="prvWriteSharePointData" level="Global" />
+    <RolePrivilege name="prvWriteTranslationProcess" level="Global" />
+  </RolePrivileges>
+</Role>

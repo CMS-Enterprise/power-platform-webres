@@ -1,0 +1,39 @@
+<appaction uniquename="cr3ee__Re-openRequest!dad00490588f4d6f91242e695122c79e!new_InitialITGO!cr69a_systemintakeadmin!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Re-open Request">
+    <label description="Re-open Request" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>cr69a_systemintakeadmin</logicalname>
+  </contextentity>
+  <contextvalue>cr69a_systemintakeadmin</contextvalue>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>Re-openRequest!dad00490588f4d6f91242e695122c79e</name>
+  <onclickeventjavascriptfunctionname>window.ITGov_ReOpenRequest</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":5}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>e20b4a1c-f717-f111-8407-001dd809993d</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>cr3ee__Status!b1aa27104f194b7f93c664a3ee99830a!new_InitialITGO!cr69a_systemintakeadmin!0</uniquename>
+  </parentappactionid>
+  <sequence>5000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilityformulacomponentlibraryid>
+    <name>cr69a_initialitgodefaultcommandlibrary_86e7a</name>
+  </visibilityformulacomponentlibraryid>
+  <visibilityformulacomponentname>b502a8eb2beb4dd480667e364af7eca9</visibilityformulacomponentname>
+  <visibilityformulafunctionname>Visible</visibilityformulafunctionname>
+  <visibilitytype>1</visibilitytype>
+</appaction>

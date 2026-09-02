@@ -1,0 +1,1630 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "impersonation": {},
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "new_sharedcommondataserviceforapps_6926a"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "6d72ce14-6683-41bf-b566-a37725194de9"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "batch_id",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Enter the Batch ID from the migration you'd like to roll back. This can be found in the migration table, or on staged data.",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Show_Batch_ID": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "f4b8e4fd-2d90-4a5c-953b-c47634404ce1"
+          },
+          "type": "Compose",
+          "inputs": "@triggerBody()['text']"
+        },
+        "Initialize_DeleteRowCount": {
+          "runAfter": {
+            "Show_Batch_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "c22425bd-1bb7-43b3-9a86-3067a08a3bd7"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "DeleteRowCount",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "Delete_Migrated_Business_Cases": {
+          "actions": {
+            "List_Business_Cases": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "2e9b9cd9-004c-4fd6-8d6e-37c046db879b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_businesscases",
+                  "$select": "cr69a_businesscaseid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Business_Case": {
+              "foreach": "@outputs('List_Business_Cases')?['body/value']",
+              "actions": {
+                "Delete_a_row": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "2c7dc92c-719f-4d2b-a21e-e7d65f776e4f"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_businesscases",
+                      "recordId": "@items('Delete_Each_Business_Case')?['cr69a_businesscaseid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable": {
+                  "runAfter": {
+                    "Delete_a_row": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "73740539-cd33-4122-96c0-f08f84024f16"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Business_Cases": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5cc89ac6-8c6f-406e-a7ab-ec06f29c28df"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job": {
+              "runAfter": {
+                "Delete_Each_Business_Case": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "ffb5667d-74af-47e8-871a-2dee04658711"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "f0acf074-8b27-4901-be69-008b4af3c21a"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Initialize_DeleteRowCount": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cd5a3724-e096-47e3-9255-1b3620827ed2"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Contract_Numbers": {
+          "actions": {
+            "List_Contract_Numbers": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "easi_contractnumbers",
+                  "$select": "easi_contractnumberid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Contract_Number": {
+              "foreach": "@outputs('List_Contract_Numbers')?['body/value']",
+              "actions": {
+                "Delete_a_Contract_Number": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "easi_contractnumbers",
+                      "recordId": "@items('Delete_Each_Contract_Number')?['easi_contractnumberid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_2": {
+                  "runAfter": {
+                    "Delete_a_Contract_Number": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Contract_Numbers": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_2": {
+              "runAfter": {
+                "Delete_Each_Contract_Number": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_2": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Business_Cases": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Documents": {
+          "actions": {
+            "List_Documents": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_documents",
+                  "$select": "cr69a_documentid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Document": {
+              "foreach": "@outputs('List_Documents')?['body/value']",
+              "actions": {
+                "Delete_a_Document": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_documents",
+                      "recordId": "@items('Delete_Each_Document')?['cr69a_documentid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_3": {
+                  "runAfter": {
+                    "Delete_a_Document": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Documents": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_3": {
+              "runAfter": {
+                "Delete_Each_Document": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_3": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_3": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Contract_Numbers": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Edit_Requests": {
+          "actions": {
+            "List_Edit_Requests": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_editrequests",
+                  "$select": "cr69a_editrequestid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Edit_Request": {
+              "foreach": "@outputs('List_Edit_Requests')?['body/value']",
+              "actions": {
+                "Delete_Edit_Request": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_editrequests",
+                      "recordId": "@items('Delete_Each_Edit_Request')?['cr69a_editrequestid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_4": {
+                  "runAfter": {
+                    "Delete_Edit_Request": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Edit_Requests": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach"
+            },
+            "DeleteRowCount_Value_After_Delete_Job_4": {
+              "runAfter": {
+                "Delete_Each_Edit_Request": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_4": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_4": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Documents": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Lifecycle_Costs": {
+          "actions": {
+            "List_Lifecycle_Costs": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_estimatedlifecyclecosts",
+                  "$select": "cr69a_id",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Lifecycle_Costs": {
+              "foreach": "@outputs('List_Lifecycle_Costs')?['body/value']",
+              "actions": {
+                "Delete_Lifecycle_Cost": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_estimatedlifecyclecosts",
+                      "recordId": "@items('Delete_Each_Lifecycle_Costs')?['cr69a_id']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_5": {
+                  "runAfter": {
+                    "Delete_Lifecycle_Cost": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Lifecycle_Costs": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_5": {
+              "runAfter": {
+                "Delete_Each_Lifecycle_Costs": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_5": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_5": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Edit_Requests": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Funding_Sources": {
+          "actions": {
+            "List_Funding_Sources": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_fundingsourceses",
+                  "$select": "cr69a_fundingsourcesid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Funding_Source": {
+              "foreach": "@outputs('List_Funding_Sources')?['body/value']",
+              "actions": {
+                "Delete_a_Funding_Source": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_fundingsourceses",
+                      "recordId": "@items('Delete_Each_Funding_Source')?['cr69a_fundingsourcesid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_6": {
+                  "runAfter": {
+                    "Delete_a_Funding_Source": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Funding_Sources": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_6": {
+              "runAfter": {
+                "Delete_Each_Funding_Source": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_6": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_6": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Lifecycle_Costs": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_System_Links": {
+          "actions": {
+            "List_System_Links": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_systemlinks",
+                  "$select": "new_systemlinkid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_System_Link": {
+              "foreach": "@outputs('List_System_Links')?['body/value']",
+              "actions": {
+                "Delete_a_System_Link": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_systemlinks",
+                      "recordId": "@items('Delete_Each_System_Link')?['new_systemlinkid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_7": {
+                  "runAfter": {
+                    "Delete_a_System_Link": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_System_Links": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_7": {
+              "runAfter": {
+                "Delete_Each_System_Link": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_7": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_7": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Funding_Sources": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Requests_(System_Intake)": {
+          "actions": {
+            "List_Requests": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_systemintakes",
+                  "$select": "new_systemintakeid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Request": {
+              "foreach": "@outputs('List_Requests')?['body/value']",
+              "actions": {
+                "Delete_a_Request": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_systemintakes",
+                      "recordId": "@items('Delete_Each_Request')?['new_systemintakeid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_8": {
+                  "runAfter": {
+                    "Delete_a_Request": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Requests": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_8": {
+              "runAfter": {
+                "Delete_Each_Request": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_8": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_8": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_System_Links": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Additional_Contacts": {
+          "actions": {
+            "List_Additional_Contacts": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_additionalcontacts",
+                  "$select": "cr69a_id",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Additional_Contact": {
+              "foreach": "@outputs('List_Additional_Contacts')?['body/value']",
+              "actions": {
+                "Delete_an_Additional_Contact": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_additionalcontacts",
+                      "recordId": "@items('Delete_Each_Additional_Contact')?['cr69a_id']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_9": {
+                  "runAfter": {
+                    "Delete_an_Additional_Contact": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Additional_Contacts": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_9": {
+              "runAfter": {
+                "Delete_Each_Additional_Contact": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_9": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_9": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Cedar_Systems": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Solutions_(Business_Case_Solutions)": {
+          "actions": {
+            "List_Solutions": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_businesscasesolutions",
+                  "$select": "cr69a_businesscasesolutionid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Solution": {
+              "foreach": "@outputs('List_Solutions')?['body/value']",
+              "actions": {
+                "Delete_a_Solution": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_businesscasesolutions",
+                      "recordId": "@items('Delete_Each_Solution')?['cr69a_businesscasesolutionid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_10": {
+                  "runAfter": {
+                    "Delete_a_Solution": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Solutions": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_10": {
+              "runAfter": {
+                "Delete_Each_Solution": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_10": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_10": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Additional_Contacts": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_LCIDs": {
+          "actions": {
+            "List_LCIDs": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_lifecycleidses",
+                  "$select": "cr69a_lifecycleidsid",
+                  "$filter": "cr69a_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_LCID": {
+              "foreach": "@outputs('List_LCIDs')?['body/value']",
+              "actions": {
+                "Delete_an_LCID": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_lifecycleidses",
+                      "recordId": "@items('Delete_Each_LCID')?['cr69a_lifecycleidsid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_11": {
+                  "runAfter": {
+                    "Delete_an_LCID": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_LCIDs": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_11": {
+              "runAfter": {
+                "Delete_Each_LCID": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_11": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_11": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Solutions_(Business_Case_Solutions)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Reviews": {
+          "actions": {
+            "List_Reviews": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "cr69a_systemintakeadmins",
+                  "$select": "cr69a_systemintakeadminid",
+                  "$filter": "cr3ee_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Review": {
+              "foreach": "@outputs('List_Reviews')?['body/value']",
+              "actions": {
+                "Delete_a_Review": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "cr69a_systemintakeadmins",
+                      "recordId": "@items('Delete_Each_Review')?['cr69a_systemintakeadminid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_12": {
+                  "runAfter": {
+                    "Delete_a_Review": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Reviews": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_12": {
+              "runAfter": {
+                "Delete_Each_Review": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_12": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_12": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Requests_(System_Intake)": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        },
+        "Delete_Migrated_Cedar_Systems": {
+          "actions": {
+            "List_Cedar_Systems": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "31d94655-e96e-4ef0-93c0-af4a7197bd23"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "new_cedarsystems",
+                  "$select": "new_cedarsystemid",
+                  "$filter": "cr3ee_batchid eq '@{triggerBody()['text']}'"
+                },
+                "authentication": {
+                  "type": "Raw",
+                  "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                }
+              }
+            },
+            "Delete_Each_Cedar_System": {
+              "foreach": "@outputs('List_Cedar_Systems')?['body/value']",
+              "actions": {
+                "Delete_a_Review_2": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "7182dda6-f12b-4ccd-be0e-7957df488bba"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "DeleteRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "new_cedarsystems",
+                      "recordId": "@items('Delete_Each_Cedar_System')?['new_cedarsystemid']"
+                    },
+                    "authentication": {
+                      "type": "Raw",
+                      "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']"
+                    }
+                  }
+                },
+                "Increment_variable_13": {
+                  "runAfter": {
+                    "Delete_a_Review_2": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "5e72f5a1-ff24-43cd-b3c3-71ff4c2977b5"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "DeleteRowCount",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "List_Cedar_Systems": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "5c44437d-20e6-475b-b252-d8f1b3c9c444"
+              },
+              "type": "Foreach",
+              "runtimeConfiguration": {
+                "concurrency": {
+                  "repetitions": 20
+                }
+              }
+            },
+            "DeleteRowCount_Value_After_Delete_Job_13": {
+              "runAfter": {
+                "Delete_Each_Cedar_System": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "09564a2f-b443-45fa-8014-a9bc23b90ff4"
+              },
+              "type": "Compose",
+              "inputs": "@variables('DeleteRowCount')"
+            },
+            "Reset_DeletedRowCount_13": {
+              "runAfter": {
+                "DeleteRowCount_Value_After_Delete_Job_13": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e7b47a03-c825-49cc-ba49-ebb98239080c"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "DeleteRowCount",
+                "value": 0
+              }
+            }
+          },
+          "runAfter": {
+            "Delete_Migrated_Reviews": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a1afbfe-e745-4407-93ac-4d3369e55320"
+          },
+          "type": "Scope"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

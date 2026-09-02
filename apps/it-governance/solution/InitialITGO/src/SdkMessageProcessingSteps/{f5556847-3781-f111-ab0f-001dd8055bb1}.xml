@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SdkMessageProcessingStep Name="SystemIntake.Plugins.LifecycleId_SetDisplayName: Update of cr69a_lifecycleids" SdkMessageProcessingStepId="{f5556847-3781-f111-ab0f-001dd8055bb1}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SdkMessageId>20bebb1b-ea3e-db11-86a7-000a3a5473e8</SdkMessageId>
+  <PluginTypeName>SystemIntake.Plugins.LifecycleId_SetDisplayName, ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971</PluginTypeName>
+  <PluginTypeId>6a2af585-ab2e-40fc-aa5b-30aac4c1f9aa</PluginTypeId>
+  <PrimaryEntity>cr69a_lifecycleids</PrimaryEntity>
+  <AsyncAutoDelete>0</AsyncAutoDelete>
+  <FilteringAttributes>cr3ee_rawlcid,new_lcidcomponent,new_lcidislowit,new_lcidisshortened,new_lcidtype</FilteringAttributes>
+  <InvocationSource>1</InvocationSource>
+  <Mode>0</Mode>
+  <Rank>1</Rank>
+  <EventHandlerTypeCode>4602</EventHandlerTypeCode>
+  <Stage>20</Stage>
+  <IsCustomizable>1</IsCustomizable>
+  <IsHidden>0</IsHidden>
+  <SupportedDeployment>0</SupportedDeployment>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <SdkMessageProcessingStepImages />
+</SdkMessageProcessingStep>

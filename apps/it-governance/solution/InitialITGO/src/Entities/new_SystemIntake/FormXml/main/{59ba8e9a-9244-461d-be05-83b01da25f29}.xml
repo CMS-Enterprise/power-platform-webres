@@ -1,0 +1,1381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{59ba8e9a-9244-461d-be05-83b01da25f29}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{56419489-0727-4038-92f0-c47455b5d507}" IsUserDefined="1" name="General">
+          <labels>
+            <label description="General" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section name="null_section_3" id="8199674e-99df-4b82-a5af-a2df3e722536" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="11" labelwidth="115">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell locklevel="0" id="{09b17adf-ff93-4778-9348-97970f3c1d9d}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                      <cell locklevel="0" id="{6cd3b9de-59df-4154-aa12-8cbbbafb0713}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b26f1de3-a24a-4b9f-8984-ef1cd130e5d8}" locklevel="1" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Requester" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requester" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_requester" disabled="true" />
+                      </cell>
+                      <cell id="{e2cdceb1-ddb6-4c71-b55a-772a5c567fae}" colspan="1" rowspan="1" locklevel="1">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" disabled="true" />
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="admin_tools_section" id="cf13a3fe-57d4-4190-9838-19782cfa93f2" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="11" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Admin Tools" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell locklevel="0" id="{c1337e59-9b44-4eea-8347-e10251928170}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                      <cell locklevel="0" id="{15866308-1c42-4a64-bcde-7d78ade1143c}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2429b49f-d3b6-44bd-94e9-cf9e84eff5c5}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Request Status" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_status" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_status" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3069cd91-4705-4722-9f52-f39c5cc205cd}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Submitted On" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_submittedon" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_submittedon" disabled="true" />
+                      </cell>
+                      <cell id="{ea27566a-4a9e-49d0-a2d8-8992f23b606f}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Admin Governance Process Step" languagecode="1033" />
+                        </labels>
+                        <control id="new_admingovernanceprocessstep" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_admingovernanceprocessstep" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ecb8fe4c-f8df-4a6f-9bcd-b23f20b4ea5a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Hide Governance Process" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_hidegovernanceprocess" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="cr69a_hidegovernanceprocess" disabled="true" />
+                      </cell>
+                      <cell id="{35f2fd9b-216b-4d43-8b65-b3d56a80eac0}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Ready for Review?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_readyforreview" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="cr69a_readyforreview" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{42fe1491-6d51-4ec7-b9ef-1ebb29c0bfb8}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Request Type" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requesttype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_requesttype" disabled="false" />
+                      </cell>
+                      <cell id="{ce53f67f-877c-4371-8b28-1f0d96bd5aa2}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="System Intake Review" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintakereview" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintakereview" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{65470644-e7d3-4d16-aae7-d6fb6798b85e}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                      <cell id="{bb605fab-5b10-4dac-97e0-d93706c3de7a}" locklevel="0" colspan="1" rowspan="1" visible="true">
+                        <labels>
+                          <label description="Status" languagecode="1033" />
+                        </labels>
+                        <control id="statecode" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="statecode" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_request_helper" id="ecee0b1b-2ab6-46a8-8d35-6cc4c1e72284" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Request Helper" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="3" id="{ee9fe108-afd9-4a17-a730-a4a2eca84fb6}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="request-helper" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_new_14" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_itgov/html/request-helper.html</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{8267e5c3-c04f-f111-bec6-001dd804cd4c}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_edit_requests_helper" id="6956a9bd-379c-4136-a486-9c11958e5abb" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Edit Requests" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="8" id="{fad38fe9-d91d-465a-8691-b40b341b4f03}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="edit-requests-helper" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_new_15" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_itgov/html/edit-requests-helper.html</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{942c99e9-c05e-f111-bec6-001dd8055bb1}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_intake_request_decision" id="fd757c81-4f72-4ad5-8053-9a4997300a66" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Decision" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{93ca43f6-a5ea-4143-badc-65c5839af28c}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Decision" languagecode="1033" />
+                        </labels>
+                        <control id="easi_decision" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="easi_decision" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{573d8205-bf22-4d3d-af46-8ca7620b28e6}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Decision Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_decisiondate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr3ee_decisiondate" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fc1a7471-4da6-4886-aa7c-3bd2c82c513e}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Decision Reason" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_decisionreason" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_decisionreason" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_complete_lcid" id="dc1c3ef9-adb3-4859-be39-33639407a01d" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="LCID" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{3bbad0c8-2f14-437b-98df-bfbbebdd10aa}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="LCID" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lcid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_lcid" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{c6d4ef65-a8d2-43b3-a958-65e3cc1b6d7f}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="LCID Quick View" languagecode="1033" />
+                        </labels>
+                        <control id="lcid_quick_view" classid="{5C5600E0-1D6E-4205-A272-BE80DA87FD42}" datafieldname="cr69a_lcid">
+                          <parameters>
+                            <DisplayAsCustomer360Tile>false</DisplayAsCustomer360Tile>
+                            <QuickForms>&lt;QuickFormIds&gt;&lt;QuickFormId entityname="cr69a_lifecycleids"&gt;13791735-4ffe-4ea6-9b34-deebd2e40b20&lt;/QuickFormId&gt;&lt;/QuickFormIds&gt;</QuickForms>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_complete_next_steps" id="b5e819b2-e1e0-4def-a543-2420e0efa009" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Next Steps" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="2" id="{2aaf91c6-edf3-4666-8861-3d3820aca466}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Intake Request - Completed Next Steps" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_new_12" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_request_completed_next_steps</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{7032c02a-8119-f111-8342-001dd809993d}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row>
+                      <cell id="{07bace32-3e18-4b2a-a659-28554d8c9297}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Next Steps" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_nextsteps" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_nextsteps" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell rowspan="9" id="{78275848-e5a3-4b7a-bd09-2dffe6d1d8b6}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Intake Request - Completed Further Info" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_new_11" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_request_completed_further_info</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{83a33cf9-8019-f111-8342-001dd809993d}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_request_complete_questions" id="7bde6ca6-31c3-4ec2-b1b9-4a05bba28712" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="2" id="{b72bfd28-dbba-45ca-97ec-6b39fe4ef99b}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Intake Request - Questions About Decision" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_request_complete_questions" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_request_questions_about_decision</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{31ea5612-8119-f111-8342-001dd809993d}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_progress_tracker" id="57f1a1ae-cfd4-4999-bb03-197f0ddf7b6e" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Progress Tracker" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="4" id="{35451065-2bfa-45d6-948a-baae9f96e472}" showlabel="false" colspan="1" visible="true">
+                        <labels>
+                          <label description="System Intake - Progress Tracker" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_progress_tracker" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>cr69a_system_intake_progress_tracker</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{3ace6a3c-95c5-f011-bbd3-001dd8062d4a}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_request_details" id="f2aac44e-6a97-4fbb-96ce-906bf694c3b1" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Request Details" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{2e241298-17a5-419f-b033-328338efb04a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Contract/Request Title" languagecode="1033" />
+                        </labels>
+                        <control id="new_name" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="new_name" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{285c33a6-b891-48bc-b4a8-7f6d94fbecae}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="What is this request for?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_requesttype" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_requesttype" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{fb71813c-f528-4501-b382-ebad475068c5}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Service or contract name" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_serviceorcontractname" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="cr69a_serviceorcontractname" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ab71dfa9-50d6-4505-b71f-4b7fba7eb410}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Which CMS System?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_whichcmssystem" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_whichcmssystem" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{83b2ed9a-982b-40ab-8666-ad040c3dccca}" userspacer="true" showlabel="false" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{61570f2b-cbbc-4ee9-9d56-29773ef4a6e1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="What is the business need of this request?" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_business_need_multi" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_business_need_multi" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4a862057-2841-4504-bc38-c9a39e19b480}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="How are you thinking of solving it?" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_proposedsolution" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_proposedsolution" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5467da4b-503c-4b3b-af43-39762dc7b62e}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="How does this align with organizational priorities?" languagecode="1033" />
+                        </labels>
+                        <control id="new_organizationalpriorityalignment" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_organizationalpriorityalignment" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b947a328-c13c-4840-83b1-b319457c3041}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Where are you in the process?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_current_process_status" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_current_process_status" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{633792a9-fd90-4108-9ff2-17a6c5c93284}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Do you need Enterprise Architecture support?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_enterprise_architecture_support" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_enterprise_architecture_support" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5816253d-a8f5-448b-a5da-cad0e43680b2}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Does your request involve AI technologies?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_ai_technologies_used" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_ai_technologies_used" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c842d153-07d2-4444-952f-6c9bdc4a811a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="User interface creation or changes required?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_interface_component" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_interface_component" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b301a9d3-7abb-4a3c-97e1-a7825f1f2d85}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Do you plan to use any software products?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_software_products" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_software_products" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2dcabf26-6bda-4e89-b2c9-5472b65d7ed0}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="How will the software be acquired?" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_howwillthesoftwarebeacquired" classid="{4AA28AB7-9C13-4F57-A73D-AD894D048B5F}" datafieldname="cr69a_howwillthesoftwarebeacquired" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_contact_details" id="dae4b7d9-85d0-4c5f-b36c-82415d2ec2a1" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Contact Details" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{ab57f87a-3b3d-4282-b860-f0055f9ce9da}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Requester Component" languagecode="1033" />
+                        </labels>
+                        <control id="new_requestercomponent" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_requestercomponent" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1b653e3d-6d57-4ce3-b507-1fa78210275a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="CMS Business Owner Name" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cmsbusinessownername" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_cmsbusinessownername" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{04470ff2-4155-4542-9f77-88bee4300a14}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="CMS Business Owner Component" languagecode="1033" />
+                        </labels>
+                        <control id="new_cmsbusinessownercomponent" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_cmsbusinessownercomponent" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2cf5606d-9fc6-4930-8a1e-5b4f7321b4e5}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="CMS Project/Product Manager, or lead name" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_cmsprojectproductmanager" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_cmsprojectproductmanager" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{13703936-1a83-4db2-b023-538d53901579}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="CMS Product Manager Component" languagecode="1033" />
+                        </labels>
+                        <control id="new_cmsproductmanagercomponent" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="new_cmsproductmanagercomponent" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{910199b6-b5b1-416a-a196-3d7e7dd6da47}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="Additional Contacts" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="sg_additional_contacts" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>false</EnableChartPicker>
+                            <ChartGridMode>Grid</ChartGridMode>
+                            <RelationshipName>cr69a_additionalcontact_SystemIntake_new_systemintake</RelationshipName>
+                            <TargetEntityType>cr69a_additionalcontact</TargetEntityType>
+                            <ViewId>{4548fe96-c837-48ea-89b2-0be2f930c8a6}</ViewId>
+                            <ViewIds>{4548fe96-c837-48ea-89b2-0be2f930c8a6}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell id="{a501c7c8-66cb-490f-becc-29bd1b5528fc}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="For this request, I have started collaborating/consulting with:" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_collaborators" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_collaborators" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1dd3dfe6-5366-4c58-9be6-69e81cf639a4}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="TRB Collaborator Name" languagecode="1033" />
+                        </labels>
+                        <control id="new_trbcollaboratorname" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_trbcollaboratorname" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8d3329b5-c527-4d28-96ea-e78f096b9ab7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="ISPG Collaborator Name" languagecode="1033" />
+                        </labels>
+                        <control id="new_ispgcollaboratorname" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_ispgcollaboratorname" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{d89dee5d-7da4-4097-99bd-948e14b98cd7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="508 Collaborator Name" languagecode="1033" />
+                        </labels>
+                        <control id="new_collaboratorname" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="new_collaboratorname" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_linked_systems" id="c632753c-518e-4d51-ac8d-66f0d33d0c39" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Linked Systems" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{b1070310-bc3b-4412-964b-a1d282c66076}" rowspan="4" colspan="1" auto="false" showlabel="false">
+                        <labels>
+                          <label description="Linked Systems" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="sg_linked_systems" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>new_systemlink_SystemIntake_new_systemintake</RelationshipName>
+                            <TargetEntityType>new_systemlink</TargetEntityType>
+                            <ViewId>{EF6D4421-8F08-46A7-9D02-2F7EF02F02FC}</ViewId>
+                            <ViewIds>{EF6D4421-8F08-46A7-9D02-2F7EF02F02FC}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_contract_details" id="b9aa2304-82f1-43cf-99f9-313937602774" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Contract Details" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{118776b0-3499-49cc-9512-533c33c838a0}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="Funding Sources" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="sg_funding_sources" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>cr69a_fundingsources_SystemIntake_new_systemintake</RelationshipName>
+                            <TargetEntityType>cr69a_fundingsources</TargetEntityType>
+                            <ViewId>{9e0e38b4-3361-48e2-809a-e107e508ced8}</ViewId>
+                            <ViewIds>{9e0e38b4-3361-48e2-809a-e107e508ced8}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell id="{a60f3e1c-eaac-448b-885f-57d29f5d0952}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Current Annual Spending" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_currentannualspending" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="cr3ee_currentannualspending" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6805a5d1-ef82-47c4-b85c-8f1b8f8e2608}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Annual Spending IT %" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_annualspendingitpercentage" classid="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}" datafieldname="cr3ee_annualspendingitpercentage" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{2672556d-e441-4c91-8a3a-87e6a9432506}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="First Year Planned Annual Spending" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_plannedannualspendingoffirstyear" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="cr3ee_plannedannualspendingoffirstyear" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8660b477-a95b-4980-8314-4a5389870d20}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Year 1 Annual Spending IT %" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_itpercentageofy1annualspending" classid="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}" datafieldname="cr3ee_itpercentageofy1annualspending" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{a5ea5cfd-c1ff-4747-bd52-07edb03b4105}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="Contract Numbers" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="sg_contract_numbers" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>easi_contractnumber_SystemIntake_new_systemintake</RelationshipName>
+                            <TargetEntityType>easi_contractnumber</TargetEntityType>
+                            <ViewId>{64A95F56-BFAF-4DF6-94E8-7F23FCA7B4F4}</ViewId>
+                            <ViewIds>{64A95F56-BFAF-4DF6-94E8-7F23FCA7B4F4}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_additional_documentation" id="0d5ad9ba-3cd1-441e-8435-7e1e861ec333" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Additional Documentation" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="2" id="{616d6eda-6cd0-4d28-aaac-11b10d6acb14}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="upload-files-helper-text" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_new_13" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>cr3ee_upload_files_helper_text</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{f053d5e2-a348-f111-88b4-001dd8055bb1}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{015fdda7-68e3-42f7-a4af-95a413fea983}" rowspan="4" colspan="1" auto="false" showlabel="false">
+                        <labels>
+                          <label description="Additional Documentation" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="sg_additional_documentation" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>cr69a_document_SystemIntake_new_systemintake</RelationshipName>
+                            <TargetEntityType>cr69a_document</TargetEntityType>
+                            <ViewId>{db367e49-958d-4353-982c-b81576f4d164}</ViewId>
+                            <ViewIds>{db367e49-958d-4353-982c-b81576f4d164}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_request_submit" id="38636320-9e5b-484c-a106-9181a4d7bcd9" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="7" id="{5ccec324-3467-46cc-8b07-3142ca18fff5}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Intake Request Draft Submit" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_submit_intake_request_draft_button" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>cr69a_intake_request_draft_submit</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{5a5ee5ce-c09f-f011-b41c-001dd8062d4a}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_business_case" id="d2dbee3c-ed71-4261-ac46-36d0b241eb8b" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="Business Case" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{ae3bb5c6-8e82-4c45-bbf7-734a5c96f7f6}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Business or User Need" languagecode="1033" />
+                        </labels>
+                        <control id="new_businessoruserneed" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_businessoruserneed" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4173f1ce-3281-4d29-9f12-aad1e7662ce1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Describe the internal or external support needed" languagecode="1033" />
+                        </labels>
+                        <control id="new_internalorexternalsupportneeded" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_internalorexternalsupportneeded" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{35f100ce-4abb-4a3f-87eb-bfbcdc405acf}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Describe the current process" languagecode="1033" />
+                        </labels>
+                        <control id="new_currentprocess" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_currentprocess" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b0667a06-c303-41d3-8dd4-50b203560f9b}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="How will CMS benefit?" languagecode="1033" />
+                        </labels>
+                        <control id="new_howwillcmsbenefit" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_howwillcmsbenefit" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b090f6b6-e3f3-4521-a8d1-ab00ae9f1f6d}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="How will you determine success?" languagecode="1033" />
+                        </labels>
+                        <control id="new_successcriteria" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_successcriteria" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bdb93985-ac86-4a81-a7c6-9ab11f998c29}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="How will you implement GRT feedback?" languagecode="1033" />
+                        </labels>
+                        <control id="new_grt_feedback_implementation" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="new_grt_feedback_implementation" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{561a26ba-2f1a-476e-a1af-f2ebc28bd19e}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Initial Business Case Submitted" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_initialbusinesscasesubmitted" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="cr69a_initialbusinesscasesubmitted" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{45201f57-ae4a-4aaa-8290-f2e98e6a2710}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Initial Business Case Submitted Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_initialbusinesscasesubmitteddate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_initialbusinesscasesubmitteddate" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{29472a7f-41b0-4fce-8edc-7d5595933bbb}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Final Business Case Submitted" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_finalbusinesscasesubmitted" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="cr69a_finalbusinesscasesubmitted" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6652fa42-567e-4335-b50c-971900fb7275}" locklevel="0" colspan="1" rowspan="1" visible="false">
+                        <labels>
+                          <label description="Final Business Case Submitted Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_finalbusinesscasesubmitteddate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_finalbusinesscasesubmitteddate" disabled="true" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{469f55de-ab54-4dba-bdca-fdfa10acfce8}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="Solutions (At least one required)" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="subgrid_solutions" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>new_cr69a_businesscasesolution_Request_new_systemintake</RelationshipName>
+                            <TargetEntityType>cr69a_businesscasesolution</TargetEntityType>
+                            <ViewId>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewId>
+                            <ViewIds>{2922E7A7-D9D2-4BC2-A7A9-D1AABDDA714B}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell rowspan="4" id="{84dd37ba-f9c9-44fd-bc5d-f838607bf5df}" showlabel="false" colspan="1" visible="true">
+                        <labels>
+                          <label description="Business Case Submit HTML" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_business_case_submit" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>cr69a_BusinessCaseSubmit</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{c47c670d-089f-f011-b4cc-001dd80a67c9}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell rowspan="4" id="{f186ef2f-d586-4786-af57-130782ee6332}" showlabel="false" colspan="1" visible="true">
+                        <labels>
+                          <label description="Final Business Case Submit HTML" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_final_business_case_submit" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>cr69a_final_business_case_submit</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{201d8c9a-d79f-f011-b41c-001dd80a6132}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_grt_meeting" id="b9bde431-4db2-4e9e-a97f-cc8fe619b52b" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="GRT Meeting" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{1585a8ae-590d-42e9-a9aa-d10a4985d2e1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="GRT Meeting Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_grtmeetingdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_grtmeetingdate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell rowspan="18" id="{c9999b96-2090-426f-8755-12850cf913c6}" showlabel="false" colspan="1" visible="true">
+                        <labels>
+                          <label description="GRT Meeting Header" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_grt_meeting_header" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_grt_meeting_header</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{138c4a7c-3e99-f011-b4cc-001dd80a6132}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_grb_review" id="9102654a-b3f3-4900-baf1-79d016b85fe7" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="false">
+                  <labels>
+                    <label description="GRB Review" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{54f3d838-fb12-4e78-b336-8c4472df918e}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="GRB Review Meeting Date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_grbreviewmeetingdate" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="cr69a_grbreviewmeetingdate" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell rowspan="40" id="{5b23866d-e8c0-41e2-84b9-1dd041be4ba6}" showlabel="false" colspan="1" visible="true">
+                        <labels>
+                          <label description="GRRB Review Header" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_grb_meeting_header" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_grb_review_header</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{f1eb2c6a-3e99-f011-b4cc-001dd80a6132}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_request_type" id="497d58ca-a141-46df-bb50-e2e06a450cd3" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Request Type" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="24" id="{51a05e3b-46c2-478f-99aa-6c6f2f5ac38f}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="Request Type HTML" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_requestTypeHtml" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>easi_requestTypeHtml</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{1cb0fb01-51f6-f011-8407-001dd809993d}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+                <section name="section_governance_process_steps" id="fc407f4f-0ddf-44e2-8644-fd7a85b6f1f0" IsUserDefined="0" locklevel="0" showlabel="false" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115" visible="true">
+                  <labels>
+                    <label description="Governance Process Steps" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell rowspan="33" id="{3fea7b85-afbd-4123-890d-f08c47f86606}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="governanceProcessSteps" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_governanceProcessSteps" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>new_governanceProcessSteps</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>no</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{8591a0c4-a168-f011-bec3-001dd80a6132}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell rowspan="2" id="{cf8bbbdb-c00c-4d8b-a5ad-0513cec26c5b}" showlabel="false" colspan="1">
+                        <labels>
+                          <label description="System Intake Request - Get Started Submit" languagecode="1033" />
+                        </labels>
+                        <control id="WebResource_get_started" classid="{9FDF5F91-88B1-47F4-AD53-C11EFC01A01D}">
+                          <parameters>
+                            <Url>easi_SystemIntakeRequestGetStartedSubmit</Url>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>false</Border>
+                            <ShowOnMobileClient>false</ShowOnMobileClient>
+                            <WebResourceId>{17ed521f-7aab-f011-bbd3-001dd80a6132}</WebResourceId>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="tab_edit_requests" id="11092b3c-7010-4777-a1f7-d0254091bbf5" IsUserDefined="0" locklevel="0" showlabel="true">
+          <labels>
+            <label description="Feedback" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section name="tab_edit_requests_section_1" id="caf6730c-e5e9-4f91-b61f-cba7123e787d" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Edit Requests" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{f6963e60-e299-4a11-92c4-6324be91fa83}" rowspan="4" colspan="1" auto="false" showlabel="false">
+                        <labels>
+                          <label description="Additional Contacts" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="Subgrid_edit_requests" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <RelationshipName>cr69a_editrequest_SystemIntake_new_systemintake</RelationshipName>
+                            <TargetEntityType>cr69a_editrequest</TargetEntityType>
+                            <ViewId>{62E2A810-70C9-48FF-9367-66C7CD7E65EB}</ViewId>
+                            <ViewIds>{62E2A810-70C9-48FF-9367-66C7CD7E65EB}</ViewIds>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{c4817fdc-99b5-4b41-ac34-50928a9dbf85}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{c0e203ab-b448-417a-9d97-f8291dbfbd00}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{ecb10193-26c2-4aaf-bb47-4fb264d8e077}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{1e51be19-0747-49f3-840a-263614f586a0}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{f0ebe7b2-5634-4f54-9d40-3bc376a2cbaf}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{b93b9010-2c3c-4807-a962-b2ed93c7e530}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{443d3a6c-beac-48f4-b3e9-e8f4a4dcd70b}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{dfeacb7d-b3dd-4004-ad8e-e5ee3f1cdce8}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="2" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <formLibraries>
+        <Library name="cr69a_showEnvironmentBanner" libraryUniqueId="{6796378d-8c37-43eb-bda1-14ba9300bf2a}" />
+        <Library name="easi_common" libraryUniqueId="{dd97bf7f-713e-435b-ade9-be0dc444626a}" />
+        <Library name="new_systemIntake" libraryUniqueId="{bc5536bd-da4b-4f27-bdaf-410500784fdb}" />
+      </formLibraries>
+      <events>
+        <event name="onload" application="false" active="false">
+          <Handlers>
+            <Handler functionName="onLoad" libraryName="new_systemIntake" handlerUniqueId="{b199b835-f46b-4a8f-858f-0f6c0a6120f1}" enabled="true" parameters="" passExecutionContext="true" />
+            <Handler functionName="showEnvironmentBanner" libraryName="cr69a_showEnvironmentBanner" handlerUniqueId="{1edb928b-54e5-4b61-ae47-d65460d2b11b}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onchange" application="false" active="false" attribute="new_admingovernanceprocessstep">
+          <Handlers>
+            <Handler functionName="onAdminGovTaskListChange" libraryName="new_systemIntake" handlerUniqueId="{ac1cdcac-b7b0-4105-9110-ee8f57167e3a}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onsave" application="false" active="false">
+          <Handlers>
+            <Handler functionName="clearCustomNotificationsOnSave" libraryName="new_systemIntake" handlerUniqueId="{7f1032ec-8f43-43a3-8c0e-6fddab7ee4a7}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+        <event name="onchange" application="false" active="false" attribute="cr69a_software_products">
+          <Handlers>
+            <Handler functionName="onSoftwareProductsChange" libraryName="new_systemIntake" handlerUniqueId="{d4666180-b7b8-4191-90d3-d80515763691}" enabled="true" parameters="" passExecutionContext="true" />
+          </Handlers>
+        </event>
+      </events>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Requester View" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

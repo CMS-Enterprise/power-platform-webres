@@ -1,0 +1,27 @@
+<appaction uniquename="cr3ee__Actions!e1a87a98f4754eae9e7cda54627ad787!new_InitialITGO!cr69a_systemintakeadmin!0">
+  <appmoduleid>
+    <uniquename>new_InitialITGO</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Actions">
+    <label description="Actions" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>cr69a_systemintakeadmin</logicalname>
+  </contextentity>
+  <contextvalue>cr69a_systemintakeadmin</contextvalue>
+  <fonticon>$clientsvg:CheckboxComposite</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>Actions!e1a87a98f4754eae9e7cda54627ad787</name>
+  <onclickeventtype>0</onclickeventtype>
+  <origin>0</origin>
+  <sequence>100300010.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>1</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

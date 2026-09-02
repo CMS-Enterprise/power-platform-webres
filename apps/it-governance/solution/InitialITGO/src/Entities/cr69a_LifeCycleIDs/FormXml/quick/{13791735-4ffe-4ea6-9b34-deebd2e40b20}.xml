@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{13791735-4ffe-4ea6-9b34-deebd2e40b20}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{a26c6f67-c41d-4990-a591-6b38f4cf7cec}" IsUserDefined="1">
+          <labels>
+            <label description="" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{7a6afa95-42a0-4bf8-9c44-5b50054af85d}">
+                  <labels>
+                    <label description="GENERAL" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{9f1e9629-cc38-478a-9804-4441180864fa}">
+                        <labels>
+                          <label description="LCID number" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lcid" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="cr69a_lcid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a24d8b4b-c6cb-423a-9422-c6273c656911}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Issue date" languagecode="1033" />
+                        </labels>
+                        <control id="createdon" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="createdon" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{995c70d3-50aa-4895-90d4-ed70b58dafbd}" visible="false">
+                        <labels>
+                          <label description="Owner" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{5cf7e6ee-0c25-4673-88f3-aa06079cdeb3}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Scope" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_scope" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_scope" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ffaf2767-d9f0-4df0-bd6a-691d7b89b8df}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Project cost baseline" languagecode="1033" />
+                        </labels>
+                        <control id="cr3ee_costbaseline" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="cr3ee_costbaseline" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6203c21d-860b-3b09-62b5-d182eaa7c006}" showlabel="true" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Expiration date" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_lcidexpiresat" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="cr69a_lcidexpiresat" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

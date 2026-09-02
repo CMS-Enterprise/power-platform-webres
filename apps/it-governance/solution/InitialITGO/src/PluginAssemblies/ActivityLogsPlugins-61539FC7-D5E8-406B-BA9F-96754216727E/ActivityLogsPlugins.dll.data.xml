@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PluginAssembly FullName="ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" PluginAssemblyId="61539fc7-d5e8-406b-ba9f-96754216727e" CustomizationLevel="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsolationMode>2</IsolationMode>
+  <SourceType>0</SourceType>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <FileName>/PluginAssemblies/ActivityLogsPlugins-61539FC7-D5E8-406B-BA9F-96754216727E/ActivityLogsPlugins.dll</FileName>
+  <PluginTypes>
+    <PluginType AssemblyQualifiedName="SystemIntake.Plugins.ActivityLog_Create_ApplyActivityType, ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" PluginTypeId="a5933484-c783-4c43-9a79-2d7d9b8cc11d" Name="SystemIntake.Plugins.ActivityLog_Create_ApplyActivityType">
+      <FriendlyName>a0991def-d402-4185-a2c7-a39d807c903d</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="SystemIntake.Plugins.ActivityLog_Create_SyncTargetStepToReviewAndRequest, ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" PluginTypeId="01bb123e-f3fb-4fa9-ac4b-d2d02ccebb0f" Name="SystemIntake.Plugins.ActivityLog_Create_SyncTargetStepToReviewAndRequest">
+      <FriendlyName>4346e0dd-36f2-4dce-8060-e7265f814ab1</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="SystemIntake.Plugins.ActivityLog_Create_ValidateActivityType, ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" PluginTypeId="1292405e-03c2-44a0-8af9-d9a209f97f26" Name="SystemIntake.Plugins.ActivityLog_Create_ValidateActivityType">
+      <FriendlyName>805e52af-560f-4943-bd51-e9b2e30c5f31</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="SystemIntake.Plugins.ActivityLog_Create_ValidateTargetStepNotCurrent, ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" PluginTypeId="343fdb23-caba-4cce-9cb9-df471e76cd0f" Name="SystemIntake.Plugins.ActivityLog_Create_ValidateTargetStepNotCurrent">
+      <FriendlyName>d70dd748-dd0c-4b8a-b7b5-d19865b5e4ce</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="SystemIntake.Plugins.ActivityLog_Update_BlockAll, ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" PluginTypeId="66f6dace-4854-4118-95aa-1f64a233655a" Name="SystemIntake.Plugins.ActivityLog_Update_BlockAll">
+      <FriendlyName>56f66502-7b10-48ab-870a-798eab0e214e</FriendlyName>
+    </PluginType>
+    <PluginType AssemblyQualifiedName="SystemIntake.Plugins.LifecycleId_SetDisplayName, ActivityLogs.Plugins, Version=1.0.1.0, Culture=neutral, PublicKeyToken=d2fa46a8c316f971" PluginTypeId="6a2af585-ab2e-40fc-aa5b-30aac4c1f9aa" Name="SystemIntake.Plugins.LifecycleId_SetDisplayName">
+      <FriendlyName>ce7e550e-ff8d-47d5-8525-824ac7b96e72</FriendlyName>
+    </PluginType>
+  </PluginTypes>
+</PluginAssembly>

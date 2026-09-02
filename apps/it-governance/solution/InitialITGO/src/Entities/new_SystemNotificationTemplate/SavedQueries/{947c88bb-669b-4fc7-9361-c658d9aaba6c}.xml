@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{947c88bb-669b-4fc7-9361-c658d9aaba6c}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="new_templatename" select="1" icon="1" preview="1">
+        <row name="result" id="new_systemnotificationtemplateid">
+          <cell name="new_templatename" width="300" />
+          <cell name="createdon" width="125" />
+          <cell name="new_isactive" width="100" />
+          <cell name="new_subject" width="100" />
+          <cell name="new_body" width="100" />
+          <cell name="new_notes" width="100" />
+          <cell name="new_templatekey" width="119" />
+          <cell name="new_version" width="100" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>1</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="new_systemnotificationtemplate">
+          <attribute name="new_systemnotificationtemplateid" />
+          <attribute name="new_templatename" />
+          <attribute name="createdon" />
+          <order attribute="new_templatename" descending="false" />
+          <attribute name="new_isactive" />
+          <attribute name="new_subject" />
+          <attribute name="new_body" />
+          <attribute name="new_notes" />
+          <attribute name="new_templatekey" />
+          <attribute name="new_version" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.69</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="System Notification Template Advanced Find View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

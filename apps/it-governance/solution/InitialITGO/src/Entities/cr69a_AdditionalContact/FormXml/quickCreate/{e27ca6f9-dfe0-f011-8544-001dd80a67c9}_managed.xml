@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{e27ca6f9-dfe0-f011-8544-001dd80a67c9}</formid>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab id="F931FFE2-B873-473F-8F95-9502F0AA3F5E" name="tab_1" showlabel="false" labelid="{364a33dc-7b61-4e76-917c-27fea37cc7cc}">
+          <labels>
+            <label description="New Tab" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="34%">
+              <sections>
+                <section id="0C655D4E-C6E3-424E-9AF5-71E72D30D12E" name="tab_1_column_1_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" labelid="{09a6089d-1f03-4ec7-8df5-914d1b93d776}">
+                  <labels>
+                    <label description="Details" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{3491e0d3-e490-4434-b014-3146287a463b}" locklevel="0" colspan="1" rowspan="1" labelid="{7f721e85-c36c-411d-9ba0-7fe6a288dac2}">
+                        <labels>
+                          <label description="User" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_user" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_user" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{e88a166a-e2f6-4e0c-a231-8deb4c35e2c4}" locklevel="0" colspan="1" rowspan="1" labelid="{70ae8f0b-c139-4564-9ddf-3bf05adf7ba0}">
+                        <labels>
+                          <label description="Component" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_component" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="cr69a_component" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{04232390-214e-403b-92ae-129e90dec116}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Role" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_role" classid="{4AA28AB7-9C13-4F57-A73D-AD894D048B5F}" datafieldname="cr69a_role" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{56e7824f-3b6e-40c3-925a-d44281deb7eb}" locklevel="0" colspan="1" rowspan="1" labelid="{4688b7be-e267-4142-b00a-3ae4affeac93}" visible="false">
+                        <labels>
+                          <label description="System Intake" languagecode="1033" />
+                        </labels>
+                        <control id="cr69a_systemintake" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="cr69a_systemintake" disabled="true" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="02DECBA0-3AE2-484D-A19F-C5353AF4F4F2" name="tab_1_column_2_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" visible="false" labelid="{feed60d9-098b-485b-bdcd-210712284792}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="266FE48D-4D04-4E9A-8C5A-7DEF9A2F059B" labelid="{55302e67-517f-473e-9939-47ccbe513887}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="33%">
+              <sections>
+                <section id="46FD66EA-B686-41D9-AAE0-C565BD78EC1F" name="tab_1_column_3_section_1" columns="1" showlabel="true" showbar="false" IsUserDefined="0" labelwidth="130" visible="false" labelid="{e6353db9-6974-4132-9409-af2fcdbdff8c}">
+                  <labels>
+                    <label description="New Section" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="07C04A4E-A482-45CC-BAB7-7FCA3CD02938" labelid="{65ca28a9-a53d-46cd-9110-d27ed43e35b5}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Role Id="{627090ff-40a3-4053-8790-584edc5be201}" />
+        <Role Id="{119f245c-3cc8-4b62-b31c-d1a046ced15d}" />
+      </DisplayConditions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Additional Contact quick create form" languagecode="1033" />
+    </LocalizedNames>
+  </systemform>
+</forms>

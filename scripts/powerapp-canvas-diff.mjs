@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  rmSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
@@ -14,19 +20,31 @@ import {
   run,
 } from "./pac-solution-common.mjs";
 
-function unpackCanvasApps(canvasPac, repoRoot, solutionFolder, destinationRoot) {
+function unpackCanvasApps(
+  canvasPac,
+  repoRoot,
+  solutionFolder,
+  destinationRoot,
+) {
   mkdirSync(destinationRoot, { recursive: true });
   for (const msappPath of findFiles(solutionFolder, ".msapp")) {
     const appName = path.basename(msappPath, ".msapp");
-    run(canvasPac.command, [
-      ...canvasPac.args,
-      "canvas", "unpack",
-      "--msapp", msappPath,
-      "--sources", path.join(destinationRoot, appName),
-    ], {
-      cwd: repoRoot,
-      errorMessage: `Could not unpack canvas app '${appName}' with repository-local PAC CLI ${canvasPac.version}.`,
-    });
+    run(
+      canvasPac.command,
+      [
+        ...canvasPac.args,
+        "canvas",
+        "unpack",
+        "--msapp",
+        msappPath,
+        "--sources",
+        path.join(destinationRoot, appName),
+      ],
+      {
+        cwd: repoRoot,
+        errorMessage: `Could not unpack canvas app '${appName}' with repository-local PAC CLI ${canvasPac.version}.`,
+      },
+    );
   }
 }
 
@@ -36,7 +54,8 @@ function findFiles(folder, extension) {
   for (const entry of readdirSync(folder, { withFileTypes: true })) {
     const entryPath = path.join(folder, entry.name);
     if (entry.isDirectory()) matches.push(...findFiles(entryPath, extension));
-    else if (entry.isFile() && entry.name.endsWith(extension)) matches.push(entryPath);
+    else if (entry.isFile() && entry.name.endsWith(extension))
+      matches.push(entryPath);
   }
   return matches;
 }
@@ -48,13 +67,19 @@ function printChanges(label, changes) {
 
 function main() {
   const repoRoot = process.cwd();
-  const { environmentUrl, solutionName, outputFolder } = loadSolutionConfig(repoRoot);
+  const { environmentUrl, solutionName, outputFolder } =
+    loadSolutionConfig(repoRoot);
   if (!existsSync(outputFolder)) {
-    throw new Error(`No checked-out solution exists at ${path.relative(repoRoot, outputFolder)}. Run npm run pac:export first.`);
+    throw new Error(
+      `No checked-out solution exists at ${path.relative(repoRoot, outputFolder)}. Run npm run pac:export first.`,
+    );
   }
 
   const pac = findPac();
-  if (!pac) throw new Error("PAC CLI was not found. Install Microsoft.PowerApps.CLI.Tool before comparing solutions.");
+  if (!pac)
+    throw new Error(
+      "PAC CLI was not found. Install Microsoft.PowerApps.CLI.Tool before comparing solutions.",
+    );
   requirePacVersion(pac);
   const canvasPac = requireCanvasPac(repoRoot);
 
@@ -64,15 +89,25 @@ function main() {
   const remoteCanvasFolder = path.join(stagingRoot, "remote-canvas");
 
   try {
-    console.log(`Comparing the checked-out solution with '${solutionName}' in ${environmentUrl}`);
-    cloneSolution({ pac, environmentUrl, solutionName, outputFolder: remoteFolder });
+    console.log(
+      `Comparing the checked-out solution with '${solutionName}' in ${environmentUrl}`,
+    );
+    cloneSolution({
+      pac,
+      environmentUrl,
+      solutionName,
+      outputFolder: remoteFolder,
+    });
 
     const solutionChanges = getDirectoryChanges(outputFolder, remoteFolder);
     printChanges("Solution file differences", solutionChanges);
 
     unpackCanvasApps(canvasPac, repoRoot, outputFolder, localCanvasFolder);
     unpackCanvasApps(canvasPac, repoRoot, remoteFolder, remoteCanvasFolder);
-    const canvasChanges = getDirectoryChanges(localCanvasFolder, remoteCanvasFolder);
+    const canvasChanges = getDirectoryChanges(
+      localCanvasFolder,
+      remoteCanvasFolder,
+    );
     printChanges("Canvas app source differences", canvasChanges);
 
     if (solutionChanges || canvasChanges) process.exitCode = 1;

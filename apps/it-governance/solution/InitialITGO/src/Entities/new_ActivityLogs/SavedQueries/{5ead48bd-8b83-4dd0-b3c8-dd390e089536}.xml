@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{5ead48bd-8b83-4dd0-b3c8-dd390e089536}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="new_activity" select="1" icon="1" preview="1">
+        <row name="result" id="new_activitylogsid">
+          <cell name="new_activity" width="300" />
+          <cell name="new_activityby" width="106" />
+          <cell name="createdon" width="105" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="new_activitylogs">
+          <attribute name="new_activitylogsid" />
+          <attribute name="new_activity" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+          <attribute name="new_activityby" />
+          <attribute name="createdon" />
+          <order attribute="createdon" descending="true" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.49</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Active Activity Logs" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

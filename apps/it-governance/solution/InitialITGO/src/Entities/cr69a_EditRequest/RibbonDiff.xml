@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.AddExistingStandard.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.AddNewStandard.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.AddNewStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.DocumentTemplate.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.ExportToExcel.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.NewRecord.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.RefreshButton.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.RunReport.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.cr69a_editrequest.WordTemplate.Hide" Location="Mscrm.SubGrid.cr69a_editrequest.WordTemplate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

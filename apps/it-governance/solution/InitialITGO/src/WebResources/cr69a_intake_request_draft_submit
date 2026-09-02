@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Intake Request Draft</title>
+    <style>
+      :root {
+        --itgov-text: #323130;
+        --itgov-surface: transparent;
+        --itgov-primary: #0078d4;
+        --itgov-primary-hover: #106ebe;
+        --itgov-primary-text: #ffffff;
+        --itgov-radius-md: 8px;
+        --itgov-alert-radius: 8px;
+        --itgov-success-bg: #dff6dd;
+        --itgov-success-border: #107c10;
+        --itgov-success-text: #0b5a0b;
+        --itgov-warning-bg: #fff4ce;
+        --itgov-warning-border: #ffbe2e;
+        --itgov-warning-text: #323130;
+        --itgov-error-bg: #fde7e9;
+        --itgov-error-border: #a80000;
+        --itgov-error-text: #a80000;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        line-height: 1.428571429;
+        color: var(--itgov-text);
+        background-color: var(--itgov-surface);
+        margin: 0;
+        padding: 12px;
+      }
+
+      /* Two columns: messages / list (flex) + submit always top-aligned */
+      .layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .layout-main {
+        flex: 1 1 220px;
+        min-width: 0;
+      }
+
+      .layout-actions {
+        flex: 0 0 auto;
+        align-self: flex-start;
+        text-align: right;
+      }
+
+      .layout .alert {
+        margin: 0 0 12px 0;
+      }
+
+      .layout .alert:last-child {
+        margin-bottom: 0;
+      }
+
+      .btn-primary {
+        background-color: var(--itgov-primary);
+        border: 1px solid var(--itgov-primary);
+        color: var(--itgov-primary-text);
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: var(--itgov-radius-md);
+        cursor: pointer;
+        transition:
+          background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--itgov-primary-hover);
+        border-color: var(--itgov-primary-hover);
+      }
+
+      .btn-primary:focus {
+        outline: 1px solid var(--itgov-primary-text);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px var(--itgov-primary);
+      }
+
+      .alert {
+        padding: 12px 16px;
+        margin: 12px 0;
+        border-radius: var(--itgov-alert-radius);
+        border-left: 6px solid var(--itgov-success-border);
+        background-color: var(--itgov-success-bg);
+        color: var(--itgov-success-text);
+      }
+
+      .alert-warning {
+        border-left-color: var(--itgov-warning-border);
+        background-color: var(--itgov-warning-bg);
+        color: var(--itgov-warning-text);
+      }
+
+      .alert-error {
+        border-left-color: var(--itgov-error-border);
+        background-color: var(--itgov-error-bg);
+        color: var(--itgov-error-text);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .missing-fields-list {
+        margin: 8px 0 0 0;
+        padding-left: 18px;
+        max-height: min(42vh, 280px);
+        overflow-y: auto;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 8px;
+        }
+
+        .layout {
+          flex-direction: column;
+        }
+
+        .layout-actions {
+          order: -1;
+          width: 100%;
+          text-align: left;
+        }
+      }
+    </style>
+    <script>
+      const PAGE_REQUIRED_FIELDS = [
+        "cr69a_requester",
+        "new_requestercomponent",
+        "cr69a_cmsbusinessownername",
+        "new_cmsbusinessownercomponent",
+        "cr69a_cmsprojectproductmanager",
+        "new_cmsproductmanagercomponent",
+        "cr69a_collaborators",
+        "cr3ee_business_need_multi",
+        "cr3ee_proposedsolution",
+        "new_organizationalpriorityalignment",
+        "cr69a_current_process_status",
+        "cr69a_enterprise_architecture_support",
+        "cr69a_ai_technologies_used",
+        "cr69a_interface_component",
+        "cr69a_software_products",
+        "cr3ee_currentannualspending",
+        "cr3ee_annualspendingitpercentage",
+        "cr3ee_plannedannualspendingoffirstyear",
+        "cr3ee_itpercentageofy1annualspending",
+      ];
+
+      const DRAFT_STATE = 971270000;
+      const SUBMITTED_STATE = 971270002;
+      const REQUEST_STATUS = "cr69a_status";
+      const READY_FOR_REVIEW_FIELD = "cr69a_readyforreview";
+      const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
+      const INTAKE_REQUEST_REVIEW = 971270000;
+
+      const NOTIF_IDS = {
+        missingFields: "submit_missing_fields_warning",
+        success: "submit_success_message",
+        error: "submit_error_message",
+      };
+
+      function getParentForm() {
+        return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function showInlineMessage(text, variant) {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+
+        box.textContent = text || "";
+        box.classList.remove("hidden", "alert-warning", "alert-error");
+
+        if (variant === "warning") {
+          box.classList.add("alert-warning");
+        } else if (variant === "error") {
+          box.classList.add("alert-error");
+        }
+      }
+
+      function hideInlineMessage() {
+        var box = document.getElementById("submitStatus");
+        if (!box) return;
+        box.classList.add("hidden");
+        box.classList.remove("alert-warning", "alert-error");
+        box.textContent = "";
+      }
+
+      function showMissingFieldsList(missingFieldLabels) {
+        var container = document.getElementById("missingFieldsBox");
+        var list = document.getElementById("missingFieldsList");
+        if (!container || !list) return;
+
+        list.innerHTML = "";
+        (missingFieldLabels || []).forEach(function (label) {
+          var li = document.createElement("li");
+          li.textContent = label;
+          list.appendChild(li);
+        });
+
+        container.classList.toggle(
+          "hidden",
+          (missingFieldLabels || []).length === 0,
+        );
+      }
+
+      function hideMissingFieldsList() {
+        var container = document.getElementById("missingFieldsBox");
+        var list = document.getElementById("missingFieldsList");
+        if (!container || !list) return;
+        container.classList.add("hidden");
+        list.innerHTML = "";
+      }
+
+      function setSubmitButtonHidden(hidden) {
+        var submitButton = document.getElementById("submitIntakeRequestButton");
+        if (!submitButton) return;
+        submitButton.classList.toggle("hidden", !!hidden);
+      }
+
+      function clearActionNotifications(formContext) {
+        formContext.ui.clearFormNotification(NOTIF_IDS.missingFields);
+        formContext.ui.clearFormNotification(NOTIF_IDS.success);
+        formContext.ui.clearFormNotification(NOTIF_IDS.error);
+      }
+
+      const EMBEDDED_REFRESH_METHODS = [
+        "refreshRequestHelper",
+        "refreshProgressTracker",
+      ];
+
+      function refreshEmbeddedHelpers(formContext) {
+        const controls = formContext?.ui?.controls;
+        if (!controls || typeof controls.forEach !== "function") {
+          return;
+        }
+
+        controls.forEach(function (control) {
+          if (
+            !control ||
+            control.getControlType?.() !== "webresource" ||
+            typeof control.getContentWindow !== "function"
+          ) {
+            return;
+          }
+
+          control.getContentWindow().then(
+            function (contentWindow) {
+              EMBEDDED_REFRESH_METHODS.forEach(function (methodName) {
+                if (typeof contentWindow[methodName] === "function") {
+                  contentWindow[methodName]();
+                }
+              });
+            },
+            function () {
+              // Ignore inaccessible web resource windows.
+            },
+          );
+        });
+      }
+
+      function scheduleEmbeddedRefreshes(formContext) {
+        [0, 300, 1200].forEach(function (delay) {
+          window.setTimeout(function () {
+            refreshEmbeddedHelpers(formContext);
+          }, delay);
+        });
+      }
+
+      function showFormNotification(formContext, message, level, uniqueId) {
+        formContext.ui.clearFormNotification(uniqueId);
+        formContext.ui.setFormNotification(message, level, uniqueId);
+      }
+
+      function showMissingFieldsWarning(formContext, missingFieldLabels) {
+        const totalMissing = (missingFieldLabels || []).length;
+        const maxPreview = 8;
+        const preview = (missingFieldLabels || []).slice(0, maxPreview);
+        const remaining = Math.max(0, totalMissing - preview.length);
+
+        const message =
+          "Successfully saved. " +
+          totalMissing +
+          " required field" +
+          (totalMissing === 1 ? "" : "s") +
+          " missing. Please complete the highlighted fields before submitting.";
+
+        showFormNotification(
+          formContext,
+          message,
+          "WARNING",
+          NOTIF_IDS.missingFields,
+        );
+
+        showInlineMessage(
+          "Saved as draft. Please complete the missing required fields before submitting.",
+          "warning",
+        );
+        showMissingFieldsList(missingFieldLabels || []);
+        setSubmitButtonHidden(false);
+      }
+
+      function showSuccess(formContext, text) {
+        const message =
+          text ||
+          "System Intake Draft successfully submitted. Waiting for feedback.";
+
+        showFormNotification(formContext, message, "INFO", NOTIF_IDS.success);
+        showInlineMessage(message, "success");
+        hideMissingFieldsList();
+        setSubmitButtonHidden(true);
+      }
+
+      function showError(formContext, text) {
+        const message = text || "Something went wrong.";
+
+        showFormNotification(formContext, message, "ERROR", NOTIF_IDS.error);
+        showInlineMessage(message, "error");
+      }
+
+      function shouldShowSuccessOnLoad() {
+        const form = getParentForm();
+        if (!form) return false;
+
+        const submittedAttr = form.getAttribute(REQUEST_STATUS);
+        const rfrAttr = form.getAttribute(READY_FOR_REVIEW_FIELD);
+
+        const submittedValue = submittedAttr ? submittedAttr.getValue() : null;
+        const rfrValue = rfrAttr ? rfrAttr.getValue() : null;
+
+        const isSubmitted =
+          submittedValue !== null && submittedValue !== DRAFT_STATE;
+        const isReadyForReview = rfrValue === true;
+
+        return isSubmitted && isReadyForReview;
+      }
+
+      function initBannerFromFields() {
+        const form = getParentForm();
+        if (!form) return;
+
+        if (shouldShowSuccessOnLoad()) {
+          clearActionNotifications(form);
+
+          showSuccess(
+            form,
+            "System Intake Draft successfully submitted. Waiting for feedback.",
+          );
+        } else {
+          hideInlineMessage();
+          hideMissingFieldsList();
+          setSubmitButtonHidden(false);
+        }
+      }
+
+      function validateFields(form) {
+        let allValid = true;
+        const missingFieldLabels = [];
+
+        function getFundingSourcesGridRoot() {
+          try {
+            var doc = parent && parent.document ? parent.document : null;
+            if (!doc) return null;
+
+            // Control wrapper for the subgrid
+            return doc.querySelector(
+              '[data-control-name="sg_funding_sources"]',
+            );
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function hasAtLeastOneFundingSourceRow() {
+          const root = getFundingSourcesGridRoot();
+          if (!root) return null; // unknown
+
+          // AG Grid renders rows with `.ag-row` when records exist.
+          const rowEls = root.querySelectorAll(
+            ".ag-center-cols-container .ag-row",
+          );
+          if (rowEls && rowEls.length > 0) return true;
+
+          // If "no rows" overlay is visible, we can safely treat as empty.
+          const noRowsOverlay = root.querySelector(
+            ".ag-overlay-no-rows-wrapper",
+          );
+          if (noRowsOverlay) {
+            const hidden =
+              noRowsOverlay.classList.contains("ag-hidden") ||
+              noRowsOverlay.getAttribute("aria-hidden") === "true";
+            if (!hidden) return false;
+          }
+
+          // Fallback: if AG Grid root advertises 0 rows, treat as empty.
+          const gridRoot = root.querySelector(".ag-root[aria-rowcount]");
+          if (gridRoot) {
+            const ariaRowCount = parseInt(
+              gridRoot.getAttribute("aria-rowcount") || "",
+              10,
+            );
+            if (!Number.isNaN(ariaRowCount) && ariaRowCount <= 0) return false;
+          }
+
+          // If we couldn't confidently detect, return unknown.
+          return null;
+        }
+
+        PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
+          const attribute = form.getAttribute(fieldName);
+          const control = form.getControl(fieldName);
+
+          if (!attribute) {
+            allValid = false;
+            missingFieldLabels.push(fieldName);
+            return;
+          }
+
+          const value = attribute.getValue();
+          const isEmpty =
+            value === null ||
+            (typeof value === "string" && value.trim() === "") ||
+            (Array.isArray(value) && value.length === 0);
+
+          if (isEmpty) {
+            allValid = false;
+
+            if (control && typeof control.getLabel === "function") {
+              missingFieldLabels.push(control.getLabel());
+            } else {
+              missingFieldLabels.push(fieldName);
+            }
+          }
+        });
+
+        // Subgrid validation: require at least one Funding Source row.
+        const fundingHasRow = hasAtLeastOneFundingSourceRow();
+        if (fundingHasRow === false) {
+          allValid = false;
+          missingFieldLabels.push("Funding Sources (add at least one)");
+        } else if (fundingHasRow === null) {
+          // If we cannot reliably detect (timing/DOM changes), don't block submit.
+          // Users will still see the grid on the form.
+          console.warn(
+            "Funding Sources grid presence could not be validated (DOM not ready).",
+          );
+        }
+
+        return {
+          allValid: allValid,
+          missingFieldLabels: missingFieldLabels,
+        };
+      }
+
+      function submitIntakeRequestDraft() {
+        const form = getParentForm();
+
+        if (!form) {
+          console.error("Could not access parent form context.");
+          return;
+        }
+
+        clearActionNotifications(form);
+        hideInlineMessage();
+        hideMissingFieldsList();
+
+        const submitButton = document.getElementById(
+          "submitIntakeRequestButton",
+        );
+        if (submitButton) {
+          submitButton.disabled = true;
+        }
+
+        const validationResult = validateFields(form);
+        const allValid = validationResult.allValid;
+        const missingFieldLabels = validationResult.missingFieldLabels;
+
+        if (!allValid) {
+          form.data.save().then(
+            function () {
+              scheduleEmbeddedRefreshes(form);
+              showMissingFieldsWarning(form, missingFieldLabels);
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
+            },
+            function (err) {
+              console.error(
+                "Save failed:",
+                err && err.message ? err.message : err,
+              );
+              showError(
+                form,
+                "Your request could not be submitted, and the draft could not be saved. Please try again or refresh the form.",
+              );
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
+            },
+          );
+          return;
+        }
+
+        try {
+          const statusAttr = form.getAttribute(REQUEST_STATUS);
+          if (!statusAttr) {
+            console.error("Could not access Request Status field.");
+            showError(
+              form,
+              "Unable to submit because a required system field is unavailable.",
+            );
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+          statusAttr.setValue(SUBMITTED_STATE);
+
+          const taskListStep = form.getAttribute(
+            ADMIN_GOV_TASK_LIST_STEP_FIELD,
+          );
+          if (!taskListStep) {
+            console.error(
+              "Could not access Admin Governance Process Step field.",
+            );
+            showError(
+              form,
+              "Unable to submit because a required system field is unavailable.",
+            );
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+          taskListStep.setValue(INTAKE_REQUEST_REVIEW);
+          taskListStep.fireOnChange();
+
+          const rfr = form.getAttribute(READY_FOR_REVIEW_FIELD);
+          if (!rfr) {
+            console.error("Could not access ready for review.");
+            showError(
+              form,
+              "Unable to submit because a required system field is unavailable.",
+            );
+            if (submitButton) submitButton.disabled = false;
+            return;
+          }
+          rfr.setValue(true);
+
+          clearActionNotifications(form);
+
+          form.data.save().then(
+            function () {
+              scheduleEmbeddedRefreshes(form);
+              if (parent.lockAllFields) {
+                parent.lockAllFields(form);
+              } else {
+                console.warn(
+                  "lockAllFields function not found on parent window",
+                );
+              }
+
+              showSuccess(
+                form,
+                "Your Intake Request form has been submitted. You will receive an automatic email shortly regarding next steps.",
+              );
+            },
+            function (err) {
+              console.error(
+                "Save failed:",
+                err && err.message ? err.message : err,
+              );
+              showError(
+                form,
+                "Save failed. Please try again or refresh the form.",
+              );
+              if (submitButton) {
+                submitButton.disabled = false;
+              }
+            },
+          );
+        } catch (e) {
+          console.error("Unexpected error during submit:", e);
+          showError(form, "An unexpected error occurred while submitting.");
+          if (submitButton) {
+            submitButton.disabled = false;
+          }
+        }
+      }
+
+      // Retry-based initialization to ensure parent form context is ready
+      const INIT_MAX_ATTEMPTS = 10;
+      const INIT_RETRY_DELAY_MS = 500;
+
+      function isParentFormReady() {
+        try {
+          const form = getParentForm();
+          return !!(form && form.data);
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function initUIWithRetry(attempt) {
+        var currentAttempt = attempt || 1;
+
+        if (!isParentFormReady()) {
+          if (currentAttempt >= INIT_MAX_ATTEMPTS) {
+            console.warn(
+              "Parent form context not ready after maximum retries; UI may not reflect correct state.",
+            );
+            return;
+          }
+
+          setTimeout(function () {
+            initUIWithRetry(currentAttempt + 1);
+          }, INIT_RETRY_DELAY_MS);
+          return;
+        }
+
+        initBannerFromFields();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        initUIWithRetry(1);
+      });
+    </script>
+  </head>
+  <body>
+    <div class="layout">
+      <div class="layout-main">
+        <div
+          id="submitStatus"
+          class="alert hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <div id="missingFieldsBox" class="alert alert-warning hidden">
+          <div><strong>Missing required fields</strong></div>
+          <ul id="missingFieldsList" class="missing-fields-list"></ul>
+        </div>
+      </div>
+
+      <div class="layout-actions">
+        <button
+          id="submitIntakeRequestButton"
+          class="btn-primary"
+          onclick="submitIntakeRequestDraft()"
+        >
+          Submit Intake Request Draft
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Name>cr69a_systemintakeadmintools_0f36a</Name>
+  <AppVersion>2026-01-08T16:48:06Z</AppVersion>
+  <Status>Ready</Status>
+  <CreatedByClientVersion>3.25091.7.0</CreatedByClientVersion>
+  <MinClientVersion>3.25091.7.0</MinClientVersion>
+  <Tags>{"primaryDeviceWidth":"1719","primaryDeviceHeight":"1191","supportsPortrait":"true","supportsLandscape":"true","primaryFormFactor":"Tablet","showStatusBar":"false","publisherVersion":"3.25091.7","minimumRequiredApiVersion":"2.2.0","hasComponent":"false","hasUnlockedComponent":"false","isUnifiedRootApp":"false","sienaVersion":"20250905T204701Z-3.25083.8.0"}</Tags>
+  <IsCdsUpgraded>0</IsCdsUpgraded>
+  <GalleryItemId xsi:nil="true"></GalleryItemId>
+  <BackgroundColor>rgba(0, 176, 240, 1)</BackgroundColor>
+  <DisplayName>System Intake Admin Tools</DisplayName>
+  <Description></Description>
+  <CommitMessage></CommitMessage>
+  <Publisher></Publisher>
+  <AuthorizationReferences>[]</AuthorizationReferences>
+  <ConnectionReferences>{}</ConnectionReferences>
+  <DatabaseReferences>{"default.cds":{"databaseDetails":{"referenceType":"Environmental","environmentName":"default.cds","overrideValues":{"status":"NotSpecified","environmentVariableName":""}},"dataSources":{"SystemIntakes":{"entitySetName":"new_systemintakes","logicalName":"new_systemintake"},"Users":{"entitySetName":"systemusers","logicalName":"systemuser"},"Cedar Systems":{"entitySetName":"new_cedarsystems","logicalName":"new_cedarsystem"},"Edit Requests":{"entitySetName":"cr69a_editrequests","logicalName":"cr69a_editrequest"}}}}</DatabaseReferences>
+  <AppComponents>[]</AppComponents>
+  <AppComponentDependencies>[]</AppComponentDependencies>
+  <CanConsumeAppPass>1</CanConsumeAppPass>
+  <CanvasAppType>2</CanvasAppType>
+  <BypassConsent>0</BypassConsent>
+  <EmbeddedApp xsi:nil="true"></EmbeddedApp>
+  <IntroducedVersion>1.0</IntroducedVersion>
+  <CdsDependencies>{"cdsdependencies":[{"componenttype":1,"logicalname":"new_systemintake"},{"componenttype":1,"logicalname":"systemuser"},{"componenttype":1,"logicalname":"new_cedarsystem"},{"componenttype":1,"logicalname":"cr69a_editrequest"}]}</CdsDependencies>
+  <IsCustomizable>1</IsCustomizable>
+  <BackgroundImageUri>/CanvasApps/cr69a_systemintakeadmintools_0f36a_BackgroundImageUri</BackgroundImageUri>
+  <DocumentUri>/CanvasApps/cr69a_systemintakeadmintools_0f36a_DocumentUri.msapp</DocumentUri>
+  <AdditionalUris>
+    <AdditionalUri>/CanvasApps/cr69a_systemintakeadmintools_0f36a_AdditionalUris0_identity.json</AdditionalUri>
+  </AdditionalUris>
+</CanvasApp>

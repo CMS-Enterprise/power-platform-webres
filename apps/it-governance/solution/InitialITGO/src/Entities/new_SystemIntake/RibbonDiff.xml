@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RibbonDiffXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CustomActions>
+    <HideCustomAction HideActionId="new.AccessChecker.OpenDialog.new_systemintake.Button.Hide" Location="AccessChecker.OpenDialog.new_systemintake.Button" />
+    <HideCustomAction HideActionId="new.AIBuilder.new_systemintake.Flyout.Dummy.Hide" Location="AIBuilder.new_systemintake.Flyout.Dummy" />
+    <HideCustomAction HideActionId="new.AIBuilder.new_systemintake.Flyout.Hide" Location="AIBuilder.new_systemintake.Flyout" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.Assign.Hide" Location="Mscrm.Form.new_systemintake.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.Deactivate.Hide" Location="Mscrm.Form.new_systemintake.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.Form.new_systemintake.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.Flows.RefreshCommandBar.Hide" Location="Mscrm.Form.new_systemintake.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.NewRecord.Hide" Location="Mscrm.Form.new_systemintake.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.NewRecordForBPFEntity.Hide" Location="Mscrm.Form.new_systemintake.NewRecordForBPFEntity" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.RefreshModernButton.Hide" Location="Mscrm.Form.new_systemintake.RefreshModernButton" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.Reports.Hide" Location="Mscrm.Form.new_systemintake.Reports" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.SwitchProcess.Hide" Location="Mscrm.Form.new_systemintake.SwitchProcess" />
+    <HideCustomAction HideActionId="new.Mscrm.Form.new_systemintake.WordTemplate.Hide" Location="Mscrm.Form.new_systemintake.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Activate.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Activate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Assign.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Chart.Assign.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Chart.Assign" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Chart.Import.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Chart.Import" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Chart.Share.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Chart.Share" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Deactivate.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Deactivate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Delete.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Delete" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.DocumentTemplate.Hide" Location="Mscrm.HomepageGrid.new_systemintake.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.ExportToExcel.Hide" Location="Mscrm.HomepageGrid.new_systemintake.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Flows.RefreshCommandBar.Flows.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Flows.RefreshCommandBar.Flows" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Flows.RefreshCommandBar.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Import.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Import" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.ImportDataFromExcel.Hide" Location="Mscrm.HomepageGrid.new_systemintake.ImportDataFromExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.MainFilters.Hide" Location="Mscrm.HomepageGrid.new_systemintake.MainFilters" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.MainTab.QuickPowerBI.Button.Hide" Location="Mscrm.HomepageGrid.new_systemintake.MainTab.QuickPowerBI.Button" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.MBPF.ConvertTo.Hide" Location="Mscrm.HomepageGrid.new_systemintake.MBPF.ConvertTo" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.RunReport.Hide" Location="Mscrm.HomepageGrid.new_systemintake.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Send.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Send" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.Sharing.Hide" Location="Mscrm.HomepageGrid.new_systemintake.Sharing" />
+    <HideCustomAction HideActionId="new.Mscrm.HomepageGrid.new_systemintake.WordTemplate.Hide" Location="Mscrm.HomepageGrid.new_systemintake.WordTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.AddExistingAssoc.Hide" Location="Mscrm.SubGrid.new_systemintake.AddExistingAssoc" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.AddExistingStandard.Hide" Location="Mscrm.SubGrid.new_systemintake.AddExistingStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.AddNewStandard.Hide" Location="Mscrm.SubGrid.new_systemintake.AddNewStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.AssociateParentChildCase.Hide" Location="Mscrm.SubGrid.new_systemintake.AssociateParentChildCase" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.DocumentTemplate.Hide" Location="Mscrm.SubGrid.new_systemintake.DocumentTemplate" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.ExportSelectedToExcel.Hide" Location="Mscrm.SubGrid.new_systemintake.ExportSelectedToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.ExportToExcel.Hide" Location="Mscrm.SubGrid.new_systemintake.ExportToExcel" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.Flows.RefreshCommandBar.Hide" Location="Mscrm.SubGrid.new_systemintake.Flows.RefreshCommandBar" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.FolderTracking.Hide" Location="Mscrm.SubGrid.new_systemintake.FolderTracking" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.NewRecord.Hide" Location="Mscrm.SubGrid.new_systemintake.NewRecord" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.OpenAssociatedGridViewStandard.Hide" Location="Mscrm.SubGrid.new_systemintake.OpenAssociatedGridViewStandard" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.RefreshButton.Hide" Location="Mscrm.SubGrid.new_systemintake.RefreshButton" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.RunReport.Hide" Location="Mscrm.SubGrid.new_systemintake.RunReport" />
+    <HideCustomAction HideActionId="new.Mscrm.SubGrid.new_systemintake.WordTemplate.Hide" Location="Mscrm.SubGrid.new_systemintake.WordTemplate" />
+  </CustomActions>
+  <Templates>
+    <RibbonTemplates Id="Mscrm.Templates"></RibbonTemplates>
+  </Templates>
+  <CommandDefinitions />
+  <RuleDefinitions>
+    <TabDisplayRules />
+    <DisplayRules />
+    <EnableRules />
+  </RuleDefinitions>
+  <LocLabels />
+</RibbonDiffXml>

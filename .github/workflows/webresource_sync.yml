@@ -1,0 +1,93 @@
+name: Check Web Resource Synchronization
+
+on:
+  pull_request:
+  merge_group:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: webresource-sync-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-webresource-sync:
+    name: Check web resources against Dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository history
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Detect relevant changes
+        id: changes
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          PR_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          MERGE_BASE_SHA: ${{ github.event.merge_group.base_sha }}
+          MERGE_HEAD_SHA: ${{ github.event.merge_group.head_sha }}
+        run: |
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            base_sha="$PR_BASE_SHA"
+            head_sha="$PR_HEAD_SHA"
+          else
+            base_sha="$MERGE_BASE_SHA"
+            head_sha="$MERGE_HEAD_SHA"
+          fi
+
+          relevant=false
+          while IFS= read -r file; do
+            case "$file" in
+              apps/it-governance/web-resources/*|scripts/*webresource*.mjs|package.json)
+                relevant=true
+                break
+                ;;
+            esac
+          done < <(git diff --name-only "$base_sha" "$head_sha")
+
+          echo "relevant=$relevant" >> "$GITHUB_OUTPUT"
+
+          if [[ "$EVENT_NAME" == "merge_group" || "$PR_HEAD_REPOSITORY" == "$REPOSITORY" ]]; then
+            echo "trusted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "trusted=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip synchronization check
+        if: steps.changes.outputs.relevant != 'true'
+        run: echo "No web-resource source, manifest, or tooling changes detected."
+
+      - name: Skip live check for forked pull request
+        if: steps.changes.outputs.relevant == 'true' && steps.changes.outputs.trusted != 'true'
+        run: echo "Forked pull requests are not granted a Dataverse access token."
+
+      - name: Sign in to Azure with GitHub OIDC
+        if: steps.changes.outputs.relevant == 'true' && steps.changes.outputs.trusted == 'true'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      - name: Acquire short-lived Dataverse token
+        if: steps.changes.outputs.relevant == 'true' && steps.changes.outputs.trusted == 'true'
+        env:
+          DATAVERSE_URL: ${{ vars.DATAVERSE_DEV_URL }}
+        run: |
+          token="$(az account get-access-token --resource "$DATAVERSE_URL" --query accessToken --output tsv)"
+          echo "::add-mask::$token"
+          echo "DATAVERSE_ACCESS_TOKEN=$token" >> "$GITHUB_ENV"
+
+      - name: Compare canonical web resources with published Dev
+        if: steps.changes.outputs.relevant == 'true' && steps.changes.outputs.trusted == 'true'
+        env:
+          DATAVERSE_URL: ${{ vars.DATAVERSE_DEV_URL }}
+        run: npm run webres:check

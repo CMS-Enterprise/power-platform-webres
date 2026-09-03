@@ -20,6 +20,7 @@
     "dataflows:check:file": "node ./scripts/check-dataflows.mjs",
     "dataflows:pull": "node ./scripts/pull-dataflows.mjs",
     "dataflows:pull:file": "node ./scripts/pull-dataflows.mjs",
+    "dataverse:access:check": "node ./scripts/check-dataverse-access.mjs",
     "cedar:clean": "node ./scripts/clean-cedar-systems-json.mjs",
     "intake:systems:clean": "node ./scripts/clean-system-intake-systems-csv.mjs",
     "pac:setup": "dotnet tool restore",

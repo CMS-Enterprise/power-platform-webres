@@ -17,12 +17,62 @@ async function main() {
     dataverseUrl,
   );
 
+  const checkedAt = new Date().toISOString();
+  const identityResponse = await dataverseGet({
+    dataverseUrl,
+    token,
+    path: "/api/data/v9.2/WhoAmI",
+  });
+
+  if (isDenied(identityResponse)) {
+    console.error(
+      `IDENTITY_DENIED: ${dataverseUrl} (${identityResponse.status})`,
+    );
+    console.error("WEB_RESOURCE_READ_NOT_TESTED");
+    console.error(`ACCESS_DENIED: ${dataverseUrl}`);
+    console.error(`Checked at: ${checkedAt}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  await requireSuccessfulResponse(identityResponse, dataverseUrl, "WhoAmI");
+  const identity = await identityResponse.json();
+  console.log(`IDENTITY_RECOGNIZED: ${dataverseUrl}`);
+  console.log(`Application user ID: ${identity.UserId}`);
+  console.log(`Organization ID: ${identity.OrganizationId}`);
+
+  const webResourceResponse = await dataverseGet({
+    dataverseUrl,
+    token,
+    path: "/api/data/v9.2/webresourceset?$select=webresourceid&$top=1",
+  });
+
+  if (isDenied(webResourceResponse)) {
+    console.error(
+      `WEB_RESOURCE_READ_DENIED: ${dataverseUrl} (${webResourceResponse.status})`,
+    );
+    console.error(`ACCESS_DENIED: ${dataverseUrl}`);
+    console.error(`Checked at: ${checkedAt}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  await requireSuccessfulResponse(
+    webResourceResponse,
+    dataverseUrl,
+    "web-resource read",
+  );
+  console.log(`WEB_RESOURCE_READ_GRANTED: ${dataverseUrl}`);
+  console.log(`ACCESS_GRANTED: ${dataverseUrl}`);
+  console.log(`Checked at: ${checkedAt}`);
+}
+
+async function dataverseGet({ dataverseUrl, token, path: requestPath }) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-  let response;
   try {
-    response = await fetch(`${dataverseUrl}/api/data/v9.2/WhoAmI`, {
+    return await fetch(`${dataverseUrl}${requestPath}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -41,26 +91,18 @@ async function main() {
   } finally {
     clearTimeout(timeout);
   }
+}
 
-  if (response.ok) {
-    const result = await response.json();
-    console.log(`ACCESS_GRANTED: ${dataverseUrl}`);
-    console.log(`Checked at: ${new Date().toISOString()}`);
-    console.log(`Application user ID: ${result.UserId}`);
-    console.log(`Organization ID: ${result.OrganizationId}`);
-    return;
-  }
+function isDenied(response) {
+  return response.status === 401 || response.status === 403;
+}
 
-  if (response.status === 401 || response.status === 403) {
-    console.error(`ACCESS_DENIED: ${dataverseUrl} (${response.status})`);
-    console.error(`Checked at: ${new Date().toISOString()}`);
-    process.exitCode = 1;
-    return;
-  }
+async function requireSuccessfulResponse(response, dataverseUrl, checkName) {
+  if (response.ok) return;
 
   const errorText = await response.text();
   throw new Error(
-    `ACCESS_CHECK_FAILED: ${dataverseUrl} returned ${response.status} ${errorText}`,
+    `ACCESS_CHECK_FAILED: ${checkName} against ${dataverseUrl} returned ${response.status} ${errorText}`,
   );
 }
 
@@ -133,9 +175,10 @@ function printHelp() {
   console.log(`Usage:
   npm run dataverse:access:check -- --url https://example.crm.dynamics.com
 
-Calls Dataverse WhoAmI to prove whether the service principal configured in
-.env can access the explicitly selected environment. The check reads identity
-metadata only and does not read business records or change the environment.
+Calls Dataverse WhoAmI and performs a minimal web-resource metadata read to
+test whether the service principal configured in .env is recognized and can
+use the local web-resource tooling in the explicitly selected environment.
+The check does not read business records or change the environment.
 
 Exit codes:
   0  Access granted

@@ -23,8 +23,9 @@ Changes here should be reviewed carefully, as they directly affect the user expe
 
 ## Auditing environment access
 
-Use the read-only `WhoAmI` probe to verify whether the service principal in
-your local `.env` can access a specific environment:
+Use the read-only access probe to verify whether the service principal in your
+local `.env` is recognized and can read web-resource metadata in a specific
+environment:
 
 ```bash
 npm run dataverse:access:check -- --url https://example.crm.dynamics.com
@@ -32,7 +33,8 @@ npm run dataverse:access:check -- --url https://example.crm.dynamics.com
 
 The environment URL must be supplied explicitly. The command does not use or
 modify `DATAVERSE_URL`, read business records, or change the environment. It
-prints `ACCESS_GRANTED` when Dataverse recognizes the application user and
-`ACCESS_DENIED` after that environment's access has been removed. Removing an
+reports identity recognition separately from web-resource read authorization.
+After roles are removed, Dataverse may still recognize the identity while
+reporting `WEB_RESOURCE_READ_DENIED` and `ACCESS_DENIED`. Removing an
 application user or its roles should only be done after confirming that no
 flows, integrations, or deployment processes depend on it.

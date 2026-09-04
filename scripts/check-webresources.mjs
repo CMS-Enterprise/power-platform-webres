@@ -198,10 +198,12 @@ function readJson(filePath) {
 }
 
 function validateConfig({ args, env, manifest }) {
-  const requiredEnv = ["DATAVERSE_URL"];
-  if (!env.DATAVERSE_ACCESS_TOKEN) {
-    requiredEnv.push("TENANT_ID", "CLIENT_ID", "CLIENT_SECRET");
-  }
+  const requiredEnv = [
+    "TENANT_ID",
+    "CLIENT_ID",
+    "CLIENT_SECRET",
+    "DATAVERSE_URL",
+  ];
   const missingEnv = requiredEnv.filter((name) => !env[name]);
 
   if (missingEnv.length > 0) {
@@ -273,10 +275,6 @@ function resolveWebResourceName({ entry, file, nameTemplate }) {
 }
 
 async function getAccessToken(env, dataverseUrl) {
-  if (env.DATAVERSE_ACCESS_TOKEN) {
-    return env.DATAVERSE_ACCESS_TOKEN.trim();
-  }
-
   const scope = env.DATAVERSE_SCOPE || `${dataverseUrl}/.default`;
   const tokenUrl = `https://login.microsoftonline.com/${env.TENANT_ID}/oauth2/v2.0/token`;
   const body = new URLSearchParams({

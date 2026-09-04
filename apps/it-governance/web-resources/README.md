@@ -26,19 +26,13 @@ Changes here should be reviewed carefully, as they directly affect the user expe
 `npm run webres:check` compares every manifest-managed local web resource with
 the version currently published in the configured Dataverse environment.
 
-For local development, the command continues to use `TENANT_ID`, `CLIENT_ID`,
-`CLIENT_SECRET`, and `DATAVERSE_URL` from `.env`. In GitHub Actions, the PR
-check uses a dedicated, read-only, Dev-only federated identity. The workflow
-acquires a short-lived token through GitHub OIDC and passes it to the checker as
-`DATAVERSE_ACCESS_TOKEN`; no client secret is stored in GitHub.
+The command uses `TENANT_ID`, `CLIENT_ID`, `CLIENT_SECRET`, and `DATAVERSE_URL`
+from the local `.env` file. Before opening or updating a pull request that
+changes web resources, run the command against Dev and include its summary in
+the PR's **How to test this change** section.
 
-The workflow requires these non-secret GitHub repository variables:
-
-- `AZURE_CLIENT_ID`: client ID of the dedicated Dev CI identity
-- `AZURE_TENANT_ID`: Microsoft Entra tenant containing that identity
-- `DATAVERSE_DEV_URL`: URL of the Dev Dataverse environment
-
-The federated credential must restrict trust to this repository and the GitHub
-events used by the workflow. The corresponding Dataverse application user
-should have only the permissions needed to read published web resources in
-Dev. UAT and Prod credentials are neither required nor used.
+A clean result confirms that all manifest-managed files match published Dev. If
+differences are intentional—for example, work is still in progress or Dev has
+shared changes from another developer—list the differing resources and explain
+the expected difference in the PR. This check is performed locally; GitHub does
+not receive Dataverse credentials and does not connect to UAT or Prod.

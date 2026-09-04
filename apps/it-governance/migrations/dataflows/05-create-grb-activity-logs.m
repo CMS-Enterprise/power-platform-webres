@@ -270,8 +270,8 @@ shared HistoricalGrbActivityLogPreparation =
             ExpandedIdCounts,
             "UnmappedIssues",
             each
-                Text.Combine(
-                    List.RemoveNulls({
+                let
+                    issues = List.RemoveNulls({
                         if [legacy_feedback_id] = null then "blank feedback ID" else null,
                         if [legacy_feedback_id_count] <> 1 then "duplicate feedback ID=" & Text.From([legacy_feedback_id]) else null,
                         if [legacy_intake_id] = null then "blank intake ID" else null,
@@ -294,17 +294,17 @@ shared HistoricalGrbActivityLogPreparation =
                         if [overriddencreatedon] = null then "invalid created-at timestamp" else null,
                         if [easi_external_id] = null then "unmatched Request external ID=" & Text.From([legacy_intake_id]) else null,
                         if [cr3ee_external_id] = null then "unmatched Review external ID=" & Text.From([legacy_intake_id]) else null
-                    }),
-                    "; "
-                ),
-            type text
+                    })
+                in
+                    if List.IsEmpty(issues) then null else Text.Combine(issues, "; "),
+            type nullable text
         )
     in
         WithIssues;
 
 shared HistoricalGrbActivityLogQA =
     let
-        Issues = Table.SelectRows(HistoricalGrbActivityLogPreparation, each [UnmappedIssues] <> ""),
+        Issues = Table.SelectRows(HistoricalGrbActivityLogPreparation, each [UnmappedIssues] <> null),
         Output = Table.SelectColumns(
             Issues,
             {
@@ -336,7 +336,7 @@ shared HistoricalGrbActivityLogs =
                     & Text.From(QaCount)
                     & " row(s)."
             else
-                Table.SelectRows(HistoricalGrbActivityLogPreparation, each [UnmappedIssues] = ""),
+                Table.SelectRows(HistoricalGrbActivityLogPreparation, each [UnmappedIssues] = null),
         Output = Table.SelectColumns(
             ValidRows,
             {

@@ -42,19 +42,3 @@ The federated credential must restrict trust to this repository and the GitHub
 events used by the workflow. The corresponding Dataverse application user
 should have only the permissions needed to read published web resources in
 Dev. UAT and Prod credentials are neither required nor used.
-
-## Auditing environment access
-
-Use the read-only `WhoAmI` probe to verify whether the service principal in
-your local `.env` can access a specific environment:
-
-```bash
-npm run dataverse:access:check -- --url https://example.crm.dynamics.com
-```
-
-The environment URL must be supplied explicitly. The command does not use or
-modify `DATAVERSE_URL`, read business records, or change the environment. It
-prints `ACCESS_GRANTED` when Dataverse recognizes the application user and
-`ACCESS_DENIED` after that environment's access has been removed. Removing an
-application user or its roles should only be done after confirming that no
-flows, integrations, or deployment processes depend on it.

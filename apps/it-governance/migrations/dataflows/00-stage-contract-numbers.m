@@ -10,7 +10,7 @@ shared #"system_intake_contract_numbers 1" = let
         [
             Delimiter = ",",
             Columns = 7,
-            QuoteStyle = QuoteStyle.None
+            QuoteStyle = QuoteStyle.Csv
         ]
     ),
     #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
@@ -22,7 +22,8 @@ shared #"system_intake_contract_numbers 1" = let
         {
             {"id", type text},
             {"system_intake_id", type text},
-            {"contract_number", Int64.Type},
+            // Contract numbers are identifiers; preserve leading zeros.
+            {"contract_number", type text},
             {"created_by", type text},
             {"created_at", type datetime},
             {"modified_by", type text},

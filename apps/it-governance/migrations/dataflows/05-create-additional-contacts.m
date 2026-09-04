@@ -9,27 +9,6 @@ shared cr69a_systemintakestagingcontact =
         // =========================================
         ChoiceSpecs = {
             [
-                source = "cr69a_roles",
-                dest = "roles_dataverse_format",
-                multiSelect = true,
-                map = [
-                    BUSINESS_OWNER = 100000000,
-                    PRODUCT_OWNER = 100000001,
-                    SYSTEM_OWNER = 100000002,
-                    SYSTEM_MAINTAINER = 100000003,
-                    CONTRACTING_OFFICERS_REPRESENTATIVE = 100000004,
-                    CLOUD_NAVIGATOR = 100000005,
-                    INFORMATION_SYSTEM_SECURITY_ADVISOR = 100000006,
-                    PRIVACY_ADVISOR = 100000007,
-                    CYBER_RISK_ADVISOR = 100000008,
-                    OTHER = 100000009,
-                    PRODUCT_MANAGER = 971270001,
-                    PROJECT_MANAGER = 971270002,
-                    SUBJECT_MATTER_EXPERT = 971270003,
-                    PLACE_HOLDER = 971270004
-                ]
-            ],
-            [
                 source = "cr69a_component",
                 dest = "component_dataverse_format",
                 multiSelect = false,
@@ -231,10 +210,12 @@ shared cr69a_systemintakestagingcontact =
                                 Text.Combine(filtered, "; "),
                     type nullable text
                 ),
+        // Roles are updated after contact creation by 07-update-request-multi-selects.m.
+        WithoutDeferredRoles = Table.RemoveColumns(WithQA, {"cr69a_roles"}, MissingField.Ignore),
         #"Remove Columns" = Table.RemoveColumns(
-            WithQA,
+            WithoutDeferredRoles,
             Table.ColumnsOfType(
-                WithQA, {type table, type record, type list, type nullable binary, type binary, type function}
+                WithoutDeferredRoles, {type table, type record, type list, type nullable binary, type binary, type function}
             )
         )
     in

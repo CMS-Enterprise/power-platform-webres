@@ -65,6 +65,8 @@ Be explicit so someone else can deploy it.
 REQUIRED
 Testing in Power Apps is environment-based. Provide exact steps.
 Include record URLs if helpful (Dev only).
+For web-resource changes, include the summary from `npm run webres:check` or
+list and explain any expected differences from published Dev.
 -->
 
 1.
@@ -94,6 +96,7 @@ Call out anything that could break: schema changes, required fields, plugins, da
 - [ ] If schema changed, I noted the Solution + components affected.
 - [ ] If plugin changed, I noted the message/step/stage and confirmed it runs as expected.
 - [ ] If data migration/dataflow changed, I tested with representative data.
+- [ ] If web resources changed, I ran `npm run webres:check` and included its summary or explained expected Dev differences above.
 - [ ] No secrets, tokens, or environment-specific IDs were committed.
 
 ## PR Reviewer Guidelines

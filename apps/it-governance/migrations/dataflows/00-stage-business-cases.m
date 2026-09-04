@@ -11,7 +11,7 @@ shared business_cases = let
         [
             Delimiter = ",",
             Columns = 72,
-            QuoteStyle = QuoteStyle.None
+            QuoteStyle = QuoteStyle.Csv
         ]
     ),
 
@@ -34,7 +34,7 @@ shared business_cases = let
                 {"eua_user_id", type text},
                 {"project_name", type text},
                 {"requester", type text},
-                {"requester_phone_number", Int64.Type},
+                {"requester_phone_number", type text},
                 {"business_owner", type text},
                 {"business_need", type text},
                 {"cms_benefit", type text},

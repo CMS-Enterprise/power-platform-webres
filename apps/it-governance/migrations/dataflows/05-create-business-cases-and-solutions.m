@@ -273,12 +273,105 @@ shared CreateAlternativeB =
         SolutionTypeAdded = Table.AddColumn(WithDefaults, "SolutionType", each 971270002, Int64.Type)
     in
         SolutionTypeAdded;
-shared Query =
+shared BusinessCaseSolutionPreparation =
     let
         Combined = Table.Combine({CreatePreferredSolution, CreateAlternativeA, CreateAlternativeB}),
         // Convert TRUE/FALSE → 1/0
         Normalized = Table.TransformColumns(Combined, {{"Security Approved", each if _ = true then 1 else 0,
         Int64.Type}}),
+        NormalizeId = (value as any) as nullable text =>
+            if value = null then
+                null
+            else
+                let
+                    normalized = Text.Lower(Text.Trim(Text.From(value)))
+                in
+                    if normalized = "" or Text.Upper(normalized) = "NULL" then null else normalized,
+        WithNormalizedBusinessCaseId = Table.AddColumn(
+            Normalized,
+            "NormalizedBusinessCaseId",
+            each NormalizeId([cr69a_id]),
+            type nullable text
+        ),
+        WithNormalizedRequestId = Table.AddColumn(
+            WithNormalizedBusinessCaseId,
+            "NormalizedRequestId",
+            each NormalizeId([Request ID]),
+            type nullable text
+        ),
+        BusinessCaseCounts = Table.Buffer(
+            Table.Group(
+                Table.SelectRows(
+                    WithNormalizedRequestId,
+                    each [NormalizedBusinessCaseId] <> null
+                ),
+                {"NormalizedBusinessCaseId"},
+                {{"SolutionRowCount", each Table.RowCount(_), Int64.Type}}
+            )
+        ),
+        WithBusinessCaseCount = Table.NestedJoin(
+            WithNormalizedRequestId,
+            {"NormalizedBusinessCaseId"},
+            BusinessCaseCounts,
+            {"NormalizedBusinessCaseId"},
+            "BusinessCaseCountMatch",
+            JoinKind.LeftOuter
+        ),
+        ExpandedBusinessCaseCount = Table.ExpandTableColumn(
+            WithBusinessCaseCount,
+            "BusinessCaseCountMatch",
+            {"SolutionRowCount"},
+            {"SolutionRowCount"}
+        ),
+        Dataverse = CommonDataService.Database(DataverseEnvironmentUrl),
+        ExistingRequestsRaw = Dataverse{[Schema = "dbo", Item = "new_systemintake"]}[Data],
+        ExistingRequests = Table.Buffer(
+            Table.TransformColumns(
+                Table.SelectColumns(ExistingRequestsRaw, {"easi_external_id"}, MissingField.Error),
+                {{"easi_external_id", each NormalizeId(_), type nullable text}}
+            )
+        ),
+        WithRequestMatch = Table.NestedJoin(
+            ExpandedBusinessCaseCount,
+            {"NormalizedRequestId"},
+            ExistingRequests,
+            {"easi_external_id"},
+            "RequestMatch",
+            JoinKind.LeftOuter
+        ),
+        WithValidationIssues = Table.AddColumn(
+            WithRequestMatch,
+            "BusinessCaseSolutionIssues",
+            (row as record) =>
+                let
+                    existingIssuesRaw = Record.FieldOrDefault(row, "UnmappedIssues", null),
+                    existingIssues =
+                        if existingIssuesRaw = null or Text.Trim(Text.From(existingIssuesRaw)) = "" then
+                            null
+                        else
+                            Text.From(existingIssuesRaw),
+                    businessCaseId = Record.FieldOrDefault(row, "NormalizedBusinessCaseId", null),
+                    requestId = Record.FieldOrDefault(row, "NormalizedRequestId", null),
+                    batchId = NormalizeId(Record.FieldOrDefault(row, "Batch ID", null)),
+                    solutionRowCount = Record.FieldOrDefault(row, "SolutionRowCount", null),
+                    requestMatches = Record.FieldOrDefault(row, "RequestMatch", #table({}, {})),
+                    requestMatchCount = Table.RowCount(requestMatches),
+                    issues = List.RemoveNulls(
+                        {
+                            existingIssues,
+                            if businessCaseId = null then "Business Case ID is blank" else null,
+                            if requestId = null then "Request ID is blank" else null,
+                            if requestId <> null and requestMatchCount = 0 then "No Request matched Request ID=" & requestId else null,
+                            if requestId <> null and requestMatchCount > 1 then "Multiple Requests matched Request ID=" & requestId else null,
+                            if batchId = null then "Batch ID is blank" else null,
+                            if solutionRowCount = null then "Expected 3 solution rows; found no count" else if solutionRowCount <> 3 then "Expected 3 solution rows; found " & Text.From(solutionRowCount) else null,
+                            if not List.Contains({971270000, 971270001, 971270002}, Record.FieldOrDefault(row, "SolutionType", null)) then "Invalid SolutionType" else null
+                        }
+                    )
+                in
+                    if List.IsEmpty(issues) then null else Text.Combine(issues, "; "),
+            type nullable text
+        ),
         OutputColumns = {
             "Request ID",
             "cr69a_id",
@@ -301,11 +394,80 @@ shared Query =
             "Workforce Training Requirements",
             "SolutionType",
             "Batch ID",
-            "UnmappedIssues"
+            "UnmappedIssues",
+            "NormalizedBusinessCaseId",
+            "NormalizedRequestId",
+            "SolutionRowCount",
+            "RequestMatch",
+            "BusinessCaseSolutionIssues"
         },
-        PreviewOnly = Table.SelectColumns(Normalized, OutputColumns, MissingField.UseNull)
+        PreviewOnly = Table.SelectColumns(WithValidationIssues, OutputColumns, MissingField.UseNull)
     in
         PreviewOnly;
+shared BusinessCaseSolutionQA =
+    let
+        Issues = Table.SelectRows(
+            BusinessCaseSolutionPreparation,
+            each
+                if [BusinessCaseSolutionIssues] = null then
+                    false
+                else
+                    Text.Trim(Text.From([BusinessCaseSolutionIssues])) <> ""
+        ),
+        Output = Table.SelectColumns(
+            Issues,
+            {
+                "cr69a_id",
+                "Request ID",
+                "Title",
+                "SolutionType",
+                "Batch ID",
+                "BusinessCaseSolutionIssues"
+            },
+            MissingField.UseNull
+        )
+    in
+        Output;
+shared Query =
+    let
+        BufferedQA = Table.Buffer(BusinessCaseSolutionQA),
+        QARowCount = Table.RowCount(BufferedQA),
+        QASample =
+            if QARowCount = 0 then
+                null
+            else
+                Text.Combine(
+                    List.Transform(
+                        Table.ToRecords(Table.FirstN(BufferedQA, 5)),
+                        each
+                            Text.From(Record.FieldOrDefault(_, "cr69a_id", "unknown Business Case"))
+                                & ": "
+                                & Text.From(Record.FieldOrDefault(_, "BusinessCaseSolutionIssues", "unknown issue"))
+                    ),
+                    " | "
+                ),
+        ValidatedPreparation =
+            if QARowCount > 0 then
+                error "BusinessCaseSolutionQA contains " & Text.From(QARowCount) & " invalid row(s). Sample: " & QASample
+            else
+                BusinessCaseSolutionPreparation,
+        HelperColumns = {
+            "NormalizedBusinessCaseId",
+            "NormalizedRequestId",
+            "SolutionRowCount",
+            "RequestMatch",
+            "BusinessCaseSolutionIssues"
+        },
+        Output = Table.RemoveColumns(ValidatedPreparation, HelperColumns, MissingField.Ignore),
+        WithoutComplexColumns = Table.RemoveColumns(
+            Output,
+            Table.ColumnsOfType(
+                Output,
+                {type table, type record, type list, type nullable binary, type binary, type function}
+            )
+        )
+    in
+        WithoutComplexColumns;
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [
     IsParameterQuery = true,
     IsParameterQueryRequired = false,

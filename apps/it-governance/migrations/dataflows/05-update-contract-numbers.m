@@ -60,15 +60,17 @@ shared ContractNumberPreparation = let
         Duplicates = Table.SelectRows(Grouped, each [RecordCount] > 1)
     in
         List.Buffer(Duplicates[NormalizedContractRecordId]),
-    ExistingRequests = Table.TransformColumns(
-        Table.SelectColumns(ExistingRequestsRaw, {"new_systemintakeid"}, MissingField.Error),
-        {{"new_systemintakeid", each NormalizeId(_), type nullable text}}
+    ExistingRequests = Table.Buffer(
+        Table.TransformColumns(
+            Table.SelectColumns(ExistingRequestsRaw, {"easi_external_id"}, MissingField.Error),
+            {{"easi_external_id", each NormalizeId(_), type nullable text}}
+        )
     ),
     WithRequestMatch = Table.NestedJoin(
         WithNormalizedRequestId,
         {"NormalizedRequestId"},
         ExistingRequests,
-        {"new_systemintakeid"},
+        {"easi_external_id"},
         "RequestMatch",
         JoinKind.LeftOuter
     ),

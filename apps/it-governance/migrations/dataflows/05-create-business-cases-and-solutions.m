@@ -408,7 +408,11 @@ shared BusinessCaseSolutionQA =
     let
         Issues = Table.SelectRows(
             BusinessCaseSolutionPreparation,
-            each [BusinessCaseSolutionIssues] <> null and Text.Trim([BusinessCaseSolutionIssues]) <> ""
+            each
+                if [BusinessCaseSolutionIssues] = null then
+                    false
+                else
+                    Text.Trim(Text.From([BusinessCaseSolutionIssues])) <> ""
         ),
         Output = Table.SelectColumns(
             Issues,

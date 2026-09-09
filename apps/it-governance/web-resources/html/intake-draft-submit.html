@@ -163,6 +163,11 @@
       const READY_FOR_REVIEW_FIELD = "cr69a_readyforreview";
       const ADMIN_GOV_TASK_LIST_STEP_FIELD = "new_admingovernanceprocessstep";
       const INTAKE_REQUEST_REVIEW = 971270000;
+      const EDIT_REQUEST_ENTITY = "cr69a_editrequest";
+      const EDIT_REQUEST_ID = "cr69a_editrequestid";
+      const EDIT_REQUEST_COMPLETED = "new_completed";
+      const EDIT_REQUEST_STATE = "statecode";
+      const EDIT_REQUEST_REQUEST_LOOKUP = "_cr69a_systemintake_value";
 
       const NOTIF_IDS = {
         editRequests: "submit_open_edit_requests_warning",
@@ -173,6 +178,43 @@
 
       function getParentForm() {
         return parent && parent.Xrm && parent.Xrm.Page ? parent.Xrm.Page : null;
+      }
+
+      function cleanGuid(value) {
+        return value ? String(value).replace(/[{}]/g, "") : "";
+      }
+
+      function buildOpenEditRequestsQuery(requestId) {
+        const filter =
+          `${EDIT_REQUEST_REQUEST_LOOKUP} eq ${requestId}` +
+          ` and ${EDIT_REQUEST_STATE} eq 0` +
+          ` and (${EDIT_REQUEST_COMPLETED} ne true or ${EDIT_REQUEST_COMPLETED} eq null)`;
+
+        return (
+          `?$select=${EDIT_REQUEST_ID}` +
+          `&$filter=${encodeURIComponent(filter)}` +
+          "&$top=1"
+        );
+      }
+
+      async function hasOpenEditRequests(formContext) {
+        const requestId = cleanGuid(formContext?.data?.entity?.getId?.());
+        const webApi = parent?.Xrm?.WebApi;
+
+        if (!requestId) {
+          throw new Error("Save the Request before checking Edit Requests.");
+        }
+
+        if (!webApi) {
+          throw new Error("Dataverse Web API is unavailable.");
+        }
+
+        const result = await webApi.retrieveMultipleRecords(
+          EDIT_REQUEST_ENTITY,
+          buildOpenEditRequestsQuery(requestId),
+        );
+
+        return (result?.entities || []).length > 0;
       }
 
       function showInlineMessage(text, variant) {
@@ -484,11 +526,7 @@
         }
 
         try {
-          if (typeof parent?.hasOpenEditRequests !== "function") {
-            throw new Error("Open Edit Requests check is unavailable.");
-          }
-
-          if (await parent.hasOpenEditRequests(form)) {
+          if (await hasOpenEditRequests(form)) {
             const message =
               "Complete all Edit Requests before submitting your request.";
             showFormNotification(

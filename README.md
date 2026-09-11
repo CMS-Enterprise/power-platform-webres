@@ -102,6 +102,14 @@ folder contains uncommitted or untracked files. It clones into temporary storage
 complete incoming file list, and requires confirmation before replacing the
 checked-out folder. It never stages or commits the result automatically.
 
+The checked-in solution is intentionally a review snapshot rather than a
+repackable solution source. During export, the repository removes generated
+diagnostic data, environment-specific values, and PAC copies of web resources
+already managed by the canonical manifest. Those resources retain their
+original file extensions in `apps/it-governance/web-resources` and are compared
+and deployed with the `webres:*` commands. Solution-only web resources remain
+in the snapshot until they are deliberately moved into the canonical manifest.
+
 After exporting, inspect the complete Git diff and run the appropriate Power
 Platform validation before committing. Changes to the configured environment,
 solution name, or repository destination must be made through a reviewed change

@@ -3,6 +3,7 @@
 import {
   existsSync,
   mkdtempSync,
+  readFileSync,
   readdirSync,
   renameSync,
   rmSync,
@@ -62,6 +63,52 @@ async function main() {
       "Customizations.xml",
     );
     rmSync(customizationsPath, { force: true });
+
+    // Manifest-managed web resources are authored and deployed from the
+    // extension-preserving web-resources directory. Remove only those duplicate
+    // PAC files; retain solution-only resources so the snapshot does not lose
+    // its sole checked-in copy of them.
+    const webResourcesPath = path.join(
+      unpackedFolder,
+      solutionName,
+      "src",
+      "WebResources",
+    );
+    const webResourceManifestPath = path.join(
+      repoRoot,
+      "apps",
+      "it-governance",
+      "web-resources",
+      "webresources.manifest.json",
+    );
+    const webResourceManifest = JSON.parse(
+      readFileSync(webResourceManifestPath, "utf8"),
+    );
+    const webResourcesRoot = `${path.resolve(webResourcesPath)}${path.sep}`;
+
+    for (const entry of webResourceManifest.resources) {
+      const resourceName =
+        entry.name ||
+        webResourceManifest.nameTemplate?.replaceAll(
+          "{relativePath}",
+          entry.file,
+        );
+      if (!resourceName) {
+        throw new Error(
+          `Web resource manifest entry '${entry.file}' does not resolve to a Dataverse name.`,
+        );
+      }
+
+      const generatedPath = path.resolve(webResourcesPath, resourceName);
+      if (!generatedPath.startsWith(webResourcesRoot)) {
+        throw new Error(
+          `Web resource manifest entry '${resourceName}' resolves outside the solution WebResources folder.`,
+        );
+      }
+
+      rmSync(generatedPath, { force: true });
+      rmSync(`${generatedPath}.data.xml`, { force: true });
+    }
 
     // Environment-variable definitions are useful review metadata, but their
     // runtime values are environment-specific and may contain sensitive data.

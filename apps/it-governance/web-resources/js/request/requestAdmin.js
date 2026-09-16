@@ -2,6 +2,10 @@ function onLoad(executionContext) {
   const formContext = executionContext.getFormContext();
 
   onDecisionChange(formContext);
+  onMigratedLegacyRecordChange(formContext);
+  formContext
+    .getAttribute("new_migratedlegacyrecord")
+    ?.addOnChange(() => onMigratedLegacyRecordChange(formContext));
   lockAllFields(formContext);
 }
 
@@ -38,6 +42,20 @@ function onDecisionChange(formContext) {
     lcid_section?.setVisible(false);
     next_steps_section?.setVisible(false);
   }
+}
+
+function onMigratedLegacyRecordChange(formContext) {
+  const isMigratedLegacyRecord =
+    formContext.getAttribute("new_migratedlegacyrecord")?.getValue() === true;
+  let legacyDetailsSection = null;
+
+  formContext.ui.tabs.forEach((tab) => {
+    if (!legacyDetailsSection) {
+      legacyDetailsSection = tab.sections.get("section_legacy_details");
+    }
+  });
+
+  legacyDetailsSection?.setVisible(isMigratedLegacyRecord);
 }
 
 function lockAllFields(formContext) {

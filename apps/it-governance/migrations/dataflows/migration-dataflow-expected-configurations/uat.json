@@ -1,0 +1,7 @@
+{
+  "EnvironmentName": "UAT",
+  "EnvironmentId": "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+  "DataverseEnvironmentUrl": "itgovernanceuat.crm9.dynamics.com",
+  "SharePointSiteUrl": "https://cmsgovonline.sharepoint.com/",
+  "FolderPath": "sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20migration/UAT/"
+}

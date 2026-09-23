@@ -191,6 +191,7 @@ Ownership is best-effort:
 The related Request (`new_systemintake`) receives:
 
 - `new_admingovernanceprocessstep = 971270009`
+- `new_stepwhenclosed` = the Request's prior `new_admingovernanceprocessstep` value
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270000`
 - `cr69a_lcid` = new or existing LCID
@@ -203,6 +204,7 @@ The related Request (`new_systemintake`) receives:
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
 
 - `new_admingovernancetasklist = 971270009`
+- `new_stepwhenclosed` = the Review's prior `new_admingovernancetasklist` value
 - `cr69a_decision = 971270000`
 - `cr69a_decisiondate = DateTime.UtcNow`
 - `cr69a_lcid` = new or existing LCID
@@ -227,6 +229,7 @@ Those actions can remain asynchronous and do not need to block the Request/Revie
 The related Request (`new_systemintake`) receives:
 
 - `new_admingovernanceprocessstep = 971270009`
+- `new_stepwhenclosed` = the Request's prior `new_admingovernanceprocessstep` value
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270001`
 - `cr3ee_decisionreason` = Activity Log `cr3ee_whyareyouclosingthisrequest`
@@ -239,6 +242,7 @@ The related Request (`new_systemintake`) receives:
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
 
 - `new_admingovernancetasklist = 971270009`
+- `new_stepwhenclosed` = the Review's prior `new_admingovernancetasklist` value
 - `cr69a_decision = 971270001`
 - `cr69a_decisiondate = DateTime.UtcNow`
 - `cr69a_readyforreview = false`
@@ -251,6 +255,7 @@ The related Admin Review (`cr69a_systemintakeadmin`) receives:
 The related Request (`new_systemintake`) receives:
 
 - `new_admingovernanceprocessstep = 971270009`
+- `new_stepwhenclosed` = the Request's prior `new_admingovernanceprocessstep` value
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270002`
 - `cr3ee_decisionreason` = Activity Log `cr3ee_whyareyouclosingthisrequest`
@@ -263,6 +268,7 @@ The related Request (`new_systemintake`) receives:
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
 
 - `new_admingovernancetasklist = 971270009`
+- `new_stepwhenclosed` = the Review's prior `new_admingovernancetasklist` value
 - `cr69a_decision = 971270002`
 - `cr69a_decisiondate = DateTime.UtcNow`
 - `cr69a_readyforreview = false`
@@ -275,6 +281,7 @@ The related Admin Review (`cr69a_systemintakeadmin`) receives:
 The related Request (`new_systemintake`) receives:
 
 - `new_admingovernanceprocessstep = 971270009`
+- `new_stepwhenclosed` = the Request's prior `new_admingovernanceprocessstep` value
 - `cr3ee_decisiondate = DateTime.UtcNow`
 - `easi_decision = 971270003`
 - `cr3ee_decisionreason` = Activity Log `cr3ee_whyareyouclosingthisrequest`
@@ -287,6 +294,7 @@ The related Request (`new_systemintake`) receives:
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
 
 - `new_admingovernancetasklist = 971270009`
+- `new_stepwhenclosed` = the Review's prior `new_admingovernancetasklist` value
 - `cr69a_decision = 971270003`
 - `cr69a_decisiondate = DateTime.UtcNow`
 - `cr69a_readyforreview = false`
@@ -298,7 +306,8 @@ The related Admin Review (`cr69a_systemintakeadmin`) receives:
 
 The related Request (`new_systemintake`) receives:
 
-- `new_admingovernanceprocessstep = 971270006`
+- `new_admingovernanceprocessstep` = the Request's `new_stepwhenclosed` value, or `971270006` (Draft) if none was recorded
+- `new_stepwhenclosed = null`
 - `cr3ee_decisiondate = null`
 - `easi_decision = null`
 - `cr3ee_decisionreason = null`
@@ -310,7 +319,8 @@ The related Request (`new_systemintake`) receives:
 
 The related Admin Review (`cr69a_systemintakeadmin`) receives:
 
-- `new_admingovernancetasklist = 971270006`
+- `new_admingovernancetasklist` = the Review's `new_stepwhenclosed` value, or `971270006` (Draft) if none was recorded
+- `new_stepwhenclosed = null`
 - `cr69a_decision = null`
 - `cr69a_decisiondate = null`
 - `cr69a_readyforreview = false`

@@ -41,6 +41,7 @@ shared #"system_intake_grb_reviewers 1" = let
 
     MigrationRuns = Dv{[Name = "easi_migrationrun", Kind = "Table"]}[Data],
 
+    // 100000000 is the Dataverse Choice value for the Running migration status.
     RunningOnly = Table.SelectRows(MigrationRuns, each [easi_migrationrunstatus] = 100000000),
 
     Sorted = Table.Sort(RunningOnly, {{"easi_startedon", Order.Descending}}),

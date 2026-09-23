@@ -373,10 +373,16 @@ shared Requests =
         WithSkipContactCreation = Table.AddColumn(
             WithQA, "cr3ee_skiprequestercontactcreation", each true, type logical
         ),
-        #"Remove Columns" = Table.RemoveColumns(
+        WithMigratedLegacyRecord = Table.AddColumn(
             WithSkipContactCreation,
+            "migrated_legacy_record_dataverse_format",
+            each true,
+            type logical
+        ),
+        #"Remove Columns" = Table.RemoveColumns(
+            WithMigratedLegacyRecord,
             Table.ColumnsOfType(
-                WithSkipContactCreation,
+                WithMigratedLegacyRecord,
                 {type table, type record, type list, type nullable binary, type binary, type function}
             )
         )

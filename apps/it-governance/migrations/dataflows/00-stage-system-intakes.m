@@ -124,10 +124,9 @@ shared #"system_intakes 1" = let
     // --- DATAVERSE LOOKUP FOR CURRENT BATCH ---
     Dv = CommonDataService.Database(DataverseEnvironmentUrl),
 
-    // Update this table name to your actual MigrationRun logical name
     MigrationRuns = Dv{[Name = "easi_migrationrun", Kind = "Table"]}[Data],
 
-    // If cr69a_status is an option set numeric, this filter will need adjusting
+    // 100000000 is the Dataverse Choice value for the Running migration status.
     RunningOnly = Table.SelectRows(MigrationRuns, each [easi_migrationrunstatus] = 100000000),
 
     Sorted = Table.Sort(RunningOnly, {{"easi_startedon", Order.Descending}}),

@@ -352,7 +352,7 @@ namespace SystemIntake.Plugins
 
             var requestUpdate = new Entity(RequestEntity, requestRef.Id);
             requestUpdate[RequestStepField] = new OptionSetValue(FinishedStep);
-            if (priorRequestStep != null)
+            if (priorRequestStep != null && priorRequestStep.Value != FinishedStep)
                 requestUpdate[RequestStepWhenClosedField] = priorRequestStep;
             requestUpdate[RequestDecisionDateField] = now;
             requestUpdate[RequestDecisionField] = new OptionSetValue(IssueLifecycleIdDecision);
@@ -365,7 +365,7 @@ namespace SystemIntake.Plugins
 
             var reviewUpdate = new Entity(ReviewEntity, reviewRef.Id);
             reviewUpdate[ReviewStepField] = new OptionSetValue(FinishedStep);
-            if (priorReviewStep != null)
+            if (priorReviewStep != null && priorReviewStep.Value != FinishedStep)
                 reviewUpdate[ReviewStepWhenClosedField] = priorReviewStep;
             reviewUpdate[ReviewDecisionField] = new OptionSetValue(IssueLifecycleIdDecision);
             reviewUpdate[ReviewDecisionDateField] = now;
@@ -395,7 +395,7 @@ namespace SystemIntake.Plugins
 
             var requestUpdate = new Entity(RequestEntity, requestRef.Id);
             requestUpdate[RequestStepField] = new OptionSetValue(FinishedStep);
-            if (priorRequestStep != null)
+            if (priorRequestStep != null && priorRequestStep.Value != FinishedStep)
                 requestUpdate[RequestStepWhenClosedField] = priorRequestStep;
             requestUpdate[RequestDecisionDateField] = now;
             requestUpdate[RequestDecisionField] = new OptionSetValue(requestDecision);
@@ -408,7 +408,7 @@ namespace SystemIntake.Plugins
 
             var reviewUpdate = new Entity(ReviewEntity, reviewRef.Id);
             reviewUpdate[ReviewStepField] = new OptionSetValue(FinishedStep);
-            if (priorReviewStep != null)
+            if (priorReviewStep != null && priorReviewStep.Value != FinishedStep)
                 reviewUpdate[ReviewStepWhenClosedField] = priorReviewStep;
             reviewUpdate[ReviewDecisionField] = new OptionSetValue(reviewDecision);
             reviewUpdate[ReviewDecisionDateField] = now;

@@ -1,0 +1,7 @@
+{
+  "EnvironmentName": "Prod",
+  "EnvironmentId": "c2f580e9-c782-e16d-8d04-f5ae6a71ec20-31c688f59-sovereign",
+  "DataverseEnvironmentUrl": "itgovernance.crm9.dynamics.com",
+  "SharePointSiteUrl": "https://cmsgovonline.sharepoint.com/",
+  "FolderPath": "sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20migration/Production/"
+}

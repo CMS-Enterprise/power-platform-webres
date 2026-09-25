@@ -44,7 +44,7 @@ shared Query1 = let
   BatchId =
     if Table.RowCount(Latest) > 0
     then Text.From(Latest{0}[easi_batchid])
-    else "DATAFLOW_NO_RUNNING_BATCH",
+    else error "No Running MigrationRun found – check MigrationRun table.",
 
   // --- ADD BATCH ID TO OUTPUT ---
   #"Added Batch Id" = Table.AddColumn(#"Cleaned IDs", "migrate_batch_id", each BatchId, type text)

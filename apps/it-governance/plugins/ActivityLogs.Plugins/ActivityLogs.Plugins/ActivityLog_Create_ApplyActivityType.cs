@@ -30,6 +30,7 @@ namespace SystemIntake.Plugins
         private const string ReviewDecisionDateField = "cr69a_decisiondate";
         private const string ReviewLcidField = "cr69a_lcid";
         private const string ReviewCompleteField = "cr69a_systemintakecomplete";
+        private const string ReviewStepWhenClosedField = "new_stepwhenclosed";
 
         private const string RequestEntity = "new_systemintake";
         private const string RequestStepField = "new_admingovernanceprocessstep";
@@ -39,6 +40,7 @@ namespace SystemIntake.Plugins
         private const string RequestLcidField = "cr69a_lcid";
         private const string RequestNextStepsField = "cr3ee_nextsteps";
         private const string RequestStatusField = "cr69a_status";
+        private const string RequestStepWhenClosedField = "new_stepwhenclosed";
         private const string RequestFinalBusinessCaseSubmittedField = "cr69a_finalbusinesscasesubmitted";
         private const string RequestFinalBusinessCaseSubmittedDateField = "cr69a_finalbusinesscasesubmitteddate";
 
@@ -345,8 +347,13 @@ namespace SystemIntake.Plugins
 
             var now = DateTime.UtcNow;
 
+            var priorRequestStep = RetrieveCurrentStep(service, RequestEntity, requestRef.Id, RequestStepField, tracing);
+            var priorReviewStep = RetrieveCurrentStep(service, ReviewEntity, reviewRef.Id, ReviewStepField, tracing);
+
             var requestUpdate = new Entity(RequestEntity, requestRef.Id);
             requestUpdate[RequestStepField] = new OptionSetValue(FinishedStep);
+            if (priorRequestStep != null && priorRequestStep.Value != FinishedStep)
+                requestUpdate[RequestStepWhenClosedField] = priorRequestStep;
             requestUpdate[RequestDecisionDateField] = now;
             requestUpdate[RequestDecisionField] = new OptionSetValue(IssueLifecycleIdDecision);
             requestUpdate[RequestLcidField] = lcidRef;
@@ -358,6 +365,8 @@ namespace SystemIntake.Plugins
 
             var reviewUpdate = new Entity(ReviewEntity, reviewRef.Id);
             reviewUpdate[ReviewStepField] = new OptionSetValue(FinishedStep);
+            if (priorReviewStep != null && priorReviewStep.Value != FinishedStep)
+                reviewUpdate[ReviewStepWhenClosedField] = priorReviewStep;
             reviewUpdate[ReviewDecisionField] = new OptionSetValue(IssueLifecycleIdDecision);
             reviewUpdate[ReviewDecisionDateField] = now;
             reviewUpdate[ReviewLcidField] = lcidRef;
@@ -381,8 +390,13 @@ namespace SystemIntake.Plugins
 
             EnsureReviewAndRequest(actionName, reviewRef, requestRef);
 
+            var priorRequestStep = RetrieveCurrentStep(service, RequestEntity, requestRef.Id, RequestStepField, tracing);
+            var priorReviewStep = RetrieveCurrentStep(service, ReviewEntity, reviewRef.Id, ReviewStepField, tracing);
+
             var requestUpdate = new Entity(RequestEntity, requestRef.Id);
             requestUpdate[RequestStepField] = new OptionSetValue(FinishedStep);
+            if (priorRequestStep != null && priorRequestStep.Value != FinishedStep)
+                requestUpdate[RequestStepWhenClosedField] = priorRequestStep;
             requestUpdate[RequestDecisionDateField] = now;
             requestUpdate[RequestDecisionField] = new OptionSetValue(requestDecision);
             CopyIfPresent(activityLog, requestUpdate, ClosingReasonField, "cr3ee_decisionreason");
@@ -394,6 +408,8 @@ namespace SystemIntake.Plugins
 
             var reviewUpdate = new Entity(ReviewEntity, reviewRef.Id);
             reviewUpdate[ReviewStepField] = new OptionSetValue(FinishedStep);
+            if (priorReviewStep != null && priorReviewStep.Value != FinishedStep)
+                reviewUpdate[ReviewStepWhenClosedField] = priorReviewStep;
             reviewUpdate[ReviewDecisionField] = new OptionSetValue(reviewDecision);
             reviewUpdate[ReviewDecisionDateField] = now;
             reviewUpdate[ReviewReadyForReviewField] = false;
@@ -409,8 +425,12 @@ namespace SystemIntake.Plugins
 
             EnsureReviewAndRequest("Re-open Request", reviewRef, requestRef);
 
+            var priorRequestStep = RetrieveCurrentStep(service, RequestEntity, requestRef.Id, RequestStepWhenClosedField, tracing);
+            var priorReviewStep = RetrieveCurrentStep(service, ReviewEntity, reviewRef.Id, ReviewStepWhenClosedField, tracing);
+
             var requestUpdate = new Entity(RequestEntity, requestRef.Id);
-            requestUpdate[RequestStepField] = new OptionSetValue(DraftStep);
+            requestUpdate[RequestStepField] = priorRequestStep ?? new OptionSetValue(DraftStep);
+            requestUpdate[RequestStepWhenClosedField] = null;
             requestUpdate[RequestDecisionDateField] = null;
             requestUpdate[RequestDecisionField] = null;
             requestUpdate["cr3ee_decisionreason"] = null;
@@ -421,7 +441,8 @@ namespace SystemIntake.Plugins
             tracing?.Trace("ActivityLog_Create_ApplyActivityType: Re-open Request update succeeded.");
 
             var reviewUpdate = new Entity(ReviewEntity, reviewRef.Id);
-            reviewUpdate[ReviewStepField] = new OptionSetValue(DraftStep);
+            reviewUpdate[ReviewStepField] = priorReviewStep ?? new OptionSetValue(DraftStep);
+            reviewUpdate[ReviewStepWhenClosedField] = null;
             reviewUpdate[ReviewDecisionField] = null;
             reviewUpdate[ReviewDecisionDateField] = null;
             reviewUpdate[ReviewReadyForReviewField] = false;
@@ -544,6 +565,19 @@ namespace SystemIntake.Plugins
 
             tracing?.Trace("ActivityLog_Create_ApplyActivityType: Admin team found: {0}.", teams.Entities[0].Id);
             return new EntityReference(TeamEntity, teams.Entities[0].Id);
+        }
+
+        private static OptionSetValue RetrieveCurrentStep(IOrganizationService service, string entityName, Guid id, string stepField, ITracingService tracing)
+        {
+            var current = service.Retrieve(entityName, id, new ColumnSet(stepField));
+            var step = current.GetAttributeValue<OptionSetValue>(stepField);
+            tracing?.Trace(
+                "ActivityLog_Create_ApplyActivityType: Prior {0}.{1} = {2}.",
+                entityName,
+                stepField,
+                step != null ? step.Value.ToString(CultureInfo.InvariantCulture) : "(null)"
+            );
+            return step;
         }
 
         private static void CopyIfPresent(Entity source, Entity destination, string sourceField, string destinationField)

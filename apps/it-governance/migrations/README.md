@@ -57,6 +57,31 @@ environment.
 
 `dataflows:check` verifies the pulled `./dataflows` files match Dataverse.
 
+### System Intake schema update
+
+The current EASI export moved `priority_alignment` from `business_cases.csv` to
+`system_intakes.csv`. The staging queries validate the complete CSV header so a
+future export change fails with `CSV schema mismatch` instead of silently
+shifting data into the wrong columns.
+
+Before exporting the migration solution from DEV:
+
+1. Add the text column `new_priorityalignment` to the System Intake staging
+   table (the source values can be up to 2,000 characters).
+2. In **Stage System Intakes**, map source `priority_alignment` to staging
+   column `new_priorityalignment`.
+3. In **Create Requests**, map `new_priorityalignment` to
+   `new_organizationalpriorityalignment` on Request.
+4. Remove the obsolete Business Case staging mapping for
+   `priority_alignment`, if it is still present.
+5. Refresh both dataflows in DEV, verify a populated Request value, then pull
+   the dataflows into this repository and run `npm run dataflows:check`.
+
+The other newly exported System Intake fields are parsed by the staging M
+query, but intentionally remain unmapped until corresponding Dataverse targets
+and migration requirements are agreed: digital-service interaction, external
+protected-data access, current/contract cost estimates, and LCID metadata.
+
 ## Estimated Lifecycle Costs
 
 The EASI `estimated_lifecycle_costs` rows are migrated into fiscal-year cost

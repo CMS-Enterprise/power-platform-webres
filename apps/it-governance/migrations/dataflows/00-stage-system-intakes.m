@@ -5,26 +5,36 @@ shared FolderPath = "sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20mi
 shared FileName = "system_intakes.csv" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
 shared #"system_intakes 1" = let
 	CsvUrl = SharePointSiteUrl & FolderPath & FileName,
+    ExpectedColumns = Text.Split("id,eua_user_id,requester,component,business_owner,business_owner_component,product_manager,product_manager_component,isso,trb_collaborator,oit_security_collaborator,ea_collaborator,project_name,existing_funding,funding_source,business_need,solution,process_status,ea_support_request,existing_contract,updated_at,submitted_at,alfabet_id,created_at,grt_review_email_body,requester_email_address,decided_at,archived_at,cost_increase,cost_increase_amount,lcid,lcid_expires_at,lcid_scope,contractor,contract_vehicle,contract_start_month,contract_start_year,contract_end_month,contract_end_year,funding_number,request_type,project_acronym,grt_date,grb_date,rejection_reason,decision_next_steps,isso_name,trb_collaborator_name,oit_security_collaborator_name,ea_collaborator_name,admin_lead,contract_start_date,contract_end_date,lcid_cost_baseline,cedar_system_id,lcid_expiration_alert_ts,has_ui_changes,request_form_state,draft_business_case_state,final_business_case_state,decision_state,step,state,current_annual_spending,planned_year_one_spending,trb_follow_up_recommendation,lcid_retires_at,lcid_issued_at,contract_name,current_annual_spending_it_portion,planned_year_one_spending_it_portion,system_relation_type,uses_ai_tech,grb_review_started_at,using_software,acquisition_methods,grb_review_type,grb_review_async_reporting_date,grb_review_async_recording_time,grb_review_async_end_date,grb_presentation_deck_requester_reminder_email_sent_time,grb_review_async_manual_end_date,grb_review_reminder_last_sent,collaborator_508,collaborator_name_508,does_not_support_systems,governance_teams_is_present,digital_service_interaction,digital_service_interaction_description,protected_cms_data_accessed_outside,protected_cms_data_accessed_outside_description,current_estimated_cost,current_estimated_cost_it_portion,estimated_total_contract_value,estimated_total_contract_value_it_portion,lcid_type,lcid_is_low_it,lcid_is_shortened,lcid_component,priority_alignment", ","),
     Source =
         Csv.Document(
             Web.Contents(CsvUrl),
             [
                 Delimiter = ",",
-                Columns = 87,
-                QuoteStyle = QuoteStyle.None
+                Columns = List.Count(ExpectedColumns),
+                QuoteStyle = QuoteStyle.Csv
             ]
         ),
 
     #"Promoted headers" =
         Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
 
+    #"Validated schema" =
+        if Table.ColumnNames(#"Promoted headers") = ExpectedColumns
+        then #"Promoted headers"
+        else error Error.Record(
+            "CSV schema mismatch",
+            "system_intakes.csv columns do not match the migration query.",
+            [Expected = ExpectedColumns, Actual = Table.ColumnNames(#"Promoted headers")]
+        ),
+
     #"Replace NULLs" =
         Table.ReplaceValue(
-            #"Promoted headers",
+            #"Validated schema",
             "NULL",
             null,
             Replacer.ReplaceValue,
-            Table.ColumnNames(#"Promoted headers")
+            Table.ColumnNames(#"Validated schema")
         ),
 
     #"Changed column type" =
@@ -117,7 +127,20 @@ shared #"system_intakes 1" = let
                 {"collaborator_508", type text},
                 {"collaborator_name_508", type text},
                 {"does_not_support_systems", type logical},
-                {"governance_teams_is_present", type logical}
+                {"governance_teams_is_present", type logical},
+                {"digital_service_interaction", type text},
+                {"digital_service_interaction_description", type text},
+                {"protected_cms_data_accessed_outside", type text},
+                {"protected_cms_data_accessed_outside_description", type text},
+                {"current_estimated_cost", type text},
+                {"current_estimated_cost_it_portion", type text},
+                {"estimated_total_contract_value", type text},
+                {"estimated_total_contract_value_it_portion", type text},
+                {"lcid_type", type text},
+                {"lcid_is_low_it", type logical},
+                {"lcid_is_shortened", type logical},
+                {"lcid_component", type text},
+                {"priority_alignment", type text}
             }
         ),
 

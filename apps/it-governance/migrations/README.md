@@ -96,6 +96,23 @@ numbers. Before exporting the migration solution from DEV:
 3. Refresh the staging and downstream dataflows and verify a formatted phone
    number is retained on the corresponding System Intake record.
 
+### Legacy feedback schema update
+
+The legacy governance feedback export contains values longer than the original
+100-character staging field. Before exporting the migration solution from DEV:
+
+1. In **Stage Edit Requests**, map source `feedback` to the multiline staging
+   column `new_requesterfeedbackmultitext`; leave `cr69a_feedbackcontent`
+   unmapped.
+2. In **Create Edit Requests**, map query output
+   `requester_feedback_dataverse_format` to the existing Edit Request field that
+   previously received `cr69a_feedbackcontent`.
+3. In **Create GRB Activity Logs**, map `new_recommendationsforthegrb` to the
+   same-named Activity Log field. The query now reads the replacement staging
+   field, with the old field retained only as a compatibility fallback.
+4. Refresh both downstream dataflows and verify representative `REQUESTER` and
+   `GRB` feedback rows retain their complete text.
+
 ## Estimated Lifecycle Costs
 
 The EASI `estimated_lifecycle_costs` rows are migrated into fiscal-year cost

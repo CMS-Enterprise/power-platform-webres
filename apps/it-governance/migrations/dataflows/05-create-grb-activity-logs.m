@@ -59,11 +59,20 @@ shared HistoricalGrbActivityLogPreparation =
             {"cr69a_intakeid", "cr69a_intake_id", "cr69a_systemintakeid", "intake_id"},
             "staging intake ID column"
         ),
-        FeedbackColumn = ResolveColumn(
-            StagingColumns,
-            {"cr69a_feedbackcontent", "cr69a_feedback", "feedback"},
-            "staging feedback column"
+        FeedbackColumns = List.Select(
+            {
+                "new_requesterfeedbackmultitext",
+                "cr69a_feedbackcontent",
+                "cr69a_feedback",
+                "feedback"
+            },
+            each List.Contains(StagingColumns, _)
         ),
+        ValidatedFeedbackColumns =
+            if List.IsEmpty(FeedbackColumns) then
+                error "Missing staging feedback column. Expected one of: new_requesterfeedbackmultitext, cr69a_feedbackcontent, cr69a_feedback, feedback"
+            else
+                FeedbackColumns,
         SourceActionColumn = ResolveColumn(
             StagingColumns, {"cr69a_sourceaction", "source_action"}, "staging source-action column"
         ),
@@ -95,7 +104,16 @@ shared HistoricalGrbActivityLogPreparation =
                         type nullable text
                     ),
                     "feedback_text",
-                    each NormalizeText(Record.FieldOrDefault(_, FeedbackColumn, null)),
+                    (row as record) =>
+                        List.First(
+                            List.RemoveNulls(
+                                List.Transform(
+                                    ValidatedFeedbackColumns,
+                                    (columnName as text) => NormalizeText(Record.FieldOrDefault(row, columnName, null))
+                                )
+                            ),
+                            null
+                        ),
                     type nullable text
                 ),
                 "source_action_key",
@@ -304,7 +322,19 @@ shared HistoricalGrbActivityLogPreparation =
 
 shared HistoricalGrbActivityLogQA =
     let
-        Issues = Table.SelectRows(HistoricalGrbActivityLogPreparation, each [UnmappedIssues] <> null),
+        Issues = Table.SelectRows(
+            HistoricalGrbActivityLogPreparation,
+            each
+                let
+                    issueValues = List.RemoveNulls({Record.FieldOrDefault(_, "UnmappedIssues", null)}),
+                    issueText =
+                        if List.IsEmpty(issueValues) then
+                            ""
+                        else
+                            Text.Trim(Text.From(issueValues{0}))
+                in
+                    issueText <> ""
+        ),
         Output = Table.SelectColumns(
             Issues,
             {

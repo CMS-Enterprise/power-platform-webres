@@ -144,6 +144,56 @@ shared #"system_intakes 1" = let
             }
         ),
 
+    // Dataverse DateTime fields do not support values before 1753-01-01.
+    // The legacy export contains placeholder/test dates in earlier years, so
+    // clear them after parsing but before loading the staging table.
+    DataverseMinimumDate = #date(1753, 1, 1),
+    DateTimeColumns = {
+        "updated_at",
+        "submitted_at",
+        "created_at",
+        "decided_at",
+        "archived_at",
+        "lcid_expires_at",
+        "grt_date",
+        "grb_date",
+        "lcid_expiration_alert_ts",
+        "lcid_retires_at",
+        "lcid_issued_at",
+        "grb_review_started_at",
+        "grb_review_async_reporting_date",
+        "grb_review_async_recording_time",
+        "grb_review_async_end_date",
+        "grb_presentation_deck_requester_reminder_email_sent_time",
+        "grb_review_async_manual_end_date",
+        "grb_review_reminder_last_sent"
+    },
+    DateColumns = {"contract_start_date", "contract_end_date"},
+    DateTimeTransformations = List.Transform(
+        DateTimeColumns,
+        (columnName as text) =>
+            {
+                columnName,
+                (value as nullable datetime) as nullable datetime =>
+                    if value = null or Date.From(value) >= DataverseMinimumDate then value else null,
+                type nullable datetime
+            }
+    ),
+    DateTransformations = List.Transform(
+        DateColumns,
+        (columnName as text) =>
+            {
+                columnName,
+                (value as nullable date) as nullable date =>
+                    if value = null or value >= DataverseMinimumDate then value else null,
+                type nullable date
+            }
+    ),
+    #"Normalized Dataverse dates" = Table.TransformColumns(
+        #"Changed column type",
+        List.Combine({DateTimeTransformations, DateTransformations})
+    ),
+
     // --- DATAVERSE LOOKUP FOR CURRENT BATCH ---
     Dv = CommonDataService.Database(DataverseEnvironmentUrl),
 
@@ -161,6 +211,6 @@ shared #"system_intakes 1" = let
         else error "No Running MigrationRun found – check MigrationRun table.",
 
     // --- ADD BATCH ID TO OUTPUT ---
-    #"Added Batch Id" = Table.AddColumn(#"Changed column type", "migrate_batch_id", each BatchId, type text)
+    #"Added Batch Id" = Table.AddColumn(#"Normalized Dataverse dates", "migrate_batch_id", each BatchId, type text)
 in
     #"Added Batch Id";

@@ -101,8 +101,17 @@ shared cr69a_systemintakestagingeditrequests =
                             if List.IsEmpty(filtered) then null else Text.Combine(filtered, "; "),
                     type nullable text
                 ),
+        // Expose the replacement multiline staging field under a stable output
+        // name for the Edit Request destination mapping. The original
+        // cr69a_feedbackcontent field is limited to 100 characters.
+        WithRequesterFeedback = Table.AddColumn(
+            WithQA,
+            "requester_feedback_dataverse_format",
+            each Record.FieldOrDefault(_, "new_requesterfeedbackmultitext", null),
+            type nullable text
+        ),
         // Return the transformed table
-        Custom = WithQA,
+        Custom = WithRequesterFeedback,
         #"Filtered rows" = Table.SelectRows(Custom, each [cr69a_feedbacktype] = "REQUESTER"),
         #"Remove Columns" = Table.RemoveColumns(
             #"Filtered rows",

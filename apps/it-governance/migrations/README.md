@@ -82,6 +82,20 @@ query, but intentionally remain unmapped until corresponding Dataverse targets
 and migration requirements are agreed: digital-service interaction, external
 protected-data access, current/contract cost estimates, and LCID metadata.
 
+### Legacy requester phone schema update
+
+The legacy `business_cases.csv` requester phone values are formatted text, not
+numbers. Before exporting the migration solution from DEV:
+
+1. In **Stage Business Cases**, map source `requester_phone_number` to the Text
+   staging column `new_requestphonenumbertext`; leave the obsolete Float column
+   `cr69a_requester_phone_number` unmapped.
+2. In the downstream Business Case migration dataflow, map query output
+   `new_requesterphonenumberlegacy` to the same-named field on System Intake.
+   The M query derives that output from `new_requestphonenumbertext`.
+3. Refresh the staging and downstream dataflows and verify a formatted phone
+   number is retained on the corresponding System Intake record.
+
 ## Estimated Lifecycle Costs
 
 The EASI `estimated_lifecycle_costs` rows are migrated into fiscal-year cost

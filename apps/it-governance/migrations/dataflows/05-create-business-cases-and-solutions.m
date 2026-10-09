@@ -111,8 +111,18 @@ shared BusinessCases =
                                 Text.Combine(filtered, "; "),
                     type nullable text
                 ),
+        // Expose the replacement text staging field under the final Request field
+        // name so the BusinessCases query can update the legacy phone value on
+        // System Intake. The original staging field is a Float and must remain
+        // unmapped because formatted phone numbers cannot be converted to Double.
+        WithLegacyRequesterPhone = Table.AddColumn(
+            WithQA,
+            "new_requesterphonenumberlegacy",
+            each Record.FieldOrDefault(_, "new_requestphonenumbertext", null),
+            type nullable text
+        ),
         // Return the transformed table
-        Custom = WithQA,
+        Custom = WithLegacyRequesterPhone,
         #"Remove Columns" = Table.RemoveColumns(
             Custom,
             Table.ColumnsOfType(

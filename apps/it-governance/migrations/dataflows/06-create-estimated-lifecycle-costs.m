@@ -382,14 +382,11 @@ shared Query = let
         else if Table.RowCount(DuplicateRequestLegacyBusinessCaseIds) > 0 then
             error
                 "One or more legacy business case IDs maps to multiple Requests. Review DuplicateRequestLegacyBusinessCaseIds before loading solution costs."
-        else if Table.RowCount(EstimatedLifecycleCostsWithoutRequest) > 0 then
-            error
-                "One or more lifecycle cost groups could not be matched to a Request. Review EstimatedLifecycleCostsWithoutRequest before loading solution costs."
-        else if Table.RowCount(EstimatedLifecycleCostsWithoutSolution) > 0 then
-            error
-                "One or more lifecycle cost groups could not be matched to a Solution. Review EstimatedLifecycleCostsWithoutSolution before loading solution costs."
         else
-            EstimatedLifecycleCostsWithSolutions,
+            Table.SelectRows(
+                EstimatedLifecycleCostsWithSolutions,
+                each [cr69a_businesscasesolutionid] <> null
+            ),
     UpdateColumns = Table.SelectColumns(
         ValidatedEstimatedLifecycleCosts,
         {

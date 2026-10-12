@@ -272,10 +272,7 @@ in
     Output;
 shared ContactRoles = let
     ValidatedPreparation =
-        if Table.RowCount(ContactRoleQA) > 0 then
-            error "One or more contact roles is invalid or could not be matched to an Additional Contact. Review ContactRoleQA before loading roles."
-        else
-            ContactRolePreparation,
+        Table.SelectRows(ContactRolePreparation, each [UnmappedIssues] = null),
     WithContactId = Table.AddColumn(
         ValidatedPreparation,
         "cr69a_additionalcontactid",

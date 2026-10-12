@@ -20,26 +20,46 @@ function businessCaseOnLoad(executionContext) {
   });
 }
 
+var SOLUTION_TYPE_PREFERRED = 971270000;
+var SOLUTIONS_REQUIRED_MESSAGE =
+  "Please add at least one Preferred Solution and one Alternative Solution.";
+
 function updateSolutionsNotification(formContext, gridControl) {
   var notificationId = "solutions_required";
   var grid = gridControl.getGrid();
 
   if (!grid) {
     formContext.ui.setFormNotification(
-      "Please add at least one Solution.",
+      SOLUTIONS_REQUIRED_MESSAGE,
       "INFO",
       notificationId,
     );
     return;
   }
 
-  var rowCount = grid.getTotalRecordCount();
+  var hasPreferred = false;
+  var hasAlternative = false;
 
-  if (rowCount > 0) {
+  grid.getRows().forEach(function (row) {
+    var solutionType = row
+      .getData()
+      .getEntity()
+      .attributes.get("cr69a_solution_type");
+    var value = solutionType ? solutionType.getValue() : null;
+
+    // Grid option set values can come back as strings, so compare as numbers
+    if (value !== null && Number(value) === SOLUTION_TYPE_PREFERRED) {
+      hasPreferred = true;
+    } else {
+      hasAlternative = true;
+    }
+  });
+
+  if (hasPreferred && hasAlternative) {
     formContext.ui.clearFormNotification(notificationId);
   } else {
     formContext.ui.setFormNotification(
-      "Please add at least one Solution.",
+      SOLUTIONS_REQUIRED_MESSAGE,
       "ERROR",
       notificationId,
     );

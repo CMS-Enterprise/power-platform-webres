@@ -147,6 +147,7 @@
       const SUBMITTED_DATE = "cr69a_initialbusinesscasesubmitteddate";
       const READY_FOR_REVIEW = "cr69a_readyforreview";
       const SOLUTIONS_GRID_NAMES = ["subgrid_solutions"];
+      const SOLUTION_TYPE_PREFERRED = 971270000;
       const EDIT_REQUEST_ENTITY = "cr69a_editrequest";
       const EDIT_REQUEST_ID = "cr69a_editrequestid";
       const EDIT_REQUEST_COMPLETED = "new_completed";
@@ -575,40 +576,51 @@
             ? solutionsGrid.getGrid()
             : null;
 
-        let solutionCount = null;
-        if (grid) {
-          if (typeof grid.getTotalRecordCount === "function") {
-            solutionCount = grid.getTotalRecordCount();
-          }
-
-          if (
-            (solutionCount === null || solutionCount === undefined) &&
-            typeof grid.getRows === "function"
-          ) {
-            const rows = grid.getRows();
-            if (rows && typeof rows.getLength === "function") {
-              solutionCount = rows.getLength();
-            }
-          }
-        }
+        const solutionTypes = getSolutionTypePresence(grid);
 
         console.log("[business-case-submit] solutions grid validation", {
           gridFound: !!grid,
-          solutionCount,
+          hasPreferred: solutionTypes.hasPreferred,
+          hasAlternative: solutionTypes.hasAlternative,
         });
 
-        if (solutionCount === null || solutionCount === undefined) {
+        if (!solutionTypes.hasPreferred) {
           allValid = false;
-          missingFieldLabels.push("Solutions (add at least one)");
-        } else if (solutionCount <= 0) {
+          missingFieldLabels.push("Solutions (add at least one Preferred)");
+        }
+        if (!solutionTypes.hasAlternative) {
           allValid = false;
-          missingFieldLabels.push("Solutions (add at least one)");
+          missingFieldLabels.push("Solutions (add at least one Alternative)");
         }
 
         return {
           allValid: allValid,
           missingFieldLabels: missingFieldLabels,
         };
+      }
+
+      function getSolutionTypePresence(grid) {
+        const result = { hasPreferred: false, hasAlternative: false };
+        if (!grid || typeof grid.getRows !== "function") {
+          return result;
+        }
+
+        grid.getRows().forEach(function (row) {
+          const attribute = row
+            .getData()
+            .getEntity()
+            .attributes.get("cr69a_solution_type");
+          const value = attribute ? attribute.getValue() : null;
+
+          // Grid option set values can come back as strings, so compare as numbers
+          if (value !== null && Number(value) === SOLUTION_TYPE_PREFERRED) {
+            result.hasPreferred = true;
+          } else {
+            result.hasAlternative = true;
+          }
+        });
+
+        return result;
       }
 
       function getFirstAvailableControl(form, controlNames) {

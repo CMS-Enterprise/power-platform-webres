@@ -1,0 +1,23 @@
+{
+  "environment": {
+    "name": "PROD",
+    "id": "c2f580e9-c782-e16d-8d04-f5ae6a71ec20-31c688f59-sovereign",
+    "dataverseUrl": "https://itgovernance.crm9.dynamics.com"
+  },
+  "sharePointRequestDocuments": {
+    "siteUrl": null,
+    "libraryName": null,
+    "libraryId": null,
+    "parentDocumentLocationId": null,
+    "configurationStatus": "Not configured"
+  },
+  "environmentVariables": {
+    "new_SharePointSiteUrl": null,
+    "new_SharePointDocumentLibraryId": null,
+    "new_SharePointParentDocumentLocationID": null
+  },
+  "migrationDataflows": {
+    "idsFile": "../migrations/dataflows/dataflow-ids/prod.json",
+    "expectedConfigurationFile": "../migrations/dataflows/migration-dataflow-expected-configurations/prod.json"
+  }
+}

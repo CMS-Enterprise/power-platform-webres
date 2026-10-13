@@ -1,0 +1,23 @@
+{
+  "environment": {
+    "name": "UAT",
+    "id": "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+    "dataverseUrl": "https://itgovernanceuat.crm9.dynamics.com"
+  },
+  "sharePointRequestDocuments": {
+    "siteUrl": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting",
+    "libraryName": "IT GO Docs UAT",
+    "libraryId": "52c84797-faa9-40fe-9ce0-b24b46919745",
+    "parentDocumentLocationId": "8b45a09f-70c6-f111-aaae-001dd81112ad"
+  },
+  "environmentVariables": {
+    "new_SharePointSiteUrl": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting",
+    "new_SharePointDocumentLibraryId": "52c84797-faa9-40fe-9ce0-b24b46919745",
+    "new_SharePointParentDocumentLocationID": "8b45a09f-70c6-f111-aaae-001dd81112ad"
+  },
+  "migrationDataflows": {
+    "idsFile": "../migrations/dataflows/dataflow-ids/uat.json",
+    "expectedConfigurationFile": "../migrations/dataflows/migration-dataflow-expected-configurations/uat.json"
+  }
+}
+

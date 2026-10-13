@@ -146,7 +146,14 @@
       const SUBMITTED_BOOL = "cr69a_initialbusinesscasesubmitted";
       const SUBMITTED_DATE = "cr69a_initialbusinesscasesubmitteddate";
       const READY_FOR_REVIEW = "cr69a_readyforreview";
-      const SOLUTIONS_GRID_NAMES = ["subgrid_solutions"];
+      const SOLUTION_ENTITY = "cr69a_businesscasesolution";
+      // Solutions link to the parent through a different lookup depending on
+      // whether this page is hosted on the Request or Business Case form.
+      const SOLUTION_PARENT_LOOKUPS = {
+        new_systemintake: "_new_request_value",
+        cr69a_businesscase: "_easi_cr69a_businesscase_value",
+      };
+      const SOLUTION_TYPE = "cr69a_solution_type";
       const SOLUTION_TYPE_PREFERRED = 971270000;
       const EDIT_REQUEST_ENTITY = "cr69a_editrequest";
       const EDIT_REQUEST_ID = "cr69a_editrequestid";
@@ -433,7 +440,17 @@
           return;
         }
 
-        const validationResult = validateFields(form);
+        let validationResult;
+        try {
+          validationResult = await validateFields(form);
+        } catch (error) {
+          console.error("Unable to validate Solutions:", error);
+          showError(
+            "Unable to confirm the Solutions on this business case. Please try again or refresh the form.",
+          );
+          if (submitButton) submitButton.disabled = false;
+          return;
+        }
 
         if (!validationResult.allValid) {
           form.data.save().then(
@@ -512,7 +529,7 @@
         }
       }
 
-      function validateFields(form) {
+      async function validateFields(form) {
         let allValid = true;
         const missingFieldLabels = [];
 
@@ -543,46 +560,9 @@
           }
         });
 
-        const solutionsGrid = getFirstAvailableControl(
-          form,
-          SOLUTIONS_GRID_NAMES,
-        );
-        if (!solutionsGrid) {
-          const controlNames = [];
-          form.ui.controls.forEach(function (control) {
-            try {
-              if (control && typeof control.getName === "function") {
-                controlNames.push(control.getName());
-              }
-            } catch (e) {
-              // Ignore controls that do not expose a readable name.
-            }
-          });
+        const solutionTypes = await getSolutionTypePresence(form);
 
-          console.log(
-            "[business-case-submit] solutions grid control not found",
-            {
-              expectedControlNames: SOLUTIONS_GRID_NAMES,
-              matchingControls: controlNames.filter(function (name) {
-                return /solution/i.test(name || "");
-              }),
-              allControlNames: controlNames,
-            },
-          );
-        }
-
-        const grid =
-          solutionsGrid && solutionsGrid.getGrid
-            ? solutionsGrid.getGrid()
-            : null;
-
-        const solutionTypes = getSolutionTypePresence(grid);
-
-        console.log("[business-case-submit] solutions grid validation", {
-          gridFound: !!grid,
-          hasPreferred: solutionTypes.hasPreferred,
-          hasAlternative: solutionTypes.hasAlternative,
-        });
+        console.log("[business-case-submit] solutions validation", solutionTypes);
 
         if (!solutionTypes.hasPreferred) {
           allValid = false;
@@ -599,39 +579,43 @@
         };
       }
 
-      function getSolutionTypePresence(grid) {
-        const result = { hasPreferred: false, hasAlternative: false };
-        if (!grid || typeof grid.getRows !== "function") {
-          return result;
+      // Query Dataverse rather than reading the subgrid, which only exposes the
+      // current page of rows and depends on the view's columns.
+      async function getSolutionTypePresence(formContext) {
+        const parentId = cleanGuid(formContext?.data?.entity?.getId?.());
+        const parentEntity = formContext?.data?.entity?.getEntityName?.();
+        const parentLookup = SOLUTION_PARENT_LOOKUPS[parentEntity];
+        const webApi = parent?.Xrm?.WebApi;
+
+        if (!parentId) {
+          throw new Error("Save the record before checking Solutions.");
         }
 
-        grid.getRows().forEach(function (row) {
-          const attribute = row
-            .getData()
-            .getEntity()
-            .attributes.get("cr69a_solution_type");
-          const value = attribute ? attribute.getValue() : null;
+        if (!parentLookup) {
+          throw new Error(`Solutions are not linked to ${parentEntity}.`);
+        }
 
-          // Grid option set values can come back as strings, so compare as numbers
-          if (value !== null && Number(value) === SOLUTION_TYPE_PREFERRED) {
-            result.hasPreferred = true;
+        if (!webApi) {
+          throw new Error("Dataverse Web API is unavailable.");
+        }
+
+        const filter =
+          `${parentLookup} eq ${parentId}` + " and statecode eq 0";
+        const result = await webApi.retrieveMultipleRecords(
+          SOLUTION_ENTITY,
+          `?$select=${SOLUTION_TYPE}&$filter=${encodeURIComponent(filter)}`,
+        );
+
+        const presence = { hasPreferred: false, hasAlternative: false };
+        (result?.entities || []).forEach(function (solution) {
+          if (solution[SOLUTION_TYPE] === SOLUTION_TYPE_PREFERRED) {
+            presence.hasPreferred = true;
           } else {
-            result.hasAlternative = true;
+            presence.hasAlternative = true;
           }
         });
 
-        return result;
-      }
-
-      function getFirstAvailableControl(form, controlNames) {
-        for (var index = 0; index < controlNames.length; index += 1) {
-          var control = form.getControl(controlNames[index]);
-          if (control) {
-            return control;
-          }
-        }
-
-        return null;
+        return presence;
       }
 
       function initReadyForReviewUIWithRetry(retriesLeft) {

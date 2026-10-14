@@ -1,23 +1,11 @@
 {
-  "environment": {
-    "name": "DEV",
-    "id": "69e8387f-d121-ecfa-a34f-6e9d2e51754a-31c688f59-sovereign",
-    "dataverseUrl": "https://itgovernancedev.crm9.dynamics.com"
-  },
-  "sharePointRequestDocuments": {
-    "siteUrl": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting",
-    "libraryName": "IT GO Docs DEV",
-    "libraryId": "2a96c7f9-bdc2-46e8-868d-efaf28198ba3",
-    "parentDocumentLocationId": "0716be5f-c1c1-f111-aaae-001dd8055bb1"
-  },
-  "environmentVariables": {
-    "new_SharePointSiteUrl": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting",
-    "new_SharePointDocumentLibraryId": "2a96c7f9-bdc2-46e8-868d-efaf28198ba3",
-    "new_SharePointParentDocumentLocationID": "0716be5f-c1c1-f111-aaae-001dd8055bb1"
-  },
-  "migrationDataflows": {
-    "idsFile": "../migrations/dataflows/dataflow-ids/dev.json",
-    "expectedConfigurationFile": "../migrations/dataflows/migration-dataflow-expected-configurations/dev.json"
-  }
+  "Dataverse Environment ID": "69e8387f-d121-ecfa-a34f-6e9d2e51754a-31c688f59-sovereign",
+  "Dataverse Environment URL": "https://itgovernancedev.crm9.dynamics.com",
+  "Environment Name": "DEV",
+  "Migration Dataflow Expected Configuration File": "../migrations/dataflows/migration-dataflow-expected-configurations/dev.json",
+  "Migration Dataflow IDs File": "../migrations/dataflows/dataflow-ids/dev.json",
+  "SharePoint Document Library ID": "2a96c7f9-bdc2-46e8-868d-efaf28198ba3",
+  "SharePoint Document Library Name": "IT GO Docs DEV",
+  "SharePoint Parent Document Location ID": "0716be5f-c1c1-f111-aaae-001dd8055bb1",
+  "SharePoint Site URL": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting"
 }
-

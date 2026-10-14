@@ -1,6 +1,6 @@
 # IT Governance deployment configuration
 
-This folder is the human-readable source of truth for non-secret values that vary by Power Platform environment.
+This folder is the human-readable source of truth for non-secret values that vary by Power Platform environment. Each JSON file is intentionally flat, uses the Power Platform display names as keys where applicable, and keeps the keys alphabetized for quick lookup during deployment.
 
 Use the environment file before exporting, importing, configuring, or validating a deployment:
 
@@ -8,7 +8,7 @@ Use the environment file before exporting, importing, configuring, or validating
 - `uat.json`
 - `prod.json`
 
-The files intentionally reference the existing migration dataflow configuration files rather than duplicating their frequently changing IDs.
+The files intentionally reference the existing migration dataflow configuration files rather than duplicating their frequently changing IDs. JSON objects are formally unordered, but these files maintain alphabetical source order for readability.
 
 ## Safe to store here
 
@@ -57,4 +57,3 @@ Do not include environment-specific current values when exporting the solution. 
 6. Save or turn the provisioning flow off and on after changing environment-variable values.
 7. Create one test Request and verify folder creation, requester access, Document Location creation, provisioning status, and document upload.
 8. Use the referenced migration files when configuring or validating dataflows.
-

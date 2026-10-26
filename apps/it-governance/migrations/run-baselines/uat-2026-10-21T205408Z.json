@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-10-21T20:54:08.251Z",
+  "environment": "https://itgovernanceuat.crm9.dynamics.com",
+  "source": "Rollback Migration Data and Rollback Staged Migration Data entity coverage, plus known migration outputs",
+  "rollbackCoverageGaps": [],
+  "rollbackCoverageNotes": [
+    "Verified that Rollback Migration Data already deletes new_activitylogses by cr3ee_batchid."
+  ],
+  "tables": {
+    "cr69a_additionalcontacts": 0,
+    "cr69a_businesscases": 0,
+    "cr69a_businesscasesolutions": 0,
+    "cr69a_documents": 0,
+    "cr69a_editrequests": 0,
+    "cr69a_estimatedlifecyclecosts": 0,
+    "cr69a_fundingsourceses": 0,
+    "cr69a_intakestagings": 0,
+    "cr69a_lifecycleidses": 0,
+    "cr69a_systemintakeadmins": 0,
+    "cr69a_systemintakestagingbusinesscases": 0,
+    "cr69a_systemintakestagingcontacts": 0,
+    "cr69a_systemintakestagingcontractnumbers": 0,
+    "cr69a_systemintakestagingdocuments": 0,
+    "cr69a_systemintakestagingeditrequestses": 0,
+    "cr69a_systemintakestagingestimatedlifecyclecos": 0,
+    "cr69a_systemintakestagingfundingsources": 0,
+    "cr69a_systemintakestaginggrbdiscussions": 0,
+    "cr69a_systemintakestaginggrbpresentationlinkses": 0,
+    "cr69a_systemintakestaginggrbreviewers": 0,
+    "cr69a_systemintakestaginglinkedsystemses": 0,
+    "easi_contractnumbers": 0,
+    "easi_migrationruns": 0,
+    "new_activitylogses": 0,
+    "new_cedarsystems": 0,
+    "new_stagecedarsystems": 0,
+    "new_systemintakes": 0,
+    "new_systemlinks": 0
+  }
+}

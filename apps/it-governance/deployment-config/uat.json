@@ -3,9 +3,10 @@
   "Dataverse Environment URL": "https://itgovernanceuat.crm9.dynamics.com",
   "Environment Name": "UAT",
   "Migration Dataflow Expected Configuration File": "../migrations/dataflows/migration-dataflow-expected-configurations/uat.json",
-  "Migration Dataflow IDs File": "../migrations/dataflows/dataflow-ids/uat.json",
+  "Migration Dataflow IDs File": "../migrations/dataflows/dataflow-ids/uat-migration-dataflow-configuration.json",
   "SharePoint Document Library ID": "52c84797-faa9-40fe-9ce0-b24b46919745",
   "SharePoint Document Library Name": "IT GO Docs UAT",
   "SharePoint Parent Document Location ID": "8b45a09f-70c6-f111-aaae-001dd81112ad",
-  "SharePoint Site URL": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting"
+  "SharePoint Site URL": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting",
+  "Staging Dataflow IDs File": "../migrations/dataflows/dataflow-ids/uat-staging-dataflow-configuration.json"
 }

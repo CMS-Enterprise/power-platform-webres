@@ -1,0 +1,21 @@
+{
+  "EnvironmentId": "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+  "Dataflows": {
+    "CreateLCIDs": "1a450657-6a8c-4db2-8d00-8fd7ccc72bb2",
+    "CreateCedarSystems": "8963188d-fa74-44be-8c77-5cab92a778ef",
+    "CreateRequests": "009ab5d7-4f60-4fcb-9a94-087906514390",
+    "CreateReviews": "433043be-94cc-4249-9ff7-87560b5d3275",
+    "LinkRequestsToReviews": "6e42c961-72ec-46eb-9843-0535059bd0ac",
+    "CreateFundingSources": "366c73ef-a568-42e5-9ec6-a7c2673d64e0",
+    "LinkLCIDsToRequests": "208458d7-9657-4d75-94e1-3577596fac41",
+    "CreateAdditionalContacts": "fbcae981-7138-45f4-a105-06c31aa580f4",
+    "CreateBusinessCasesAndSolutions": "84cc3a91-74b9-4f06-83fd-7bf22eae6a10",
+    "CreateDocuments": "fa33af4b-780a-4b56-91e2-7fb8f9157d3c",
+    "CreateEditRequests": "bd97fbf9-7757-4ec5-8fe8-0c557014d3d5",
+    "CreateGRBActivityLogs": "35e1ac24-48af-4ef7-8156-ec517dd5877d",
+    "CreateSystemLinks": "2cddca3c-7580-4acb-a01d-3d9f272e2238",
+    "UpdateContractNumbers": "d3ae52b1-1acc-4be2-aa0a-0187125e2cd9",
+    "CreateEstimatedLifecycleCosts": "cf9dc3da-1827-4f9c-8e7b-9965fac7e8e2",
+    "MapOrphanedMultiSelectData": "eba45610-6fa8-4864-98aa-25c070eb6907"
+  }
+}

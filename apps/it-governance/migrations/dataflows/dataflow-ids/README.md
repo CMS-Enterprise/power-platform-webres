@@ -10,11 +10,15 @@ source-system credentials.
 
 ## File format
 
-Each environment has one JSON file:
+Each configured environment has separate JSON values for the staging and
+migration orchestration flows:
 
-- `dev.json`
-- `uat.json`
-- `prod.json`
+- `<environment>-staging-dataflow-configuration.json`
+- `<environment>-migration-dataflow-configuration.json`
+
+Legacy combined environment files can remain temporarily for environments that
+have not yet been rebuilt and moved to the split environment variables. Do not
+use a combined file when configuring an environment that has the split values.
 
 `EnvironmentId` is the Power Platform environment identifier supplied to the
 Power Query Dataflows connector as `groupIdForRefreshDataflow`.
@@ -48,8 +52,8 @@ recreated, or deployed to an environment:
    file. Do not copy the value labeled `Dataverse record id`.
 6. Review the diff and confirm that only the intended environment and dataflow
    changed.
-7. Copy the complete JSON object into that environment's migration
-   configuration value.
+7. Copy the complete JSON object into the matching staging or migration
+   configuration environment-variable value.
 8. Save or turn the orchestration flow off and on if necessary so that it reads
    the updated environment-variable value.
 9. Test the affected orchestration path in the target environment.
@@ -65,11 +69,11 @@ checked-in files remain formatted for review; generate a compact value when
 copying one into Power Platform:
 
 ```bash
-node -e "const fs=require('node:fs'); process.stdout.write(JSON.stringify(JSON.parse(fs.readFileSync(process.argv[1], 'utf8'))))" apps/it-governance/migrations/dataflows/dataflow-ids/uat.json
+node -e "const fs=require('node:fs'); process.stdout.write(JSON.stringify(JSON.parse(fs.readFileSync(process.argv[1], 'utf8'))))" apps/it-governance/migrations/dataflows/dataflow-ids/uat-staging-dataflow-configuration.json
 ```
 
-Replace `uat.json` with the appropriate environment file. Do not create or
-commit a second minified `.txt` copy.
+Replace the example path with the appropriate staging or migration environment
+file. Do not create or commit a second minified `.txt` copy.
 
 ## Deployment safety
 

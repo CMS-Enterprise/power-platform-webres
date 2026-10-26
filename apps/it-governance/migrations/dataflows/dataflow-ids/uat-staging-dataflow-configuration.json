@@ -1,0 +1,19 @@
+{
+  "EnvironmentId": "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+  "Dataflows": {
+    "StageBusinessCases": "ef45feec-3a65-4e55-a9a5-8345ffc3cddc",
+    "StageCedarSystems": "e3f979f8-5ceb-49c0-bc5d-d931ed061b7e",
+    "StageContacts": "b5d145c1-bc4e-4006-a97a-5f4d6a6710dc",
+    "StageContractNumbers": "09ae8a5d-25e1-4a4a-abf5-6c7f8aab8fbc",
+    "StageDocuments": "57b935c7-5fca-4576-8280-7c3810677aa6",
+    "StageEditRequests": "9a7635fb-e386-4c16-b771-7b708578fb66",
+    "StageEstimatedLifecycleCosts": "774ee730-c723-4ab9-9d87-287df04a86eb",
+    "StageFundingSources": "6dc4b8f5-d36b-4dbe-97ac-aa48bb88ceea",
+    "StageGRBDiscussionPosts": "25147b20-3f38-4084-ba7c-4d750d63f633",
+    "StagePresentationLinks": "67cbc39c-631f-450b-a4c9-96b884aadfbd",
+    "StageGRBReviewers": "84a08546-edc1-4cab-a652-f4fe11774f9b",
+    "StageLinkedSystems": "d83f50fc-9d61-4d23-8c37-bfe010ce5d33",
+    "StageNotes": "b8bacbef-65be-4cef-b4cc-63ac71c42696",
+    "StageSystemIntakes": "a432796a-9a78-4104-b222-8b69293b73df"
+  }
+}

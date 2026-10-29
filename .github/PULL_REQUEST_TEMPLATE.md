@@ -96,6 +96,7 @@ Call out anything that could break: schema changes, required fields, plugins, da
 - [ ] If schema changed, I noted the Solution + components affected.
 - [ ] If plugin changed, I noted the message/step/stage and confirmed it runs as expected.
 - [ ] If data migration/dataflow changed, I tested with representative data.
+- [ ] If data migration/dataflow changed, I ran `npm run migration:guards:check` and included its result above.
 - [ ] If web resources changed, I ran `npm run webres:check` and included its summary or explained expected Dev differences above.
 - [ ] No secrets, tokens, or environment-specific IDs were committed.
 

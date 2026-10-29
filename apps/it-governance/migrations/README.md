@@ -35,6 +35,7 @@ or check the local files.
 npm run dataflows:list
 npm run dataflows:pull
 npm run dataflows:check
+npm run migration:guards:check
 ```
 
 The dataflow manifest uses `dataflowId` values instead of names because some
@@ -59,6 +60,15 @@ update those parameters in the Power Apps dataflow editor when deploying to anot
 environment.
 
 `dataflows:check` verifies the pulled `./dataflows` files match Dataverse.
+
+`migration:guards:check` performs a local, read-only structural check of every
+destination-producing dataflow in the manifest. It verifies that each dataflow
+requires exactly one Running Migration Run, restricts staging data to that
+run's batch, stamps the expected destination batch column, and reports
+destination-producing M files that are missing from the manifest. Run it after
+changing a migration dataflow or the dataflow manifest. The check validates the
+required M patterns; it complements, rather than replaces, an environment test
+with representative migration data.
 
 ### System Intake schema update
 

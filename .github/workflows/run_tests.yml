@@ -24,10 +24,15 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Check migration guard coverage
+        run: npm run migration:guards:check
       - uses: actions/setup-python@v7 # Python is required for pre-commit/action
         with:
           python-version: '3.9'
       - name: Pre-commit checks
         uses: pre-commit/action@v3.0.1
         with:
-          extra_args: --all-files    
+          extra_args: --all-files

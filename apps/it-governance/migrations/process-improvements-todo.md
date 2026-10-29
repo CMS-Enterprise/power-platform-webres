@@ -16,7 +16,7 @@ workflow for deployment, rehearsal, reconciliation, and rollback.
     skip its evaluation.
   - Verify configuring or publishing a migration dataflow with no Running
     Migration Run cannot write destination data.
-- [ ] Make historical GRB Activity Log row-level QA nonblocking: retain
+- [x] Make historical GRB Activity Log row-level QA nonblocking: retain
   `FeedbackTypeQA` and `HistoricalGrbActivityLogQA`, load only rows whose
   `UnmappedIssues` is null, and reserve hard failures for structural problems
   such as missing required columns.

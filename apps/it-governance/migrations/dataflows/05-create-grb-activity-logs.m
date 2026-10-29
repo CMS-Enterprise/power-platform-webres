@@ -9,10 +9,66 @@ shared StagingRaw =
     let
         Source = CommonDataService.Database(DataverseEnvironmentUrl),
         Navigation = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingeditrequests"]}[Data],
+        HasPopulatedValue = (value as any) as logical =>
+            let
+                textValue = if value = null then null else Text.Trim(Text.From(value))
+            in
+                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
+        // Require exactly one Running Migration Run and a populated batch ID.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
+        RunningCount = Table.RowCount(RunningOnly),
+        ValidatedRunningRun =
+            if RunningCount = 0 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else if RunningCount > 1 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else
+                RunningOnly{0},
+        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedValue(RunningBatchId) then
+                Text.Trim(Text.From(RunningBatchId))
+            else
+                error Error.Record(
+                    "Running Migration guard",
+                    "The Running Migration Run has a blank batch ID.",
+                    [RunningCount = RunningCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then Navigation else error "Running Migration guard failed.",
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    batchValues = {
+                        Record.FieldOrDefault(_, "migrate_batch_id", null),
+                        Record.FieldOrDefault(_, "cr69a_batchid", null)
+                    },
+                    stageBatchId = List.First(List.Select(batchValues, each HasPopulatedValue(_)), null)
+                in
+                    stageBatchId <> null
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        #"Removed Staging Batch IDs" = Table.RemoveColumns(
+            CurrentBatchStage, {"migrate_batch_id", "cr69a_batchid"}, MissingField.Ignore
+        ),
+        #"Stamped Running Batch" = Table.AddColumn(
+            #"Removed Staging Batch IDs", "cr69a_batchid", each BatchId, type text
+        ),
         Flat = Table.RemoveColumns(
-            Navigation,
+            #"Stamped Running Batch",
             Table.ColumnsOfType(
-                Navigation,
+                #"Stamped Running Batch",
                 {type table, type record, type list, type nullable binary, type binary, type function}
             )
         )
@@ -354,19 +410,11 @@ shared HistoricalGrbActivityLogQA =
 
 shared HistoricalGrbActivityLogs =
     let
-        QaCount = Table.RowCount(HistoricalGrbActivityLogQA),
-        FeedbackTypeQaCount = Table.RowCount(FeedbackTypeQA),
-        ValidRows =
-            if FeedbackTypeQaCount > 0 then
-                error "Historical GRB Activity Log migration blocked: FeedbackTypeQA contains "
-                    & Text.From(FeedbackTypeQaCount)
-                    & " unexpected feedback type row(s)."
-            else if QaCount > 0 then
-                error "Historical GRB Activity Log migration blocked: HistoricalGrbActivityLogQA contains "
-                    & Text.From(QaCount)
-                    & " row(s)."
-            else
-                Table.SelectRows(HistoricalGrbActivityLogPreparation, each [UnmappedIssues] = null),
+        // Row-level QA is nonblocking: retain invalid rows in the QA queries,
+        // but load only preparation rows that have no reported issues.
+        // Structural failures in preparation (for example, a missing required
+        // staging column) still raise errors before this filter is evaluated.
+        ValidRows = Table.SelectRows(HistoricalGrbActivityLogPreparation, each [UnmappedIssues] = null),
         Output = Table.SelectColumns(
             ValidRows,
             {

@@ -39,9 +39,54 @@ shared EstimatedLifecycleCostPreparation = let
         in
             textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
 
+    // Require exactly one Running Migration Run and a populated batch ID.
+    MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+    BufferedRuns = Table.Buffer(MigrationRuns),
+    RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
+    RunningCount = Table.RowCount(RunningOnly),
+    ValidatedRunningRun =
+        if RunningCount = 0 then
+            error Error.Record(
+                "Running Migration guard",
+                "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
+                [RunningCount = RunningCount]
+            )
+        else if RunningCount > 1 then
+            error Error.Record(
+                "Running Migration guard",
+                "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
+                [RunningCount = RunningCount]
+            )
+        else
+            RunningOnly{0},
+    RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+    BatchId =
+        if HasPopulatedValue(RunningBatchId) then
+            Text.Trim(Text.From(RunningBatchId))
+        else
+            error Error.Record(
+                "Running Migration guard",
+                "The Running Migration Run has a blank batch ID.",
+                [RunningCount = RunningCount]
+            ),
+    GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Running Migration guard failed.",
+    CurrentBatchStage = Table.SelectRows(
+        GuardedStage,
+        each
+            let
+                stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+            in
+                HasPopulatedValue(stageBatchId)
+                    and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+    ),
+    #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+    #"Stamped Running Batch" = Table.AddColumn(
+        #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+    ),
+
     WithKeys =
         Table.AddColumn(
-            StagingRaw,
+            #"Stamped Running Batch",
             "LegacyBusinessCaseId",
             each NormalizeLegacyBusinessCaseId([cr69a_businesscase]),
             type nullable text
@@ -149,7 +194,7 @@ shared EstimatedLifecycleCosts = let
     Grouped =
         Table.Group(
             ValidRows,
-            {"LegacyBusinessCaseId", "solution_type_dataverse", "YearNumber"},
+            {"LegacyBusinessCaseId", "solution_type_dataverse", "YearNumber", "cr69a_batchid"},
             {{"YearCost", each List.Sum([CostValue]), type number}}
         ),
 
@@ -168,6 +213,7 @@ shared EstimatedLifecycleCosts = let
                 {
                     "LegacyBusinessCaseId",
                     "solution_type_dataverse",
+                    "cr69a_batchid",
                     "YearColumn",
                     "YearCost"
                 }
@@ -324,8 +370,7 @@ shared ExistingSolutions = let
             {
                 "cr69a_businesscasesolutionid",
                 "new_request",
-                "cr69a_solution_type",
-                "cr69a_batchid"
+                "cr69a_solution_type"
             },
             MissingField.Error
         )
@@ -360,8 +405,8 @@ shared EstimatedLifecycleCostsWithSolutions = let
   Expanded = Table.ExpandTableColumn(
       Joined,
       "SolutionMatch",
-      {"cr69a_businesscasesolutionid", "new_request", "cr69a_batchid"},
-      {"cr69a_businesscasesolutionid", "new_request", "cr69a_batchid"}
+      {"cr69a_businesscasesolutionid", "new_request"},
+      {"cr69a_businesscasesolutionid", "new_request"}
   )
 in
   Expanded;

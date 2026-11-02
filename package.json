@@ -20,12 +20,15 @@
     "dataflows:check:file": "node ./scripts/check-dataflows.mjs",
     "dataflows:pull": "node ./scripts/pull-dataflows.mjs",
     "dataflows:pull:file": "node ./scripts/pull-dataflows.mjs",
+    "deployment-settings:check": "node ./scripts/check-deployment-settings.mjs",
+    "deployment-settings:ready": "node ./scripts/check-deployment-settings.mjs --ready",
     "migration:guards:check": "node ./scripts/check-migration-guards.mjs",
     "cedar:clean": "node ./scripts/clean-cedar-systems-json.mjs",
     "intake:systems:clean": "node ./scripts/clean-system-intake-systems-csv.mjs",
     "pac:setup": "dotnet tool restore",
     "pac:export": "node ./scripts/export-solution.mjs",
     "pac:diff": "node ./scripts/powerapp-canvas-diff.mjs",
+    "test:deployment-settings": "node --test ./scripts/check-deployment-settings.test.mjs",
     "test:pac": "node --test ./scripts/pac-solution-common.test.mjs"
   }
 }

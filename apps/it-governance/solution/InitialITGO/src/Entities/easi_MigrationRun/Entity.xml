@@ -283,30 +283,6 @@
                   <Description description="" languagecode="1033" />
                 </Descriptions>
               </option>
-              <option value="216640001" ExternalValue="" IsHidden="0">
-                <labels>
-                  <label description="Staged" languagecode="1033" />
-                </labels>
-                <Descriptions>
-                  <Description description="" languagecode="1033" />
-                </Descriptions>
-              </option>
-              <option value="216640002" ExternalValue="" IsHidden="0">
-                <labels>
-                  <label description="Migrating" languagecode="1033" />
-                </labels>
-                <Descriptions>
-                  <Description description="" languagecode="1033" />
-                </Descriptions>
-              </option>
-              <option value="216640003" ExternalValue="" IsHidden="0">
-                <labels>
-                  <label description="Completed" languagecode="1033" />
-                </labels>
-                <Descriptions>
-                  <Description description="" languagecode="1033" />
-                </Descriptions>
-              </option>
             </options>
           </optionset>
           <displaynames>

@@ -98,11 +98,13 @@ Review the dry-run output before changing either file.
 
 ### 2. Start a Migration Batch
 
-Create or start a migration-run record and record its Batch ID. Dataflows use the latest running migration to stamp staged and migrated records. Only one intended migration batch should be in a running state during execution.
+Run **Intake - Stage All Data** to create a migration-run record in the Running state and record its Batch ID. Staging dataflows use that Running batch to stamp staged records. After every staging refresh succeeds, the orchestration marks the same migration run Staged. **Intake - Migrate All Data** selects that Staged run and marks it Migrating before refreshing migration dataflows. Migration dataflows require exactly one Migrating run and only process staging rows with its Batch ID. A successful orchestration marks the run Completed; failures mark it Failed.
 
 ### 3. Stage Source Data
 
 Run **Intake - Stage All Data**. The orchestration flow loads the SharePoint CSV and JSON files into Dataverse staging tables.
+
+Do not start another staging run while a migration is Running or Staged. Migrate or roll back the existing staged batch first.
 
 After staging:
 
@@ -209,4 +211,3 @@ The IT Governance and DIIMP teams must approve a detailed runbook before product
 - [IT Governance Intake Request Mapping Workbook](https://docs.google.com/spreadsheets/d/1-TfJrVtfF5lW-SKITZK1plbBq_KQsQMUslB9jk5Pwbo/edit?gid=0#gid=0)
 - [CEDAR Systems List - Data Migration Guide](https://docs.google.com/document/d/1lIPpWi4raIHQ0JIHbIwNiY8WGi90JVNmrwc2naiSwEI/edit?usp=sharing)
 - Repository migration guide: `apps/it-governance/migrations/README.md`
-

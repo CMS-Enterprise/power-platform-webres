@@ -39,9 +39,54 @@ shared EstimatedLifecycleCostPreparation = let
         in
             textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
 
+    // Require exactly one Migrating Migration Run and a populated batch ID.
+    MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+    BufferedRuns = Table.Buffer(MigrationRuns),
+    MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+    MigratingCount = Table.RowCount(MigratingOnly),
+    ValidatedMigratingRun =
+        if MigratingCount = 0 then
+            error Error.Record(
+                "Migrating Migration guard",
+                "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                [MigratingCount = MigratingCount]
+            )
+        else if MigratingCount > 1 then
+            error Error.Record(
+                "Migrating Migration guard",
+                "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                [MigratingCount = MigratingCount]
+            )
+        else
+            MigratingOnly{0},
+    MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
+    BatchId =
+        if HasPopulatedValue(MigratingBatchId) then
+            Text.Trim(Text.From(MigratingBatchId))
+        else
+            error Error.Record(
+                "Migrating Migration guard",
+                "The Migrating Migration Run has a blank batch ID.",
+                [MigratingCount = MigratingCount]
+            ),
+    GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Migrating Migration guard failed.",
+    CurrentBatchStage = Table.SelectRows(
+        GuardedStage,
+        each
+            let
+                stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+            in
+                HasPopulatedValue(stageBatchId)
+                    and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+    ),
+    #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+    #"Stamped Running Batch" = Table.AddColumn(
+        #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+    ),
+
     WithKeys =
         Table.AddColumn(
-            StagingRaw,
+            #"Stamped Running Batch",
             "LegacyBusinessCaseId",
             each NormalizeLegacyBusinessCaseId([cr69a_businesscase]),
             type nullable text
@@ -149,7 +194,7 @@ shared EstimatedLifecycleCosts = let
     Grouped =
         Table.Group(
             ValidRows,
-            {"LegacyBusinessCaseId", "solution_type_dataverse", "YearNumber"},
+            {"LegacyBusinessCaseId", "solution_type_dataverse", "YearNumber", "cr69a_batchid"},
             {{"YearCost", each List.Sum([CostValue]), type number}}
         ),
 
@@ -168,6 +213,7 @@ shared EstimatedLifecycleCosts = let
                 {
                     "LegacyBusinessCaseId",
                     "solution_type_dataverse",
+                    "cr69a_batchid",
                     "YearColumn",
                     "YearCost"
                 }
@@ -324,8 +370,7 @@ shared ExistingSolutions = let
             {
                 "cr69a_businesscasesolutionid",
                 "new_request",
-                "cr69a_solution_type",
-                "cr69a_batchid"
+                "cr69a_solution_type"
             },
             MissingField.Error
         )
@@ -360,8 +405,8 @@ shared EstimatedLifecycleCostsWithSolutions = let
   Expanded = Table.ExpandTableColumn(
       Joined,
       "SolutionMatch",
-      {"cr69a_businesscasesolutionid", "new_request", "cr69a_batchid"},
-      {"cr69a_businesscasesolutionid", "new_request", "cr69a_batchid"}
+      {"cr69a_businesscasesolutionid", "new_request"},
+      {"cr69a_businesscasesolutionid", "new_request"}
   )
 in
   Expanded;
@@ -382,14 +427,11 @@ shared Query = let
         else if Table.RowCount(DuplicateRequestLegacyBusinessCaseIds) > 0 then
             error
                 "One or more legacy business case IDs maps to multiple Requests. Review DuplicateRequestLegacyBusinessCaseIds before loading solution costs."
-        else if Table.RowCount(EstimatedLifecycleCostsWithoutRequest) > 0 then
-            error
-                "One or more lifecycle cost groups could not be matched to a Request. Review EstimatedLifecycleCostsWithoutRequest before loading solution costs."
-        else if Table.RowCount(EstimatedLifecycleCostsWithoutSolution) > 0 then
-            error
-                "One or more lifecycle cost groups could not be matched to a Solution. Review EstimatedLifecycleCostsWithoutSolution before loading solution costs."
         else
-            EstimatedLifecycleCostsWithSolutions,
+            Table.SelectRows(
+                EstimatedLifecycleCostsWithSolutions,
+                each [cr69a_businesscasesolutionid] <> null
+            ),
     UpdateColumns = Table.SelectColumns(
         ValidatedEstimatedLifecycleCosts,
         {

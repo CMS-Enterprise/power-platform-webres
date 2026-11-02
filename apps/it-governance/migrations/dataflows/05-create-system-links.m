@@ -1,9 +1,59 @@
 section Section1;
 
-shared cr69a_systemintakestaginglinkedsystems =
+shared SystemLinkPreparation =
     let
         Source = CommonDataService.Database(DataverseEnvironmentUrl),
         #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_systemintakestaginglinkedsystems"]}[Data],
+        HasPopulatedBatchValue = (v as any) as logical =>
+            let
+                textValue = if v = null then null else Text.Trim(Text.From(v))
+            in
+                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
+        // Require exactly one Running Migration Run and a populated batch ID.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
+        RunningCount = Table.RowCount(RunningOnly),
+        ValidatedRunningRun =
+            if RunningCount = 0 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else if RunningCount > 1 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else
+                RunningOnly{0},
+        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedBatchValue(RunningBatchId) then
+                Text.Trim(Text.From(RunningBatchId))
+            else
+                error Error.Record(
+                    "Running Migration guard",
+                    "The Running Migration Run has a blank batch ID.",
+                    [RunningCount = RunningCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then #"Navigation 1" else error "Running Migration guard failed.",
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                in
+                    HasPopulatedBatchValue(stageBatchId)
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        #"Stamped Running Batch" = Table.AddColumn(
+            #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+        ),
         // =========================================
         // Choice mapping specs
         // =========================================
@@ -78,7 +128,7 @@ shared cr69a_systemintakestaginglinkedsystems =
         // =========================================
         ApplyAll = List.Accumulate(
             ChoiceSpecs,
-            #"Navigation 1",
+            #"Stamped Running Batch",
             (state as table, spec as record) =>
                 let
                     src = spec[source],
@@ -112,7 +162,7 @@ shared cr69a_systemintakestaginglinkedsystems =
             else
                 Table.AddColumn(
                     ApplyAll,
-                    "UnmappedIssues",
+                    "ChoiceMappingIssues",
                     (r as record) =>
                         let
                             issues = List.Transform(
@@ -153,6 +203,133 @@ shared cr69a_systemintakestaginglinkedsystems =
         )
     in
         #"Remove Columns";
+shared SystemLinkValidation = let
+    Source = CommonDataService.Database(DataverseEnvironmentUrl),
+    RequestsRaw = Source{[Schema = "dbo", Item = "new_systemintake"]}[Data],
+    CedarSystemsRaw = Source{[Schema = "dbo", Item = "new_cedarsystem"]}[Data],
+    HasPopulatedValue = (v as any) as logical =>
+        let
+            textValue = if v = null then null else Text.Trim(Text.From(v))
+        in
+            textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+    NormalizeId = (v as any) as nullable text =>
+        if not HasPopulatedValue(v) then
+            null
+        else
+            Text.Lower(
+                Text.Replace(
+                    Text.Replace(Text.Trim(Text.From(v)), "{", ""),
+                    "}",
+                    ""
+                )
+            ),
+    PreparedLinks = Table.TransformColumns(
+        SystemLinkPreparation,
+        {
+            {"cr69a_systemintakeid", each NormalizeId(_), type nullable text},
+            {"cr69a_systemid", each NormalizeId(_), type nullable text}
+        }
+    ),
+    ExistingRequests = Table.TransformColumns(
+        Table.SelectColumns(
+            RequestsRaw,
+            {"new_systemintakeid", "easi_external_id"},
+            MissingField.Error
+        ),
+        {{"easi_external_id", each NormalizeId(_), type nullable text}}
+    ),
+    ExistingCedarSystems = Table.TransformColumns(
+        Table.SelectColumns(
+            CedarSystemsRaw,
+            {"new_cedarsystemid", "new_externalid"},
+            MissingField.Error
+        ),
+        {{"new_externalid", each NormalizeId(_), type nullable text}}
+    ),
+    WithRequestMatch = Table.NestedJoin(
+        PreparedLinks,
+        {"cr69a_systemintakeid"},
+        ExistingRequests,
+        {"easi_external_id"},
+        "RequestMatch",
+        JoinKind.LeftOuter
+    ),
+    WithRequestId = Table.ExpandTableColumn(
+        WithRequestMatch,
+        "RequestMatch",
+        {"new_systemintakeid"},
+        {"MatchedRequestId"}
+    ),
+    WithCedarSystemMatch = Table.NestedJoin(
+        WithRequestId,
+        {"cr69a_systemid"},
+        ExistingCedarSystems,
+        {"new_externalid"},
+        "CedarSystemMatch",
+        JoinKind.LeftOuter
+    ),
+    WithCedarSystemId = Table.ExpandTableColumn(
+        WithCedarSystemMatch,
+        "CedarSystemMatch",
+        {"new_cedarsystemid"},
+        {"MatchedCedarSystemId"}
+    ),
+    WithQA = Table.AddColumn(
+        WithCedarSystemId,
+        "UnmappedIssues",
+        (row as record) =>
+            let
+                choiceMappingIssues = Record.FieldOrDefault(row, "ChoiceMappingIssues", null),
+                issues = List.RemoveNulls(
+                    {
+                        if HasPopulatedValue(choiceMappingIssues) then
+                            Text.From(choiceMappingIssues)
+                        else
+                            null,
+                        if not HasPopulatedValue(Record.FieldOrDefault(row, "cr69a_systemintakeid", null)) then
+                            "cr69a_systemintakeid is blank"
+                        else if Record.FieldOrDefault(row, "MatchedRequestId", null) = null then
+                            "No Request matched cr69a_systemintakeid=" & Text.From(row[cr69a_systemintakeid])
+                        else
+                            null,
+                        if not HasPopulatedValue(Record.FieldOrDefault(row, "cr69a_systemid", null)) then
+                            "cr69a_systemid is blank"
+                        else if Record.FieldOrDefault(row, "MatchedCedarSystemId", null) = null then
+                            "No CEDAR System matched cr69a_systemid=" & Text.From(row[cr69a_systemid])
+                        else
+                            null
+                    }
+                )
+            in
+                if List.IsEmpty(issues) then null else Text.Combine(issues, "; "),
+        type nullable text
+    )
+in
+    WithQA;
+shared SystemLinkQA = let
+    Issues = Table.SelectRows(SystemLinkValidation, each [UnmappedIssues] <> null),
+    Output = Table.SelectColumns(
+        Issues,
+        {
+            "cr69a_systemintakestaginglinkedsystemsid",
+            "cr69a_recordid",
+            "cr69a_systemintakeid",
+            "cr69a_systemid",
+            "UnmappedIssues"
+        },
+        MissingField.Ignore
+    )
+in
+    Output;
+shared cr69a_systemintakestaginglinkedsystems = let
+    ValidRows = Table.SelectRows(SystemLinkValidation, each [UnmappedIssues] = null),
+    Output = Table.RemoveColumns(
+        ValidRows,
+        {"MatchedRequestId", "MatchedCedarSystemId", "ChoiceMappingIssues", "UnmappedIssues"},
+        MissingField.Ignore
+    )
+in
+    Output;
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [
     IsParameterQuery = true,
     IsParameterQueryRequired = false,

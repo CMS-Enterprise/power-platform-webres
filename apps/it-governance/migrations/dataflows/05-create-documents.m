@@ -44,6 +44,51 @@ shared DocumentPreparation =
                 textValue = if value = null then null else Text.Trim(Text.From(value))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
+        // Require exactly one Running Migration Run and a populated batch ID.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
+        RunningCount = Table.RowCount(RunningOnly),
+        ValidatedRunningRun =
+            if RunningCount = 0 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else if RunningCount > 1 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else
+                RunningOnly{0},
+        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedValue(RunningBatchId) then
+                Text.Trim(Text.From(RunningBatchId))
+            else
+                error Error.Record(
+                    "Running Migration guard",
+                    "The Running Migration Run has a blank batch ID.",
+                    [RunningCount = RunningCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Running Migration guard failed.",
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                in
+                    HasPopulatedValue(stageBatchId)
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        #"Stamped Running Batch" = Table.AddColumn(
+            #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+        ),
         NormalizeId = (value as any) as nullable text =>
             if not HasPopulatedValue(value) then
                 null
@@ -88,7 +133,7 @@ shared DocumentPreparation =
         },
         WithChoices = List.Accumulate(
             ChoiceSpecs,
-            StagingRaw,
+            #"Stamped Running Batch",
             (state as table, spec as record) =>
                 let
                     sourceColumn = spec[source],

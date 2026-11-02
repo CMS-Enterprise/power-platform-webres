@@ -4,18 +4,55 @@ shared new_stagecedarsystem =
     let
         Source = CommonDataService.Database(DataverseEnvironmentUrl, [CreateNavigationProperties = null]),
         Stage = Source{[Schema = "dbo", Item = "new_stagecedarsystem"]}[Data],
-        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
-        BufferedRuns = Table.Buffer(MigrationRuns),
-        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
-        Sorted = Table.Sort(RunningOnly, {{"easi_startedon", Order.Descending}}),
-        Latest = Table.FirstN(Sorted, 1),
-        BatchId = if Table.RowCount(Latest) > 0 then Text.From(Latest{0}[easi_batchid]) else "DATAFLOW_NO_RUNNING_BATCH",
-        EnableQA = true,
         HasPopulatedValue = (v as any) as logical =>
             let
                 textValue = if v = null then null else Text.Trim(Text.From(v))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
+        // Require exactly one Running Migration Run and a populated batch ID.
+        // GuardedStage references the validated scalar so this check remains in
+        // the loaded output's evaluation path, even though Stage is a separate table.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
+        RunningCount = Table.RowCount(RunningOnly),
+        ValidatedRunningRun =
+            if RunningCount = 0 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else if RunningCount > 1 then
+                error Error.Record(
+                    "Running Migration guard",
+                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
+                    [RunningCount = RunningCount]
+                )
+            else
+                RunningOnly{0},
+        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedValue(RunningBatchId) then
+                Text.Trim(Text.From(RunningBatchId))
+            else
+                error Error.Record(
+                    "Running Migration guard",
+                    "The Running Migration Run has a blank batch ID.",
+                    [RunningCount = RunningCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then Stage else error "Running Migration guard failed.",
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    stageBatchId = Record.FieldOrDefault(_, "new_batchid", null)
+                in
+                    HasPopulatedValue(stageBatchId)
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        EnableQA = true,
         Normalize = (v as any) as nullable text =>
             if not HasPopulatedValue(v) then
                 null
@@ -40,12 +77,11 @@ shared new_stagecedarsystem =
             DEACTIVATED = 216640001
         ],
         #"Selected Columns" = Table.SelectColumns(
-            #"Stage",
+            CurrentBatchStage,
             {
                 "new_acronym",
                 "new_atoeffectivedate",
                 "new_atoexpirationdate",
-                "new_batchid",
                 "cr3ee_belongsto",
                 "new_businessownerorg",
                 "new_businessownerorgcomp",
@@ -62,8 +98,11 @@ shared new_stagecedarsystem =
             },
             MissingField.Ignore
         ),
+        #"Stamped Running Batch" = Table.AddColumn(
+            #"Selected Columns", "cr3ee_batchid", each BatchId, type text
+        ),
         #"Added ATO Effective Date" = Table.AddColumn(
-            #"Selected Columns", "cr3ee_atoeffectivedate", each NormalizeDate([new_atoeffectivedate]), type date
+            #"Stamped Running Batch", "cr3ee_atoeffectivedate", each NormalizeDate([new_atoeffectivedate]), type date
         ),
         #"Added ATO Expiration Date" = Table.AddColumn(
             #"Added ATO Effective Date",

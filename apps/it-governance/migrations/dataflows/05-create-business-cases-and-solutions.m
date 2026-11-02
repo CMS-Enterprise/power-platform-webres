@@ -9,38 +9,47 @@ shared BusinessCases =
                 textValue = if v = null then null else Text.Trim(Text.From(v))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
-
-        // Require exactly one Running Migration Run and a populated batch ID.
+        // Require exactly one Migrating Migration Run and a populated batch ID.
         MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
         BufferedRuns = Table.Buffer(MigrationRuns),
-        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
-        RunningCount = Table.RowCount(RunningOnly),
-        ValidatedRunningRun =
-            if RunningCount = 0 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
-            else if RunningCount > 1 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
+            else if MigratingCount > 1 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
             else
-                RunningOnly{0},
-        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
         BatchId =
-            if HasPopulatedValue(RunningBatchId) then
-                Text.Trim(Text.From(RunningBatchId))
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
             else
-                error Error.Record(
-                    "Running Migration guard",
-                    "The Running Migration Run has a blank batch ID.",
-                    [RunningCount = RunningCount]
-                ),
-        GuardedStage = if Text.Length(BatchId) > 0 then #"Navigation 1" else error "Running Migration guard failed.",
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "The Migrating Migration Run has a blank batch ID.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    ),
+        GuardedStage = if Text.Length(BatchId) > 0 then #"Navigation 1" else error
+            "Migrating Migration guard failed.",
         CurrentBatchStage = Table.SelectRows(
             GuardedStage,
             each
@@ -48,7 +57,7 @@ shared BusinessCases =
                     stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
                 in
                     HasPopulatedValue(stageBatchId)
-                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+                    and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
         #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
         #"Stamped Running Batch" = Table.AddColumn(
@@ -346,25 +355,19 @@ shared BusinessCaseSolutionPreparation =
                 let
                     normalized = Text.Lower(Text.Trim(Text.From(value)))
                 in
-                    if normalized = "" or Text.Upper(normalized) = "NULL" then null else normalized,
+                    if normalized = "" or Text.Upper(normalized) = "NULL" then
+                        null
+                    else
+                        normalized,
         WithNormalizedBusinessCaseId = Table.AddColumn(
-            Normalized,
-            "NormalizedBusinessCaseId",
-            each NormalizeId([cr69a_id]),
-            type nullable text
+            Normalized, "NormalizedBusinessCaseId", each NormalizeId([cr69a_id]), type nullable text
         ),
         WithNormalizedRequestId = Table.AddColumn(
-            WithNormalizedBusinessCaseId,
-            "NormalizedRequestId",
-            each NormalizeId([Request ID]),
-            type nullable text
+            WithNormalizedBusinessCaseId, "NormalizedRequestId", each NormalizeId([Request ID]), type nullable text
         ),
         BusinessCaseCounts = Table.Buffer(
             Table.Group(
-                Table.SelectRows(
-                    WithNormalizedRequestId,
-                    each [NormalizedBusinessCaseId] <> null
-                ),
+                Table.SelectRows(WithNormalizedRequestId, each [NormalizedBusinessCaseId] <> null),
                 {"NormalizedBusinessCaseId"},
                 {{"SolutionRowCount", each Table.RowCount(_), Int64.Type}}
             )
@@ -378,10 +381,7 @@ shared BusinessCaseSolutionPreparation =
             JoinKind.LeftOuter
         ),
         ExpandedBusinessCaseCount = Table.ExpandTableColumn(
-            WithBusinessCaseCount,
-            "BusinessCaseCountMatch",
-            {"SolutionRowCount"},
-            {"SolutionRowCount"}
+            WithBusinessCaseCount, "BusinessCaseCountMatch", {"SolutionRowCount"}, {"SolutionRowCount"}
         ),
         Dataverse = CommonDataService.Database(DataverseEnvironmentUrl),
         ExistingRequestsRaw = Dataverse{[Schema = "dbo", Item = "new_systemintake"]}[Data],
@@ -419,17 +419,45 @@ shared BusinessCaseSolutionPreparation =
                     issues = List.RemoveNulls(
                         {
                             existingIssues,
-                            if businessCaseId = null then "Business Case ID is blank" else null,
-                            if requestId = null then "Request ID is blank" else null,
-                            if requestId <> null and requestMatchCount = 0 then "No Request matched Request ID=" & requestId else null,
-                            if requestId <> null and requestMatchCount > 1 then "Multiple Requests matched Request ID=" & requestId else null,
-                            if batchId = null then "Batch ID is blank" else null,
-                            if solutionRowCount = null then "Expected 3 solution rows; found no count" else if solutionRowCount <> 3 then "Expected 3 solution rows; found " & Text.From(solutionRowCount) else null,
-                            if not List.Contains({971270000, 971270001, 971270002}, Record.FieldOrDefault(row, "SolutionType", null)) then "Invalid SolutionType" else null
+                            if businessCaseId = null then
+                                "Business Case ID is blank"
+                            else
+                                null,
+                            if requestId = null then
+                                "Request ID is blank"
+                            else
+                                null,
+                            if requestId <> null and requestMatchCount = 0 then
+                                "No Request matched Request ID=" & requestId
+                            else
+                                null,
+                            if requestId <> null and requestMatchCount > 1 then
+                                "Multiple Requests matched Request ID=" & requestId
+                            else
+                                null,
+                            if batchId = null then
+                                "Batch ID is blank"
+                            else
+                                null,
+                            if solutionRowCount = null then
+                                "Expected 3 solution rows; found no count"
+                            else if solutionRowCount <> 3 then
+                                "Expected 3 solution rows; found " & Text.From(solutionRowCount)
+                            else
+                                null,
+                            if not List.Contains(
+                                {971270000, 971270001, 971270002}, Record.FieldOrDefault(row, "SolutionType", null)
+                            ) then
+                                "Invalid SolutionType"
+                            else
+                                null
                         }
                     )
                 in
-                    if List.IsEmpty(issues) then null else Text.Combine(issues, "; "),
+                    if List.IsEmpty(issues) then
+                        null
+                    else
+                        Text.Combine(issues, "; "),
             type nullable text
         ),
         OutputColumns = {
@@ -476,14 +504,7 @@ shared BusinessCaseSolutionQA =
         ),
         Output = Table.SelectColumns(
             Issues,
-            {
-                "cr69a_id",
-                "Request ID",
-                "Title",
-                "SolutionType",
-                "Batch ID",
-                "BusinessCaseSolutionIssues"
-            },
+            {"cr69a_id", "Request ID", "Title", "SolutionType", "Batch ID", "BusinessCaseSolutionIssues"},
             MissingField.UseNull
         )
     in
@@ -508,7 +529,8 @@ shared Query =
                 ),
         ValidatedPreparation =
             if QARowCount > 0 then
-                error "BusinessCaseSolutionQA contains " & Text.From(QARowCount) & " invalid row(s). Sample: " & QASample
+                error
+                    "BusinessCaseSolutionQA contains " & Text.From(QARowCount) & " invalid row(s). Sample: " & QASample
             else
                 BusinessCaseSolutionPreparation,
         HelperColumns = {
@@ -522,8 +544,7 @@ shared Query =
         WithoutComplexColumns = Table.RemoveColumns(
             Output,
             Table.ColumnsOfType(
-                Output,
-                {type table, type record, type list, type nullable binary, type binary, type function}
+                Output, {type table, type record, type list, type nullable binary, type binary, type function}
             )
         )
     in

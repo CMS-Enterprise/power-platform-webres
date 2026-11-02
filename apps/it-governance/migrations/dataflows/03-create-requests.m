@@ -14,40 +14,47 @@ shared Requests =
                 textValue = if v = null then null else Text.Trim(Text.From(v))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
-
-        // Require exactly one Running Migration Run and a populated batch ID.
+        // Require exactly one Migrating Migration Run and a populated batch ID.
         MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
         BufferedRuns = Table.Buffer(MigrationRuns),
-        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
-        RunningCount = Table.RowCount(RunningOnly),
-        ValidatedRunningRun =
-            if RunningCount = 0 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
-            else if RunningCount > 1 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
+            else if MigratingCount > 1 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
             else
-                RunningOnly{0},
-        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
         BatchId =
-            if HasPopulatedValue(RunningBatchId) then
-                Text.Trim(Text.From(RunningBatchId))
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
             else
-                error Error.Record(
-                    "Running Migration guard",
-                    "The Running Migration Run has a blank batch ID.",
-                    [RunningCount = RunningCount]
-                ),
-        GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Running Migration guard failed.",
-
-        // Process only staging rows stamped with the validated Running batch,
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "The Migrating Migration Run has a blank batch ID.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    ),
+        GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Migrating Migration guard failed.",
+        // Process only staging rows stamped with the validated Migrating batch,
         // then explicitly stamp that batch ID onto every Request output row.
         CurrentBatchStage = Table.SelectRows(
             GuardedStage,
@@ -56,11 +63,10 @@ shared Requests =
                     stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
                 in
                     HasPopulatedValue(stageBatchId)
-                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+                    and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
         #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
         Prev = Table.AddColumn(#"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text),
-
         // Map to Dataverse-style two-option codes:
         NormalizeTwoOption = (v as any) as nullable number =>
             let
@@ -421,10 +427,7 @@ shared Requests =
             WithQA, "cr3ee_skiprequestercontactcreation", each true, type logical
         ),
         WithMigratedLegacyRecord = Table.AddColumn(
-            WithSkipContactCreation,
-            "migrated_legacy_record_dataverse_format",
-            each true,
-            type logical
+            WithSkipContactCreation, "migrated_legacy_record_dataverse_format", each true, type logical
         ),
         #"Remove Columns" = Table.RemoveColumns(
             WithMigratedLegacyRecord,

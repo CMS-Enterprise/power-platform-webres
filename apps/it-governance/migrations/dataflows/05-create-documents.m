@@ -12,70 +12,78 @@ shared DocumentPreparation =
                 result = if List.IsEmpty(matches) then null else List.First(matches)
             in
                 if result = null then
-                    error "Document staging table is missing the " & label & " column. Expected one of: " & Text.Combine(candidates, ", ")
+                    error
+                        "Document staging table is missing the "
+                            & label
+                            & " column. Expected one of: "
+                            & Text.Combine(candidates, ", ")
                 else
                     result,
         RecordIdColumn = ResolveColumnName(
-            "record ID",
-            {"cr69a_documentid", "cr69a_recordid", "cr69a_id", "easi_documentid", "id"}
+            "record ID", {"cr69a_documentid", "cr69a_recordid", "cr69a_id", "easi_documentid", "id"}
         ),
         RequestIdColumn = ResolveColumnName(
             "Request ID",
-            {"cr69a_systemintakeid", "cr69a_system_intake_id", "cr69a_systemintake", "cr69a_requestid", "cr69a_request", "system_intake_id"}
+            {
+                "cr69a_systemintakeid",
+                "cr69a_system_intake_id",
+                "cr69a_systemintake",
+                "cr69a_requestid",
+                "cr69a_request",
+                "system_intake_id"
+            }
         ),
-        FileNameColumn = ResolveColumnName(
-            "file name",
-            {"cr69a_filename", "cr69a_file_name", "file_name"}
-        ),
-        BucketColumn = ResolveColumnName(
-            "bucket",
-            {"cr69a_storagebucket", "cr69a_bucket", "bucket"}
-        ),
-        S3KeyColumn = ResolveColumnName(
-            "S3 key",
-            {"cr69a_s3key", "cr69a_s3_key", "s3_key"}
-        ),
+        FileNameColumn = ResolveColumnName("file name", {"cr69a_filename", "cr69a_file_name", "file_name"}),
+        BucketColumn = ResolveColumnName("bucket", {"cr69a_storagebucket", "cr69a_bucket", "bucket"}),
+        S3KeyColumn = ResolveColumnName("S3 key", {"cr69a_s3key", "cr69a_s3_key", "s3_key"}),
         DocumentVersionColumn = ResolveColumnName(
-            "document version",
-            {"cr69a_documentversion", "cr69a_document_version", "document_version"}
+            "document version", {"cr69a_documentversion", "cr69a_document_version", "document_version"}
         ),
         HasPopulatedValue = (value as any) as logical =>
             let
                 textValue = if value = null then null else Text.Trim(Text.From(value))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
-
-        // Require exactly one Running Migration Run and a populated batch ID.
+        // Require exactly one Migrating Migration Run and a populated batch ID.
         MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
         BufferedRuns = Table.Buffer(MigrationRuns),
-        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
-        RunningCount = Table.RowCount(RunningOnly),
-        ValidatedRunningRun =
-            if RunningCount = 0 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
-            else if RunningCount > 1 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
+            else if MigratingCount > 1 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
             else
-                RunningOnly{0},
-        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
         BatchId =
-            if HasPopulatedValue(RunningBatchId) then
-                Text.Trim(Text.From(RunningBatchId))
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
             else
-                error Error.Record(
-                    "Running Migration guard",
-                    "The Running Migration Run has a blank batch ID.",
-                    [RunningCount = RunningCount]
-                ),
-        GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Running Migration guard failed.",
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "The Migrating Migration Run has a blank batch ID.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    ),
+        GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Migrating Migration guard failed.",
         CurrentBatchStage = Table.SelectRows(
             GuardedStage,
             each
@@ -83,7 +91,7 @@ shared DocumentPreparation =
                     stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
                 in
                     HasPopulatedValue(stageBatchId)
-                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+                    and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
         #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
         #"Stamped Running Batch" = Table.AddColumn(
@@ -147,7 +155,10 @@ shared DocumentPreparation =
                             let
                                 original = Record.FieldOrDefault(_, sourceColumn, null)
                             in
-                                if original = null then null else Text.From(original),
+                                if original = null then
+                                    null
+                                else
+                                    Text.From(original),
                         type nullable text
                     ),
                     WithChoice = Table.AddColumn(
@@ -180,14 +191,11 @@ shared DocumentPreparation =
         ),
         DuplicateDocumentIds =
             let
-                NonBlankIds = Table.SelectRows(
-                    WithNormalizedRequestId,
-                    each [NormalizedDocumentRecordId] <> null
-                ),
+                NonBlankIds = Table.SelectRows(WithNormalizedRequestId, each [NormalizedDocumentRecordId] <> null),
                 Grouped = Table.Group(
-                    NonBlankIds,
-                    {"NormalizedDocumentRecordId"},
-                    {{"RecordCount", each Table.RowCount(_), Int64.Type}}
+                    NonBlankIds, {"NormalizedDocumentRecordId"}, {
+                        {"RecordCount", each Table.RowCount(_), Int64.Type}
+                    }
                 ),
                 Duplicates = Table.SelectRows(Grouped, each [RecordCount] > 1)
             in
@@ -235,22 +243,52 @@ shared DocumentPreparation =
                         List.Combine(
                             {
                                 {
-                                    if recordId = null then RecordIdColumn & " is blank" else null,
-                                    if requestId = null then RequestIdColumn & " is blank" else null,
-                                    if not HasPopulatedValue(Record.FieldOrDefault(row, FileNameColumn, null)) then FileNameColumn & " is blank" else null,
-                                    if not HasPopulatedValue(Record.FieldOrDefault(row, BucketColumn, null)) then BucketColumn & " is blank" else null,
-                                    if not HasPopulatedValue(Record.FieldOrDefault(row, S3KeyColumn, null)) then S3KeyColumn & " is blank" else null,
-                                    if not HasPopulatedValue(Record.FieldOrDefault(row, DocumentVersionColumn, null)) then DocumentVersionColumn & " is blank" else null,
-                                    if recordId <> null and List.Contains(DuplicateDocumentIds, recordId) then "Duplicate document record ID=" & recordId else null,
-                                    if requestId <> null and requestMatchCount = 0 then "No Request matched " & RequestIdColumn & "=" & requestId else null,
-                                    if requestId <> null and requestMatchCount > 1 then "Multiple Requests matched " & RequestIdColumn & "=" & requestId else null
+                                    if recordId = null then
+                                        RecordIdColumn & " is blank"
+                                    else
+                                        null,
+                                    if requestId = null then
+                                        RequestIdColumn & " is blank"
+                                    else
+                                        null,
+                                    if not HasPopulatedValue(Record.FieldOrDefault(row, FileNameColumn, null)) then
+                                        FileNameColumn & " is blank"
+                                    else
+                                        null,
+                                    if not HasPopulatedValue(Record.FieldOrDefault(row, BucketColumn, null)) then
+                                        BucketColumn & " is blank"
+                                    else
+                                        null,
+                                    if not HasPopulatedValue(Record.FieldOrDefault(row, S3KeyColumn, null)) then
+                                        S3KeyColumn & " is blank"
+                                    else
+                                        null,
+                                    if not HasPopulatedValue(Record.FieldOrDefault(row, DocumentVersionColumn, null)) then
+                                        DocumentVersionColumn & " is blank"
+                                    else
+                                        null,
+                                    if recordId <> null and List.Contains(DuplicateDocumentIds, recordId) then
+                                        "Duplicate document record ID=" & recordId
+                                    else
+                                        null,
+                                    if requestId <> null and requestMatchCount = 0 then
+                                        "No Request matched " & RequestIdColumn & "=" & requestId
+                                    else
+                                        null,
+                                    if requestId <> null and requestMatchCount > 1 then
+                                        "Multiple Requests matched " & RequestIdColumn & "=" & requestId
+                                    else
+                                        null
                                 },
                                 choiceIssues
                             }
                         )
                     )
                 in
-                    if List.IsEmpty(issues) then null else Text.Combine(issues, "; "),
+                    if List.IsEmpty(issues) then
+                        null
+                    else
+                        Text.Combine(issues, "; "),
             type nullable text
         )
     in
@@ -264,11 +302,25 @@ shared DocumentQA =
                 List.Intersect(
                     {
                         {
-                            "cr69a_documentid", "cr69a_recordid", "cr69a_id", "easi_documentid", "id",
-                            "cr69a_systemintakeid", "cr69a_system_intake_id", "cr69a_systemintake", "cr69a_requestid", "cr69a_request", "system_intake_id",
-                            "cr69a_filename", "cr69a_file_name", "file_name",
-                            "cr69a_documenttype", "cr69a_uploaderrole",
-                            "cr69a_s3key", "cr69a_s3_key", "s3_key"
+                            "cr69a_documentid",
+                            "cr69a_recordid",
+                            "cr69a_id",
+                            "easi_documentid",
+                            "id",
+                            "cr69a_systemintakeid",
+                            "cr69a_system_intake_id",
+                            "cr69a_systemintake",
+                            "cr69a_requestid",
+                            "cr69a_request",
+                            "system_intake_id",
+                            "cr69a_filename",
+                            "cr69a_file_name",
+                            "file_name",
+                            "cr69a_documenttype",
+                            "cr69a_uploaderrole",
+                            "cr69a_s3key",
+                            "cr69a_s3_key",
+                            "s3_key"
                         },
                         Table.ColumnNames(Issues)
                     }
@@ -284,21 +336,16 @@ shared cr69a_systemintakestagingdocument =
     let
         ValidatedPreparation =
             if Table.RowCount(DocumentQA) > 0 then
-                error "One or more Document rows is invalid or could not be matched to exactly one Request. Review DocumentQA before loading Documents."
+                error
+                    "One or more Document rows is invalid or could not be matched to exactly one Request. Review DocumentQA before loading Documents."
             else
                 DocumentPreparation,
-        HelperColumns = {
-            "NormalizedDocumentRecordId",
-            "NormalizedRequestId",
-            "RequestMatch",
-            "UnmappedIssues"
-        },
+        HelperColumns = {"NormalizedDocumentRecordId", "NormalizedRequestId", "RequestMatch", "UnmappedIssues"},
         Output = Table.RemoveColumns(ValidatedPreparation, HelperColumns, MissingField.Ignore),
         WithoutComplexColumns = Table.RemoveColumns(
             Output,
             Table.ColumnsOfType(
-                Output,
-                {type table, type record, type list, type nullable binary, type binary, type function}
+                Output, {type table, type record, type list, type nullable binary, type binary, type function}
             )
         )
     in

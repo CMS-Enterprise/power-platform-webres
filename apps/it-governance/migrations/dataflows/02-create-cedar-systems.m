@@ -9,40 +9,48 @@ shared new_stagecedarsystem =
                 textValue = if v = null then null else Text.Trim(Text.From(v))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
-
-        // Require exactly one Running Migration Run and a populated batch ID.
+        // Require exactly one Migrating Migration Run and a populated batch ID.
         // GuardedStage references the validated scalar so this check remains in
         // the loaded output's evaluation path, even though Stage is a separate table.
         MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
         BufferedRuns = Table.Buffer(MigrationRuns),
-        RunningOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 100000000),
-        RunningCount = Table.RowCount(RunningOnly),
-        ValidatedRunningRun =
-            if RunningCount = 0 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "No Running Migration Run was found. Start exactly one Migration Run before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
-            else if RunningCount > 1 then
-                error Error.Record(
-                    "Running Migration guard",
-                    "More than one Running Migration Run was found. Leave exactly one Migration Run in the Running state before refreshing this dataflow.",
-                    [RunningCount = RunningCount]
-                )
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
+            else if MigratingCount > 1 then
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    )
             else
-                RunningOnly{0},
-        RunningBatchId = Record.FieldOrDefault(ValidatedRunningRun, "easi_batchid", null),
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
         BatchId =
-            if HasPopulatedValue(RunningBatchId) then
-                Text.Trim(Text.From(RunningBatchId))
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
             else
-                error Error.Record(
-                    "Running Migration guard",
-                    "The Running Migration Run has a blank batch ID.",
-                    [RunningCount = RunningCount]
-                ),
-        GuardedStage = if Text.Length(BatchId) > 0 then Stage else error "Running Migration guard failed.",
+                error
+                    Error.Record(
+                        "Migrating Migration guard",
+                        "The Migrating Migration Run has a blank batch ID.",
+                        [
+                            MigratingCount = MigratingCount
+                        ]
+                    ),
+        GuardedStage = if Text.Length(BatchId) > 0 then Stage else error "Migrating Migration guard failed.",
         CurrentBatchStage = Table.SelectRows(
             GuardedStage,
             each
@@ -50,7 +58,7 @@ shared new_stagecedarsystem =
                     stageBatchId = Record.FieldOrDefault(_, "new_batchid", null)
                 in
                     HasPopulatedValue(stageBatchId)
-                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+                    and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
         EnableQA = true,
         Normalize = (v as any) as nullable text =>
@@ -98,9 +106,7 @@ shared new_stagecedarsystem =
             },
             MissingField.Ignore
         ),
-        #"Stamped Running Batch" = Table.AddColumn(
-            #"Selected Columns", "cr3ee_batchid", each BatchId, type text
-        ),
+        #"Stamped Running Batch" = Table.AddColumn(#"Selected Columns", "cr3ee_batchid", each BatchId, type text),
         #"Added ATO Effective Date" = Table.AddColumn(
             #"Stamped Running Batch", "cr3ee_atoeffectivedate", each NormalizeDate([new_atoeffectivedate]), type date
         ),

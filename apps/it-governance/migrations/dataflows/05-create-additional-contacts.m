@@ -4,6 +4,56 @@ shared cr69a_systemintakestagingcontact =
     let
         Source = CommonDataService.Database(DataverseEnvironmentUrl),
         #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingcontact"]}[Data],
+        HasPopulatedValue = (v as any) as logical =>
+            let
+                textValue = if v = null then null else Text.Trim(Text.From(v))
+            in
+                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
+        // Require exactly one Migrating Migration Run and a populated batch ID.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else if MigratingCount > 1 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
+            else
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "The Migrating Migration Run has a blank batch ID.",
+                    [MigratingCount = MigratingCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then #"Navigation 1" else error "Migrating Migration guard failed.",
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                in
+                    HasPopulatedValue(stageBatchId)
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        #"Stamped Running Batch" = Table.AddColumn(
+            #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+        ),
         // =========================================
         // Choice mapping specs
         // =========================================
@@ -125,7 +175,7 @@ shared cr69a_systemintakestagingcontact =
         // =========================================
         ApplyAll = List.Accumulate(
             ChoiceSpecs,
-            #"Navigation 1",
+            #"Stamped Running Batch",
             (state as table, spec as record) =>
                 let
                     src = spec[source],

@@ -15,6 +15,50 @@ shared RequestMultiSelectPreparation = let
                 textValue = if value = null then null else Text.Trim(Text.From(value))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+        // Require exactly one Migrating Migration Run and a populated batch ID.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else if MigratingCount > 1 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
+            else
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "The Migrating Migration Run has a blank batch ID.",
+                    [MigratingCount = MigratingCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Migrating Migration guard failed.",
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                in
+                    HasPopulatedValue(stageBatchId)
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        #"Stamped Running Batch" = Table.AddColumn(
+            #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+        ),
         NormalizeKey = (value as any) as nullable text =>
             if not HasPopulatedValue(value) then
                 null
@@ -42,7 +86,11 @@ shared RequestMultiSelectPreparation = let
                     null
                 else
                     Text.Combine(List.Transform(validValues, each Text.From(_)), ","),
-        Staging = Table.SelectColumns(StagingRaw, {"cr69a_id", "cr69a_acquisition_methods"}, MissingField.Error),
+        Staging = Table.SelectColumns(
+            #"Stamped Running Batch",
+            {"cr69a_id", "cr69a_acquisition_methods", "cr69a_batchid"},
+            MissingField.Error
+        ),
         WithNormalizedRequestId = Table.TransformColumns(
             Staging,
             {
@@ -103,6 +151,7 @@ shared RequestMultiSelectPreparation = let
             {
                 "new_systemintakeid",
                 "cr69a_id",
+                "cr69a_batchid",
                 "acquisition_methods_dataverse_format",
                 "UnmappedIssues"
             },
@@ -114,7 +163,9 @@ shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsPar
 shared RequestMultiSelects = let
     ValidRows = Table.SelectRows(RequestMultiSelectPreparation, each [new_systemintakeid] <> null and [UnmappedIssues] = null),
     Output = Table.SelectColumns(
-        ValidRows, {"new_systemintakeid", "cr69a_id", "acquisition_methods_dataverse_format"}, MissingField.Error
+        ValidRows,
+        {"new_systemintakeid", "cr69a_id", "cr69a_batchid", "acquisition_methods_dataverse_format"},
+        MissingField.Error
     )
 in
     Output;
@@ -149,6 +200,50 @@ shared ContactRolePreparation = let
             textValue = if value = null then null else Text.Trim(Text.From(value))
         in
             textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+    // Require exactly one Migrating Migration Run and a populated batch ID.
+    MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+    BufferedRuns = Table.Buffer(MigrationRuns),
+    MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+    MigratingCount = Table.RowCount(MigratingOnly),
+    ValidatedMigratingRun =
+        if MigratingCount = 0 then
+            error Error.Record(
+                "Migrating Migration guard",
+                "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                [MigratingCount = MigratingCount]
+            )
+        else if MigratingCount > 1 then
+            error Error.Record(
+                "Migrating Migration guard",
+                "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                [MigratingCount = MigratingCount]
+            )
+        else
+            MigratingOnly{0},
+    MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
+    BatchId =
+        if HasPopulatedValue(MigratingBatchId) then
+            Text.Trim(Text.From(MigratingBatchId))
+        else
+            error Error.Record(
+                "Migrating Migration guard",
+                "The Migrating Migration Run has a blank batch ID.",
+                [MigratingCount = MigratingCount]
+            ),
+    GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Migrating Migration guard failed.",
+    CurrentBatchStage = Table.SelectRows(
+        GuardedStage,
+        each
+            let
+                stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+            in
+                HasPopulatedValue(stageBatchId)
+                    and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+    ),
+    #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+    #"Stamped Running Batch" = Table.AddColumn(
+        #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+    ),
     NormalizeKey = (value as any) as nullable text =>
         if not HasPopulatedValue(value) then
             null
@@ -181,8 +276,8 @@ shared ContactRolePreparation = let
             else
                 Text.Combine(List.Transform(validValues, each Text.From(_)), ","),
     StagingColumns = Table.SelectColumns(
-        StagingRaw,
-        {"cr69a_recordid", "cr69a_roles"},
+        #"Stamped Running Batch",
+        {"cr69a_recordid", "cr69a_roles", "cr69a_batchid"},
         MissingField.Error
     ),
     Staging = Table.RenameColumns(
@@ -256,7 +351,7 @@ shared ContactRolePreparation = let
     RowsWithRoles = Table.SelectRows(WithQA, each HasPopulatedValue([cr69a_roles])),
     Output = Table.SelectColumns(
         RowsWithRoles,
-        {"cr69a_id", "cr69a_roles", "roles_dataverse_format", "UnmappedIssues"},
+        {"cr69a_id", "cr69a_roles", "cr69a_batchid", "roles_dataverse_format", "UnmappedIssues"},
         MissingField.Error
     )
 in
@@ -272,10 +367,7 @@ in
     Output;
 shared ContactRoles = let
     ValidatedPreparation =
-        if Table.RowCount(ContactRoleQA) > 0 then
-            error "One or more contact roles is invalid or could not be matched to an Additional Contact. Review ContactRoleQA before loading roles."
-        else
-            ContactRolePreparation,
+        Table.SelectRows(ContactRolePreparation, each [UnmappedIssues] = null),
     WithContactId = Table.AddColumn(
         ValidatedPreparation,
         "cr69a_additionalcontactid",
@@ -284,7 +376,7 @@ shared ContactRoles = let
     ),
     Output = Table.SelectColumns(
         WithContactId,
-        {"cr69a_additionalcontactid", "cr69a_id", "roles_dataverse_format"},
+        {"cr69a_additionalcontactid", "cr69a_id", "cr69a_batchid", "roles_dataverse_format"},
         MissingField.Error
     )
 in

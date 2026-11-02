@@ -62,6 +62,11 @@
       "dataflowId": "3059fc52-dbc3-f011-bbd3-001dd80a6132"
     },
     {
+      "file": "00-stage-notes.m",
+      "name": "System Intake - 0 Stage Notes",
+      "dataflowId": "ea27eb71-f4c7-f111-aaae-001dd8055bb1"
+    },
+    {
       "file": "00-stage-system-intakes.m",
       "name": "System Intake - 0 Stage System Intakes",
       "dataflowId": "24c33168-d2c0-f011-bbd3-001dd80a6132"

@@ -20,12 +20,27 @@ shared ParseNoteDateTime = (value as any) as nullable datetime =>
     let
         TextValue = NormalizeNoteText(value),
         Parsed = if TextValue = null then null else try DateTimeZone.FromText(TextValue),
+        ParsedUtc =
+            if Parsed = null or Parsed[HasError]
+            then null
+            else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(Parsed[Value])),
         Result =
+            if ParsedUtc = null or ParsedUtc < #datetime(1753, 1, 1, 0, 0, 0)
+            then null
+            else ParsedUtc
+    in
+        Result;
+
+shared IsNoteDateBeforeDataverseMinimum = (value as any) as logical =>
+    let
+        TextValue = NormalizeNoteText(value),
+        Parsed = if TextValue = null then null else try DateTimeZone.FromText(TextValue),
+        ParsedUtc =
             if Parsed = null or Parsed[HasError]
             then null
             else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(Parsed[Value]))
     in
-        Result;
+        ParsedUtc <> null and ParsedUtc < #datetime(1753, 1, 1, 0, 0, 0);
 
 shared ParseNoteBoolean = (value as any) as nullable logical =>
     let
@@ -148,10 +163,12 @@ shared NotesPreparation = let
                     if [LegacyNoteIdCount] <> null and [LegacyNoteIdCount] > 1 then "duplicate legacy Note ID" else null,
                     if [system_intake] = null then "blank legacy System Intake ID" else null,
                     if [created_at] = null then "blank created timestamp"
+                    else if IsNoteDateBeforeDataverseMinimum([created_at]) then "created timestamp before 1753"
                     else if [CreatedAtParsed] = null then "invalid created timestamp"
-                    else if Date.Year([CreatedAtParsed]) < 1753 then "created timestamp before 1753"
                     else null,
-                    if [modified_at] <> null and [ModifiedAtParsed] = null then "invalid modified timestamp" else null,
+                    if [modified_at] <> null and IsNoteDateBeforeDataverseMinimum([modified_at]) then "modified timestamp before 1753"
+                    else if [modified_at] <> null and [ModifiedAtParsed] = null then "invalid modified timestamp"
+                    else null,
                     if [is_archived] = null then "blank archived indicator"
                     else if [IsArchivedParsed] = null then "invalid archived indicator"
                     else null

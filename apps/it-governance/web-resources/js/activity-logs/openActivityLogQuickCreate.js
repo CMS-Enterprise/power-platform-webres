@@ -1,6 +1,9 @@
-//this same script is used in all of the Actions in a Review
+// This same script is used by the Actions commands on Requests and Reviews.
 
 (function () {
+  const REQUEST_ENTITY = "new_systemintake";
+  const REVIEW_ENTITY = "cr69a_systemintakeadmin";
+
   const ACTIVITY_TYPES = {
     ProgressToNewStep: 216640000,
     IssueALifeCycleID: 216640001,
@@ -81,34 +84,28 @@
     activityTypeValue,
     extraParams = {},
   ) {
-    const formContext = primaryControl;
-    const parentEntityName = "cr69a_systemintakeadmin";
-    const parentIdRaw = formContext?.data?.entity?.getId();
+    const formContext = primaryControl?.getFormContext?.() || primaryControl;
+    const recordIdRaw = formContext?.data?.entity?.getId();
 
-    if (!parentIdRaw) {
+    if (!recordIdRaw) {
       await Xrm.Navigation.openAlertDialog({
-        text: "No parent record id found.",
+        text: "Save the Request before using an Actions command.",
+      });
+      return;
+    }
+
+    if (formContext.data.entity.getIsDirty?.()) {
+      await Xrm.Navigation.openAlertDialog({
+        text: "Save or discard your changes before using an Actions command.",
       });
       return;
     }
 
     try {
-      const parentId = parentIdRaw.replace(/[{}]/g, "");
-      const parentName =
-        formContext.data.entity.getPrimaryAttributeValue?.() || "Admin Review";
+      const actionContext = await resolveActionContext(formContext);
+      if (!actionContext) return;
 
-      // Pull related System Intake if you need it
-      const parent = await Xrm.WebApi.retrieveRecord(
-        parentEntityName,
-        parentId,
-        "?$select=_cr69a_systemintake_value",
-      );
-
-      const systemIntakeId = parent?._cr69a_systemintake_value;
-      const systemIntakeName =
-        parent?.[
-          "_cr69a_systemintake_value@OData.Community.Display.V1.FormattedValue"
-        ];
+      const { reviewId, reviewName, requestId, requestName } = actionContext;
 
       const ctx = Xrm.Utility.getGlobalContext();
       const currentUserId = (ctx.userSettings.userId || "").replace(
@@ -120,17 +117,13 @@
       // NOTE: Parameter names must match your Activity Log lookup schema names
       const parameters = {
         // Prefill parent lookups
-        new_adminreview: parentId,
-        new_adminreviewname: parentName,
-        new_adminreviewtype: parentEntityName,
+        new_adminreview: reviewId,
+        new_adminreviewname: reviewName,
+        new_adminreviewtype: REVIEW_ENTITY,
 
-        ...(systemIntakeId
-          ? {
-              new_systemintake: systemIntakeId,
-              new_systemintakename: systemIntakeName || "System Intake",
-              new_systemintaketype: "new_systemintake",
-            }
-          : {}),
+        new_systemintake: requestId,
+        new_systemintakename: requestName,
+        new_systemintaketype: REQUEST_ENTITY,
 
         // Prefill "Activity By" (user lookup)
         new_activityby: currentUserId,
@@ -149,29 +142,20 @@
       };
 
       const result = await Xrm.Navigation.openForm(formOptions, parameters);
-      const saveParentBeforeRefresh = !!result?.savedEntityReference;
-      const parentHasUnsavedChanges =
-        formContext.data.entity.getIsDirty?.() || false;
 
-      // Refresh after the quick create closes so the host form picks up any
-      // side effects. If the dialog was canceled and the parent form is dirty,
-      // skip refresh(false) so unsaved parent edits are not discarded.
-      console.log(
-        "[openActivityLogQuickCreate] quick create closed, refreshing parent form",
-        {
-          savedEntityReference: result?.savedEntityReference || null,
-          saveParentBeforeRefresh,
-          parentHasUnsavedChanges,
-        },
-      );
-      if (!saveParentBeforeRefresh && parentHasUnsavedChanges) {
+      if (!result?.savedEntityReference) return;
+
+      // Never save unrelated edits on the parent form as a side effect of the
+      // Activity Log quick create. This second check protects against changes
+      // made while the dialog was open.
+      if (formContext.data.entity.getIsDirty?.()) {
         console.log(
-          "[openActivityLogQuickCreate] skipping parent refresh because quick create did not save and parent form has unsaved changes",
+          "[openActivityLogQuickCreate] skipping parent refresh because the parent form has unsaved changes",
         );
         return;
       }
 
-      await formContext.data.refresh(saveParentBeforeRefresh);
+      await formContext.data.refresh(false);
       await refreshEmbeddedWebResources(formContext);
     } catch (error) {
       const message =
@@ -185,6 +169,73 @@
           })
         : Xrm.Navigation.openAlertDialog({ text: message }));
     }
+  }
+
+  async function resolveActionContext(formContext) {
+    const entityName = formContext?.data?.entity?.getEntityName?.();
+    const recordId = (formContext?.data?.entity?.getId?.() || "").replace(
+      /[{}]/g,
+      "",
+    );
+    const recordName =
+      formContext?.data?.entity?.getPrimaryAttributeValue?.() || "";
+
+    if (entityName === REVIEW_ENTITY) {
+      const review = await Xrm.WebApi.retrieveRecord(
+        REVIEW_ENTITY,
+        recordId,
+        "?$select=cr69a_title,_cr69a_systemintake_value",
+      );
+      const requestId = review?._cr69a_systemintake_value;
+
+      if (!requestId) {
+        await Xrm.Navigation.openAlertDialog({
+          text: "This Review is not associated with a Request.",
+        });
+        return null;
+      }
+
+      return {
+        reviewId: recordId,
+        reviewName: review.cr69a_title || recordName || "Review",
+        requestId,
+        requestName:
+          review[
+            "_cr69a_systemintake_value@OData.Community.Display.V1.FormattedValue"
+          ] || "Request",
+      };
+    }
+
+    if (entityName === REQUEST_ENTITY) {
+      const request = await Xrm.WebApi.retrieveRecord(
+        REQUEST_ENTITY,
+        recordId,
+        "?$select=_cr69a_systemintakereview_value",
+      );
+      const reviewId = request?._cr69a_systemintakereview_value;
+
+      if (!reviewId) {
+        await Xrm.Navigation.openAlertDialog({
+          text: "This Request does not have a linked Review.",
+        });
+        return null;
+      }
+
+      return {
+        reviewId,
+        reviewName:
+          request[
+            "_cr69a_systemintakereview_value@OData.Community.Display.V1.FormattedValue"
+          ] || "Review",
+        requestId: recordId,
+        requestName: recordName || "Request",
+      };
+    }
+
+    await Xrm.Navigation.openAlertDialog({
+      text: "Actions commands are supported only on Request and Review forms.",
+    });
+    return null;
   }
 
   window.ITGov_ProgressToNewStep = function (primaryControl) {

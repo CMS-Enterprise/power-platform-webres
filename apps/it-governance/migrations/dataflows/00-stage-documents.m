@@ -10,7 +10,7 @@ shared SharePointSiteUrl = "https://cmsgovonline.sharepoint.com/" meta [
     IsParameterQueryRequired = false,
     Type = type text
 ];
-shared FolderPath = "sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20migration/Development/" meta [
+shared FolderPath = "sites/CMS-SharePoint-OIT-CIO_Library/EASi%20data%20migration/Development/" meta [
     IsParameterQuery = true,
     IsParameterQueryRequired = false,
     Type = type text

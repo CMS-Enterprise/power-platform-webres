@@ -3,6 +3,9 @@
 For the current end-to-end migration, validation, cutover, and rollback plan, see
 [`data-migration-plan.md`](./data-migration-plan.md).
 
+Process automation and safety improvements are tracked in
+[`process-improvements-todo.md`](./process-improvements-todo.md).
+
 Migrating data between EASI and the IT Governance Power App should be handled by the following power automate flows.
 
 1. Intake - Stage All Data
@@ -32,6 +35,7 @@ or check the local files.
 npm run dataflows:list
 npm run dataflows:pull
 npm run dataflows:check
+npm run migration:guards:check
 ```
 
 The dataflow manifest uses `dataflowId` values instead of names because some
@@ -56,6 +60,71 @@ update those parameters in the Power Apps dataflow editor when deploying to anot
 environment.
 
 `dataflows:check` verifies the pulled `./dataflows` files match Dataverse.
+
+`migration:guards:check` performs a local, read-only structural check of every
+destination-producing dataflow in the manifest. It verifies that each dataflow
+requires exactly one Migrating Migration Run, restricts staging data to that
+run's batch, stamps the expected destination batch column, and reports
+destination-producing M files that are missing from the manifest. Run it after
+changing a migration dataflow or the dataflow manifest. The check validates the
+required M patterns; it complements, rather than replaces, an environment test
+with representative migration data.
+
+### System Intake schema update
+
+The current EASI export moved `priority_alignment` from `business_cases.csv` to
+`system_intakes.csv`. The staging queries validate the complete CSV header so a
+future export change fails with `CSV schema mismatch` instead of silently
+shifting data into the wrong columns.
+
+Before exporting the migration solution from DEV:
+
+1. Add the text column `new_priorityalignment` to the System Intake staging
+   table (the source values can be up to 2,000 characters).
+2. In **Stage System Intakes**, map source `priority_alignment` to staging
+   column `new_priorityalignment`.
+3. In **Create Requests**, map `new_priorityalignment` to
+   `new_organizationalpriorityalignment` on Request.
+4. Remove the obsolete Business Case staging mapping for
+   `priority_alignment`, if it is still present.
+5. Refresh both dataflows in DEV, verify a populated Request value, then pull
+   the dataflows into this repository and run `npm run dataflows:check`.
+
+The other newly exported System Intake fields are parsed by the staging M
+query, but intentionally remain unmapped until corresponding Dataverse targets
+and migration requirements are agreed: digital-service interaction, external
+protected-data access, current/contract cost estimates, and LCID metadata.
+
+### Legacy requester phone schema update
+
+The legacy `business_cases.csv` requester phone values are formatted text, not
+numbers. Before exporting the migration solution from DEV:
+
+1. In **Stage Business Cases**, map source `requester_phone_number` to the Text
+   staging column `new_requestphonenumbertext`; leave the obsolete Float column
+   `cr69a_requester_phone_number` unmapped.
+2. In the downstream Business Case migration dataflow, map query output
+   `new_requesterphonenumberlegacy` to the same-named field on System Intake.
+   The M query derives that output from `new_requestphonenumbertext`.
+3. Refresh the staging and downstream dataflows and verify a formatted phone
+   number is retained on the corresponding System Intake record.
+
+### Legacy feedback schema update
+
+The legacy governance feedback export contains values longer than the original
+100-character staging field. Before exporting the migration solution from DEV:
+
+1. In **Stage Edit Requests**, map source `feedback` to the multiline staging
+   column `new_requesterfeedbackmultitext`; leave `cr69a_feedbackcontent`
+   unmapped.
+2. In **Create Edit Requests**, map query output
+   `requester_feedback_dataverse_format` to the existing Edit Request field that
+   previously received `cr69a_feedbackcontent`.
+3. In **Create GRB Activity Logs**, map `new_recommendationsforthegrb` to the
+   same-named Activity Log field. The query now reads the replacement staging
+   field, with the old field retained only as a compatibility fallback.
+4. Refresh both downstream dataflows and verify representative `REQUESTER` and
+   `GRB` feedback rows retain their complete text.
 
 ## Estimated Lifecycle Costs
 

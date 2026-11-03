@@ -1,0 +1,68 @@
+{
+  "EnvironmentVariables": [
+    {
+      "Name": {
+        "Default": "Migration Dataflow Expected Configuration"
+      },
+      "SchemaName": "cr69a_MigrationDataflowExpectedConfiguration",
+      "Value": "{\"EnvironmentName\":\"Prod\",\"EnvironmentId\":\"c2f580e9-c782-e16d-8d04-f5ae6a71ec20-31c688f59-sovereign\",\"DataverseEnvironmentUrl\":\"itgovernance.crm9.dynamics.com\",\"SharePointSiteUrl\":\"https://cmsgovonline.sharepoint.com/\",\"FolderPath\":\"sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20migration/Production/\"}"
+    },
+    {
+      "Name": {
+        "Default": "System Intake Process Steps"
+      },
+      "SchemaName": "easi_system_intake_process_steps",
+      "Value": "__REQUIRED__"
+    },
+    {
+      "Name": {
+        "Default": "AppId"
+      },
+      "SchemaName": "new_AppId",
+      "Value": "__REQUIRED__"
+    },
+    {
+      "Name": {
+        "Default": "Email Notification Recipients"
+      },
+      "SchemaName": "new_EmailNotificationRecipients",
+      "Value": "__REQUIRED__"
+    },
+    {
+      "Name": {
+        "Default": "IT Governance Team Email"
+      },
+      "SchemaName": "new_ITGovernanceTeamEmail",
+      "Value": "__REQUIRED__"
+    },
+    {
+      "Name": {
+        "Default": "OrgBaseUrl"
+      },
+      "SchemaName": "new_OrgBaseUrl",
+      "Value": "https://itgovernance.crm9.dynamics.com"
+    },
+    {
+      "Name": {
+        "Default": "Sharepoint Document Library ID"
+      },
+      "SchemaName": "new_SharepointDocumentLibraryID",
+      "Value": "__REQUIRED__"
+    },
+    {
+      "Name": {
+        "Default": "SharePoint Parent Document Location ID"
+      },
+      "SchemaName": "new_SharePointParentDocumentLocationID",
+      "Value": "__REQUIRED__"
+    },
+    {
+      "Name": {
+        "Default": "SharePoint Site Url"
+      },
+      "SchemaName": "new_SharePointSiteUrl",
+      "Value": "__REQUIRED__"
+    }
+  ],
+  "ConnectionReferences": []
+}

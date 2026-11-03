@@ -1,7 +1,7 @@
 section Section1;
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
 shared SharePointSiteUrl = "https://cmsgovonline.sharepoint.com/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
-shared FolderPath = "sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20migration/Development/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
+shared FolderPath = "sites/CMS-SharePoint-OIT-CIO_Library/EASi%20data%20migration/Development/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
 shared FileName = "system_intake_funding_sources.csv" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
 shared #"system_intake_funding_sources 4" = let
 	CsvUrl = SharePointSiteUrl & FolderPath & FileName,

@@ -1,0 +1,68 @@
+{
+  "EnvironmentVariables": [
+    {
+      "Name": {
+        "Default": "Migration Dataflow Expected Configuration"
+      },
+      "SchemaName": "cr69a_MigrationDataflowExpectedConfiguration",
+      "Value": "{\n  \"EnvironmentName\": \"UAT\",\n  \"EnvironmentId\": \"3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign\",\n  \"DataverseEnvironmentUrl\": \"itgovernanceuat.crm9.dynamics.com\",\n  \"SharePointSiteUrl\": \"https://cmsgovonline.sharepoint.com/\",\n  \"FolderPath\": \"sites/CMS-SharePoint-OIT-CIO_Library/EASi%20data%20migration/UAT/\"\n}"
+    },
+    {
+      "Name": {
+        "Default": "System Intake Process Steps"
+      },
+      "SchemaName": "easi_system_intake_process_steps",
+      "Value": "{ \"03453179-fd92-4999-982e-0fc525b86a0e\": 971270000, \"0c3db864-35f9-49ce-a7e1-e265e540deb0\": 971270001, \"c355d998-96cd-4873-85ff-3d1052c4f4be\": 100000001, \"be335059-40b9-462e-a23d-95230ffdcf62\": 971270002, \"718e0607-8a6e-49ba-9a4a-49206872a6b2\": 971270003, \"d4e16d87-9627-4f8d-884e-77ffde02e6f2\": 100000002, \"c378d655-6ae8-41db-ab7f-03ebae9b20ab\": 971270004, \"e1f9ea62-9f11-4f11-953d-678fd2efde2e\": 971270007, \"475078e5-28c2-4eb2-abc0-c7854f35959a\": 971270008, \"11d19247-9a31-490c-a8f1-6097f0838cfe\": 971270009 }"
+    },
+    {
+      "Name": {
+        "Default": "AppId"
+      },
+      "SchemaName": "new_AppId",
+      "Value": "28b7a299-cdcc-f111-a05b-001dd806f32e"
+    },
+    {
+      "Name": {
+        "Default": "Email Notification Recipients"
+      },
+      "SchemaName": "new_EmailNotificationRecipients",
+      "Value": "cooper.heinrichs@cms.hhs.gov"
+    },
+    {
+      "Name": {
+        "Default": "IT Governance Team Email"
+      },
+      "SchemaName": "new_ITGovernanceTeamEmail",
+      "Value": "cooper.heinrichs@cms.hhs.gov"
+    },
+    {
+      "Name": {
+        "Default": "OrgBaseUrl"
+      },
+      "SchemaName": "new_OrgBaseUrl",
+      "Value": "https://itgovernanceuat.crm9.dynamics.com"
+    },
+    {
+      "Name": {
+        "Default": "Sharepoint Document Library ID"
+      },
+      "SchemaName": "new_SharepointDocumentLibraryID",
+      "Value": "52c84797-faa9-40fe-9ce0-b24b46919745"
+    },
+    {
+      "Name": {
+        "Default": "SharePoint Parent Document Location ID"
+      },
+      "SchemaName": "new_SharePointParentDocumentLocationID",
+      "Value": "8b45a09f-70c6-f111-aaae-001dd81112ad"
+    },
+    {
+      "Name": {
+        "Default": "SharePoint Site Url"
+      },
+      "SchemaName": "new_SharePointSiteUrl",
+      "Value": "https://cmsgovonline.sharepoint.com/sites/EASiTeamTesting"
+    }
+  ],
+  "ConnectionReferences": []
+}

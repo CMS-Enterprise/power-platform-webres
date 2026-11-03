@@ -6,10 +6,20 @@ import test from "node:test";
 import { validateDocument, validateTree } from "./check-deployment-settings.mjs";
 
 const devId = "69e8387f-d121-ecfa-a34f-6e9d2e51754a-31c688f59-sovereign";
+const stageRequestsId = "11111111-1111-1111-1111-111111111111";
+const stageNotesId = "22222222-2222-2222-2222-222222222222";
+const uatStageRequestsId = "33333333-3333-3333-3333-333333333333";
+const devExpectedConfiguration = {
+  EnvironmentName: "Dev",
+  EnvironmentId: devId,
+  DataverseEnvironmentUrl: "itgovernancedev.crm9.dynamics.com",
+  SharePointSiteUrl: "https://cmsgovonline.sharepoint.com/",
+  FolderPath: "sites/CMS-SharePoint-OIT-CIO_Library/EASi%20data%20migration/Development/",
+};
 const validDocument = () => ({
   EnvironmentVariables: [
     { Name: { Default: "OrgBaseUrl" }, SchemaName: "new_OrgBaseUrl", Value: "https://itgovernancedev.crm9.dynamics.com" },
-    { Name: { Default: "Staging Dataflow Configuration" }, SchemaName: "cr69a_StagingDataflowConfiguration", Value: JSON.stringify({ EnvironmentId: devId, Dataflows: { StageRequests: "abc" } }) },
+    { Name: { Default: "Staging Dataflow Configuration" }, SchemaName: "cr69a_StagingDataflowConfiguration", Value: JSON.stringify({ EnvironmentId: devId, Dataflows: { StageRequests: stageRequestsId } }) },
   ],
   ConnectionReferences: [
     { LogicalName: "new_shareddataflows_1", ConnectionId: "connection-1", ConnectorId: "/providers/Microsoft.PowerApps/apis/shared_dataflows" },
@@ -58,8 +68,46 @@ test("rejects malformed embedded JSON", () => {
 
 test("rejects a cross-environment ID", () => {
   const document = validDocument();
-  document.EnvironmentVariables[1].Value = JSON.stringify({ EnvironmentId: "wrong", Dataflows: { StageRequests: "abc" } });
+  document.EnvironmentVariables[1].Value = JSON.stringify({ EnvironmentId: "wrong", Dataflows: { StageRequests: stageRequestsId } });
   assert.match(validate(document).join("\n"), /EnvironmentId does not match dev/);
+});
+
+test("rejects resolved dataflow IDs that are not GUIDs", () => {
+  const document = validDocument();
+  document.EnvironmentVariables[1].Value = JSON.stringify({ EnvironmentId: devId, Dataflows: { StageRequests: "abc" } });
+  assert.match(validate(document).join("\n"), /ID is not a GUID/);
+});
+
+test("requires the complete expected migration configuration and matches its source file", () => {
+  const document = validDocument();
+  document.EnvironmentVariables.push({
+    Name: { Default: "Migration Dataflow Expected Configuration" },
+    SchemaName: "cr69a_MigrationDataflowExpectedConfiguration",
+    Value: JSON.stringify(devExpectedConfiguration),
+  });
+  assert.deepEqual(validateDocument(document, {
+    solution: "Test",
+    environment: "dev",
+    ready: true,
+    expectedConfiguration: devExpectedConfiguration,
+  }), []);
+
+  const mixedEnvironment = structuredClone(document);
+  const embedded = JSON.parse(mixedEnvironment.EnvironmentVariables[2].Value);
+  embedded.FolderPath = "sites/wrong-environment/";
+  mixedEnvironment.EnvironmentVariables[2].Value = JSON.stringify(embedded);
+  assert.match(validateDocument(mixedEnvironment, {
+    solution: "Test",
+    environment: "dev",
+    ready: true,
+    expectedConfiguration: devExpectedConfiguration,
+  }).join("\n"), /FolderPath does not match dev/);
+
+  const incomplete = structuredClone(document);
+  const incompleteEmbedded = JSON.parse(incomplete.EnvironmentVariables[2].Value);
+  delete incompleteEmbedded.SharePointSiteUrl;
+  incomplete.EnvironmentVariables[2].Value = JSON.stringify(incompleteEmbedded);
+  assert.match(validate(incomplete).join("\n"), /non-empty SharePointSiteUrl/);
 });
 
 test("rejects missing dataflow IDs", () => {
@@ -87,7 +135,9 @@ test("rejects dataflow inventories that differ across environments", async () =>
           ? "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign"
           : "c2f580e9-c782-e16d-8d04-f5ae6a71ec20-31c688f59-sovereign";
       document.EnvironmentVariables[0].Value = `https://itgovernance${environment === "prod" ? "" : environment}.crm9.dynamics.com`;
-      const dataflows = environment === "prod" ? { StageRequests: "abc" } : { StageRequests: "abc", StageNotes: "def" };
+      const dataflows = environment === "prod"
+        ? { StageRequests: stageRequestsId }
+        : { StageRequests: stageRequestsId, StageNotes: stageNotesId };
       document.EnvironmentVariables[1].Value = JSON.stringify({ EnvironmentId: environmentId, Dataflows: dataflows });
       await fs.writeFile(path.join(solution, `${environment}.json`), JSON.stringify(document));
     }
@@ -113,13 +163,13 @@ test("readiness rejects a selected file with a missing required variable or data
       document.EnvironmentVariables[0].Value = `https://itgovernance${environment === "prod" ? "" : environment}.crm9.dynamics.com`;
       document.EnvironmentVariables[1].Value = JSON.stringify({
         EnvironmentId: environmentId,
-        Dataflows: { StageRequests: "abc", StageNotes: "def" },
+        Dataflows: { StageRequests: stageRequestsId, StageNotes: stageNotesId },
       });
       if (environment === "uat") {
         document.EnvironmentVariables.shift();
         document.EnvironmentVariables[0].Value = JSON.stringify({
           EnvironmentId: environmentId,
-          Dataflows: { StageNotes: "def" },
+          Dataflows: { StageNotes: stageNotesId },
         });
       }
       await fs.writeFile(path.join(solution, `${environment}.json`), JSON.stringify(document));
@@ -152,7 +202,7 @@ test("readiness validates an external materialized file against the checked-in i
     materialized.EnvironmentVariables[0].Value = "https://itgovernanceuat.crm9.dynamics.com";
     materialized.EnvironmentVariables[1].Value = JSON.stringify({
       EnvironmentId: "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
-      Dataflows: { StageRequests: "uat-id" },
+      Dataflows: { StageRequests: uatStageRequestsId },
     });
     await fs.writeFile(materializedFile, JSON.stringify(materialized));
 

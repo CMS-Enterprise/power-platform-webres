@@ -3,6 +3,9 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const defaultRoot = path.resolve("apps/it-governance/deployment-settings");
+const defaultExpectedConfigurationRoot = path.resolve(
+  "apps/it-governance/migrations/dataflows/migration-dataflow-expected-configurations",
+);
 const environments = {
   dev: {
     id: "69e8387f-d121-ecfa-a34f-6e9d2e51754a-31c688f59-sovereign",
@@ -28,6 +31,14 @@ const dataflowListSchemas = new Set([
   "cr69a_StagingDataflowConfiguration",
 ]);
 const unresolvedValues = new Set(["", "__REQUIRED__", "__SECRET_REQUIRED__"]);
+const expectedConfigurationFields = [
+  "EnvironmentName",
+  "EnvironmentId",
+  "DataverseEnvironmentUrl",
+  "SharePointSiteUrl",
+  "FolderPath",
+];
+const guidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const dataflowInventory = (document) => {
@@ -90,7 +101,10 @@ const compareInventories = (solution, baseline, candidate) => {
   return failures;
 };
 
-export function validateDocument(document, { solution, environment, ready = false } = {}) {
+export function validateDocument(
+  document,
+  { solution, environment, ready = false, expectedConfiguration } = {},
+) {
   const failures = [];
   const label = `${solution ?? "unknown"}/${environment ?? "unknown"}`;
   const expectedEnvironment = environments[environment];
@@ -130,6 +144,15 @@ export function validateDocument(document, { solution, environment, ready = fals
       if (expectedEnvironment && embedded.EnvironmentId !== expectedEnvironment.id) {
         failures.push(`${label}: ${variable.SchemaName} EnvironmentId does not match ${environment}`);
       }
+      if (variable.SchemaName === "cr69a_MigrationDataflowExpectedConfiguration") {
+        for (const field of expectedConfigurationFields) {
+          if (typeof embedded[field] !== "string" || embedded[field].trim() === "") {
+            failures.push(`${label}: ${variable.SchemaName} must contain a non-empty ${field}`);
+          } else if (expectedConfiguration && embedded[field] !== expectedConfiguration[field]) {
+            failures.push(`${label}: ${variable.SchemaName} ${field} does not match ${environment}`);
+          }
+        }
+      }
       if (dataflowListSchemas.has(variable.SchemaName)) {
         if (!isObject(embedded.Dataflows) || Object.keys(embedded.Dataflows).length === 0) {
           failures.push(`${label}: ${variable.SchemaName} must contain a non-empty Dataflows object`);
@@ -137,6 +160,8 @@ export function validateDocument(document, { solution, environment, ready = fals
           for (const [name, id] of Object.entries(embedded.Dataflows)) {
             if (typeof id !== "string" || id.trim() === "" || (ready && unresolvedValues.has(id.trim()))) {
               failures.push(`${label}: ${variable.SchemaName} dataflow ${name} has no ID`);
+            } else if (!unresolvedValues.has(id.trim()) && !guidPattern.test(id.trim())) {
+              failures.push(`${label}: ${variable.SchemaName} dataflow ${name} ID is not a GUID`);
             }
           }
         }
@@ -173,6 +198,7 @@ export async function validateTree({
   solution,
   environment,
   settingsFile,
+  expectedConfigurationRoot = defaultExpectedConfigurationRoot,
 } = {}) {
   const failures = [];
   const documents = [];
@@ -193,7 +219,26 @@ export async function validateTree({
         continue;
       }
       documents.push({ solution: solutionName, environment: environmentName, document });
-      failures.push(...validateDocument(document, { solution: solutionName, environment: environmentName, ready }));
+      let expectedConfiguration;
+      const hasExpectedConfiguration = document.EnvironmentVariables?.some(
+        (variable) => variable?.SchemaName === "cr69a_MigrationDataflowExpectedConfiguration",
+      );
+      if (hasExpectedConfiguration) {
+        const expectedFile = path.join(expectedConfigurationRoot, `${environmentName}.json`);
+        try {
+          expectedConfiguration = JSON.parse(await fs.readFile(expectedFile, "utf8"));
+        } catch (error) {
+          failures.push(
+            `${solutionName}/${environmentName}: cannot read expected migration configuration from ${expectedFile} (${error.message})`,
+          );
+        }
+      }
+      failures.push(...validateDocument(document, {
+        solution: solutionName,
+        environment: environmentName,
+        ready,
+        expectedConfiguration,
+      }));
     }
   }
 

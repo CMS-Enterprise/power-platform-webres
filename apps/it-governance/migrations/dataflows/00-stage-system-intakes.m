@@ -11,7 +11,6 @@ shared #"system_intakes 1" = let
             Web.Contents(CsvUrl),
             [
                 Delimiter = ",",
-                Columns = List.Count(ExpectedColumns),
                 QuoteStyle = QuoteStyle.Csv
             ]
         ),

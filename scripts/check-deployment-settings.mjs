@@ -220,9 +220,11 @@ export async function validateTree({
       }
       documents.push({ solution: solutionName, environment: environmentName, document });
       let expectedConfiguration;
-      const hasExpectedConfiguration = document.EnvironmentVariables?.some(
-        (variable) => variable?.SchemaName === "cr69a_MigrationDataflowExpectedConfiguration",
-      );
+      const hasExpectedConfiguration =
+        Array.isArray(document?.EnvironmentVariables) &&
+        document.EnvironmentVariables.some(
+          (variable) => variable?.SchemaName === "cr69a_MigrationDataflowExpectedConfiguration",
+        );
       if (hasExpectedConfiguration) {
         const expectedFile = path.join(expectedConfigurationRoot, `${environmentName}.json`);
         try {

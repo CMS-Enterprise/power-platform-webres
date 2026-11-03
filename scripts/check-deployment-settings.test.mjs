@@ -219,3 +219,24 @@ test("readiness validates an external materialized file against the checked-in i
     await fs.rm(root, { recursive: true, force: true });
   }
 });
+
+test("reports malformed document structure without aborting the remaining files", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "deployment-settings-malformed-test-"));
+  try {
+    const solution = path.join(root, "Test");
+    await fs.mkdir(solution);
+    await fs.writeFile(path.join(solution, "dev.json"), "null");
+    await fs.writeFile(
+      path.join(solution, "uat.json"),
+      JSON.stringify({ EnvironmentVariables: {}, ConnectionReferences: [] }),
+    );
+    await fs.writeFile(path.join(solution, "prod.json"), JSON.stringify(validDocument()));
+
+    const { failures, checked } = await validateTree({ root });
+    assert.equal(checked, 3);
+    assert.match(failures.join("\n"), /dev: document must be a JSON object/);
+    assert.match(failures.join("\n"), /uat: EnvironmentVariables must be an array/);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+});

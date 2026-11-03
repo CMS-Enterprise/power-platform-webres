@@ -23,13 +23,6 @@
     },
     {
       "Name": {
-        "Default": "Cedar API Key - Dev"
-      },
-      "SchemaName": "new_CedarAPIKeyDev",
-      "Value": "__SECRET_REQUIRED__"
-    },
-    {
-      "Name": {
         "Default": "Email Notification Recipients"
       },
       "SchemaName": "new_EmailNotificationRecipients",

@@ -55,10 +55,9 @@ dataflow IDs, and dataflow configuration values over Power Platform's
 ## Secrets
 
 Never commit passwords, client secrets, API keys, access tokens, certificates,
-or authenticated URLs. `new_CedarAPIKeyDev` is intentionally stored as
-`__SECRET_REQUIRED__` even when the target environment already has a value.
-Replace secret placeholders only in an untracked deployment copy populated by
-the approved secret-management process. Do not commit that materialized copy.
+or authenticated URLs. Replace secret placeholders only in an untracked
+deployment copy populated by the approved secret-management process. Do not
+commit that materialized copy.
 
 ## Importing a solution
 

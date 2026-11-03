@@ -66,7 +66,7 @@ export function validateDocument(document, { solution, environment, ready = fals
     }
     if (schemas.has(variable.SchemaName)) failures.push(`${label}: duplicate environment variable ${variable.SchemaName}`);
     schemas.add(variable.SchemaName);
-    if (ready && unresolvedValues.has(variable.Value)) failures.push(`${label}: ${variable.SchemaName} is unresolved`);
+    if (ready && unresolvedValues.has(variable.Value.trim())) failures.push(`${label}: ${variable.SchemaName} is unresolved`);
 
     if (embeddedJsonSchemas.has(variable.SchemaName) && !unresolvedValues.has(variable.Value)) {
       if (variable.Value.length > 2000) failures.push(`${label}: ${variable.SchemaName} exceeds the 2,000-character Power Platform limit`);

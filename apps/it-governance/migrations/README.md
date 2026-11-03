@@ -63,7 +63,7 @@ environment.
 
 `migration:guards:check` performs a local, read-only structural check of every
 destination-producing dataflow in the manifest. It verifies that each dataflow
-requires exactly one Running Migration Run, restricts staging data to that
+requires exactly one Migrating Migration Run, restricts staging data to that
 run's batch, stamps the expected destination batch column, and reports
 destination-producing M files that are missing from the manifest. Run it after
 changing a migration dataflow or the dataflow manifest. The check validates the

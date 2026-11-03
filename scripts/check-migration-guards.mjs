@@ -5,7 +5,7 @@ const manifestPath = path.resolve("apps/it-governance/migrations/dataflows.manif
 const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
 const scriptRoot = path.resolve(manifest.scriptRoot);
 
-// Staging dataflows create only staging rows. The Running Migration guard contract
+// Staging dataflows create only staging rows. The Migrating Migration guard contract
 // applies to the downstream migration dataflows that create or update destination rows.
 const migrationFlows = manifest.dataflows.filter(({ file }) => !file.startsWith("00-stage-"));
 const manifestMigrationFiles = new Set(migrationFlows.map(({ file }) => file));
@@ -55,11 +55,11 @@ for (const { file, name } of migrationFlows) {
 
   const guardRoots = contract.guardRoots ?? 1;
   const checks = [
-    ["Running status filter", /easi_migrationrunstatus\]\s*=\s*100000000/g, guardRoots],
-    ["Running row count", /RunningCount\s*=\s*Table\.RowCount\(RunningOnly\)/g, guardRoots],
-    ["zero-Running failure", /if\s+RunningCount\s*=\s*0\s+then/g, guardRoots],
-    ["multiple-Running failure", /else\s+if\s+RunningCount\s*>\s*1\s+then/g, guardRoots],
-    ["validated run batch lookup", /Record\.FieldOrDefault\(ValidatedRunningRun,\s*"easi_batchid",\s*null\)/g, guardRoots],
+    ["Migrating status filter", /easi_migrationrunstatus\]\s*=\s*216640002/g, guardRoots],
+    ["Migrating row count", /MigratingCount\s*=\s*Table\.RowCount\(MigratingOnly\)/g, guardRoots],
+    ["zero-Migrating failure", /if\s+MigratingCount\s*=\s*0\s+then/g, guardRoots],
+    ["multiple-Migrating failure", /else\s+if\s+MigratingCount\s*>\s*1\s+then/g, guardRoots],
+    ["validated run batch lookup", /Record\.FieldOrDefault\(ValidatedMigratingRun,\s*"easi_batchid",\s*null\)/g, guardRoots],
     ["loaded-path guard dependency", /GuardedStage\s*=\s*if\s+Text\.Length\(BatchId\)\s*>\s*0\s+then/g, guardRoots],
     ["current-batch staging filter", /CurrentBatchStage\s*=\s*Table\.SelectRows\(/g, guardRoots],
     ["case-insensitive batch comparison", /Text\.Lower\(Text\.Trim\(Text\.From\(stageBatchId\)\)\)\s*=\s*Text\.Lower\(BatchId\)/g, guardRoots],
@@ -85,9 +85,9 @@ for (const file of contracts.keys()) {
 }
 
 if (failures.length > 0) {
-  console.error("Running Migration guard coverage failed:\n");
+  console.error("Migrating Migration guard coverage failed:\n");
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Running Migration guard coverage passed for ${migrationFlows.length} destination-producing dataflows.`);
+  console.log(`Migrating Migration guard coverage passed for ${migrationFlows.length} destination-producing dataflows.`);
 }

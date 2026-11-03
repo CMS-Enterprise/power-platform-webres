@@ -87,7 +87,6 @@ shared business_cases = let
         Web.Contents(CsvUrl),
         [
             Delimiter = ",",
-            Columns = List.Count(ExpectedColumns),
             QuoteStyle = QuoteStyle.Csv
         ]
     ),

@@ -80,6 +80,13 @@
   async function openEditRequestQuickCreate(primaryControl) {
     const formContext = primaryControl?.getFormContext?.() || primaryControl;
 
+    if (formContext?.data?.entity?.getIsDirty?.()) {
+      await Xrm.Navigation.openAlertDialog({
+        text: "Save or discard your changes before creating an Edit Request.",
+      });
+      return;
+    }
+
     try {
       const context = await resolveEditRequestContext(formContext);
       if (!context) return;

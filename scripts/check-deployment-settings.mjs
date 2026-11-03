@@ -146,7 +146,13 @@ export async function validateTree({ root = defaultRoot, ready = false, solution
   }
 
   for (const solutionName of solutions) {
-    const solutionDocuments = documents.filter((item) => item.solution === solutionName);
+    const solutionDocuments = documents.filter((item) =>
+      item.solution === solutionName &&
+      isObject(item.document) &&
+      Array.isArray(item.document.EnvironmentVariables) &&
+      item.document.EnvironmentVariables.every(isObject) &&
+      Array.isArray(item.document.ConnectionReferences) &&
+      item.document.ConnectionReferences.every(isObject));
     if (solutionDocuments.length < 2) continue;
     const baseline = solutionDocuments[0];
     const baselineVariables = baseline.document.EnvironmentVariables.map(({ SchemaName }) => SchemaName).sort().join("\n");

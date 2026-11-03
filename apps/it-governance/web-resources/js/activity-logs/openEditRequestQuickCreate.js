@@ -46,33 +46,26 @@
     }
 
     if (entityName === REQUEST_ENTITY) {
-      const query =
-        "?$select=cr69a_systemintakeadminid,cr69a_title" +
-        `&$filter=_cr69a_systemintake_value eq ${recordId}` +
-        "&$orderby=createdon desc&$top=2";
-      const result = await Xrm.WebApi.retrieveMultipleRecords(
-        REVIEW_ENTITY,
-        query,
+      const request = await Xrm.WebApi.retrieveRecord(
+        REQUEST_ENTITY,
+        recordId,
+        "?$select=_cr69a_systemintakereview_value",
       );
-      const reviews = result?.entities || [];
+      const reviewId = request?._cr69a_systemintakereview_value;
 
-      if (reviews.length === 0) {
+      if (!reviewId) {
         await Xrm.Navigation.openAlertDialog({
-          text: "No Review is associated with this Request.",
-        });
-        return null;
-      }
-
-      if (reviews.length > 1) {
-        await Xrm.Navigation.openAlertDialog({
-          text: "More than one Review is associated with this Request. Resolve the duplicate Reviews before creating an Edit Request.",
+          text: "This Request does not have a linked Review.",
         });
         return null;
       }
 
       return {
-        reviewId: reviews[0].cr69a_systemintakeadminid,
-        reviewName: reviews[0].cr69a_title || "Review",
+        reviewId,
+        reviewName:
+          request[
+            "_cr69a_systemintakereview_value@OData.Community.Display.V1.FormattedValue"
+          ] || "Review",
         requestId: recordId,
         requestName: recordName || "Request",
       };

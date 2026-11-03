@@ -94,6 +94,13 @@
       return;
     }
 
+    if (formContext.data.entity.getIsDirty?.()) {
+      await Xrm.Navigation.openAlertDialog({
+        text: "Save or discard your changes before using an Actions command.",
+      });
+      return;
+    }
+
     try {
       const actionContext = await resolveActionContext(formContext);
       if (!actionContext) return;
@@ -135,29 +142,20 @@
       };
 
       const result = await Xrm.Navigation.openForm(formOptions, parameters);
-      const saveParentBeforeRefresh = !!result?.savedEntityReference;
-      const parentHasUnsavedChanges =
-        formContext.data.entity.getIsDirty?.() || false;
 
-      // Refresh after the quick create closes so the host form picks up any
-      // side effects. If the dialog was canceled and the parent form is dirty,
-      // skip refresh(false) so unsaved parent edits are not discarded.
-      console.log(
-        "[openActivityLogQuickCreate] quick create closed, refreshing parent form",
-        {
-          savedEntityReference: result?.savedEntityReference || null,
-          saveParentBeforeRefresh,
-          parentHasUnsavedChanges,
-        },
-      );
-      if (!saveParentBeforeRefresh && parentHasUnsavedChanges) {
+      if (!result?.savedEntityReference) return;
+
+      // Never save unrelated edits on the parent form as a side effect of the
+      // Activity Log quick create. This second check protects against changes
+      // made while the dialog was open.
+      if (formContext.data.entity.getIsDirty?.()) {
         console.log(
-          "[openActivityLogQuickCreate] skipping parent refresh because quick create did not save and parent form has unsaved changes",
+          "[openActivityLogQuickCreate] skipping parent refresh because the parent form has unsaved changes",
         );
         return;
       }
 
-      await formContext.data.refresh(saveParentBeforeRefresh);
+      await formContext.data.refresh(false);
       await refreshEmbeddedWebResources(formContext);
     } catch (error) {
       const message =
@@ -209,34 +207,26 @@
     }
 
     if (entityName === REQUEST_ENTITY) {
-      const query =
-        "?$select=cr69a_systemintakeadminid,cr69a_title" +
-        `&$filter=_cr69a_systemintake_value eq ${recordId}` +
-        "&$orderby=createdon desc&$top=2";
-      const result = await Xrm.WebApi.retrieveMultipleRecords(
-        REVIEW_ENTITY,
-        query,
+      const request = await Xrm.WebApi.retrieveRecord(
+        REQUEST_ENTITY,
+        recordId,
+        "?$select=_cr69a_systemintakereview_value",
       );
-      const reviews = result?.entities || [];
+      const reviewId = request?._cr69a_systemintakereview_value;
 
-      if (reviews.length === 0) {
+      if (!reviewId) {
         await Xrm.Navigation.openAlertDialog({
-          text: "No Review is associated with this Request.",
+          text: "This Request does not have a linked Review.",
         });
         return null;
       }
 
-      if (reviews.length > 1) {
-        await Xrm.Navigation.openAlertDialog({
-          text: "More than one Review is associated with this Request. Resolve the duplicate Reviews before taking an action.",
-        });
-        return null;
-      }
-
-      const review = reviews[0];
       return {
-        reviewId: review.cr69a_systemintakeadminid,
-        reviewName: review.cr69a_title || "Review",
+        reviewId,
+        reviewName:
+          request[
+            "_cr69a_systemintakereview_value@OData.Community.Display.V1.FormattedValue"
+          ] || "Review",
         requestId: recordId,
         requestName: recordName || "Request",
       };

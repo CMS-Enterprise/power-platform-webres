@@ -40,8 +40,8 @@ more migration tooling.
   2. Stage and reconcile source-to-staging counts.
   3. Migrate and reconcile staging-to-destination counts.
   4. Roll back staged and destination data.
-  5. Reconcile the post-rollback environment against
-     [`run-baselines/uat-2026-10-21T205408Z.json`](./run-baselines/uat-2026-10-21T205408Z.json).
+  5. Reconcile the post-rollback environment against a fresh snapshot captured
+     immediately before the rehearsal.
 - [ ] Produce a concise UAT rehearsal report with counts, failures, known
   exclusions, rollback results, and go/no-go evidence.
 

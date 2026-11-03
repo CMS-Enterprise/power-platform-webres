@@ -115,6 +115,3 @@ The known names are retained here:
   before Prod deployment.
 - Prod has no locally recorded `StageNotes` dataflow ID; it is represented by
   `__REQUIRED__` so the solution inventories stay aligned and readiness fails.
-- UAT currently stores its Power Platform environment ID in `new_AppId`. This
-  file preserves the deployed value, but the application ID should be verified
-  before the next UAT import.

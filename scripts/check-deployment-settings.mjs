@@ -114,7 +114,7 @@ export function validateDocument(document, { solution, environment, ready = fals
     if (ready && unresolvedValues.has(reference.ConnectionId)) failures.push(`${label}: ${reference.LogicalName} connection is unresolved`);
   }
 
-  const orgBaseUrl = document.EnvironmentVariables.find(({ SchemaName }) => SchemaName === "new_OrgBaseUrl")?.Value;
+  const orgBaseUrl = document.EnvironmentVariables.find((variable) => variable?.SchemaName === "new_OrgBaseUrl")?.Value;
   if (orgBaseUrl && !unresolvedValues.has(orgBaseUrl) && expectedEnvironment && orgBaseUrl !== expectedEnvironment.url) {
     failures.push(`${label}: new_OrgBaseUrl does not match ${environment}`);
   }

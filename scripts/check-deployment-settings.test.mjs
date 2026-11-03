@@ -97,3 +97,75 @@ test("rejects dataflow inventories that differ across environments", async () =>
     await fs.rm(root, { recursive: true, force: true });
   }
 });
+
+test("readiness rejects a selected file with a missing required variable or dataflow", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "deployment-settings-ready-test-"));
+  try {
+    const solution = path.join(root, "Test");
+    await fs.mkdir(solution);
+    for (const environment of ["dev", "uat", "prod"]) {
+      const document = validDocument();
+      const environmentId = environment === "dev"
+        ? devId
+        : environment === "uat"
+          ? "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign"
+          : "c2f580e9-c782-e16d-8d04-f5ae6a71ec20-31c688f59-sovereign";
+      document.EnvironmentVariables[0].Value = `https://itgovernance${environment === "prod" ? "" : environment}.crm9.dynamics.com`;
+      document.EnvironmentVariables[1].Value = JSON.stringify({
+        EnvironmentId: environmentId,
+        Dataflows: { StageRequests: "abc", StageNotes: "def" },
+      });
+      if (environment === "uat") {
+        document.EnvironmentVariables.shift();
+        document.EnvironmentVariables[0].Value = JSON.stringify({
+          EnvironmentId: environmentId,
+          Dataflows: { StageNotes: "def" },
+        });
+      }
+      await fs.writeFile(path.join(solution, `${environment}.json`), JSON.stringify(document));
+    }
+
+    const { failures } = await validateTree({
+      root,
+      ready: true,
+      solution: "Test",
+      environment: "uat",
+    });
+    assert.match(failures.join("\n"), /environment-variable schema differs/);
+    assert.match(failures.join("\n"), /dataflow inventory differs/);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+});
+
+test("readiness validates an external materialized file against the checked-in inventory", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "deployment-settings-file-test-"));
+  try {
+    const solution = path.join(root, "Test");
+    await fs.mkdir(solution);
+    for (const environment of ["dev", "uat", "prod"]) {
+      await fs.writeFile(path.join(solution, `${environment}.json`), JSON.stringify(validDocument()));
+    }
+
+    const materializedFile = path.join(root, "materialized-uat.json");
+    const materialized = validDocument();
+    materialized.EnvironmentVariables[0].Value = "https://itgovernanceuat.crm9.dynamics.com";
+    materialized.EnvironmentVariables[1].Value = JSON.stringify({
+      EnvironmentId: "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+      Dataflows: { StageRequests: "uat-id" },
+    });
+    await fs.writeFile(materializedFile, JSON.stringify(materialized));
+
+    const { failures, checked } = await validateTree({
+      root,
+      ready: true,
+      solution: "Test",
+      environment: "uat",
+      settingsFile: materializedFile,
+    });
+    assert.deepEqual(failures, []);
+    assert.equal(checked, 1);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+});

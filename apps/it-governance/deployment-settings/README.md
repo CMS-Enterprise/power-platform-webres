@@ -47,6 +47,15 @@ npm run deployment-settings:ready -- InitialITGO uat
 npm run deployment-settings:ready -- ITGODataMigrationsDataflows uat
 ```
 
+If placeholders or secret values are populated in an untracked deployment
+copy, validate that exact materialized file while still comparing its inventory
+with the checked-in solution templates:
+
+```bash
+npm run deployment-settings:ready -- InitialITGO uat \
+  --file <materialized-settings.json>
+```
+
 Readiness fails for empty variable values, `__REQUIRED__`,
 `__SECRET_REQUIRED__`, invalid embedded JSON, mismatched environment IDs, blank
 dataflow IDs, and dataflow configuration values over Power Platform's
@@ -61,14 +70,14 @@ commit that materialized copy.
 
 ## Importing a solution
 
-After the readiness check passes for the materialized settings file, import the
-matching solution ZIP:
+After the readiness check passes for the checked-in or materialized settings
+file, import the matching solution ZIP using that same validated file:
 
 ```bash
 pac solution import \
   --environment https://itgovernanceuat.crm9.dynamics.com \
   --path <solution.zip> \
-  --settings-file apps/it-governance/deployment-settings/InitialITGO/uat.json
+  --settings-file <validated-settings.json>
 ```
 
 Connection references are deliberately not configured by these files. They

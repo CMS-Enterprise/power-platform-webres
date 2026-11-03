@@ -44,6 +44,52 @@ const dataflowInventory = (document) => {
   return inventories;
 };
 
+const compareInventories = (solution, baseline, candidate) => {
+  const failures = [];
+  const baselineVariables = (baseline.document.EnvironmentVariables ?? [])
+    .map(({ SchemaName }) => SchemaName)
+    .sort()
+    .join("\n");
+  const candidateVariables = (candidate.document.EnvironmentVariables ?? [])
+    .map(({ SchemaName }) => SchemaName)
+    .sort()
+    .join("\n");
+  const baselineConnections = (baseline.document.ConnectionReferences ?? [])
+    .map(({ LogicalName, ConnectorId }) => `${LogicalName}\t${ConnectorId}`)
+    .sort()
+    .join("\n");
+  const candidateConnections = (candidate.document.ConnectionReferences ?? [])
+    .map(({ LogicalName, ConnectorId }) => `${LogicalName}\t${ConnectorId}`)
+    .sort()
+    .join("\n");
+
+  if (candidateVariables !== baselineVariables) {
+    failures.push(
+      `${solution}: environment-variable schema differs between ${baseline.environment} and ${candidate.environment}`,
+    );
+  }
+  if (candidateConnections !== baselineConnections) {
+    failures.push(
+      `${solution}: connection-reference schema differs between ${baseline.environment} and ${candidate.environment}`,
+    );
+  }
+
+  const baselineDataflows = dataflowInventory(baseline.document);
+  const candidateDataflows = dataflowInventory(candidate.document);
+  const dataflowSchemas = new Set([
+    ...baselineDataflows.keys(),
+    ...candidateDataflows.keys(),
+  ]);
+  for (const schemaName of dataflowSchemas) {
+    if (baselineDataflows.get(schemaName) !== candidateDataflows.get(schemaName)) {
+      failures.push(
+        `${solution}: ${schemaName} dataflow inventory differs between ${baseline.environment} and ${candidate.environment}`,
+      );
+    }
+  }
+  return failures;
+};
+
 export function validateDocument(document, { solution, environment, ready = false } = {}) {
   const failures = [];
   const label = `${solution ?? "unknown"}/${environment ?? "unknown"}`;
@@ -121,7 +167,13 @@ export function validateDocument(document, { solution, environment, ready = fals
   return failures;
 }
 
-export async function validateTree({ root = defaultRoot, ready = false, solution, environment } = {}) {
+export async function validateTree({
+  root = defaultRoot,
+  ready = false,
+  solution,
+  environment,
+  settingsFile,
+} = {}) {
   const failures = [];
   const documents = [];
   const solutions = solution ? [solution] : (await fs.readdir(root, { withFileTypes: true }))
@@ -132,7 +184,7 @@ export async function validateTree({ root = defaultRoot, ready = false, solution
 
   for (const solutionName of solutions) {
     for (const environmentName of targetEnvironments) {
-      const file = path.join(root, solutionName, `${environmentName}.json`);
+      const file = settingsFile ?? path.join(root, solutionName, `${environmentName}.json`);
       let document;
       try {
         document = JSON.parse(await fs.readFile(file, "utf8"));
@@ -153,22 +205,32 @@ export async function validateTree({ root = defaultRoot, ready = false, solution
       item.document.EnvironmentVariables.every(isObject) &&
       Array.isArray(item.document.ConnectionReferences) &&
       item.document.ConnectionReferences.every(isObject));
+    if (ready) {
+      const candidate = solutionDocuments[0];
+      if (!candidate) continue;
+      const referenceEnvironment = Object.keys(environments).find(
+        (name) => name !== environment,
+      );
+      const referenceFile = path.join(root, solutionName, `${referenceEnvironment}.json`);
+      try {
+        const reference = {
+          solution: solutionName,
+          environment: referenceEnvironment,
+          document: JSON.parse(await fs.readFile(referenceFile, "utf8")),
+        };
+        failures.push(...compareInventories(solutionName, reference, candidate));
+      } catch (error) {
+        failures.push(
+          `${solutionName}/${referenceEnvironment}: cannot read inventory reference from ${referenceFile} (${error.message})`,
+        );
+      }
+      continue;
+    }
+
     if (solutionDocuments.length < 2) continue;
     const baseline = solutionDocuments[0];
-    const baselineVariables = baseline.document.EnvironmentVariables.map(({ SchemaName }) => SchemaName).sort().join("\n");
-    const baselineConnections = baseline.document.ConnectionReferences.map(({ LogicalName, ConnectorId }) => `${LogicalName}\t${ConnectorId}`).sort().join("\n");
-    const baselineDataflows = dataflowInventory(baseline.document);
     for (const candidate of solutionDocuments.slice(1)) {
-      const variables = candidate.document.EnvironmentVariables.map(({ SchemaName }) => SchemaName).sort().join("\n");
-      const connections = candidate.document.ConnectionReferences.map(({ LogicalName, ConnectorId }) => `${LogicalName}\t${ConnectorId}`).sort().join("\n");
-      if (variables !== baselineVariables) failures.push(`${solutionName}: environment-variable schema differs between ${baseline.environment} and ${candidate.environment}`);
-      if (connections !== baselineConnections) failures.push(`${solutionName}: connection-reference schema differs between ${baseline.environment} and ${candidate.environment}`);
-      for (const [SchemaName, names] of dataflowInventory(candidate.document)) {
-        if (!baselineDataflows.has(SchemaName)) continue;
-        if (names !== baselineDataflows.get(SchemaName)) {
-          failures.push(`${solutionName}: ${SchemaName} dataflow inventory differs between ${baseline.environment} and ${candidate.environment}`);
-        }
-      }
+      failures.push(...compareInventories(solutionName, baseline, candidate));
     }
   }
   return { failures, checked: documents.length };
@@ -178,13 +240,22 @@ async function main() {
   const args = process.argv.slice(2);
   const ready = args[0] === "--ready";
   const positional = ready ? args.slice(1) : args;
-  if ((!ready && positional.length > 0) || (ready && positional.length !== 2)) {
-    console.error("Usage: node scripts/check-deployment-settings.mjs [--ready <solution> <dev|uat|prod>]");
+  const hasSettingsFile = ready && positional.length === 4 && positional[2] === "--file";
+  if ((!ready && positional.length > 0) || (ready && positional.length !== 2 && !hasSettingsFile)) {
+    console.error(
+      "Usage: node scripts/check-deployment-settings.mjs [--ready <solution> <dev|uat|prod> [--file <settings.json>]]",
+    );
     process.exitCode = 2;
     return;
   }
   const [solution, environment] = positional;
-  const { failures, checked } = await validateTree({ ready, solution, environment });
+  const settingsFile = hasSettingsFile ? path.resolve(positional[3]) : undefined;
+  const { failures, checked } = await validateTree({
+    ready,
+    solution,
+    environment,
+    settingsFile,
+  });
   if (failures.length > 0) {
     console.error(`${ready ? "Deployment readiness" : "Deployment settings"} check failed:\n`);
     for (const failure of failures) console.error(`- ${failure}`);

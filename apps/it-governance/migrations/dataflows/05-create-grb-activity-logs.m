@@ -4,6 +4,7 @@ section Section1;
 // Edit Requests. This dataflow handles only GRB rows and creates inert historical
 // Activity Logs. The Activity Log create plugins must bypass records with a populated
 // cr3ee_batchid before this query is loaded.
+
 shared StagingRaw =
     let
         Source = CommonDataService.Database(DataverseEnvironmentUrl),
@@ -13,6 +14,7 @@ shared StagingRaw =
                 textValue = if value = null then null else Text.Trim(Text.From(value))
             in
                 textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
         // Require exactly one Migrating Migration Run and a populated batch ID.
         MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
         BufferedRuns = Table.Buffer(MigrationRuns),
@@ -20,23 +22,17 @@ shared StagingRaw =
         MigratingCount = Table.RowCount(MigratingOnly),
         ValidatedMigratingRun =
             if MigratingCount = 0 then
-                error
-                    Error.Record(
-                        "Migrating Migration guard",
-                        "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
-                        [
-                            MigratingCount = MigratingCount
-                        ]
-                    )
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
             else if MigratingCount > 1 then
-                error
-                    Error.Record(
-                        "Migrating Migration guard",
-                        "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
-                        [
-                            MigratingCount = MigratingCount
-                        ]
-                    )
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
             else
                 MigratingOnly{0},
         MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
@@ -44,14 +40,11 @@ shared StagingRaw =
             if HasPopulatedValue(MigratingBatchId) then
                 Text.Trim(Text.From(MigratingBatchId))
             else
-                error
-                    Error.Record(
-                        "Migrating Migration guard",
-                        "The Migrating Migration Run has a blank batch ID.",
-                        [
-                            MigratingCount = MigratingCount
-                        ]
-                    ),
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "The Migrating Migration Run has a blank batch ID.",
+                    [MigratingCount = MigratingCount]
+                ),
         GuardedStage = if Text.Length(BatchId) > 0 then Navigation else error "Migrating Migration guard failed.",
         CurrentBatchStage = Table.SelectRows(
             GuardedStage,
@@ -63,7 +56,8 @@ shared StagingRaw =
                     },
                     stageBatchId = List.First(List.Select(batchValues, each HasPopulatedValue(_)), null)
                 in
-                    stageBatchId <> null and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+                    stageBatchId <> null
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
         #"Removed Staging Batch IDs" = Table.RemoveColumns(
             CurrentBatchStage, {"migrate_batch_id", "cr69a_batchid"}, MissingField.Ignore
@@ -87,26 +81,17 @@ shared HistoricalGrbActivityLogPreparation =
             let
                 textValue = if value = null then null else Text.Trim(Text.From(value))
             in
-                if textValue = null or textValue = "" or Text.Upper(textValue) = "NULL" then
-                    null
-                else
-                    textValue,
+                if textValue = null or textValue = "" or Text.Upper(textValue) = "NULL" then null else textValue,
         NormalizeId = (value as any) as nullable text =>
             let
                 textValue = NormalizeText(value)
             in
-                if textValue = null then
-                    null
-                else
-                    Text.Lower(textValue),
+                if textValue = null then null else Text.Lower(textValue),
         ResolveColumn = (columns as list, candidates as list, label as text) as text =>
             let
                 found = List.First(List.Select(candidates, each List.Contains(columns, _)), null)
             in
-                if found = null then
-                    error "Missing " & label & ". Expected one of: " & Text.Combine(candidates, ", ")
-                else
-                    found,
+                if found = null then error "Missing " & label & ". Expected one of: " & Text.Combine(candidates, ", ") else found,
         TargetStepMap = [
             DRAFT_BUSINESS_CASE = 971270001,
             GRT_MEETING = 971270002,
@@ -121,7 +106,9 @@ shared HistoricalGrbActivityLogPreparation =
         ],
         StagingColumns = Table.ColumnNames(StagingRaw),
         IdColumn = ResolveColumn(
-            StagingColumns, {"cr69a_feedbackid", "cr69a_recordid", "cr69a_id", "id"}, "staging feedback ID column"
+            StagingColumns,
+            {"cr69a_feedbackid", "cr69a_recordid", "cr69a_id", "id"},
+            "staging feedback ID column"
         ),
         IntakeColumn = ResolveColumn(
             StagingColumns,
@@ -129,13 +116,17 @@ shared HistoricalGrbActivityLogPreparation =
             "staging intake ID column"
         ),
         FeedbackColumns = List.Select(
-            {"new_requesterfeedbackmultitext", "cr69a_feedbackcontent", "cr69a_feedback", "feedback"},
+            {
+                "new_requesterfeedbackmultitext",
+                "cr69a_feedbackcontent",
+                "cr69a_feedback",
+                "feedback"
+            },
             each List.Contains(StagingColumns, _)
         ),
         ValidatedFeedbackColumns =
             if List.IsEmpty(FeedbackColumns) then
-                error
-                    "Missing staging feedback column. Expected one of: new_requesterfeedbackmultitext, cr69a_feedbackcontent, cr69a_feedback, feedback"
+                error "Missing staging feedback column. Expected one of: new_requesterfeedbackmultitext, cr69a_feedbackcontent, cr69a_feedback, feedback"
             else
                 FeedbackColumns,
         SourceActionColumn = ResolveColumn(
@@ -174,8 +165,7 @@ shared HistoricalGrbActivityLogPreparation =
                             List.RemoveNulls(
                                 List.Transform(
                                     ValidatedFeedbackColumns,
-                                    (columnName as text) =>
-                                        NormalizeText(Record.FieldOrDefault(row, columnName, null))
+                                    (columnName as text) => NormalizeText(Record.FieldOrDefault(row, columnName, null))
                                 )
                             ),
                             null
@@ -184,24 +174,14 @@ shared HistoricalGrbActivityLogPreparation =
                 ),
                 "source_action_key",
                 each
-                    let
-                        value = NormalizeText(Record.FieldOrDefault(_, SourceActionColumn, null))
-                    in
-                        if value = null then
-                            null
-                        else
-                            Text.Upper(value),
+                    let value = NormalizeText(Record.FieldOrDefault(_, SourceActionColumn, null))
+                    in if value = null then null else Text.Upper(value),
                 type nullable text
             ),
             "feedback_type_key",
             each
-                let
-                    value = NormalizeText(Record.FieldOrDefault(_, FeedbackTypeColumn, null))
-                in
-                    if value = null then
-                        null
-                    else
-                        Text.Upper(value),
+                let value = NormalizeText(Record.FieldOrDefault(_, FeedbackTypeColumn, null))
+                in if value = null then null else Text.Upper(value),
             type nullable text
         ),
         WithHistoricalFields = Table.AddColumn(
@@ -209,13 +189,8 @@ shared HistoricalGrbActivityLogPreparation =
                 WithNormalizedFields,
                 "target_form_key",
                 each
-                    let
-                        value = NormalizeText(Record.FieldOrDefault(_, TargetFormColumn, null))
-                    in
-                        if value = null then
-                            null
-                        else
-                            Text.Upper(value),
+                    let value = NormalizeText(Record.FieldOrDefault(_, TargetFormColumn, null))
+                    in if value = null then null else Text.Upper(value),
                 type nullable text
             ),
             "legacy_created_by",
@@ -225,7 +200,10 @@ shared HistoricalGrbActivityLogPreparation =
         GrbRows = Table.SelectRows(WithHistoricalFields, each [feedback_type_key] = "GRB"),
         WithBatchId =
             if BatchColumn = "cr69a_batchid" then
-                Table.TransformColumns(GrbRows, {{"cr69a_batchid", each NormalizeText(_), type nullable text}})
+                Table.TransformColumns(
+                    GrbRows,
+                    {{"cr69a_batchid", each NormalizeText(_), type nullable text}}
+                )
             else
                 Table.AddColumn(
                     GrbRows,
@@ -265,18 +243,18 @@ shared HistoricalGrbActivityLogPreparation =
             WithTargetToken,
             "new_process_target_step",
             each
-                let
-                    token = [target_step_source_token]
-                in
-                    if token <> null and Record.HasFields(TargetStepMap, token) then
-                        Record.Field(TargetStepMap, token)
-                    else
-                        null,
+                let token = [target_step_source_token]
+                in if token <> null and Record.HasFields(TargetStepMap, token) then Record.Field(TargetStepMap, token) else null,
             Int64.Type
         ),
         WithActivityFields = Table.AddColumn(
             Table.AddColumn(
-                Table.AddColumn(WithTargetStep, "new_activitylogsid", each [legacy_feedback_id], type nullable text),
+                Table.AddColumn(
+                    WithTargetStep,
+                    "new_activitylogsid",
+                    each [legacy_feedback_id],
+                    type nullable text
+                ),
                 "cr3ee_activitytype",
                 each 216640000,
                 Int64.Type
@@ -296,13 +274,8 @@ shared HistoricalGrbActivityLogPreparation =
             WithRecommendation,
             "new_whichformneedsedits",
             each
-                let
-                    key = [target_form_key]
-                in
-                    if key <> null and Record.HasFields(TargetFormMap, key) then
-                        Record.Field(TargetFormMap, key)
-                    else
-                        null,
+                let key = [target_form_key]
+                in if key <> null and Record.HasFields(TargetFormMap, key) then Record.Field(TargetFormMap, key) else null,
             Int64.Type
         ),
         WithAdditionalInformation = Table.AddColumn(
@@ -352,12 +325,17 @@ shared HistoricalGrbActivityLogPreparation =
             WithReviewMatch, "ReviewMatch", {"cr3ee_external_id"}, {"cr3ee_external_id"}
         ),
         IdCounts = Table.Group(
-            ExpandedReview, {"legacy_feedback_id"}, {
-                {"legacy_feedback_id_count", each Table.RowCount(_), Int64.Type}
-            }
+            ExpandedReview,
+            {"legacy_feedback_id"},
+            {{"legacy_feedback_id_count", each Table.RowCount(_), Int64.Type}}
         ),
         WithIdCounts = Table.NestedJoin(
-            ExpandedReview, {"legacy_feedback_id"}, IdCounts, {"legacy_feedback_id"}, "IdCount", JoinKind.LeftOuter
+            ExpandedReview,
+            {"legacy_feedback_id"},
+            IdCounts,
+            {"legacy_feedback_id"},
+            "IdCount",
+            JoinKind.LeftOuter
         ),
         ExpandedIdCounts = Table.ExpandTableColumn(
             WithIdCounts, "IdCount", {"legacy_feedback_id_count"}, {"legacy_feedback_id_count"}
@@ -367,64 +345,32 @@ shared HistoricalGrbActivityLogPreparation =
             "UnmappedIssues",
             each
                 let
-                    issues = List.RemoveNulls(
-                        {
-                            if [legacy_feedback_id] = null then
-                                "blank feedback ID"
-                            else
-                                null,
-                            if [legacy_feedback_id_count] <> 1 then
-                                "duplicate feedback ID=" & Text.From([legacy_feedback_id])
-                            else
-                                null,
-                            if [legacy_intake_id] = null then
-                                "blank intake ID"
-                            else
-                                null,
-                            if [feedback_text] = null then
-                                "blank GRB recommendation"
-                            else
-                                null,
-                            if [source_action_key] <> "PROGRESS_TO_NEW_STEP" then
-                                "source_action=" & (if [source_action_key] = null then "<blank>" else [
-                                    source_action_key
-                                ])
-                            else
-                                null,
-                            if [target_form_key] = null or not Record.HasFields(TargetFormMap, [target_form_key])
-                            then
-                                "target_form=" & (if [target_form_key] = null then "<blank>" else [target_form_key])
-                            else
-                                null,
-                            if [target_step_source_token] = null then
-                                "missing progress target in feedback"
-                            else if [new_process_target_step] = null then
-                                "target_step=" & [target_step_source_token]
-                            else
-                                null,
-                            if [cr3ee_batchid] = null then
-                                "blank migration batch ID"
-                            else
-                                null,
-                            if [overriddencreatedon] = null then
-                                "invalid created-at timestamp"
-                            else
-                                null,
-                            if [easi_external_id] = null then
-                                "unmatched Request external ID=" & Text.From([legacy_intake_id])
-                            else
-                                null,
-                            if [cr3ee_external_id] = null then
-                                "unmatched Review external ID=" & Text.From([legacy_intake_id])
-                            else
-                                null
-                        }
-                    )
+                    issues = List.RemoveNulls({
+                        if [legacy_feedback_id] = null then "blank feedback ID" else null,
+                        if [legacy_feedback_id_count] <> 1 then "duplicate feedback ID=" & Text.From([legacy_feedback_id]) else null,
+                        if [legacy_intake_id] = null then "blank intake ID" else null,
+                        if [feedback_text] = null then "blank GRB recommendation" else null,
+                        if [source_action_key] <> "PROGRESS_TO_NEW_STEP" then
+                            "source_action=" & (if [source_action_key] = null then "<blank>" else [source_action_key])
+                        else
+                            null,
+                        if [target_form_key] = null or not Record.HasFields(TargetFormMap, [target_form_key]) then
+                            "target_form=" & (if [target_form_key] = null then "<blank>" else [target_form_key])
+                        else
+                            null,
+                        if [target_step_source_token] = null then
+                            "missing progress target in feedback"
+                        else if [new_process_target_step] = null then
+                            "target_step=" & [target_step_source_token]
+                        else
+                            null,
+                        if [cr3ee_batchid] = null then "blank migration batch ID" else null,
+                        if [overriddencreatedon] = null then "invalid created-at timestamp" else null,
+                        if [easi_external_id] = null then "unmatched Request external ID=" & Text.From([legacy_intake_id]) else null,
+                        if [cr3ee_external_id] = null then "unmatched Review external ID=" & Text.From([legacy_intake_id]) else null
+                    })
                 in
-                    if List.IsEmpty(issues) then
-                        null
-                    else
-                        Text.Combine(issues, "; "),
+                    if List.IsEmpty(issues) then null else Text.Combine(issues, "; "),
             type nullable text
         )
     in
@@ -437,7 +383,11 @@ shared HistoricalGrbActivityLogQA =
             each
                 let
                     issueValues = List.RemoveNulls({Record.FieldOrDefault(_, "UnmappedIssues", null)}),
-                    issueText = if List.IsEmpty(issueValues) then "" else Text.Trim(Text.From(issueValues{0}))
+                    issueText =
+                        if List.IsEmpty(issueValues) then
+                            ""
+                        else
+                            Text.Trim(Text.From(issueValues{0}))
                 in
                     issueText <> ""
         ),
@@ -488,9 +438,8 @@ shared HistoricalGrbActivityLogs =
 shared FeedbackTypeQA =
     let
         Columns = Table.ColumnNames(StagingRaw),
-        FeedbackTypeColumn = List.First(
-            List.Select({"cr69a_feedbacktype", "cr69a_type", "type"}, each List.Contains(Columns, _)), null
-        ),
+        FeedbackTypeColumn =
+            List.First(List.Select({"cr69a_feedbacktype", "cr69a_type", "type"}, each List.Contains(Columns, _)), null),
         Checked =
             if FeedbackTypeColumn = null then
                 error "Missing staging feedback-type column."

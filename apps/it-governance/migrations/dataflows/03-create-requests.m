@@ -8,7 +8,59 @@ shared StagingRaw =
         #"Navigation 1";
 shared Requests =
     let
-        Prev = StagingRaw,
+        Source = CommonDataService.Database(DataverseEnvironmentUrl),
+        HasPopulatedValue = (v as any) as logical =>
+            let
+                textValue = if v = null then null else Text.Trim(Text.From(v))
+            in
+                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
+        // Require exactly one Migrating Migration Run and a populated batch ID.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else if MigratingCount > 1 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
+            else
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "The Migrating Migration Run has a blank batch ID.",
+                    [MigratingCount = MigratingCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then StagingRaw else error "Migrating Migration guard failed.",
+
+        // Process only staging rows stamped with the validated Migrating batch,
+        // then explicitly stamp that batch ID onto every Request output row.
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                in
+                    HasPopulatedValue(stageBatchId)
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        Prev = Table.AddColumn(#"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text),
+
         // Map to Dataverse-style two-option codes:
         NormalizeTwoOption = (v as any) as nullable number =>
             let
@@ -50,11 +102,6 @@ shared Requests =
                     DateTimeZone.RemoveZone(DateTimeZone.FromText(Text.Trim(Text.From(v))))
                 otherwise
                     try DateTime.FromText(Text.Trim(Text.From(v))) otherwise null,
-        HasPopulatedValue = (v as any) as logical =>
-            let
-                textValue = if v = null then null else Text.Trim(Text.From(v))
-            in
-                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
         FinalDecisionStates = {"LCID_ISSUED", "NOT_APPROVED", "NOT_GOVERNANCE", "NO_DECISION"},
         IsFinished = (r as record) as logical => Normalize(Record.FieldOrDefault(r, "cr69a_state", null)) = "CLOSED",
         IsReopenedFinal = (r as record) as logical =>

@@ -4,6 +4,56 @@ shared BusinessCases =
     let
         Source = CommonDataService.Database(DataverseEnvironmentUrl),
         #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_systemintakestagingbusinesscase"]}[Data],
+        HasPopulatedValue = (v as any) as logical =>
+            let
+                textValue = if v = null then null else Text.Trim(Text.From(v))
+            in
+                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+
+        // Require exactly one Migrating Migration Run and a populated batch ID.
+        MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
+        BufferedRuns = Table.Buffer(MigrationRuns),
+        MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
+        MigratingCount = Table.RowCount(MigratingOnly),
+        ValidatedMigratingRun =
+            if MigratingCount = 0 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "No Migrating Migration Run was found. Start Migrate All Data before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else if MigratingCount > 1 then
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "More than one Migrating Migration Run was found. Leave exactly one Migration Run in the Migrating state before refreshing this dataflow.",
+                    [MigratingCount = MigratingCount]
+                )
+            else
+                MigratingOnly{0},
+        MigratingBatchId = Record.FieldOrDefault(ValidatedMigratingRun, "easi_batchid", null),
+        BatchId =
+            if HasPopulatedValue(MigratingBatchId) then
+                Text.Trim(Text.From(MigratingBatchId))
+            else
+                error Error.Record(
+                    "Migrating Migration guard",
+                    "The Migrating Migration Run has a blank batch ID.",
+                    [MigratingCount = MigratingCount]
+                ),
+        GuardedStage = if Text.Length(BatchId) > 0 then #"Navigation 1" else error "Migrating Migration guard failed.",
+        CurrentBatchStage = Table.SelectRows(
+            GuardedStage,
+            each
+                let
+                    stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                in
+                    HasPopulatedValue(stageBatchId)
+                        and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
+        ),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        #"Stamped Running Batch" = Table.AddColumn(
+            #"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text
+        ),
         ChoiceSpecs = {
             [
                 source = "cr69a_status",
@@ -38,7 +88,7 @@ shared BusinessCases =
         // Apply all choice mappings starting from the actual table
         ApplyAll = List.Accumulate(
             ChoiceSpecs,
-            #"Navigation 1",
+            #"Stamped Running Batch",
             // 🔹 start from your staging table, not Source
             (state as table, spec as record) =>
                 let
@@ -111,8 +161,18 @@ shared BusinessCases =
                                 Text.Combine(filtered, "; "),
                     type nullable text
                 ),
+        // Expose the replacement text staging field under the final Request field
+        // name so the BusinessCases query can update the legacy phone value on
+        // System Intake. The original staging field is a Float and must remain
+        // unmapped because formatted phone numbers cannot be converted to Double.
+        WithLegacyRequesterPhone = Table.AddColumn(
+            WithQA,
+            "new_requesterphonenumberlegacy",
+            each Record.FieldOrDefault(_, "new_requestphonenumbertext", null),
+            type nullable text
+        ),
         // Return the transformed table
-        Custom = WithQA,
+        Custom = WithLegacyRequesterPhone,
         #"Remove Columns" = Table.RemoveColumns(
             Custom,
             Table.ColumnsOfType(
@@ -131,7 +191,7 @@ shared CreatePreferredSolution =
                 {"cr69a_preferred_title", "Title"},
                 {"cr69a_preferred_summary", "Summary"},
                 {"cr69a_preferredacquisitionapproach", "Acquisition Approach"},
-                {"cr69a_preferred_pros", "Pros"},
+                {"cr69a_preferredprosmulti", "Pros"},
                 {"cr69a_preferredconsmulti", "Cons"},
                 {"cr69a_preferred_cost_savings", "Cost Savings"},
                 {"cr69a_preferred_hosting_type", "Hosting Type"},
@@ -172,7 +232,7 @@ shared CreateAlternativeA =
                 {"cr69a_alternative_a_title", "Title"},
                 {"cr69a_alternative_a_summary", "Summary"},
                 {"cr69a_alternativeaacquisitionapproachmulti", "Acquisition Approach"},
-                {"cr69a_alternative_a_pros", "Pros"},
+                {"cr69a_alternativeaprosmulti", "Pros"},
                 {"cr69a_alternativeaconsmulti", "Cons"},
                 {"cr69a_alternative_a_cost_savings", "Cost Savings"},
                 {"cr69a_alternative_a_hosting_type", "Hosting Type"},
@@ -228,7 +288,7 @@ shared CreateAlternativeB =
                 {"cr69a_alternative_b_title", "Title"},
                 {"cr69a_alternative_b_summary", "Summary"},
                 {"cr69a_alternativebacquisitionapproachmulti", "Acquisition Approach"},
-                {"cr69a_alternative_b_pros", "Pros"},
+                {"cr69a_alternativebprosmulti", "Pros"},
                 {"cr69a_alternativebconsmulti", "Cons"},
                 {"cr69a_alternative_b_cost_savings", "Cost Savings"},
                 {"cr69a_alternative_b_hosting_type", "Hosting Type"},

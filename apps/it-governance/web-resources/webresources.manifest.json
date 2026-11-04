@@ -150,6 +150,9 @@
       "name": "new_systemIntake"
     },
     {
+      "file": "js/request/intakeRequestFieldHelp.js"
+    },
+    {
       "file": "js/request/intakeRequestUploadDocumentsButton.js",
       "name": "cr3ee_intakeRequestUploadDocumentsButton"
     },

@@ -4,7 +4,7 @@
   // TODO: fill in help text for each field.
   var FIELD_HELP = {
     cr69a_enterprise_architecture_support: "If you are unsure, mark \"Yes\" and someone from the EA team will assess your needs. You may also reach out to EA directly at EnterpriseArchitecture@cms.hhs.gov.",
-    cr69a_ai_technologies_used: "Select \"Yes\" if you are considering using AI for this request, even if you are not yest sure. This could be for new development or enhancement to an existing solution. For general AI related questions, please contact the AI team at AI@cms.hhs.gov. For more targeted and specific AI inquiries, please reach out to the Technical Review Board (TRB) for assistance.",
+    cr69a_ai_technologies_used: "Select \"Yes\" if you are considering using AI for this request, even if you are not yet sure. This could be for new development or enhancement to an existing solution. For general AI related questions, please contact the AI team at AI@cms.hhs.gov. For more targeted and specific AI inquiries, please reach out to the Technical Review Board (TRB) for assistance.",
   };
 
   function getFormContext(executionContext) {

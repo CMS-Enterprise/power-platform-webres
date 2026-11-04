@@ -6,6 +6,39 @@ shared StagingRaw =
         #"Navigation 1" = Source{[Schema = "dbo", Item = "cr69a_intakestaging"]}[Data]
     in
         #"Navigation 1";
+shared RequestEligibilityQA =
+    let
+        HasPopulatedValue = (v as any) as logical =>
+            let
+                textValue = if v = null then null else Text.Trim(Text.From(v))
+            in
+                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
+        Ineligible = Table.SelectRows(
+            StagingRaw,
+            each
+                not HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_submitted_at", null))
+                    or not HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_project_name", null))
+        ),
+        WithReason = Table.AddColumn(
+            Ineligible,
+            "EligibilityIssues",
+            each
+                Text.Combine(
+                    List.RemoveNulls({
+                        if HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_submitted_at", null)) then null else "submitted_at is blank",
+                        if HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_project_name", null)) then null else "project_name is blank"
+                    }),
+                    "; "
+                ),
+            type text
+        ),
+        Output = Table.SelectColumns(
+            WithReason,
+            {"cr69a_id", "cr69a_project_name", "cr69a_submitted_at", "cr69a_batchid", "EligibilityIssues"},
+            MissingField.UseNull
+        )
+    in
+        Output;
 shared Requests =
     let
         Source = CommonDataService.Database(DataverseEnvironmentUrl),
@@ -58,7 +91,16 @@ shared Requests =
                     HasPopulatedValue(stageBatchId)
                         and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
-        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        // Legacy drafts without a submitted date or title are not eligible for
+        // migration. Keep them in staging for review, but never load them into
+        // the Request destination.
+        EligibleRequests = Table.SelectRows(
+            CurrentBatchStage,
+            each
+                HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_submitted_at", null))
+                    and HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_project_name", null))
+        ),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(EligibleRequests, {"cr69a_batchid"}),
         Prev = Table.AddColumn(#"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text),
 
         // Map to Dataverse-style two-option codes:

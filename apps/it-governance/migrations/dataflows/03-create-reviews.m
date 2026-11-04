@@ -43,7 +43,45 @@ shared Reviews =
                 let stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
                 in HasPopulatedValue(stageBatchId) and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
-        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        EligibleReviews = Table.SelectRows(
+            CurrentBatchStage,
+            each
+                HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_submitted_at", null))
+                    and HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_project_name", null))
+        ),
+        NormalizeId = (v as any) as nullable text =>
+            if HasPopulatedValue(v) then Text.Lower(Text.Trim(Text.From(v))) else null,
+        CurrentBatchRequests = Table.Buffer(
+            Table.TransformColumns(
+                Table.SelectColumns(
+                    Table.SelectRows(
+                        Source{[Schema = "dbo", Item = "new_systemintake"]}[Data],
+                        each
+                            let requestBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                            in HasPopulatedValue(requestBatchId) and Text.Lower(Text.Trim(Text.From(requestBatchId))) = Text.Lower(BatchId)
+                    ),
+                    {"easi_external_id"},
+                    MissingField.Error
+                ),
+                {{"easi_external_id", each NormalizeId(_), type nullable text}}
+            )
+        ),
+        WithNormalizedRequestId = Table.AddColumn(
+            EligibleReviews,
+            "NormalizedRequestId",
+            each NormalizeId(Record.FieldOrDefault(_, "cr69a_id", null)),
+            type nullable text
+        ),
+        WithRequestMatch = Table.NestedJoin(
+            WithNormalizedRequestId,
+            {"NormalizedRequestId"},
+            CurrentBatchRequests,
+            {"easi_external_id"},
+            "RequestMatch",
+            JoinKind.Inner
+        ),
+        MatchedReviews = Table.RemoveColumns(WithRequestMatch, {"NormalizedRequestId", "RequestMatch"}),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(MatchedReviews, {"cr69a_batchid"}),
         Prev = Table.AddColumn(#"Removed Staging Batch ID", "cr3ee_batchid", each BatchId, type text),
         // Normalize date fields
         NormalizeDate = (v as any) as nullable date =>

@@ -1,56 +1,48 @@
 section Section1;
-
 shared DataverseEnvironmentUrl = "itgovernancedev.crm9.dynamics.com" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
 shared SharePointSiteUrl = "https://cmsgovonline.sharepoint.com/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
 shared FolderPath = "sites/CMS-SharePoint-OIT-CIO_Library/EASi%20data%20migration/Development/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
 shared FileName = "notes.csv" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text];
-
-// Convert literal NULLs, blanks, and whitespace-only values to null while
-// preserving all other source text exactly.
 shared NormalizeNoteText = (value as any) as nullable text =>
-    let
-        TextValue = if value = null then null else Text.From(value),
-        Trimmed = if TextValue = null then null else Text.Trim(TextValue)
-    in
-        if Trimmed = null or Trimmed = "" or Text.Upper(Trimmed) = "NULL"
-        then null
-        else TextValue;
-
+let
+    TextValue = if value = null then null else Text.From(value),
+    Trimmed = if TextValue = null then null else Text.Trim(TextValue)
+in
+    if Trimmed = null or Trimmed = "" or Text.Upper(Trimmed) = "NULL"
+    then null
+    else TextValue;
 shared ParseNoteDateTime = (value as any) as nullable datetime =>
-    let
-        TextValue = NormalizeNoteText(value),
-        Parsed = if TextValue = null then null else try DateTimeZone.FromText(TextValue),
-        ParsedUtc =
-            if Parsed = null or Parsed[HasError]
-            then null
-            else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(Parsed[Value])),
-        Result =
-            if ParsedUtc = null or ParsedUtc < #datetime(1753, 1, 1, 0, 0, 0)
-            then null
-            else ParsedUtc
-    in
-        Result;
-
+let
+    TextValue = NormalizeNoteText(value),
+    Parsed = if TextValue = null then null else try DateTimeZone.FromText(TextValue),
+    ParsedUtc =
+        if Parsed = null or Parsed[HasError]
+        then null
+        else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(Parsed[Value])),
+    Result =
+        if ParsedUtc = null or ParsedUtc < #datetime(1753, 1, 1, 0, 0, 0)
+        then null
+        else ParsedUtc
+in
+    Result;
 shared IsNoteDateBeforeDataverseMinimum = (value as any) as logical =>
-    let
-        TextValue = NormalizeNoteText(value),
-        Parsed = if TextValue = null then null else try DateTimeZone.FromText(TextValue),
-        ParsedUtc =
-            if Parsed = null or Parsed[HasError]
-            then null
-            else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(Parsed[Value]))
-    in
-        ParsedUtc <> null and ParsedUtc < #datetime(1753, 1, 1, 0, 0, 0);
-
+  let
+      TextValue = NormalizeNoteText(value),
+      Parsed = if TextValue = null then null else try DateTimeZone.FromText(TextValue),
+      ParsedUtc =
+          if Parsed = null or Parsed[HasError]
+          then null
+          else DateTimeZone.RemoveZone(DateTimeZone.ToUtc(Parsed[Value]))
+  in
+      ParsedUtc <> null and ParsedUtc < #datetime(1753, 1, 1, 0, 0, 0);
 shared ParseNoteBoolean = (value as any) as nullable logical =>
-    let
-        TextValue = NormalizeNoteText(value),
-        Normalized = if TextValue = null then null else Text.Lower(Text.Trim(TextValue))
-    in
-        if Normalized = "true" then true
-        else if Normalized = "false" then false
-        else null;
-
+let
+    TextValue = NormalizeNoteText(value),
+    Normalized = if TextValue = null then null else Text.Lower(Text.Trim(TextValue))
+in
+    if Normalized = "true" then true
+    else if Normalized = "false" then false
+    else null;
 shared NotesSource = let
     CsvUrl = SharePointSiteUrl & FolderPath & FileName,
     Source = Csv.Document(
@@ -79,7 +71,6 @@ shared NotesSource = let
     SelectedColumns = Table.SelectColumns(WithSourceRow, RequiredColumns, MissingField.Error)
 in
     SelectedColumns;
-
 shared NotesPreparation = let
     TextColumns = {
         "id",
@@ -205,33 +196,31 @@ shared NotesPreparation = let
     WithBatchId = Table.AddColumn(WithQAWarnings, "migrate_batch_id", each BatchId, type text)
 in
     WithBatchId;
-
 shared NotesQA = let
-    Issues = Table.SelectRows(
-        NotesPreparation,
-        each [UnmappedIssues] <> null or [QAWarnings] <> null
-    ),
-    Output = Table.SelectColumns(
-        Issues,
-        {
-            "SourceRowNumber",
-            "id",
-            "system_intake",
-            "eua_user_id",
-            "author_name",
-            "content",
-            "created_at",
-            "modified_at",
-            "is_archived",
-            "UnmappedIssues",
-            "QAWarnings"
-        },
-        MissingField.Error
-    )
+  Issues = Table.SelectRows(
+      NotesPreparation,
+      each [UnmappedIssues] <> null or [QAWarnings] <> null
+  ),
+  Output = Table.SelectColumns(
+      Issues,
+      {
+          "SourceRowNumber",
+          "id",
+          "system_intake",
+          "eua_user_id",
+          "author_name",
+          "content",
+          "created_at",
+          "modified_at",
+          "is_archived",
+          "UnmappedIssues",
+          "QAWarnings"
+      },
+      MissingField.Error
+  )
 in
-    Output;
-
-shared #"notes 1" = let
+  Output;
+shared #"Notes 1" = let
     LoadableRows = Table.SelectRows(NotesPreparation, each [id] <> null),
     SelectedColumns = Table.SelectColumns(
         LoadableRows,

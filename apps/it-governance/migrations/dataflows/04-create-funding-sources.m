@@ -34,7 +34,39 @@ shared Query =
                 let stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
                 in HasPopulatedValue(stageBatchId) and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
-        #"Removed Staging Batch ID" = Table.RemoveColumns(CurrentBatchStage, {"cr69a_batchid"}),
+        NormalizeId = (v as any) as nullable text =>
+            if HasPopulatedValue(v) then Text.Lower(Text.Trim(Text.From(v))) else null,
+        CurrentBatchRequests = Table.Buffer(
+            Table.TransformColumns(
+                Table.SelectColumns(
+                    Table.SelectRows(
+                        Source{[Schema = "dbo", Item = "new_systemintake"]}[Data],
+                        each
+                            let requestBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                            in HasPopulatedValue(requestBatchId) and Text.Lower(Text.Trim(Text.From(requestBatchId))) = Text.Lower(BatchId)
+                    ),
+                    {"easi_external_id"},
+                    MissingField.Error
+                ),
+                {{"easi_external_id", each NormalizeId(_), type nullable text}}
+            )
+        ),
+        WithNormalizedRequestId = Table.AddColumn(
+            CurrentBatchStage,
+            "NormalizedRequestId",
+            each NormalizeId(Record.FieldOrDefault(_, "cr69a_system_intake_id", null)),
+            type nullable text
+        ),
+        WithRequestMatch = Table.NestedJoin(
+            WithNormalizedRequestId,
+            {"NormalizedRequestId"},
+            CurrentBatchRequests,
+            {"easi_external_id"},
+            "RequestMatch",
+            JoinKind.Inner
+        ),
+        EligibleFundingSources = Table.RemoveColumns(WithRequestMatch, {"NormalizedRequestId", "RequestMatch"}),
+        #"Removed Staging Batch ID" = Table.RemoveColumns(EligibleFundingSources, {"cr69a_batchid"}),
         Prev = Table.AddColumn(#"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text),
         // =========================================
         // Choice mapping specs

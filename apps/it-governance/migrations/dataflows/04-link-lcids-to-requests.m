@@ -34,7 +34,45 @@ shared Query =
                 let stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
                 in HasPopulatedValue(stageBatchId) and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
         ),
-        #"Filtered rows" = Table.SelectRows(CurrentBatchStage, each [cr69a_lcid] <> null and [cr69a_lcid] <> ""),
+        EligibleRequests = Table.SelectRows(
+            CurrentBatchStage,
+            each
+                HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_submitted_at", null))
+                    and HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_project_name", null))
+        ),
+        NormalizeId = (v as any) as nullable text =>
+            if HasPopulatedValue(v) then Text.Lower(Text.Trim(Text.From(v))) else null,
+        CurrentBatchRequests = Table.Buffer(
+            Table.TransformColumns(
+                Table.SelectColumns(
+                    Table.SelectRows(
+                        Dataverse{[Schema = "dbo", Item = "new_systemintake"]}[Data],
+                        each
+                            let requestBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
+                            in HasPopulatedValue(requestBatchId) and Text.Lower(Text.Trim(Text.From(requestBatchId))) = Text.Lower(BatchId)
+                    ),
+                    {"easi_external_id"},
+                    MissingField.Error
+                ),
+                {{"easi_external_id", each NormalizeId(_), type nullable text}}
+            )
+        ),
+        WithNormalizedRequestId = Table.AddColumn(
+            EligibleRequests,
+            "NormalizedRequestId",
+            each NormalizeId(Record.FieldOrDefault(_, "cr69a_id", null)),
+            type nullable text
+        ),
+        WithRequestMatch = Table.NestedJoin(
+            WithNormalizedRequestId,
+            {"NormalizedRequestId"},
+            CurrentBatchRequests,
+            {"easi_external_id"},
+            "RequestMatch",
+            JoinKind.Inner
+        ),
+        MatchedRequests = Table.RemoveColumns(WithRequestMatch, {"NormalizedRequestId", "RequestMatch"}),
+        #"Filtered rows" = Table.SelectRows(MatchedRequests, each [cr69a_lcid] <> null and [cr69a_lcid] <> ""),
         #"Removed Staging Batch ID" = Table.RemoveColumns(#"Filtered rows", {"cr69a_batchid"}),
         #"Stamped Running Batch" = Table.AddColumn(#"Removed Staging Batch ID", "cr69a_batchid", each BatchId, type text),
         #"Remove Columns" = Table.RemoveColumns(

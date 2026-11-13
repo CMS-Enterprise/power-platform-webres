@@ -135,12 +135,19 @@
     </style>
 
     <script>
+      // Toggle for Draft Business Case requirements. When false, submission is
+      // not blocked by PAGE_REQUIRED_FIELDS or the Preferred/Alternative
+      // Solution checks, and the fields' "recommended" indicator is cleared on
+      // the form. Set to true to restore the original validation behavior.
+      const ENFORCE_REQUIRED_FIELDS = false;
+
       const PAGE_REQUIRED_FIELDS = [
         "new_internalorexternalsupportneeded",
         "new_currentprocess",
         "new_howwillcmsbenefit",
         "new_successcriteria",
         "new_businessoruserneed",
+        "new_grt_feedback_implementation",
       ];
 
       const SUBMITTED_BOOL = "cr69a_initialbusinesscasesubmitted";
@@ -530,6 +537,10 @@
       }
 
       async function validateFields(form) {
+        if (!ENFORCE_REQUIRED_FIELDS) {
+          return { allValid: true, missingFieldLabels: [] };
+        }
+
         let allValid = true;
         const missingFieldLabels = [];
 
@@ -618,6 +629,32 @@
         return presence;
       }
 
+      // The entity metadata marks these fields "recommended". Clear that
+      // indicator client-side while requirements are disabled; when enabled,
+      // leave the metadata-defined level untouched.
+      // Only relax requirements while the Request is at Draft Business Case;
+      // the same fields stay required for Final Business Case. This page can
+      // be loaded on the shared Request form at other steps, so check first.
+      const ADMIN_STEP = "new_admingovernanceprocessstep";
+      const DRAFT_BUSINESS_CASE_STEP = 971270001;
+
+      function applyRequiredLevels() {
+        if (ENFORCE_REQUIRED_FIELDS) return;
+
+        const form = getParentForm();
+        if (!form) return;
+
+        const step = getAttr(form, ADMIN_STEP);
+        if (!step || step.getValue() !== DRAFT_BUSINESS_CASE_STEP) return;
+
+        PAGE_REQUIRED_FIELDS.forEach(function (fieldName) {
+          const attribute = getAttr(form, fieldName);
+          if (attribute && typeof attribute.setRequiredLevel === "function") {
+            attribute.setRequiredLevel("none");
+          }
+        });
+      }
+
       function initReadyForReviewUIWithRetry(retriesLeft) {
         if (typeof retriesLeft === "undefined") {
           retriesLeft = 25; // ~5 seconds total if delay is 200ms
@@ -625,6 +662,7 @@
 
         try {
           if (parent && parent.Xrm && parent.Xrm.Page) {
+            applyRequiredLevels();
             hookReadyForReviewOnChange();
             updateUIFromReadyForReview();
             return;

@@ -123,6 +123,9 @@
       "name": "cr3ee_business_case_form_script"
     },
     {
+      "file": "js/business-case/solutionMainForm.js"
+    },
+    {
       "file": "js/business-case/solutionQuickCreateZeroTrustInfo.js"
     },
     {

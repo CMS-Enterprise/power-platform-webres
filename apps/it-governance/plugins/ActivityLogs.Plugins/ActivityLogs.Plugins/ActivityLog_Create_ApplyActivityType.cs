@@ -1,5 +1,8 @@
 using System;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 
@@ -10,11 +13,14 @@ namespace SystemIntake.Plugins
         private const string ActivityLogEntity = "new_activitylogs";
         private const string BatchIdField = "cr3ee_batchid";
         private const int PostOperationStage = 40;
+        private const int SynchronousMode = 0;
+        private const int ObjectDoesNotExist = unchecked((int)0x80040217);
 
         private const string ActivityTypeField = "cr3ee_activitytype";
         private const string TargetStepField = "new_process_target_step";
         private const string ReviewLookupField = "new_adminreview";
         private const string RequestLookupField = "new_systemintake";
+        private const string AdminLeadLookupField = "new_adminlead";
         private const string LifecycleIdModeField = "cr3ee_lifecycleid";
         private const string ExistingLcidLookupField = "cr3ee_lcid";
         private const string ProjectCostBaselineField = "cr3ee_projectcostbaseline";
@@ -68,6 +74,8 @@ namespace SystemIntake.Plugins
         private const int ActivityTypeCloseRequest = 216640004;
         private const int ActivityTypeEditRequest = 216640005;
         private const int ActivityTypeReopenRequest = 216640006;
+        private const int ActivityTypeMakeChangesToRequest = 216640008;
+        private const int ActivityTypeReassignRequester = 216640009;
 
         private const int LifecycleIdModeCreateNew = 216640000;
         private const int LifecycleIdModeUseExisting = 216640001;
@@ -134,6 +142,24 @@ namespace SystemIntake.Plugins
                 tracing?.Trace("ActivityLog_Create_ApplyActivityType: ActivityType={0}", activityType.Value);
 
                 var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
+                if (activityType.Value == ActivityTypeMakeChangesToRequest)
+                {
+                    if (context.Mode != SynchronousMode || !context.IsInTransaction)
+                        throw new InvalidPluginExecutionException("Make Changes to Request requires a synchronous PostOperation transaction.");
+
+                    ApplyRequestChanges(target, context.PrimaryEntityId, serviceFactory, tracing);
+                    return;
+                }
+
+                if (activityType.Value == ActivityTypeReassignRequester)
+                {
+                    if (context.Mode != SynchronousMode || !context.IsInTransaction)
+                        throw new InvalidPluginExecutionException("Reassign Requester requires a synchronous PostOperation transaction.");
+
+                    ReassignRequester(target, context.PrimaryEntityId, serviceFactory, tracing);
+                    return;
+                }
+
                 var service = serviceFactory.CreateOrganizationService(context.UserId);
 
                 switch (activityType.Value)
@@ -177,6 +203,9 @@ namespace SystemIntake.Plugins
                         break;
                     case ActivityTypeReopenRequest:
                         ApplyReopenRequest(target, service, tracing);
+                        break;
+                    case ActivityLog_Create_ValidateActivityType.ActivityTypeSetAdminLead:
+                        ApplySetAdminLead(target, service, tracing);
                         break;
                     default:
                         tracing?.Trace("ActivityLog_Create_ApplyActivityType: Activity type {0} is not handled in this plugin slice. Exiting.", activityType.Value);
@@ -247,6 +276,172 @@ namespace SystemIntake.Plugins
 
             tracing?.Trace("ActivityLog_Create_ApplyActivityType: Batch ID is populated; bypassing actions for migrated data.");
             return true;
+        }
+
+        private static void ReassignRequester(Entity activityLog, Guid activityLogId, IOrganizationServiceFactory serviceFactory, ITracingService tracing)
+        {
+            var request = activityLog.GetAttributeValue<EntityReference>(RequestLookupField);
+            if (request == null || request.Id == Guid.Empty)
+                throw new InvalidPluginExecutionException("A related Request is required to reassign the requester.");
+
+            var newRequester = activityLog.GetAttributeValue<EntityReference>("new_newrequester");
+            if (newRequester == null || newRequester.Id == Guid.Empty)
+                throw new InvalidPluginExecutionException("A new requester is required.");
+
+            if (string.IsNullOrWhiteSpace(activityLog.GetAttributeValue<string>("cr3ee_reason")))
+                throw new InvalidPluginExecutionException("A reason is required to reassign the requester.");
+
+            const string activeUserMessage = "The selected requester must be an active user.";
+            if (!string.Equals(newRequester.LogicalName, "systemuser", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidPluginExecutionException(activeUserMessage);
+
+            try
+            {
+                var service = serviceFactory.CreateOrganizationService(null);
+                Entity user;
+                try
+                {
+                    user = service.Retrieve("systemuser", newRequester.Id, new ColumnSet("isdisabled"));
+                }
+                catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail?.ErrorCode == ObjectDoesNotExist)
+                {
+                    throw new InvalidPluginExecutionException(activeUserMessage, ex);
+                }
+
+                if (user.GetAttributeValue<bool?>("isdisabled") != false)
+                    throw new InvalidPluginExecutionException(activeUserMessage);
+
+                var currentRequest = service.Retrieve(RequestEntity, request.Id, new ColumnSet("cr69a_requester", "ownerid"));
+                var previousRequester = currentRequest.GetAttributeValue<EntityReference>("cr69a_requester");
+                var currentOwner = currentRequest.GetAttributeValue<EntityReference>("ownerid");
+                if (newRequester.Equals(previousRequester) && newRequester.Equals(currentOwner))
+                    throw new InvalidPluginExecutionException("The selected user is already the requester and owner of this Request.");
+
+                var auditUpdate = new Entity(ActivityLogEntity, activityLogId);
+                auditUpdate["new_previousrequester"] = previousRequester;
+                service.Update(auditUpdate);
+
+                var requestUpdate = new Entity(RequestEntity, request.Id);
+                requestUpdate["cr69a_requester"] = newRequester;
+                requestUpdate["ownerid"] = newRequester;
+                service.Update(requestUpdate);
+            }
+            catch (InvalidPluginExecutionException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidPluginExecutionException("The Request could not be reassigned. No changes were made.", ex);
+            }
+
+            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Reassign Requester succeeded. Request={0}, Requester={1}", request.Id, newRequester.Id);
+        }
+
+        private static readonly ChangeField[] RequestChangeFields =
+        {
+            new ChangeField("new_requesttitle", "new_name", "Request Title"),
+            new ChangeField("new_requestbusinessneed", "cr3ee_business_need_multi", "Business or User Need")
+        };
+
+        private sealed class ChangeField
+        {
+            public ChangeField(string activityLogField, string requestField, string displayLabel)
+            {
+                ActivityLogField = activityLogField;
+                RequestField = requestField;
+                DisplayLabel = displayLabel;
+            }
+
+            public string ActivityLogField { get; }
+            public string RequestField { get; }
+            public string DisplayLabel { get; }
+        }
+
+        private static void ApplyRequestChanges(Entity activityLog, Guid activityLogId, IOrganizationServiceFactory serviceFactory, ITracingService tracing)
+        {
+            var request = activityLog.GetAttributeValue<EntityReference>(RequestLookupField);
+            if (request == null || request.Id == Guid.Empty)
+                throw new InvalidPluginExecutionException("A related Request is required to update Request details.");
+
+            if (string.IsNullOrWhiteSpace(activityLog.GetAttributeValue<string>("cr3ee_reason")))
+                throw new InvalidPluginExecutionException("A reason is required to update Request details.");
+
+            try
+            {
+                var systemService = serviceFactory.CreateOrganizationService(null);
+                var current = systemService.Retrieve(RequestEntity, request.Id,
+                    new ColumnSet(RequestChangeFields.Select(field => field.RequestField).ToArray()));
+                var update = new Entity(RequestEntity, request.Id);
+                var summary = BuildRequestChangeSummary(activityLog, current, update);
+                if (summary.Length == 0)
+                    throw new InvalidPluginExecutionException("No Request values were changed.");
+
+                systemService.Update(update);
+                var auditUpdate = new Entity(ActivityLogEntity, activityLogId);
+                auditUpdate["new_changesummary"] = summary;
+                systemService.Update(auditUpdate);
+            }
+            catch (FaultException<OrganizationServiceFault> ex) when (ex.Detail?.ErrorCode == ObjectDoesNotExist)
+            {
+                throw new InvalidPluginExecutionException("The related Request no longer exists. Select an existing Request.", ex);
+            }
+            catch (InvalidPluginExecutionException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidPluginExecutionException(
+                    "The Request changes could not be applied. No changes were made.", ex);
+            }
+
+            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Make Changes to Request succeeded. Request={0}", request.Id);
+        }
+
+        private static string BuildRequestChangeSummary(Entity activityLog, Entity current, Entity update)
+        {
+            var sections = new List<string>();
+            foreach (var field in RequestChangeFields)
+            {
+                var before = NormalizeChangeValue(current.GetAttributeValue<object>(field.RequestField));
+                var submitted = activityLog.GetAttributeValue<object>(field.ActivityLogField);
+                var after = NormalizeChangeValue(submitted);
+                if (Equals(before, after))
+                    continue;
+
+                update[field.RequestField] = after == null ? null : submitted;
+                sections.Add(field.DisplayLabel + "\nBefore: " + FormatChangeValue(before, "[blank]")
+                    + "\nAfter: " + FormatChangeValue(after, "[cleared]"));
+            }
+
+            return string.Join("\n\n", sections);
+        }
+
+        private static object NormalizeChangeValue(object value)
+        {
+            if (value is string text)
+                return text.Length == 0 ? null : text.Replace("\r\n", "\n").Replace('\r', '\n');
+
+            return value;
+        }
+
+        private static string FormatChangeValue(object value, string blankLabel)
+        {
+            return value == null ? blankLabel : Convert.ToString(value, CultureInfo.InvariantCulture);
+        }
+
+        private static void ApplySetAdminLead(Entity activityLog, IOrganizationService service, ITracingService tracing)
+        {
+            ActivityLog_Create_ValidateActivityType.ValidateSetAdminLead(activityLog);
+
+            var request = activityLog.GetAttributeValue<EntityReference>(RequestLookupField);
+            var adminLead = activityLog.GetAttributeValue<EntityReference>(AdminLeadLookupField);
+            var requestUpdate = new Entity(RequestEntity, request.Id);
+            requestUpdate[AdminLeadLookupField] = adminLead;
+            service.Update(requestUpdate);
+
+            tracing?.Trace("ActivityLog_Create_ApplyActivityType: Set Admin Lead succeeded. Request={0}, AdminLead={1}", request.Id, adminLead.Id);
         }
 
         private static void ApplyProgressToStep(Entity activityLog, IOrganizationService service, ITracingService tracing)

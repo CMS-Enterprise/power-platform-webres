@@ -14,6 +14,8 @@ namespace SystemIntake.Plugins
         private const string TargetStepField = "new_process_target_step";
         private const string ReviewLookupField = "new_adminreview";
         private const string RequestLookupField = "new_systemintake";
+        private const string AdminLeadLookupField = "new_adminlead";
+        private const string ReasonField = "cr3ee_reason";
         private const string LifecycleIdModeField = "cr3ee_lifecycleid";
         private const string ExistingLcidLookupField = "cr3ee_lcid";
         private const string ExpirationDateField = "cr3ee_expirationdate";
@@ -28,6 +30,7 @@ namespace SystemIntake.Plugins
         private const int ActivityTypeNotApprovedByGrb = 216640003;
         private const int ActivityTypeCloseRequest = 216640004;
         private const int ActivityTypeReopenRequest = 216640006;
+        internal const int ActivityTypeSetAdminLead = 216640007;
 
         private const int LifecycleIdModeCreateNew = 216640000;
         private const int LifecycleIdModeUseExisting = 216640001;
@@ -97,6 +100,9 @@ namespace SystemIntake.Plugins
                         break;
                     case ActivityTypeReopenRequest:
                         ValidateFinalDecision(target, "Re-open Request", false);
+                        break;
+                    case ActivityTypeSetAdminLead:
+                        ValidateSetAdminLead(target);
                         break;
                     default:
                         tracing?.Trace("ActivityLog_Create_ValidateActivityType: Activity type {0} is not handled in this plugin slice. Exiting.", activityType.Value);
@@ -241,6 +247,20 @@ namespace SystemIntake.Plugins
             }
 
             throw new InvalidPluginExecutionException("Issue Lifecycle ID has an unsupported lifecycle ID selection.");
+        }
+
+        internal static void ValidateSetAdminLead(Entity activityLog)
+        {
+            var request = activityLog.GetAttributeValue<EntityReference>(RequestLookupField);
+            if (request == null || request.Id == Guid.Empty)
+                throw new InvalidPluginExecutionException("Set Admin Lead requires a Request.");
+
+            var adminLead = activityLog.GetAttributeValue<EntityReference>(AdminLeadLookupField);
+            if (adminLead == null || adminLead.Id == Guid.Empty)
+                throw new InvalidPluginExecutionException("Set Admin Lead requires an Admin Lead.");
+
+            if (string.IsNullOrWhiteSpace(activityLog.GetAttributeValue<string>(ReasonField)))
+                throw new InvalidPluginExecutionException("Set Admin Lead requires a reason.");
         }
 
         private static void ValidateFinalDecision(Entity activityLog, string actionName, bool requireClosingReason)

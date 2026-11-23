@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { validateDocument, validateTree } from "./check-deployment-settings.mjs";
+import { toPacDocument, validateDocument, validateTree } from "./check-deployment-settings.mjs";
 
 const devId = "69e8387f-d121-ecfa-a34f-6e9d2e51754a-31c688f59-sovereign";
 const stageRequestsId = "11111111-1111-1111-1111-111111111111";
@@ -29,6 +29,56 @@ const validate = (document, ready = false) => validateDocument(document, { solut
 
 test("accepts a valid PAC deployment settings document", () => {
   assert.deepEqual(validate(validDocument(), true), []);
+});
+
+test("serializes readable nested configuration objects for PAC", () => {
+  const configuration = { EnvironmentId: devId, Dataflows: { StageRequests: stageRequestsId } };
+  const document = toPacDocument(
+    { "Staging Dataflow Configuration": configuration },
+    { "Staging Dataflow Configuration": "cr69a_StagingDataflowConfiguration" },
+  );
+  assert.equal(document.EnvironmentVariables[0].Value, JSON.stringify(configuration));
+  assert.deepEqual(validate(document, true), []);
+});
+
+test("validates readable deployment settings through the repository tree path", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "deployment-settings-readable-test-"));
+  try {
+    const solution = path.join(root, "Test");
+    await fs.mkdir(solution);
+    await fs.writeFile(
+      path.join(solution, "schema.json"),
+      JSON.stringify({
+        OrgBaseUrl: "new_OrgBaseUrl",
+        "Staging Dataflow Configuration": "cr69a_StagingDataflowConfiguration",
+      }),
+    );
+
+    for (const environment of ["dev", "uat", "prod"]) {
+      const environmentId = environment === "dev"
+        ? devId
+        : environment === "uat"
+          ? "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign"
+          : "c2f580e9-c782-e16d-8d04-f5ae6a71ec20-31c688f59-sovereign";
+      const environmentUrl = `https://itgovernance${environment === "prod" ? "" : environment}.crm9.dynamics.com`;
+      await fs.writeFile(
+        path.join(solution, `${environment}.json`),
+        JSON.stringify({
+          OrgBaseUrl: environmentUrl,
+          "Staging Dataflow Configuration": {
+            EnvironmentId: environmentId,
+            Dataflows: { StageRequests: stageRequestsId },
+          },
+        }),
+      );
+    }
+
+    const { failures, checked } = await validateTree({ root });
+    assert.deepEqual(failures, []);
+    assert.equal(checked, 3);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
 });
 
 test("structural mode permits documented placeholders but readiness rejects them", () => {

@@ -1,0 +1,9 @@
+{
+  "AppId": "__REQUIRED__",
+  "Email Notification Recipients": "__REQUIRED__",
+  "IT Governance Team Email": "__REQUIRED__",
+  "OrgBaseUrl": "https://itgovernance.crm9.dynamics.com",
+  "Sharepoint Document Library ID": "__REQUIRED__",
+  "SharePoint Parent Document Location ID": "__REQUIRED__",
+  "SharePoint Site Url": "__REQUIRED__"
+}

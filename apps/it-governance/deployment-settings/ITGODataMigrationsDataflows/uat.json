@@ -1,0 +1,49 @@
+{
+  "Migration Dataflow Configuration": {
+    "EnvironmentId": "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+    "Dataflows": {
+      "CreateLCIDs": "50ac7772-06de-4488-a66a-c27c7cdb3c3b",
+      "CreateCedarSystems": "43f0485a-73a6-4e7f-9081-952d92aa3e94",
+      "CreateRequests": "4cc8a3d1-c2dd-46c3-8166-4582c894610a",
+      "CreateReviews": "733417a1-c293-48d0-9c5f-bf33ab79ca42",
+      "LinkRequestsToReviews": "857e17a6-eb96-4255-9c3f-f1f240d5e986",
+      "CreateFundingSources": "8a1db0bf-46d4-4538-9392-da1b4fdb1eb9",
+      "LinkLCIDsToRequests": "4a8d79f2-af99-4ae1-962e-2b8abad1b6c9",
+      "CreateAdditionalContacts": "747a5bf1-4048-4ab7-941d-0942748f480b",
+      "CreateBusinessCasesAndSolutions": "17acab58-d422-4a0a-b0c1-5de9a376f3c2",
+      "CreateDocuments": "7cacdc14-64da-4448-9510-61cb6ea9d66d",
+      "CreateEditRequests": "feefbe41-b50d-43de-8809-144b809f642a",
+      "CreateGRBActivityLogs": "6ebe6a96-2bc4-4f52-8805-3bfe15e6ee46",
+      "CreateSystemLinks": "372af403-6955-4f85-9d23-718a17156204",
+      "UpdateContractNumbers": "721a23b1-6592-4d0b-8dce-627f77332308",
+      "CreateEstimatedLifecycleCosts": "05b8cafd-add9-45be-87be-7afecd0ace11",
+      "MapOrphanedMultiSelectData": "abd6b089-4c59-49f4-a8fd-c4e6bd1d2579"
+    }
+  },
+  "Migration Dataflow Expected Configuration": {
+    "EnvironmentName": "UAT",
+    "EnvironmentId": "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+    "DataverseEnvironmentUrl": "itgovernanceuat.crm9.dynamics.com",
+    "SharePointSiteUrl": "https://cmsgovonline.sharepoint.com/",
+    "FolderPath": "sites/CMS-SharePoint-OIT-CIO_Library/EASi%20data%20migration/UAT/"
+  },
+  "Staging Dataflow Configuration": {
+    "EnvironmentId": "3a8386b6-0bf9-e288-aaa3-3bb2b3342dd9-31c688f59-sovereign",
+    "Dataflows": {
+      "StageBusinessCases": "3b8ae4de-799b-4b8f-a872-48e08871a622",
+      "StageCedarSystems": "aa6af15d-0cd2-4c04-85b0-2a5c199700bc",
+      "StageContacts": "afe0b83f-8189-46a3-b40d-a83d7e3ecf12",
+      "StageContractNumbers": "a336155d-b212-4187-81ba-c532bca77cb1",
+      "StageDocuments": "de2ff3f3-91ce-4439-bb0f-ae74167b0493",
+      "StageEditRequests": "ab9282e6-7e49-4eaf-bf52-9e1607a792a9",
+      "StageEstimatedLifecycleCosts": "62168693-4cc4-46b8-b91b-fe8f9964289b",
+      "StageFundingSources": "0ae91671-d868-4581-ab50-6f980886b248",
+      "StageGRBDiscussionPosts": "7e79e8ef-ddf2-40cb-adc5-0e5f7e612ba6",
+      "StagePresentationLinks": "269b8a44-cdfa-4559-b679-5419908e4573",
+      "StageGRBReviewers": "88f39fcc-5ddf-45af-8c07-e2e2e35106c0",
+      "StageLinkedSystems": "03f91dd2-e35d-40b9-aea7-f5f813c5bec6",
+      "StageNotes": "cfdf382b-67b6-431c-afc7-da6921cfd1ac",
+      "StageSystemIntakes": "259ef111-d9d1-4847-b261-60e24fd0db66"
+    }
+  }
+}

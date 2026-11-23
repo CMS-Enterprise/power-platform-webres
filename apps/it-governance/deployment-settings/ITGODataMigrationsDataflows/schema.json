@@ -1,0 +1,5 @@
+{
+  "Migration Dataflow Configuration": "cr69a_MigrationDataflowConfiguration",
+  "Migration Dataflow Expected Configuration": "cr69a_MigrationDataflowExpectedConfiguration",
+  "Staging Dataflow Configuration": "cr69a_StagingDataflowConfiguration"
+}

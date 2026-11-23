@@ -91,9 +91,15 @@ shared ContractNumberPreparation = let
         each NormalizeId(Record.Field(_, RequestIdColumn)),
         type nullable text
     ),
+    WithNormalizedBatchId = Table.AddColumn(
+        WithNormalizedRequestId,
+        "NormalizedBatchId",
+        each NormalizeId([cr69a_batchid]),
+        type nullable text
+    ),
     DuplicateRecordIds = let
         NonBlankIds = Table.SelectRows(
-            WithNormalizedRequestId,
+            WithNormalizedBatchId,
             each [NormalizedContractRecordId] <> null
         ),
         Grouped = Table.Group(
@@ -111,7 +117,7 @@ shared ContractNumberPreparation = let
         )
     ),
     WithRequestMatch = Table.NestedJoin(
-        WithNormalizedRequestId,
+        WithNormalizedBatchId,
         {"NormalizedRequestId"},
         ExistingRequests,
         {"easi_external_id"},
@@ -185,6 +191,7 @@ shared ContractNumbers = let
     HelperColumns = {
         "NormalizedContractRecordId",
         "NormalizedRequestId",
+        "NormalizedBatchId",
         "RequestMatch",
         "UnmappedIssues"
     },

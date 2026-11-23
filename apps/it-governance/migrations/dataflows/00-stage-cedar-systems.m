@@ -12,7 +12,7 @@ shared FileName = let
 in
   FileName;
 shared FolderPath = let
-  FolderPath = "sites/CMS-SharePoint-OIT-Classic/CIOCorner/EASi%20data%20migration/Development/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text]
+  FolderPath = "sites/CMS-SharePoint-OIT-CIO_Library/EASi%20data%20migration/Development/" meta [IsParameterQuery = true, IsParameterQueryRequired = false, Type = type text]
 in
   FolderPath;
 shared Query1 = let

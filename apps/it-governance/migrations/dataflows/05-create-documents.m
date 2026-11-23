@@ -178,10 +178,16 @@ shared DocumentPreparation =
             each NormalizeId(Record.Field(_, RequestIdColumn)),
             type nullable text
         ),
+        WithNormalizedBatchId = Table.AddColumn(
+            WithNormalizedRequestId,
+            "NormalizedBatchId",
+            each NormalizeId([cr69a_batchid]),
+            type nullable text
+        ),
         DuplicateDocumentIds =
             let
                 NonBlankIds = Table.SelectRows(
-                    WithNormalizedRequestId,
+                    WithNormalizedBatchId,
                     each [NormalizedDocumentRecordId] <> null
                 ),
                 Grouped = Table.Group(
@@ -199,7 +205,7 @@ shared DocumentPreparation =
             )
         ),
         WithRequestMatch = Table.NestedJoin(
-            WithNormalizedRequestId,
+            WithNormalizedBatchId,
             {"NormalizedRequestId"},
             ExistingRequests,
             {"easi_external_id"},
@@ -290,6 +296,7 @@ shared cr69a_systemintakestagingdocument =
         HelperColumns = {
             "NormalizedDocumentRecordId",
             "NormalizedRequestId",
+            "NormalizedBatchId",
             "RequestMatch",
             "UnmappedIssues"
         },

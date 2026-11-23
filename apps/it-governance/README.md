@@ -14,6 +14,9 @@ Power Platform remains the deployment source. Before committing a refreshed snap
 
 ## Structure
 
+- `deployment-settings/`
+  - PAC-compatible environment variables grouped by solution and target environment
+  - See `deployment-settings/README.md` for validation and import guidance
 - `docs/`
   - Architecture notes, form behavior, and deployment guidance
   - See `docs/web-resource-deployment.md` for the local web resource deploy workflow

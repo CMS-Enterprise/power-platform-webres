@@ -20,18 +20,7 @@ shared Reviews = let
             textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
     MigrationRuns = Source{[Schema = "dbo", Item = "easi_migrationrun"]}[Data],
     BufferedRuns = Table.Buffer(MigrationRuns),
-    MigratingOnly =
-    Table.SelectRows(
-        BufferedRuns,
-        each
-            let
-                status = Record.FieldOrDefault(_, "easi_migrationrunstatus", null),
-                statusNumber = try Number.From(status) otherwise null,
-                statusText = try Text.Lower(Text.Trim(Text.From(status))) otherwise null
-            in
-                statusNumber = 216640002
-                    or statusText = "migrating"
-    ),
+    MigratingOnly = Table.SelectRows(BufferedRuns, each [easi_migrationrunstatus] = 216640002),
     MigratingCount = Table.RowCount(MigratingOnly),
     ValidatedMigratingRun =
         if MigratingCount = 0 then

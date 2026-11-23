@@ -347,6 +347,11 @@ shared BusinessCaseSolutionPreparation =
                     normalized = Text.Lower(Text.Trim(Text.From(value)))
                 in
                     if normalized = "" or Text.Upper(normalized) = "NULL" then null else normalized,
+        HasPopulatedValue = (value as any) as logical =>
+            let
+                textValue = if value = null then null else Text.Trim(Text.From(value))
+            in
+                textValue <> null and textValue <> "" and Text.Upper(textValue) <> "NULL",
         WithNormalizedBusinessCaseId = Table.AddColumn(
             Normalized,
             "NormalizedBusinessCaseId",
@@ -359,10 +364,16 @@ shared BusinessCaseSolutionPreparation =
             each NormalizeId([Request ID]),
             type nullable text
         ),
+        WithNormalizedBatchId = Table.AddColumn(
+            WithNormalizedRequestId,
+            "NormalizedBatchId",
+            each NormalizeId([Batch ID]),
+            type nullable text
+        ),
         BusinessCaseCounts = Table.Buffer(
             Table.Group(
                 Table.SelectRows(
-                    WithNormalizedRequestId,
+                    WithNormalizedBatchId,
                     each [NormalizedBusinessCaseId] <> null
                 ),
                 {"NormalizedBusinessCaseId"},
@@ -370,7 +381,7 @@ shared BusinessCaseSolutionPreparation =
             )
         ),
         WithBusinessCaseCount = Table.NestedJoin(
-            WithNormalizedRequestId,
+            WithNormalizedBatchId,
             {"NormalizedBusinessCaseId"},
             BusinessCaseCounts,
             {"NormalizedBusinessCaseId"},
@@ -399,8 +410,53 @@ shared BusinessCaseSolutionPreparation =
             "RequestMatch",
             JoinKind.LeftOuter
         ),
-        WithValidationIssues = Table.AddColumn(
+        StagedRequestsRaw = Dataverse{[Schema = "dbo", Item = "cr69a_intakestaging"]}[Data],
+        StagedRequestsWithNormalizedId = Table.AddColumn(
+            Table.SelectColumns(
+                StagedRequestsRaw,
+                {"cr69a_id", "cr69a_submitted_at", "cr69a_project_name", "cr69a_batchid"},
+                MissingField.Error
+            ),
+            "NormalizedStagedRequestId",
+            each NormalizeId([cr69a_id]),
+            type nullable text
+        ),
+        StagedRequests = Table.Buffer(
+            Table.AddColumn(
+                StagedRequestsWithNormalizedId,
+                "NormalizedStagedBatchId",
+                each NormalizeId([cr69a_batchid]),
+                type nullable text
+            )
+        ),
+        WithParentStagingMatch = Table.NestedJoin(
             WithRequestMatch,
+            {"NormalizedRequestId", "NormalizedBatchId"},
+            StagedRequests,
+            {"NormalizedStagedRequestId", "NormalizedStagedBatchId"},
+            "ParentStagingMatch",
+            JoinKind.LeftOuter
+        ),
+        WithParentEligibility = Table.AddColumn(
+            WithParentStagingMatch,
+            "ParentRequestIntentionallyExcluded",
+            (row as record) as logical =>
+                let
+                    requestMatches = Record.FieldOrDefault(row, "RequestMatch", #table({}, {})),
+                    stagedMatches = Record.FieldOrDefault(row, "ParentStagingMatch", #table({}, {})),
+                    requestMatchCount = Table.RowCount(requestMatches),
+                    stagedMatchCount = Table.RowCount(stagedMatches),
+                    stagedParent = if stagedMatchCount = 1 then stagedMatches{0} else null,
+                    submittedAt = if stagedParent = null then null else Record.FieldOrDefault(stagedParent, "cr69a_submitted_at", null),
+                    projectName = if stagedParent = null then null else Record.FieldOrDefault(stagedParent, "cr69a_project_name", null)
+                in
+                    requestMatchCount = 0
+                        and stagedMatchCount = 1
+                        and (not HasPopulatedValue(submittedAt) or not HasPopulatedValue(projectName)),
+            type logical
+        ),
+        WithValidationIssues = Table.AddColumn(
+            WithParentEligibility,
             "BusinessCaseSolutionIssues",
             (row as record) =>
                 let
@@ -416,12 +472,18 @@ shared BusinessCaseSolutionPreparation =
                     solutionRowCount = Record.FieldOrDefault(row, "SolutionRowCount", null),
                     requestMatches = Record.FieldOrDefault(row, "RequestMatch", #table({}, {})),
                     requestMatchCount = Table.RowCount(requestMatches),
+                    parentRequestIntentionallyExcluded = Record.FieldOrDefault(
+                        row,
+                        "ParentRequestIntentionallyExcluded",
+                        false
+                    ),
                     issues = List.RemoveNulls(
                         {
                             existingIssues,
                             if businessCaseId = null then "Business Case ID is blank" else null,
                             if requestId = null then "Request ID is blank" else null,
-                            if requestId <> null and requestMatchCount = 0 then "No Request matched Request ID=" & requestId else null,
+                            if parentRequestIntentionallyExcluded then "Skipped because parent Request was intentionally excluded for a blank submitted_at or project_name" else null,
+                            if requestId <> null and requestMatchCount = 0 and not parentRequestIntentionallyExcluded then "No Request matched Request ID=" & requestId else null,
                             if requestId <> null and requestMatchCount > 1 then "Multiple Requests matched Request ID=" & requestId else null,
                             if batchId = null then "Batch ID is blank" else null,
                             if solutionRowCount = null then "Expected 3 solution rows; found no count" else if solutionRowCount <> 3 then "Expected 3 solution rows; found " & Text.From(solutionRowCount) else null,
@@ -457,8 +519,11 @@ shared BusinessCaseSolutionPreparation =
             "UnmappedIssues",
             "NormalizedBusinessCaseId",
             "NormalizedRequestId",
+            "NormalizedBatchId",
             "SolutionRowCount",
             "RequestMatch",
+            "ParentStagingMatch",
+            "ParentRequestIntentionallyExcluded",
             "BusinessCaseSolutionIssues"
         },
         PreviewOnly = Table.SelectColumns(WithValidationIssues, OutputColumns, MissingField.UseNull)
@@ -482,6 +547,7 @@ shared BusinessCaseSolutionQA =
                 "Title",
                 "SolutionType",
                 "Batch ID",
+                "ParentRequestIntentionallyExcluded",
                 "BusinessCaseSolutionIssues"
             },
             MissingField.UseNull
@@ -491,14 +557,18 @@ shared BusinessCaseSolutionQA =
 shared Query =
     let
         BufferedQA = Table.Buffer(BusinessCaseSolutionQA),
-        QARowCount = Table.RowCount(BufferedQA),
+        BlockingQA = Table.SelectRows(
+            BufferedQA,
+            each not Record.FieldOrDefault(_, "ParentRequestIntentionallyExcluded", false)
+        ),
+        QARowCount = Table.RowCount(BlockingQA),
         QASample =
             if QARowCount = 0 then
                 null
             else
                 Text.Combine(
                     List.Transform(
-                        Table.ToRecords(Table.FirstN(BufferedQA, 5)),
+                        Table.ToRecords(Table.FirstN(BlockingQA, 5)),
                         each
                             Text.From(Record.FieldOrDefault(_, "cr69a_id", "unknown Business Case"))
                                 & ": "
@@ -510,12 +580,18 @@ shared Query =
             if QARowCount > 0 then
                 error "BusinessCaseSolutionQA contains " & Text.From(QARowCount) & " invalid row(s). Sample: " & QASample
             else
-                BusinessCaseSolutionPreparation,
+                Table.SelectRows(
+                    BusinessCaseSolutionPreparation,
+                    each not Record.FieldOrDefault(_, "ParentRequestIntentionallyExcluded", false)
+                ),
         HelperColumns = {
             "NormalizedBusinessCaseId",
             "NormalizedRequestId",
+            "NormalizedBatchId",
             "SolutionRowCount",
             "RequestMatch",
+            "ParentStagingMatch",
+            "ParentRequestIntentionallyExcluded",
             "BusinessCaseSolutionIssues"
         },
         Output = Table.RemoveColumns(ValidatedPreparation, HelperColumns, MissingField.Ignore),

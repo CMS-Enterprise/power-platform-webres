@@ -1,0 +1,9 @@
+{
+  "AppId": "new_AppId",
+  "Email Notification Recipients": "new_EmailNotificationRecipients",
+  "IT Governance Team Email": "new_ITGovernanceTeamEmail",
+  "OrgBaseUrl": "new_OrgBaseUrl",
+  "Sharepoint Document Library ID": "new_SharepointDocumentLibraryID",
+  "SharePoint Parent Document Location ID": "new_SharePointParentDocumentLocationID",
+  "SharePoint Site Url": "new_SharePointSiteUrl"
+}

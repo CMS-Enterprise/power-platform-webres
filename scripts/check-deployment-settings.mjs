@@ -41,6 +41,25 @@ const expectedConfigurationFields = [
 const guidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+export function toPacDocument(document, schema = {}) {
+  if (isObject(document) && ("EnvironmentVariables" in document || "ConnectionReferences" in document)) return document;
+  if (!isObject(document)) return document;
+  return {
+    EnvironmentVariables: Object.entries(document).map(([name, sourceValue]) => {
+      const Value = isObject(sourceValue) ? JSON.stringify(sourceValue) : sourceValue;
+      return {
+        Name: { Default: name },
+        SchemaName: schema[name],
+        Value,
+      };
+    }),
+    ConnectionReferences: [],
+  };
+}
+
+async function loadSchema(root, solution) {
+  return JSON.parse(await fs.readFile(path.join(root, solution, "schema.json"), "utf8"));
+}
 const dataflowInventory = (document) => {
   const inventories = new Map();
   for (const { SchemaName, Value } of document.EnvironmentVariables ?? []) {
@@ -198,6 +217,7 @@ export async function validateTree({
   solution,
   environment,
   settingsFile,
+  outputFile,
   expectedConfigurationRoot = defaultExpectedConfigurationRoot,
 } = {}) {
   const failures = [];
@@ -213,7 +233,11 @@ export async function validateTree({
       const file = settingsFile ?? path.join(root, solutionName, `${environmentName}.json`);
       let document;
       try {
-        document = JSON.parse(await fs.readFile(file, "utf8"));
+        const source = JSON.parse(await fs.readFile(file, "utf8"));
+        const schema = !isObject(source) || "EnvironmentVariables" in source || "ConnectionReferences" in source
+          ? {}
+          : await loadSchema(root, solutionName);
+        document = toPacDocument(source, schema);
       } catch (error) {
         failures.push(`${solutionName}/${environmentName}: cannot read valid JSON from ${file} (${error.message})`);
         continue;
@@ -260,10 +284,14 @@ export async function validateTree({
       );
       const referenceFile = path.join(root, solutionName, `${referenceEnvironment}.json`);
       try {
+        const source = JSON.parse(await fs.readFile(referenceFile, "utf8"));
+        const schema = !isObject(source) || "EnvironmentVariables" in source || "ConnectionReferences" in source
+          ? {}
+          : await loadSchema(root, solutionName);
         const reference = {
           solution: solutionName,
           environment: referenceEnvironment,
-          document: JSON.parse(await fs.readFile(referenceFile, "utf8")),
+          document: toPacDocument(source, schema),
         };
         failures.push(...compareInventories(solutionName, reference, candidate));
       } catch (error) {
@@ -280,6 +308,9 @@ export async function validateTree({
       failures.push(...compareInventories(solutionName, baseline, candidate));
     }
   }
+  if (ready && outputFile && failures.length === 0 && documents[0]) {
+    await fs.writeFile(outputFile, `${JSON.stringify(documents[0].document, null, 2)}\n`, { flag: "wx" });
+  }
   return { failures, checked: documents.length };
 }
 
@@ -287,21 +318,25 @@ async function main() {
   const args = process.argv.slice(2);
   const ready = args[0] === "--ready";
   const positional = ready ? args.slice(1) : args;
-  const hasSettingsFile = ready && positional.length === 4 && positional[2] === "--file";
-  if ((!ready && positional.length > 0) || (ready && positional.length !== 2 && !hasSettingsFile)) {
+  const option = ready && positional.length === 4 ? positional[2] : undefined;
+  const hasSettingsFile = option === "--file";
+  const hasOutputFile = option === "--output";
+  if ((!ready && positional.length > 0) || (ready && positional.length !== 2 && !hasSettingsFile && !hasOutputFile)) {
     console.error(
-      "Usage: node scripts/check-deployment-settings.mjs [--ready <solution> <dev|uat|prod> [--file <settings.json>]]",
+      "Usage: node scripts/check-deployment-settings.mjs [--ready <solution> <dev|uat|prod> [--file <settings.json> | --output <pac-settings.json>]]",
     );
     process.exitCode = 2;
     return;
   }
   const [solution, environment] = positional;
   const settingsFile = hasSettingsFile ? path.resolve(positional[3]) : undefined;
+  const outputFile = hasOutputFile ? path.resolve(positional[3]) : undefined;
   const { failures, checked } = await validateTree({
     ready,
     solution,
     environment,
     settingsFile,
+    outputFile,
   });
   if (failures.length > 0) {
     console.error(`${ready ? "Deployment readiness" : "Deployment settings"} check failed:\n`);
@@ -310,6 +345,7 @@ async function main() {
     return;
   }
   console.log(`${ready ? "Deployment readiness" : "Deployment settings"} check passed for ${checked} file(s).`);
+  if (outputFile) console.log(`PAC settings written to ${outputFile}.`);
 }
 
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) await main();

@@ -97,25 +97,6 @@ shared ContractNumberPreparation = let
         each NormalizeId([cr69a_batchid]),
         type nullable text
     ),
-    StagedRequestsRaw = Source{[Schema = "dbo", Item = "cr69a_intakestaging"]}[Data],
-    StagedRequestsWithNormalizedId = Table.AddColumn(
-        Table.SelectColumns(
-            StagedRequestsRaw,
-            {"cr69a_id", "cr69a_submitted_at", "cr69a_project_name", "cr69a_batchid"},
-            MissingField.Error
-        ),
-        "NormalizedStagedRequestId",
-        each NormalizeId([cr69a_id]),
-        type nullable text
-    ),
-    StagedRequests = Table.Buffer(
-        Table.AddColumn(
-            StagedRequestsWithNormalizedId,
-            "NormalizedStagedBatchId",
-            each NormalizeId([cr69a_batchid]),
-            type nullable text
-        )
-    ),
     DuplicateRecordIds = let
         NonBlankIds = Table.SelectRows(
             WithNormalizedBatchId,
@@ -143,34 +124,8 @@ shared ContractNumberPreparation = let
         "RequestMatch",
         JoinKind.LeftOuter
     ),
-    WithParentStagingMatch = Table.NestedJoin(
-        WithRequestMatch,
-        {"NormalizedRequestId", "NormalizedBatchId"},
-        StagedRequests,
-        {"NormalizedStagedRequestId", "NormalizedStagedBatchId"},
-        "ParentStagingMatch",
-        JoinKind.LeftOuter
-    ),
-    WithParentEligibility = Table.AddColumn(
-        WithParentStagingMatch,
-        "ParentRequestIntentionallyExcluded",
-        (row as record) as logical =>
-            let
-                requestMatches = Record.FieldOrDefault(row, "RequestMatch", #table({}, {})),
-                stagedMatches = Record.FieldOrDefault(row, "ParentStagingMatch", #table({}, {})),
-                requestMatchCount = Table.RowCount(requestMatches),
-                stagedMatchCount = Table.RowCount(stagedMatches),
-                stagedParent = if stagedMatchCount = 1 then stagedMatches{0} else null,
-                submittedAt = if stagedParent = null then null else Record.FieldOrDefault(stagedParent, "cr69a_submitted_at", null),
-                projectName = if stagedParent = null then null else Record.FieldOrDefault(stagedParent, "cr69a_project_name", null)
-            in
-                requestMatchCount = 0
-                    and stagedMatchCount = 1
-                    and (not HasPopulatedValue(submittedAt) or not HasPopulatedValue(projectName)),
-        type logical
-    ),
     WithQA = Table.AddColumn(
-        WithParentEligibility,
+        WithRequestMatch,
         "UnmappedIssues",
         (row as record) =>
             let
@@ -178,7 +133,6 @@ shared ContractNumberPreparation = let
                 requestId = Record.FieldOrDefault(row, "NormalizedRequestId", null),
                 contractNumber = Record.FieldOrDefault(row, ContractNumberColumn, null),
                 requestMatch = Record.FieldOrDefault(row, "RequestMatch", #table({}, {})),
-                parentRequestIntentionallyExcluded = Record.FieldOrDefault(row, "ParentRequestIntentionallyExcluded", false),
                 issues = List.RemoveNulls(
                     {
                         if recordId = null then
@@ -197,9 +151,7 @@ shared ContractNumberPreparation = let
                             "Duplicate contract record ID=" & recordId
                         else
                             null,
-                        if parentRequestIntentionallyExcluded then
-                            "Skipped because parent Request was intentionally excluded for a blank submitted_at or project_name"
-                        else if requestId = null or not Table.IsEmpty(requestMatch) then
+                        if requestId = null or not Table.IsEmpty(requestMatch) then
                             null
                         else
                             "No Request matched " & RequestIdColumn & "=" & requestId
@@ -223,7 +175,7 @@ shared ContractNumberQA = let
                         Table.ColumnNames(Issues)
                     }
                 ),
-                {"ParentRequestIntentionallyExcluded", "UnmappedIssues"}
+                {"UnmappedIssues"}
             }
         ),
         MissingField.Error
@@ -231,25 +183,16 @@ shared ContractNumberQA = let
 in
     Output;
 shared ContractNumbers = let
-    BlockingQA = Table.SelectRows(
-        ContractNumberQA,
-        each not Record.FieldOrDefault(_, "ParentRequestIntentionallyExcluded", false)
-    ),
     ValidatedPreparation =
-        if Table.RowCount(BlockingQA) > 0 then
+        if Table.RowCount(ContractNumberQA) > 0 then
             error "One or more Contract Number rows is invalid or could not be matched to a Request. Review ContractNumberQA before loading Contract Numbers."
         else
-            Table.SelectRows(
-                ContractNumberPreparation,
-                each not Record.FieldOrDefault(_, "ParentRequestIntentionallyExcluded", false)
-            ),
+            ContractNumberPreparation,
     HelperColumns = {
         "NormalizedContractRecordId",
         "NormalizedRequestId",
         "NormalizedBatchId",
         "RequestMatch",
-        "ParentStagingMatch",
-        "ParentRequestIntentionallyExcluded",
         "UnmappedIssues"
     },
     Output = Table.RemoveColumns(ValidatedPreparation, HelperColumns, MissingField.Ignore),

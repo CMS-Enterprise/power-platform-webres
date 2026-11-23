@@ -40,12 +40,6 @@ shared Reviews = let
             let stageBatchId = Record.FieldOrDefault(_, "cr69a_batchid", null)
             in HasPopulatedValue(stageBatchId) and Text.Lower(Text.Trim(Text.From(stageBatchId))) = Text.Lower(BatchId)
     ),
-    EligibleReviews = Table.SelectRows(
-        CurrentBatchStage,
-        each
-            HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_submitted_at", null))
-                and HasPopulatedValue(Record.FieldOrDefault(_, "cr69a_project_name", null))
-    ),
     NormalizeId = (v as any) as nullable text =>
         if HasPopulatedValue(v) then Text.Lower(Text.Trim(Text.From(v))) else null,
     CurrentBatchRequests = Table.Buffer(
@@ -64,7 +58,7 @@ shared Reviews = let
         )
     ),
     WithNormalizedRequestId = Table.AddColumn(
-        EligibleReviews,
+        CurrentBatchStage,
         "NormalizedRequestId",
         each NormalizeId(Record.FieldOrDefault(_, "cr69a_id", null)),
         type nullable text

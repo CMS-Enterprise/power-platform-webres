@@ -184,25 +184,6 @@ shared DocumentPreparation =
             each NormalizeId([cr69a_batchid]),
             type nullable text
         ),
-        StagedRequestsRaw = Source{[Schema = "dbo", Item = "cr69a_intakestaging"]}[Data],
-        StagedRequestsWithNormalizedId = Table.AddColumn(
-            Table.SelectColumns(
-                StagedRequestsRaw,
-                {"cr69a_id", "cr69a_submitted_at", "cr69a_project_name", "cr69a_batchid"},
-                MissingField.Error
-            ),
-            "NormalizedStagedRequestId",
-            each NormalizeId([cr69a_id]),
-            type nullable text
-        ),
-        StagedRequests = Table.Buffer(
-            Table.AddColumn(
-                StagedRequestsWithNormalizedId,
-                "NormalizedStagedBatchId",
-                each NormalizeId([cr69a_batchid]),
-                type nullable text
-            )
-        ),
         DuplicateDocumentIds =
             let
                 NonBlankIds = Table.SelectRows(
@@ -231,34 +212,8 @@ shared DocumentPreparation =
             "RequestMatch",
             JoinKind.LeftOuter
         ),
-        WithParentStagingMatch = Table.NestedJoin(
-            WithRequestMatch,
-            {"NormalizedRequestId", "NormalizedBatchId"},
-            StagedRequests,
-            {"NormalizedStagedRequestId", "NormalizedStagedBatchId"},
-            "ParentStagingMatch",
-            JoinKind.LeftOuter
-        ),
-        WithParentEligibility = Table.AddColumn(
-            WithParentStagingMatch,
-            "ParentRequestIntentionallyExcluded",
-            (row as record) as logical =>
-                let
-                    requestMatches = Record.FieldOrDefault(row, "RequestMatch", #table({}, {})),
-                    stagedMatches = Record.FieldOrDefault(row, "ParentStagingMatch", #table({}, {})),
-                    requestMatchCount = Table.RowCount(requestMatches),
-                    stagedMatchCount = Table.RowCount(stagedMatches),
-                    stagedParent = if stagedMatchCount = 1 then stagedMatches{0} else null,
-                    submittedAt = if stagedParent = null then null else Record.FieldOrDefault(stagedParent, "cr69a_submitted_at", null),
-                    projectName = if stagedParent = null then null else Record.FieldOrDefault(stagedParent, "cr69a_project_name", null)
-                in
-                    requestMatchCount = 0
-                        and stagedMatchCount = 1
-                        and (not HasPopulatedValue(submittedAt) or not HasPopulatedValue(projectName)),
-            type logical
-        ),
         WithQA = Table.AddColumn(
-            WithParentEligibility,
+            WithRequestMatch,
             "UnmappedIssues",
             (row as record) =>
                 let
@@ -266,7 +221,6 @@ shared DocumentPreparation =
                     requestId = Record.FieldOrDefault(row, "NormalizedRequestId", null),
                     requestMatch = Record.FieldOrDefault(row, "RequestMatch", #table({}, {})),
                     requestMatchCount = Table.RowCount(requestMatch),
-                    parentRequestIntentionallyExcluded = Record.FieldOrDefault(row, "ParentRequestIntentionallyExcluded", false),
                     choiceIssues = List.Transform(
                         ChoiceSpecs,
                         (spec as record) =>
@@ -294,8 +248,7 @@ shared DocumentPreparation =
                                     if not HasPopulatedValue(Record.FieldOrDefault(row, S3KeyColumn, null)) then S3KeyColumn & " is blank" else null,
                                     if not HasPopulatedValue(Record.FieldOrDefault(row, DocumentVersionColumn, null)) then DocumentVersionColumn & " is blank" else null,
                                     if recordId <> null and List.Contains(DuplicateDocumentIds, recordId) then "Duplicate document record ID=" & recordId else null,
-                                    if parentRequestIntentionallyExcluded then "Skipped because parent Request was intentionally excluded for a blank submitted_at or project_name" else null,
-                                    if requestId <> null and requestMatchCount = 0 and not parentRequestIntentionallyExcluded then "No Request matched " & RequestIdColumn & "=" & requestId else null,
+                                    if requestId <> null and requestMatchCount = 0 then "No Request matched " & RequestIdColumn & "=" & requestId else null,
                                     if requestId <> null and requestMatchCount > 1 then "Multiple Requests matched " & RequestIdColumn & "=" & requestId else null
                                 },
                                 choiceIssues
@@ -326,7 +279,7 @@ shared DocumentQA =
                         Table.ColumnNames(Issues)
                     }
                 ),
-                {"ParentRequestIntentionallyExcluded", "UnmappedIssues"}
+                {"UnmappedIssues"}
             }
         ),
         Output = Table.SelectColumns(Issues, OutputColumns, MissingField.Error)
@@ -335,25 +288,16 @@ shared DocumentQA =
 
 shared cr69a_systemintakestagingdocument =
     let
-        BlockingQA = Table.SelectRows(
-            DocumentQA,
-            each not Record.FieldOrDefault(_, "ParentRequestIntentionallyExcluded", false)
-        ),
         ValidatedPreparation =
-            if Table.RowCount(BlockingQA) > 0 then
+            if Table.RowCount(DocumentQA) > 0 then
                 error "One or more Document rows is invalid or could not be matched to exactly one Request. Review DocumentQA before loading Documents."
             else
-                Table.SelectRows(
-                    DocumentPreparation,
-                    each not Record.FieldOrDefault(_, "ParentRequestIntentionallyExcluded", false)
-                ),
+                DocumentPreparation,
         HelperColumns = {
             "NormalizedDocumentRecordId",
             "NormalizedRequestId",
             "NormalizedBatchId",
             "RequestMatch",
-            "ParentStagingMatch",
-            "ParentRequestIntentionallyExcluded",
             "UnmappedIssues"
         },
         Output = Table.RemoveColumns(ValidatedPreparation, HelperColumns, MissingField.Ignore),
